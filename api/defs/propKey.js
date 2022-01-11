@@ -1,19 +1,24 @@
-const fs = require('fs');
-const crypto = require('crypto');
+const express = require('express')
+const propKey = express.Router()
+const bodyParser = require('body-parser')
+const propKeyRecord = require('./PropKeyRecord.js')
 
-class PropKeyRepository {
-    constructor(filename) {
-        if (!filename) {
-            throw new Error('Creating a repository requires a filename');
-        }
 
-        this.filename = filename;
-        try {
-            fs.accessSync(this.filename);
-        } catch (err) {
-            fs.writeFileSync(this.filename, '[]');
-        }
-    }
-}
+// Env vars
+const API_BASE_URL = process.env.API_BASE_URL
+const API_KEY = process.env.API_KEY
 
-module.exports = new PropKeyRepository('propKey.json');
+// Bodyparser
+propKey.use(bodyParser.json())
+
+
+propKey.post("/create", async (req, res) => {
+  try {
+    data = await propKeyRecord.create(req.body.title, req.body.propType)
+    res.status(200).json(data)
+  } catch (error) {
+    res.status(500).json({ error })
+  }
+})
+
+module.exports = propKey

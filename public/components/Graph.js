@@ -1,7 +1,6 @@
 //import * as d3 from "d3"
 import * as d3 from "https://cdn.skypack.dev/d3@6";
 import ContextMenu from './ContextMenu.js';
-import Store from "../store/store.js";
 
 //const test = Store.CREATE("propType","test2");
 //console.log(test)
@@ -9,35 +8,18 @@ import Store from "../store/store.js";
 
 const Graph = async (view) => {
 
-    console.log(view)
+    // let graphFetchData = await fetch(`http://localhost:5000/api/${view}/getAll`);
+    
+    // let graphJsonData = await graphFetchData.json();
+    
 
-    //let graphFetchData = await fetch('http://localhost:8080/api/configGraph/read');
-    let graphFetchData = {
-        "nodes":[
-            {
-                "id":"1",
-                "nameLabel":"test1"
-            },
-            {
-                "id":"2",
-                "nameLabel":"test2"
-            }
-        ],
-        "rels":[
-            {
-                "id":"1",
-                "source":"1",
-                "target":"2"
-            }
-        ]
-    }
-    let graphJsonData = graphFetchData;
+    let graphJsonData = await JSON.parse(window.localStorage.getItem(`${view}`))
 
-
+    
     let width = window.innerWidth,
         height = window.innerHeight - 20;
 
-    const { nodes, rels } = graphJsonData,
+    const { nodes, rels } = graphJsonData[0],
         r = 38,
         linkLength = 200,
         nodeFill = "#FFCCCC",
@@ -178,7 +160,7 @@ const Graph = async (view) => {
             enter => {
                 const linkLabel = enter
                     .append("text")
-                    .text(link => link.nameLabel)
+                    .text(link => link.title)
                     .attr("id", function (d) {
                         return "linkLabel" + d.id;
                     })
@@ -207,7 +189,7 @@ const Graph = async (view) => {
         .selectAll('text')
         .data(nodes)
         .enter().append('text')
-        .text(node => node.nameLabel)
+        .text(node => node.title)
         .attr('class', 'nodeLabel')
         .attr('dy', 4)
 

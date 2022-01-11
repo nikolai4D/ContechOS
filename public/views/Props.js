@@ -1,4 +1,5 @@
 import Graph from "../components/Graph.js"
+import store from "../store/store.js"
 
 export default class Props {
     
@@ -7,7 +8,9 @@ export default class Props {
     }
 
     async getTemplate() {
-        return Graph("props")
+        const view = "props"
+        await store.GETALL(view)
+        return Graph(view)
     }
 }
 
