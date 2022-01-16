@@ -39,12 +39,12 @@
     "nodeGroups":[
         {
             "nodeGroupId":1,
-            "title":"config",
+            "title":"configs",
             "nodeTypes":[4,5]    
         },
         {
             "nodeGroupId":2,
-            "title":"data",
+            "title":"datas",
             "nodeTypes":[6,7]    
         },{
             "nodeGroupId":3,

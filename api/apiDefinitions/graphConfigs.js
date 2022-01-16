@@ -1,12 +1,9 @@
 const express = require('express')
 const configs = express.Router()
 const bodyParser = require('body-parser')
-const configsRecords = require('./records/ConfigsRecords.js')
+const GraphRecords = require('./records/GraphRecords.js')
 
-
-// Env vars
-const API_BASE_URL = process.env.API_BASE_URL
-const API_KEY = process.env.API_KEY
+const configsRecords = new GraphRecords("configs");
 
 // Bodyparser
 configs.use(bodyParser.json())
@@ -16,6 +13,7 @@ configs.use(bodyParser.json())
 // });
 
 configs.get("/", async (req, res) => {
+    console.log(await configsRecords.getAll())
   try {
     result = await configsRecords.getAll()
     res.status(200).json(result)

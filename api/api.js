@@ -2,10 +2,6 @@ const express = require('express')
 const api = express.Router()
 const bodyParser = require('body-parser')
 
-// Env vars
-const API_BASE_URL = process.env.API_BASE_URL
-const API_KEY = process.env.API_KEY
-
 // Bodyparser
 api.use(bodyParser.json())
 
@@ -18,36 +14,36 @@ api.get('/', (req, res) => {
 //----------props----------//
 
 //propType
-api.use('/propType', require('./apiDefinitions/propTypeApi.js'))
+api.use('/propType', require('./apiDefinitions/apiPropType.js'))
 
 //propKey
-api.use('/propKey', require('./apiDefinitions/propKeyApi.js'))
+api.use('/propKey', require('./apiDefinitions/apiPropKey.js'))
 
 //propVal
-api.use('/propVal', require('./apiDefinitions/propValApi.js'))
+api.use('/propVal', require('./apiDefinitions/apiPropVal.js'))
 
 //props >>> gets propTypes and propKeys as nodes and rels
-api.use('/props', require('./apiDefinitions/propsApi.js'))
+api.use('/props', require('./apiDefinitions/graphProps.js'))
 
 //----------config----------//
 //config
-api.use('/config', require('./apiDefinitions/configApi.js'))
+api.use('/config', require('./apiDefinitions/apiConfig.js'))
 
 //configRel
-api.use('/configRel', require('./apiDefinitions/configRelApi.js'))
+api.use('/configRel', require('./apiDefinitions/apiConfigRel.js'))
 
 //configs >>> gets config and configRel as nodes and rels
-api.use('/configs', require('./apiDefinitions/configsApi.js'))
+api.use('/configs', require('./apiDefinitions/graphConfigs.js'))
 
 //----------data----------//
 //data
-api.use('/data', require('./apiDefinitions/dataApi.js'))
+api.use('/data', require('./apiDefinitions/apiData.js'))
 
 //dataRel
-api.use('/dataRel', require('./apiDefinitions/dataRelApi.js'))
+api.use('/dataRel', require('./apiDefinitions/apiDataRel.js'))
 
 //datas >>> gets data and dataRel as nodes and rels
-api.use('/datas', require('./apiDefinitions/datasApi.js'))
+api.use('/datas', require('./apiDefinitions/graphDatas.js'))
 
 
 

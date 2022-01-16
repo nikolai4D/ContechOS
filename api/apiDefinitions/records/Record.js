@@ -1,23 +1,54 @@
 const fs = require('fs');
 const { v4: uuidv4 } = require('uuid');
-const apiDefs = require("../apiDefinitions.json")
+const apiDefs = require("../definitions.json")
 
 class Record {
     constructor(nodeType) { 
         this.nodeType = nodeType
     }
 
-    async create(title) {
+    async create(reqBody) {
+        const { title, propTypeId, propKeyId, source, target, configId, configRelId } = reqBody
+
         const idAbbr = apiDefs.nodeTypes.find(obj => obj.title === this.nodeType).abbr
+
+        let nodeId = `${idAbbr}_${uuidv4()}`;
 
         const node = {
             "created": Date(),
             "update": Date(),
             "title": title
         };
+        if (this.nodeType === "propType") {
+        }
 
-        const nodeId = `${idAbbr}_${uuidv4()}`;
+        if (this.nodeType === "propKey") {
+            node.propTypeId = propTypeId
+        }
 
+        if (this.nodeType === "propVal") {
+            node.propKeyId = propKeyId
+        }
+
+        if (this.nodeType === "config") {
+        }
+
+        if (this.nodeType === "configRel") {
+            node.source = source
+            node.target = target
+            nodeId = `${nodeId}-${source}-${target}`
+        }
+
+        if (this.nodeType === "data") {
+            node.configId = configId
+        }
+
+        if (this.nodeType === "dataRel") {
+            node.source = source
+            node.target = target
+            node.configRelId = configRelId
+            nodeId = `${nodeId}-${source}-${target}`
+        }
 
         fs.writeFileSync(`./db/${this.nodeType}/${nodeId}.json`, JSON.stringify(node, null, 2));
         node.id = nodeId;
@@ -26,6 +57,7 @@ class Record {
     }
 
     async getById(id) {
+        //node id
         const node = JSON.parse(fs.readFileSync(`./db/${this.nodeType}/${id}.json`, 'utf8'))
         node.id = id
         return node
@@ -35,7 +67,6 @@ class Record {
         const nodes = [];
 
         //nodes
-
         const dir = `./db/${this.nodeType}/`
         const nodeFiles = fs.readdirSync(dir);
 
@@ -45,15 +76,13 @@ class Record {
         nodes.push(node);
         })
 
-
         return nodes
     }    
 
     async getAllId() {
         const nodes = [];
 
-        //propTypes
-
+        //all nodes Ids
         const dir = `./db/${this.nodeType}/`
         const nodeFiles = fs.readdirSync(dir);
 

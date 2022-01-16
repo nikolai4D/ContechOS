@@ -1,26 +1,25 @@
-const express = require('express')
-const propType = express.Router()
-const bodyParser = require('body-parser')
-const Record = require('./records/Record.js')
+const express = require('express');
+const propType = express.Router();
+const bodyParser = require('body-parser');
+const Record = require('./records/Record.js');
 
-propTypeRecord = new Record("propType")
+//Record instance
+const propTypeRecord = new Record("propType");
 
-
-// Env vars
-const API_BASE_URL = process.env.API_BASE_URL
-const API_KEY = process.env.API_KEY
-
-// Bodyparser
+//Bodyparser
 propType.use(bodyParser.json())
 
+//APIs
 
 propType.post("/create", async (req, res) => {
-  if (!req.body.title) {
+  const { title } = req.body
+
+  if (!title) {
     return res.status(400).json("title missing")
   }
-  console.log(await propTypeRecord.create(req.body.title))
+
   try {
-    result = await propTypeRecord.create(req.body.title)
+    result = await propTypeRecord.create({ title })
     res.status(200).json(result)
   } catch (error) {
     res.status(500).json({ error })
@@ -28,6 +27,7 @@ propType.post("/create", async (req, res) => {
 })
 
 propType.get("/", async (req, res) => {
+  console.log(await propTypeRecord.getAll())
   try {
     result = await propTypeRecord.getAll()
     res.status(200).json(result)
