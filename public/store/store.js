@@ -34,7 +34,7 @@ class Actions {
 
     async GETALL(view) {
 
-        const records = await fetch(`/api/${view}/getAll`, {
+        const records = await fetch(`/api/${view}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json',
