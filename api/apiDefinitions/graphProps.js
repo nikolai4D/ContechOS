@@ -1,12 +1,9 @@
 const express = require('express')
 const props = express.Router()
 const bodyParser = require('body-parser')
-const propsRecords = require('./records/PropsRecords.js')
+const GraphRecords = require('./records/GraphRecords.js')
 
-
-// Env vars
-const API_BASE_URL = process.env.API_BASE_URL
-const API_KEY = process.env.API_KEY
+const propsRecords = new GraphRecords("props");
 
 // Bodyparser
 props.use(bodyParser.json())

@@ -21,7 +21,12 @@ class GraphRecords {
             relType = "dataRel"
         }
 
-        //config = nodes
+        if (this.nodeGroup === "props") {
+            nodeType = "propType"
+            relType = "propKey"
+        }
+
+        //Nodes
 
         const dirNodes = `./db/${nodeType}/`
         const nodeFiles = fs.readdirSync(dirNodes);
@@ -32,16 +37,36 @@ class GraphRecords {
         nodes.push(node);
         })
 
-        //ConfigRel = rels
-        const dirRels = `./db/${relType}/`
-        const relFiles = fs.readdirSync(dirRels);
+        //Rels
+        if (this.nodeGroup != "props") {
+            const dirRels = `./db/${relType}/`
+            const relFiles = fs.readdirSync(dirRels);
+    
+            relFiles.forEach(function(file) {
+                let rel = JSON.parse(fs.readFileSync(dirRels + file, 'utf8'));
+                rel.id = file.slice(0, -5)
+                rels.push(rel);
+            })
+        } else {
 
-        relFiles.forEach(function(file) {
-        let rel = JSON.parse(fs.readFileSync(dirRels + file, 'utf8'));
-        rel.id = file.slice(0, -5)
-        rels.push(rel);
-        })
+            const dirRels = `./db/${relType}/`
+            const relFiles = fs.readdirSync(dirRels);
 
+            relFiles.forEach(function(file) {
+                let node = JSON.parse(fs.readFileSync(dirRels + file, 'utf8'));
+                node.id = file.slice(0, -5)
+                nodes.push(node);
+
+                let rel = {
+                    "id": node.id + "_" + node.propTypeId,
+                    "source": node.id,
+                    "target": node.propTypeId
+                }
+                rels.push(rel);    
+            })
+
+        }
+        
         return { nodes, rels }
     }
 }

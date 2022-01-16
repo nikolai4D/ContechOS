@@ -1,12 +1,9 @@
 const express = require('express')
 const datas = express.Router()
 const bodyParser = require('body-parser')
-const datasRecords = require('./records/DatasRecords.js')
+const GraphRecords = require('./records/GraphRecords.js')
 
-
-// Env vars
-const API_BASE_URL = process.env.API_BASE_URL
-const API_KEY = process.env.API_KEY
+const datasRecords = new GraphRecords("datas");
 
 // Bodyparser
 datas.use(bodyParser.json())
