@@ -16,7 +16,7 @@ class Record {
 
         const node = {
             "created": Date(),
-            "update": Date(),
+            "updated": Date(),
             "title": title
         };
         if (this.nodeType === "propType") {
@@ -72,6 +72,8 @@ class Record {
 
         nodeFiles.forEach(function(file) {
         let node = JSON.parse(fs.readFileSync(dir + file, 'utf8'));
+        delete node.created
+        delete node.updated
         node.id = file.slice(0, -5)
         nodes.push(node);
         })

@@ -33,6 +33,8 @@ class GraphRecords {
 
         nodeFiles.forEach(function(file) {
         let node = JSON.parse(fs.readFileSync(dirNodes + file, 'utf8'));
+        delete node.created
+        delete node.updated
         node.id = file.slice(0, -5)
         nodes.push(node);
         })
@@ -44,6 +46,8 @@ class GraphRecords {
     
             relFiles.forEach(function(file) {
                 let rel = JSON.parse(fs.readFileSync(dirRels + file, 'utf8'));
+                delete rel.created
+                delete rel.updated
                 rel.id = file.slice(0, -5)
                 rels.push(rel);
             })
@@ -54,7 +58,10 @@ class GraphRecords {
 
             relFiles.forEach(function(file) {
                 let node = JSON.parse(fs.readFileSync(dirRels + file, 'utf8'));
+                delete node.created
+                delete node.updated
                 node.id = file.slice(0, -5)
+
                 nodes.push(node);
 
                 let rel = {
