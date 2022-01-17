@@ -2,13 +2,6 @@ const express = require('express')
 const api = express.Router()
 const bodyParser = require('body-parser')
 
-//const propType = require('./defs/propType.js')
-const propKey = require('./defs/propKey.js')
-
-// Env vars
-const API_BASE_URL = process.env.API_BASE_URL
-const API_KEY = process.env.API_KEY
-
 // Bodyparser
 api.use(bodyParser.json())
 
@@ -18,16 +11,39 @@ api.get('/', (req, res) => {
     res.json("Get and Post data via /api");
   });
 
+//----------props----------//
 
 //propType
-api.use('/propType', require('./defs/propType.js'))
+api.use('/propType', require('./apiDefinitions/apiPropType.js'))
 
 //propKey
-api.use('/propKey', require('./defs/propKey.js'))
+api.use('/propKey', require('./apiDefinitions/apiPropKey.js'))
 
-//props
-api.use('/props', require('./defs/props.js'))
+//propVal
+api.use('/propVal', require('./apiDefinitions/apiPropVal.js'))
 
+//props >>> gets propTypes and propKeys as nodes and rels
+api.use('/props', require('./apiDefinitions/graphProps.js'))
+
+//----------config----------//
+//config
+api.use('/config', require('./apiDefinitions/apiConfig.js'))
+
+//configRel
+api.use('/configRel', require('./apiDefinitions/apiConfigRel.js'))
+
+//configs >>> gets config and configRel as nodes and rels
+api.use('/configs', require('./apiDefinitions/graphConfigs.js'))
+
+//----------data----------//
+//data
+api.use('/data', require('./apiDefinitions/apiData.js'))
+
+//dataRel
+api.use('/dataRel', require('./apiDefinitions/apiDataRel.js'))
+
+//datas >>> gets data and dataRel as nodes and rels
+api.use('/datas', require('./apiDefinitions/graphDatas.js'))
 
 
 

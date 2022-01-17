@@ -1,7 +1,7 @@
 import Navbar from "./components/Navbar.js"
 import Dashboard from "./views/Dashboard.js"
-import Data from "./views/Data.js"
-import Config from "./views/Config.js"
+import Datas from "./views/Datas.js"
+import Configs from "./views/Configs.js"
 import Props from "./views/Props.js"
 
 // Navigate back/forward with browser back/forward button
@@ -15,8 +15,8 @@ const router = async () => {
 
     const routes = [
         { path: "/", view: Dashboard },
-        { path: "/data", view: Data },
-        { path: "/config", view: Config },
+        { path: "/datas", view: Datas },
+        { path: "/configs", view: Configs },
         { path: "/props", view: Props }
 
     ];
@@ -42,6 +42,7 @@ const router = async () => {
 
     document.querySelector("#navbar").innerHTML = await nav.getTemplate();
     document.querySelector("#app").innerHTML = "";
+
 
     if (match.route.path === "/") {
         document.querySelector("#app").innerHTML = await view.getTemplate();
