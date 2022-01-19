@@ -45,8 +45,12 @@ const router = async () => {
 
 
     if (match.route.path === "/") {
+        window.localStorage.clear()
+        console.log(`Cleared localStorage`)
         document.querySelector("#app").innerHTML = await view.getTemplate();
     } else {
+        window.localStorage.removeItem(match.route.path.slice(1));
+        console.log(`Removed localStorage for ${match.route.path.slice(1)}`)
         document.querySelector("#app").appendChild(await view.getTemplate());
     }
 }
