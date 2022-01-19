@@ -2,20 +2,10 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
 import ContextMenu from './ContextMenu.js';
 
-//const test = Store.CREATE("propType","test2");
-//console.log(test)
-
-
 const Graph = async (view) => {
-
-    // let graphFetchData = await fetch(`http://localhost:5000/api/${view}/getAll`);
-    
-    // let graphJsonData = await graphFetchData.json();
-    
 
     let graphJsonData = await JSON.parse(window.localStorage.getItem(`${view}`))
 
-    
     let width = window.innerWidth,
         height = window.innerHeight - 20;
 
@@ -85,13 +75,13 @@ const Graph = async (view) => {
                 .style('left', d.clientX + "px")
             d3.selectAll('.itemContent').on('click', d => console.log(d.target.id))
         })
-        .on('click', () => { d3.select('.contextMenuContainer').remove() })
- 
+        .on('click', () => { d3.select('.contextMenuContainer').remove(); });
+
 
     const firstG = svg.append("g")
-        .attr("transform", `translate(20,20)`)
+        .attr("transform", `translate(20,20)`);
 
-    const g = firstG.append("g")
+    const g = firstG.append("g");
 
 
     // end arrow
