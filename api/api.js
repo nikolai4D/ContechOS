@@ -2,18 +2,24 @@ const express = require('express')
 const api = express.Router()
 const bodyParser = require('body-parser')
 
+
 // Bodyparser
 api.use(bodyParser.json())
 
-// Example get request
 
-api.get('/', (req, res) => {
-    res.json("Get and Post data via /api");
-  });
+//----------users----------//
+api.use('/user', require('./apiDefinitions/user.js'))
+
+
+//----------auth----------//
+api.use('/auth', require('./apiDefinitions/auth.js'))
+api.use('/refresh', require('./apiDefinitions/refresh.js'))
+api.use('/logout', require('./apiDefinitions/logout.js'))
+
 
 //----------props----------//
 
-//propType
+//propType 
 api.use('/propType', require('./apiDefinitions/apiPropType.js'))
 
 //propKey

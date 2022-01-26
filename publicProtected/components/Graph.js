@@ -1,5 +1,7 @@
 //import * as d3 from "d3"
 import * as d3 from "https://cdn.skypack.dev/d3@6";
+
+// const d3 = await import("d3");
 import ContextMenu from './ContextMenu.js';
 
 const Graph = async (view) => {

@@ -87,3 +87,9 @@ svg {
   cursor: pointer;
 }
 
+.container {
+  margin: auto;
+  width: 25%;
+  text-align: center;
+}
+

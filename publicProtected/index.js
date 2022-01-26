@@ -3,6 +3,7 @@ import Dashboard from "./views/Dashboard.js"
 import Datas from "./views/Datas.js"
 import Configs from "./views/Configs.js"
 import Props from "./views/Props.js"
+import Login from "./views/Login.js"
 
 // Navigate back/forward with browser back/forward button
 
@@ -14,10 +15,11 @@ const navigateTo = url => {
 const router = async () => {
 
     const routes = [
-        { path: "/", view: Dashboard },
-        { path: "/datas", view: Datas },
-        { path: "/configs", view: Configs },
-        { path: "/props", view: Props }
+        { path: "/app", view: Dashboard },
+        { path: "/app/login", view: Login },
+        { path: "/app/datas", view: Datas },
+        { path: "/app/configs", view: Configs },
+        { path: "/app/props", view: Props }
 
     ];
 
@@ -44,7 +46,7 @@ const router = async () => {
     document.querySelector("#app").innerHTML = "";
 
 
-    if (match.route.path === "/") {
+    if (match.route.path === "/" || match.route.path === "/login") {
         window.localStorage.clear()
         console.log(`Cleared localStorage`)
         document.querySelector("#app").innerHTML = await view.getTemplate();
