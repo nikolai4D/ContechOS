@@ -26,11 +26,16 @@ app.use(express.json());
 //middleware for cookies
 app.use(cookieParser());
 
+
+app.use('/signin', require('./api/apiDefinitions/auth.js'))
+
+
 // Api
 app.use('/api', require('./api/api.js'))
 
-// Set static protected folder
-app.use("/", express.static('publicOpen'))
+
+// Set static unprotected folder
+app.use("/signin", express.static('publicOpen'))
 
 //middleware
 //app.use(verifyJWT)

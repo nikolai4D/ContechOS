@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <meta http-equiv="Content-Security-Policy" content="style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;"/>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
     <link rel="icon" type="image/x-icon" href="/assets/favicon.ico">
     <link rel="stylesheet" type="text/css" href="index.css" />
-    <script defer src="index.js"></script>
-    
+      
 </head>
 <body>
     <main id="main-holder">
@@ -17,12 +17,11 @@
           <p id="login-error-msg">Invalid email <span id="error-msg-second-line">and/or password</span></p>
         </div>
 
-        <form id="login-form">
-            <input type="text" name="email" id="email-field" class="login-form-field" placeholder="email">
-            <input type="password" name="password" id="password-field" class="login-form-field" placeholder="Password">
-            <input type="submit" value="Login" id="login-form-submit">
-          </form>
-
+        <form id="login-form" method="POST" action="/signin">
+          <input type="text" name="email" id="email-field" class="login-form-field" placeholder="email">
+          <input type="password" name="pwd" id="password-field" class="login-form-field" placeholder="Password">
+          <input type="submit" value="Login" id="login-form-submit">
+        </form>
 
 </body>
 </html>

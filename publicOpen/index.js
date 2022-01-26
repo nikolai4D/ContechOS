@@ -18,18 +18,41 @@ loginButton.addEventListener("click", (e) => {
                 body: JSON.stringify({ email, pwd})
             });
 
-            token = `Bearer ${(await response.json()).accessToken}`
+            if(!response.ok) {
+                if (response.status === 401) {
+                    return await sendRefreshToken();
+                }
+                throw new Error(`${response.status} ${response.statusText}`)
+            }
+            return await response.json()
 
-            return await fetch('http://localhost:3000/app', {
-                method: 'POST',
-                headers: { 'authorization' : token }
-            })
+            // token = `Bearer ${(await response.json()).accessToken}`
+            // let link = await fetch('http://localhost:3000/app', {
+            //     method: 'GET',
+            //     headers: { 'authorization' : token }
+            // })
+
+            // return link
 
         } catch (err) {
-            console.log("err")
+            console.log(err.stack);
+            displayErr()
         }
     }
     auth()
+
+    const sendRefreshToken = async () => {
+        try {
+            const response = await fetch('http://localhost:3000/api/refresh', {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json'},
+                credentials: 'include'
+            });
+        } catch (err) {
+            console.log(err.stack);
+            displayErr()
+        }
+    }
 
 
 });
