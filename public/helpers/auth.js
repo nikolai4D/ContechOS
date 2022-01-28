@@ -1,7 +1,6 @@
 import navigateTo from "./navigateTo.js";
 
 export default async function auth(email, pwd) {
-  console.log("auth", email, pwd);
   try {
     const responseAuth = await fetch("/api/auth", {
       method: "POST",
@@ -19,11 +18,9 @@ export default async function auth(email, pwd) {
 
     const token = `Bearer ${(await responseAuth.json()).accessToken}`;
     sessionStorage.setItem("accessToken", await token);
-    console.log("auth created token", await token);
 
     navigateTo("/");
-    //location.reload();
   } catch (err) {
-    console.log(err);
+    console.log("error");
   }
 }

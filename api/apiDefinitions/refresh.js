@@ -13,7 +13,6 @@ refresh.use(bodyParser.json());
 
 //APIs
 refresh.get("/", async (req, res) => {
-  console.log("REFRESH ACCESS TOKEN");
   const cookies = req.cookies;
   if (!cookies?.jwt) return res.sendStatus(401);
   const refreshToken = cookies.jwt;
@@ -29,8 +28,6 @@ refresh.get("/", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "900s" }
     );
-    console.log("refresh.js", "900s");
-
     return res.status(200).json({ accessToken });
   });
 });

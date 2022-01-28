@@ -4,12 +4,11 @@ import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 
 document.addEventListener("DOMContentLoaded", () => {
-  console.log("DOMContentLoaded");
-
   document.body.addEventListener("click", (e) => {
     if (e.target.getAttribute("data-link") === "/logout") {
       e.preventDefault();
       sessionStorage.clear();
+      fetch("/api/logout");
       navigateTo("/login");
       location.reload();
     }
