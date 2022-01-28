@@ -1,54 +1,65 @@
-const express = require('express');
+const express = require("express");
 const auth = express.Router();
-const jwt = require('jsonwebtoken');
-require('dotenv').config();
-const fs = require('fs');
-const bcrypt = require('bcrypt');
-const bodyParser = require('body-parser');
-const Record = require('./records/UserRecord.js');
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
+const fs = require("fs");
+const bcrypt = require("bcrypt");
+const bodyParser = require("body-parser");
+const Record = require("./records/UserRecord.js");
 
 //Record instance
 const userRecord = new Record("user");
 
-
 //Bodyparser
-auth.use(bodyParser.json())
+auth.use(bodyParser.json());
 
 //APIs
 
 auth.post("/", async (req, res) => {
-    const { email, pwd } = req.body;
-    if (!email || !pwd) return res.status(400).json({ 'message': 'email and/or pwd missing.' });
-    
-    const foundUser = (await userRecord.getAll()).find(person => person.email === email);
-    if (!foundUser) return res.sendStatus(401); //Unauthorized
+  const { email, pwd } = req.body;
+  if (!email || !pwd)
+    return res.status(400).json({ message: "email and/or pwd missing." });
 
-    // evaluate password 
-    const match = await bcrypt.compare(pwd, foundUser.hashedPwd);
-    if (match) {
-        // create JWTs
-        const accessToken = jwt.sign(
-            { "email": foundUser.email },
-            process.env.ACCESS_TOKEN_SECRET,
-            { expiresIn: '30s'}
-        );
-        const refreshToken = jwt.sign(
-            { "email": foundUser.email },
-            process.env.REFRESH_TOKEN_SECRET,
-            { expiresIn: '1d'}
-        );
+  const foundUser = (await userRecord.getAll()).find(
+    (person) => person.email === email
+  );
+  if (!foundUser) return res.sendStatus(401); //Unauthorized
 
-        foundUser.refreshToken = refreshToken;
-        foundUser.updated = Date();
-        await fs.writeFileSync(`./db/users/${foundUser.id}.json`, JSON.stringify(foundUser, null, 2));
+  // evaluate password
+  const match = await bcrypt.compare(pwd, foundUser.hashedPwd);
+  if (match) {
+    // create JWTs
+    const accessToken = jwt.sign(
+      { email: foundUser.email },
+      process.env.ACCESS_TOKEN_SECRET,
+      { expiresIn: "900s" }
+    );
+    console.log("auth.js", "900s");
+    const refreshToken = jwt.sign(
+      { email: foundUser.email },
+      process.env.REFRESH_TOKEN_SECRET,
+      { expiresIn: "1d" }
+    );
 
-        //res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
-        res.cookie('jwt', refreshToken, { httpOnly: true, sameSite: 'None', secure: true, maxAge: 24 * 60 * 60 * 1000});
-        res.redirect('/app')
-        //res.setHeader(authorization, accessToken )
-    } else {
-        res.sendStatus(401);
-    }
-  })
+    foundUser.refreshToken = refreshToken;
+    foundUser.updated = Date();
+    await fs.writeFileSync(
+      `./db/users/${foundUser.id}.json`,
+      JSON.stringify(foundUser, null, 2)
+    );
 
-module.exports = auth
+    //res.cookie('jwt', refreshToken, { httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
+    res.cookie("jwt", refreshToken, {
+      httpOnly: true,
+      sameSite: "None",
+      secure: true,
+      maxAge: 24 * 60 * 60 * 1000,
+    });
+
+    res.json({ accessToken });
+  } else {
+    res.sendStatus(401);
+  }
+});
+
+module.exports = auth;

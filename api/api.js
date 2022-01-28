@@ -13,6 +13,7 @@ api.use('/user', require('./apiDefinitions/user.js'))
 
 //----------auth----------//
 api.use('/auth', require('./apiDefinitions/auth.js'))
+api.use('/verify', require('./apiDefinitions/verify.js'))
 api.use('/refresh', require('./apiDefinitions/refresh.js'))
 api.use('/logout', require('./apiDefinitions/logout.js'))
 

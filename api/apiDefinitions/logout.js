@@ -38,6 +38,8 @@ logout.get("/", async (req, res) => {
     await fs.writeFileSync(`./db/users/${foundUser.id}.json`, JSON.stringify(foundUser, null, 2));
 
     res.clearCookie('jwt', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
+    sessionStorage.clear()
+    //res.clearCookie('jwtAt', { httpOnly: true, maxAge: 24 * 60 * 60 * 1000});
     res.sendStatus(204);
     
 })

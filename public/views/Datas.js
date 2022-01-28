@@ -12,6 +12,9 @@ export default class Datas {
         const view = "datas"
         await store.GETALL(view)
         return Graph(view)
+        
+        
+        
     }
 }
 

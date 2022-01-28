@@ -3,7 +3,6 @@ const path = require('path')
 const cors = require('cors')
 const corsOptions = require('./config/corsOptions');
 require('dotenv').config()
-const verifyJWT = require('./api/middleware/verifyJWT')
 const cookieParser = require('cookie-parser')
 const credentials = require('./api/middleware/credentials');
 const PORT = process.env.PORT
@@ -26,27 +25,16 @@ app.use(express.json());
 //middleware for cookies
 app.use(cookieParser());
 
-
-app.use('/signin', require('./api/apiDefinitions/auth.js'))
-
-
 // Api
 app.use('/api', require('./api/api.js'))
 
-
-// Set static unprotected folder
-app.use("/signin", express.static('publicOpen'))
-
-//middleware
-//app.use(verifyJWT)
-
 // Set static protected folder
-app.use("/app", express.static('publicProtected'));
+app.use("/", express.static('public'));
 
 
 // Redirect to link
 app.get("/*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "publicProtected", "index.html"))
+    res.sendFile(path.resolve(__dirname, "public", "index.html"))
 })
 
 
