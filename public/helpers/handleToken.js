@@ -14,7 +14,10 @@ export default async function handleToken(tkn) {
     if ((await responseVerifyToken.ok) !== true) {
       //Clear sessionStorage (accessToken) and set jwt cookie (refreshToken) to expire in the past
       sessionStorage.clear();
+      localStorage.clear();
+      fetch("/api/logout");
       navigateTo("/login");
+      return false;
     } else {
       //AccessToken is TRUE, use RefreshToken to get new accessToken
       try {
@@ -26,6 +29,7 @@ export default async function handleToken(tkn) {
           (await responseRefreshToken.json()).accessToken
         }`;
         window.sessionStorage.setItem("accessToken", tokenNew);
+        return true;
       } catch (err) {
         console.log("error");
       }

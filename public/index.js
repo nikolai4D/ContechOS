@@ -3,11 +3,12 @@ import navigateTo from "./helpers/navigateTo.js";
 import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 
-document.addEventListener("DOMContentLoaded", () => {
-  document.body.addEventListener("click", (e) => {
+document.addEventListener("DOMContentLoaded", async () => {
+  document.body.addEventListener("click", async (e) => {
     if (e.target.getAttribute("data-link") === "/logout") {
       e.preventDefault();
       sessionStorage.clear();
+      localStorage.clear();
       fetch("/api/logout");
       navigateTo("/login");
       location.reload();
@@ -26,8 +27,12 @@ document.addEventListener("DOMContentLoaded", () => {
       e.target.getAttribute("data-link") !== "/login"
     ) {
       e.preventDefault();
-      handleToken(sessionStorage.getItem("accessToken"));
-      navigateTo(e.target.getAttribute("data-link"));
+      let handledToken = await handleToken(
+        sessionStorage.getItem("accessToken")
+      );
+      if ((await handledToken) !== false) {
+        navigateTo(e.target.getAttribute("data-link"));
+      }
     }
   });
 
