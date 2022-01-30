@@ -1,13 +1,13 @@
 class Mutations {
   async GET_STATE(view, records) {
-    let data = await JSON.parse(window.localStorage.getItem(`${view}`));
+    let data = await JSON.parse(sessionStorage.getItem(`${view}`));
     //console.log(data)
 
     if (data == null) {
       data = [];
       data.push(records);
       //console.log("data", data);
-      window.localStorage.setItem(`${view}`, JSON.stringify(data));
+      sessionStorage.setItem(`${view}`, JSON.stringify(data));
     }
   }
 }

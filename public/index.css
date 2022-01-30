@@ -50,30 +50,30 @@ h3 {
   z-index: 100;
 }
 
-svg {
+/* svg {
   position: absolute;
-}
+} */
 
-.linkSVG {
+/* .linkSVG {
   stroke: #000;
   fill: #000;
-}
+} */
 
-.linkLabel {
+/* .linkLabel {
   text-anchor: middle;
   fill: #000;
   font-size: 12px;
-}
+} */
 
-.nodeLabel {
+/* .nodeLabel {
   text-anchor: middle;
   fill: #000;
   font-size: 12px;
-}
+} */
 
-.node {
+/* .node {
   stroke-width: 0;
-}
+} */
 
 .menu {
   display: flex;
