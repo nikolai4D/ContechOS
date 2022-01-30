@@ -4,6 +4,8 @@ import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
+  console.log("DOMContentLoaded");
+
   document.body.addEventListener("click", async (e) => {
     if (e.target.getAttribute("data-link") === "/logout") {
       e.preventDefault();
@@ -11,10 +13,12 @@ document.addEventListener("DOMContentLoaded", async () => {
       localStorage.clear();
       fetch("/api/logout");
       navigateTo("/login");
-      location.reload();
+      //location.reload();
+      console.log("Logout");
     }
 
     if (e.target.getAttribute("data-link") === "/login") {
+      console.log("Login");
       e.preventDefault();
       const loginForm = document.getElementById("login-form");
       const email = loginForm.email.value;
@@ -26,6 +30,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       e.target.matches("[data-link]") &&
       e.target.getAttribute("data-link") !== "/login"
     ) {
+      console.log("View click event target");
       e.preventDefault();
       let handledToken = await handleToken(
         sessionStorage.getItem("accessToken")
@@ -36,7 +41,30 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
   });
 
+  window.addEventListener("load", async (e) => {
+    console.log("Window load event target");
+    if (window.location.pathname !== "/login") {
+      console.log("Window load event target not login");
+      e.preventDefault();
+      let handledToken = await handleToken(
+        sessionStorage.getItem("accessToken")
+      );
+      if ((await handledToken) !== false) {
+        navigateTo(window.location.pathname);
+      } else {
+        sessionStorage.clear();
+        localStorage.clear();
+        fetch("/api/logout");
+        navigateTo("/login");
+        //location.reload();
+        console.log("Logout");
+        ß;
+      }
+    }
+  });
+
   if (!sessionStorage.getItem("accessToken")) {
+    console.log("No AccessToken");
     navigateTo("/login");
   } else {
     handleToken(sessionStorage.getItem("accessToken"));

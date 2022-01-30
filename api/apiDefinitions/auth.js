@@ -34,7 +34,6 @@ auth.post("/", async (req, res) => {
       process.env.ACCESS_TOKEN_SECRET,
       { expiresIn: "900s" }
     );
-    console.log("auth.js", "900s");
     const refreshToken = jwt.sign(
       { email: foundUser.email },
       process.env.REFRESH_TOKEN_SECRET,

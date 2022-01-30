@@ -29,11 +29,13 @@ class Actions {
   // }
 
   async GETALL(view) {
+    let getHeaders = {
+      "Content-Type": "application/json",
+      authorization: sessionStorage.getItem("accessToken"),
+    };
     const records = await fetch(`/api/${view}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
+      headers: getHeaders,
     });
 
     const sendRecords = await records.json();

@@ -1,18 +1,22 @@
 const express = require("express");
 const api = express.Router();
 const bodyParser = require("body-parser");
+const verifyAccess = require("./middleware/verifyAccess.js");
 
 // Bodyparser
 api.use(bodyParser.json());
-
-//----------users----------//
-api.use("/user", require("./apiDefinitions/user.js"));
 
 //----------auth----------//
 api.use("/auth", require("./apiDefinitions/auth.js"));
 api.use("/verify", require("./apiDefinitions/verify.js"));
 api.use("/refresh", require("./apiDefinitions/refresh.js"));
 api.use("/logout", require("./apiDefinitions/logout.js"));
+
+//PROTECTED APIs//
+api.use(verifyAccess);
+
+//----------users----------//
+api.use("/user", require("./apiDefinitions/user.js"));
 
 //----------props----------//
 
