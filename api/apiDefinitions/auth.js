@@ -3,7 +3,7 @@ const auth = express.Router();
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const fs = require("fs");
-const bcrypt = require("bcrypt");
+const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const Record = require("./records/UserRecord.js");
 

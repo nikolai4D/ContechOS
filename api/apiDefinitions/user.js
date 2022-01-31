@@ -1,6 +1,6 @@
 const express = require('express');
 const user = express.Router();
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 const bodyParser = require('body-parser');
 const Record = require('./records/UserRecord.js');
 
