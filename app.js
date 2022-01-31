@@ -1,30 +1,35 @@
 const express = require('express')
 const path = require('path')
 const cors = require('cors')
+const corsOptions = require('./config/corsOptions');
 require('dotenv').config()
-
-const PORT = process.env.PORT || 5000
-
+const cookieParser = require('cookie-parser')
+const credentials = require('./api/middleware/credentials');
+const PORT = process.env.PORT
 const app = express()
 
-// Set Content Security Policy
-
-// app.use(function (req, res, next) {
-//     res.setHeader(
-//       'Content-Security-Policy',
-//       "default-src 'self'; font-src 'self'; img-src 'self'; script-src 'self'; style-src 'self'; frame-src 'self'"
-//     );
-//     next();
-//   });
   
-// Enable cors
-app.use(cors())
+// Handle options credentials check - before CORS!
+// and fetch cookies credentials requirement
+app.use(credentials);
+
+// Cross Origin Resource Sharing
+app.use(cors(corsOptions));
+
+// built-in middleware to handle urlencoded form data
+app.use(express.urlencoded({ extended: false }));
+
+// built-in middleware for json 
+app.use(express.json());
+
+//middleware for cookies
+app.use(cookieParser());
 
 // Api
 app.use('/api', require('./api/api.js'))
 
-// Set static folder
-app.use(express.static('public'))
+// Set static protected folder
+app.use("/", express.static('public'));
 
 
 // Redirect to link

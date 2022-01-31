@@ -67,7 +67,8 @@ class GraphRecords {
                 let rel = {
                     "id": node.id + "_" + node.propTypeId,
                     "source": node.id,
-                    "target": node.propTypeId
+                    "target": node.propTypeId,
+                    "title":"has propType"
                 }
                 rels.push(rel);    
             })
