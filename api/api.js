@@ -3,6 +3,8 @@ const api = express.Router();
 const bodyParser = require("body-parser");
 const verifyAccess = require("./middleware/verifyAccess.js");
 
+//----------InitDB----------//
+
 // Bodyparser
 api.use(bodyParser.json());
 

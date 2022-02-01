@@ -1,22 +1,51 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const bcrypt = require("bcryptjs");
+require("dotenv").config();
 
 class UserRecord {
   constructor() {}
 
   async create(reqBody) {
-    const { email, hashedPwd } = reqBody;
+    const { email, hashedPwd, createAdmin } = reqBody;
 
     let userId = `u_${uuidv4()}`;
+    let user = {};
 
-    const user = {
-      created: Date(),
-      updated: Date(),
-      email: email,
-      hashedPwd: hashedPwd,
-      apiKey: uuidv4(),
-    };
+    if (!createAdmin) {
+      user = {
+        created: Date(),
+        updated: Date(),
+        email: email,
+        hashedPwd: hashedPwd,
+        apiKey: uuidv4(),
+      };
+    } else {
+      let adminPwd = "admin";
+      user = {
+        created: Date(),
+        updated: Date(),
+        email: "admin",
+        hashedPwd: await bcrypt.hash(adminPwd, 10),
+        apiKey: process.env.API_KEY,
+      };
+    }
 
+    fs.writeFileSync(
+      `./db/users/${userId}.json`,
+      JSON.stringify(user, null, 2)
+    );
+    user.id = userId;
+
+    return user;
+  }
+
+  async updatePwd(reqBody) {
+    const { userId, hashedNewPwd } = reqBody;
+    let user = await this.getById(userId);
+    user.hashedPwd = hashedNewPwd;
+
+    //user id
     fs.writeFileSync(
       `./db/users/${userId}.json`,
       JSON.stringify(user, null, 2)
