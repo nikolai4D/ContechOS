@@ -44,6 +44,7 @@ class UserRecord {
     const { userId, hashedNewPwd } = reqBody;
     let user = await this.getById(userId);
     user.hashedPwd = hashedNewPwd;
+    user.refreshToken = "";
 
     //user id
     fs.writeFileSync(
