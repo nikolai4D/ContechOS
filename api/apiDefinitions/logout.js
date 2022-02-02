@@ -35,7 +35,7 @@ logout.get("/", async (req, res) => {
   foundUser.refreshToken = "";
   foundUser.updated = Date();
   await fs.writeFileSync(
-    `./db/users/${foundUser.id}.json`,
+    `../db/users/${foundUser.id}.json`,
     JSON.stringify(foundUser, null, 2)
   );
 

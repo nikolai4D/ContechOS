@@ -3,10 +3,10 @@ const Record = require("../apiDefinitions/records/UserRecord");
 const userRecord = new Record("user");
 
 const initDB = (req, res, next) => {
-  const dir = "./db/";
+  const dir = `../db/`;
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(`${dir}`, false);
-    fs.writeFileSync("./db/.gitignore", "*");
+    fs.writeFileSync(`${dir}.gitignore`, "*");
     fs.mkdirSync(`${dir}propType/`, false);
     fs.mkdirSync(`${dir}propKey/`, false);
     fs.mkdirSync(`${dir}propVal/`, false);

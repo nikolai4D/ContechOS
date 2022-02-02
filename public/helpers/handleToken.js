@@ -14,7 +14,6 @@ export default async function handleToken(tkn) {
     if ((await responseVerifyToken.ok) !== true) {
       //Clear sessionStorage (accessToken) and set jwt cookie (refreshToken) to expire in the past
       sessionStorage.clear();
-      localStorage.clear();
       fetch("/api/logout");
       navigateTo("/login");
       return false;
@@ -24,12 +23,22 @@ export default async function handleToken(tkn) {
         let responseRefreshToken = await fetch("/api/refresh", {
           method: "GET",
         });
-        //Set new accessToken
-        let tokenNew = `Bearer ${
-          (await responseRefreshToken.json()).accessToken
-        }`;
-        window.sessionStorage.setItem("accessToken", tokenNew);
-        return true;
+
+        let responseRefreshTokenObject = await responseRefreshToken.json();
+
+        if (responseRefreshTokenObject.accessToken === false) {
+          //Clear sessionStorage (accessToken) and set jwt cookie (refreshToken) to expire in the past
+          sessionStorage.clear();
+          fetch("/api/logout");
+          navigateTo("/login");
+          return false;
+        } else {
+          console.log("new accessToken");
+          //Set new accessToken
+          let tokenNew = `Bearer ${responseRefreshTokenObject.accessToken}`;
+          window.sessionStorage.setItem("accessToken", tokenNew);
+          return true;
+        }
       } catch (err) {
         console.log("error");
       }

@@ -10,7 +10,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target.getAttribute("data-link") === "/logout") {
       e.preventDefault();
       sessionStorage.clear();
-      localStorage.clear();
       fetch("/api/logout");
       navigateTo("/login");
       //location.reload();
@@ -53,7 +52,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         navigateTo(window.location.pathname);
       } else {
         sessionStorage.clear();
-        localStorage.clear();
         fetch("/api/logout");
         navigateTo("/login");
         //location.reload();
@@ -65,6 +63,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
   if (!sessionStorage.getItem("accessToken")) {
     console.log("No AccessToken");
+    sessionStorage.clear();
+    fetch("/api/logout");
     navigateTo("/login");
   } else {
     handleToken(sessionStorage.getItem("accessToken"));
