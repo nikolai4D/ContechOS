@@ -14,12 +14,15 @@ refresh.use(bodyParser.json());
 //APIs
 refresh.get("/", async (req, res) => {
   const cookies = req.cookies;
-  if (!cookies?.jwt) return res.sendStatus(401);
+
+  //   if (!cookies?.jwt) return res.sendStatus(401);
+  if (!cookies?.jwt) return res.status(401).json({ accessToken: false });
   const refreshToken = cookies.jwt;
   const foundUser = (await userRecord.getAll()).find(
     (person) => person.refreshToken === refreshToken
   );
-  if (!foundUser) return res.sendStatus(403); //Forbidden
+  //   if (!foundUser) return res.sendStatus(403); //Forbidden
+  if (!foundUser) return res.status(403).json({ accessToken: false }); //Forbidden
   // evaluate JWT
   jwt.verify(refreshToken, process.env.REFRESH_TOKEN_SECRET, (err, decoded) => {
     if (err || foundUser.email !== decoded.email) return res.sendStatus(403);

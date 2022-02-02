@@ -32,7 +32,7 @@ class UserRecord {
     }
 
     fs.writeFileSync(
-      `./db/users/${userId}.json`,
+      `../db/users/${userId}.json`,
       JSON.stringify(user, null, 2)
     );
     user.id = userId;
@@ -48,7 +48,7 @@ class UserRecord {
 
     //user id
     fs.writeFileSync(
-      `./db/users/${userId}.json`,
+      `../db/users/${userId}.json`,
       JSON.stringify(user, null, 2)
     );
     user.id = userId;
@@ -58,7 +58,7 @@ class UserRecord {
 
   async getById(id) {
     //user id
-    const user = JSON.parse(fs.readFileSync(`./db/users/${id}.json`, "utf8"));
+    const user = JSON.parse(fs.readFileSync(`../db/users/${id}.json`, "utf8"));
     user.id = id;
     return user;
   }
@@ -67,7 +67,7 @@ class UserRecord {
     const users = [];
 
     //users
-    const dir = `./db/users/`;
+    const dir = `../db/users/`;
     const userFiles = fs.readdirSync(dir);
 
     userFiles.forEach(function (file) {
@@ -83,7 +83,7 @@ class UserRecord {
     const userIds = [];
 
     //all users Ids
-    const dir = `./db/users/`;
+    const dir = `../db/users/`;
     const userFiles = fs.readdirSync(dir);
 
     userFiles.forEach(function (file) {

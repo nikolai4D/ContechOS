@@ -9,7 +9,7 @@ const verifyAccess = (req, res, next) => {
       if (!apiKeyHeader) return res.sendStatus(401);
 
       const apiKeys = [];
-      const dir = `./db/users/`;
+      const dir = `../db/users/`;
       const userFiles = fs.readdirSync(dir);
       userFiles.forEach(function (file) {
         let user = JSON.parse(fs.readFileSync(dir + file, "utf8"));

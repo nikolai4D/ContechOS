@@ -43,7 +43,7 @@ auth.post("/", async (req, res) => {
     foundUser.refreshToken = refreshToken;
     foundUser.updated = Date();
     await fs.writeFileSync(
-      `./db/users/${foundUser.id}.json`,
+      `../db/users/${foundUser.id}.json`,
       JSON.stringify(foundUser, null, 2)
     );
 

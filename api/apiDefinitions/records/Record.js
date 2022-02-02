@@ -60,7 +60,7 @@ class Record {
     }
 
     fs.writeFileSync(
-      `./db/${this.nodeType}/${nodeId}.json`,
+      `../db/${this.nodeType}/${nodeId}.json`,
       JSON.stringify(node, null, 2)
     );
     node.id = nodeId;
@@ -71,7 +71,7 @@ class Record {
   async getById(id) {
     //node id
     const node = JSON.parse(
-      fs.readFileSync(`./db/${this.nodeType}/${id}.json`, "utf8")
+      fs.readFileSync(`../db/${this.nodeType}/${id}.json`, "utf8")
     );
     node.id = id;
     return node;
@@ -81,7 +81,7 @@ class Record {
     const nodes = [];
 
     //nodes
-    const dir = `./db/${this.nodeType}/`;
+    const dir = `../db/${this.nodeType}/`;
     const nodeFiles = fs.readdirSync(dir);
 
     nodeFiles.forEach(function (file) {
@@ -99,7 +99,7 @@ class Record {
     const nodes = [];
 
     //all nodes Ids
-    const dir = `./db/${this.nodeType}/`;
+    const dir = `../db/${this.nodeType}/`;
     const nodeFiles = fs.readdirSync(dir);
 
     nodeFiles.forEach(function (file) {

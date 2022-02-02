@@ -37,17 +37,11 @@ export default async function router() {
 
   //No nav
   if (match.route.path === "/login") {
-    window.localStorage.clear();
-
     document.querySelector("#app").innerHTML = await view.getTemplate();
   } else if (match.route.path === "/") {
-    window.localStorage.clear();
-
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").innerHTML = await view.getTemplate();
   } else {
-    window.localStorage.removeItem(match.route.path.slice(1));
-
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").appendChild(await view.getTemplate());
   }
