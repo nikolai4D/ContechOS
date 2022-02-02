@@ -1,4 +1,4 @@
 #!bin/bash
 #Stopping existing node servers
-echo "Stopping any existing node servers1"
-pkill -f node
+echo "Stopping any existing node servers"
+#pkill -f node
