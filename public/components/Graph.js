@@ -132,10 +132,6 @@ const Graph = async (view) => {
 
             data.forEach(obj => attrs[obj] = d3.select(`#form_${obj}`)._groups[0][0].value)
             await Actions.CREATE(view, nodeTypesDetail.title, attrs)
-            // console.log(nodeRels, 'hello')
-            // nodes = nodeRels[0].nodes;
-            // rels = nodeRels[0].rels;
-
           });
 
         });

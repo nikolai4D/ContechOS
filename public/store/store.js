@@ -1,12 +1,9 @@
 class Mutations {
   async GET_STATE(view, records) {
     let data = await JSON.parse(sessionStorage.getItem(`${view}`));
-    //console.log(data)
-
     if (data == null) {
       data = [];
       data.push(records);
-      //console.log("data", data);
       sessionStorage.setItem(`${view}`, JSON.stringify(data));
     }
   }
@@ -25,7 +22,6 @@ class Mutations {
     console.log(data)
     data[0]["nodes"].push(records);
     sessionStorage.setItem(`${view}`, JSON.stringify(data));
-    // return await JSON.parse(sessionStorage.getItem(`${view}`))
 
   }
 }
@@ -41,7 +37,6 @@ class Actions {
       },
       body: JSON.stringify(type),
     })
-
 
 
     if (view == "props") {
@@ -62,8 +57,6 @@ class Actions {
 
 
     }
-
-    // return mutate.ADD_NODE_TO_STATE(view, sendRecord);
   }
 
   async GETALL(view) {
