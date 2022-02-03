@@ -1,39 +1,84 @@
+
 const nodeDefs = {
+    "general": [{
+        "attributes":
+        {
+            "created": Date(),
+            "updated": Date()
+        }
+    }],
     "nodeTypes": [
         {
             "nodeTypeId": 1,
             "title": "propType",
-            "abbr": "pt"
+            "abbr": "pt",
+            "attributes": {
+                "title": ""
+            }
         },
         {
             "nodeTypeId": 2,
             "title": "propKey",
-            "abbr": "pk"
+            "abbr": "pk",
+            "attributes": {
+                "title": "",
+                "propType": `pt_GUID`
+            }
         },
         {
             "nodeTypeId": 3,
             "title": "propVal",
-            "abbr": "pv"
+            "abbr": "pv",
+            "attributes": {
+                "title": "",
+                "propKey": `pk_GUID`
+            }
         },
         {
             "nodeTypeId": 4,
             "title": "config",
-            "abbr": "c"
+            "abbr": "c",
+            "attributes": {
+                "title": "",
+                "propKeys": [`pk_GUID`],
+            }
         },
         {
             "nodeTypeId": 5,
             "title": "configRel",
-            "abbr": "cr"
+            "abbr": "cr",
+            "attributes": {
+                "title": "",
+                "propKeys": [`pk_GUID`],
+                "source": `c_GUID`,
+                "target": `c_GUID`,
+                "modelRel": Boolean
+            }
+
         },
         {
             "nodeTypeId": 6,
             "title": "data",
-            "abbr": "d"
+            "abbr": "d",
+            "attributes": {
+                "title": "",
+                "props": [{ "pk_GUID": "pv_GUID" }],
+                "config": `c_GUID`
+            }
         },
         {
             "nodeTypeId": 7,
             "title": "dataRel",
-            "abbr": "dr"
+            "abbr": "dr",
+            "attributes": {
+                "title": `cr_GUID.key`,
+                "props": [`pk_GUID`],
+                "source": `d_GUID`,
+                "target": `d_GUID`,
+                "props": [{ "pk_GUID": "pv_GUID" }],
+                "configRel": `cr_GUID`,
+
+            }
         }
     ],
     "nodeGroups": [

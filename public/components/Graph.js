@@ -32,8 +32,7 @@ const Graph = async (view) => {
     linkSvgStyle = {
       stroke: "#000",
       fill: "#000",
-    },
-    nodeBorderColor = "#000";
+    }
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -86,9 +85,6 @@ const Graph = async (view) => {
       .on("end", dragended);
   };
 
-  const zoom = d3.zoom().on("zoom", function ({ transform }) {
-    svg.attr("transform", transform);
-  });
 
   const svg = d3
     .create("svg")
@@ -112,7 +108,7 @@ const Graph = async (view) => {
         .select(".contextMenu")
         .style("top", d.clientY + "px")
         .style("left", d.clientX + "px");
-      d3.selectAll(".itemContent").on("click", (d) => console.log(d.target.id));
+      d3.selectAll(".itemContent").on("click", (d) => d3.select('.contextMenuContainer').remove());
     })
     .on("click", () => {
       d3.select(".contextMenuContainer").remove();
