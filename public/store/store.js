@@ -10,23 +10,61 @@ class Mutations {
       sessionStorage.setItem(`${view}`, JSON.stringify(data));
     }
   }
+  async SET_STATE(view, records) {
+    sessionStorage.setItem(`${view}`, JSON.stringify(records));
+
+  }
+  async ADD_NODE_TO_STATE(view, records) {
+    console.log(view)
+    let data = await JSON.parse(sessionStorage.getItem(`${view}`))
+
+
+    if (await data == null) {
+      data = []
+    }
+    console.log(data)
+    data[0]["nodes"].push(records);
+    sessionStorage.setItem(`${view}`, JSON.stringify(data));
+    // return await JSON.parse(sessionStorage.getItem(`${view}`))
+
+  }
 }
 
 class Actions {
-  // async CREATE(nodeType, type) {
+  async CREATE(view, nodeType, type) {
 
-  //     const record = await fetch(`/api/${nodeType}/create`, {
-  //         method: 'POST',
-  //         headers: {
-  //             'Content-Type': 'application/json',
-  //         },
-  //         body: JSON.stringify({ type }),
-  //     })
+    await fetch(`/api/${nodeType}/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        authorization: sessionStorage.getItem("accessToken"),
+      },
+      body: JSON.stringify(type),
+    })
 
-  //     const sendRecord = await record.json();
-  //     const mutate = new Mutations();
-  //     mutate.SET_STATE(nodeType, sendRecord);
-  // }
+
+
+    if (view == "props") {
+
+      let getHeaders = {
+        "Content-Type": "application/json",
+        authorization: sessionStorage.getItem("accessToken"),
+      };
+      const records = await fetch(`/api/${view}`, {
+        method: "GET",
+        headers: getHeaders,
+      });
+      const sendRecords = await records.json();
+
+      console.log(sendRecords)
+
+      sessionStorage.setItem(`${view}`, JSON.stringify([sendRecords]));
+
+
+    }
+
+    // return mutate.ADD_NODE_TO_STATE(view, sendRecord);
+  }
 
   async GETALL(view) {
     let getHeaders = {

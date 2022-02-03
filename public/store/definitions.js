@@ -22,7 +22,7 @@ const nodeDefs = {
             "abbr": "pk",
             "attributes": {
                 "title": "",
-                "propType": `pt_GUID`
+                "propTypeId": `pt_GUID`
             }
         },
         {

@@ -12,6 +12,8 @@ const ContextMenu = (d) => {
             return type
     });
 
+
+
     const data = nodeTypesDetail.map((type) => { return { "title": `Create ${type.title}`, "id": `${type.nodeTypeId}` } })
     console.log(data)
     let dataArray = data.map(obj =>

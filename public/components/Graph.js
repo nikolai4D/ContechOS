@@ -1,6 +1,8 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
+import Actions from "../store/store.js";
 import ContextMenu from "./ContextMenu.js";
 import FormNode from './FormNode.js';
+import nodeDefs from "../store/definitions.js";
 
 const Graph = async (view) => {
   let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
@@ -8,7 +10,7 @@ const Graph = async (view) => {
   let width = window.innerWidth,
     height = window.innerHeight - 20;
 
-  const { nodes, rels } = graphJsonData[0],
+  let { nodes, rels } = graphJsonData[0],
     r = 38,
     svgStyle = {
       position: "absolute",
@@ -119,6 +121,23 @@ const Graph = async (view) => {
           d3.select(".FormMenuContainer").remove();
 
           d3.select('#root').append("div").attr("class", "FormMenuContainer").html(FormNode(d)).select('.contextMenu')
+
+          d3.selectAll('.FormNodeSubmit').on('click', async e => {
+
+            const nodeTypesDetail = nodeDefs.nodeTypes.find(obj => {
+              return obj.nodeTypeId === parseInt(d.target.id);
+            });
+            const data = Object.keys(nodeTypesDetail.attributes)
+            const attrs = {}
+
+            data.forEach(obj => attrs[obj] = d3.select(`#form_${obj}`)._groups[0][0].value)
+            await Actions.CREATE(view, nodeTypesDetail.title, attrs)
+            // console.log(nodeRels, 'hello')
+            // nodes = nodeRels[0].nodes;
+            // rels = nodeRels[0].rels;
+
+          });
+
         });
     });
 
