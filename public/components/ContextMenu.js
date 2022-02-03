@@ -15,7 +15,7 @@ const ContextMenu = (d) => {
     const data = nodeTypesDetail.map((type) => { return { "title": `Create ${type.title}`, "id": `${type.nodeTypeId}` } })
     console.log(data)
     let dataArray = data.map(obj =>
-        `<div class="list-group-item list-group-item-action" id="${obj.id}">
+        `<div class="list-group-item list-group-item-action context_menu_item" id="${obj.id}">
                 ${obj.title}
         </div>`);
 

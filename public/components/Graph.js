@@ -1,5 +1,6 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
 import ContextMenu from "./ContextMenu.js";
+import FormNode from './FormNode.js';
 
 const Graph = async (view) => {
   let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
@@ -96,10 +97,14 @@ const Graph = async (view) => {
         g.attr("transform", transform);
       })
     )
+    .on("click", () => {
+      d3.select(".contextMenuContainer").remove();
+      d3.select(".FormMenuContainer").remove();
+    })
     .on("contextmenu", (d) => {
-      if (document.getElementsByClassName("contextMenu").length === 1) {
-        d3.select(".contextMenuContainer").remove();
-      }
+      d3.select(".FormMenuContainer").remove();
+
+      d3.select(".contextMenuContainer").remove();
       event.preventDefault();
       d3.select("#app")
         .append("div")
@@ -108,10 +113,13 @@ const Graph = async (view) => {
         .select(".contextMenu")
         .style("top", d.clientY + "px")
         .style("left", d.clientX + "px");
-      d3.selectAll(".itemContent").on("click", (d) => d3.select('.contextMenuContainer').remove());
-    })
-    .on("click", () => {
-      d3.select(".contextMenuContainer").remove();
+      d3.selectAll(".context_menu_item")
+        .on("click", (d) => {
+          d3.select(".contextMenuContainer").remove();
+          d3.select(".FormMenuContainer").remove();
+
+          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(FormNode(d)).select('.contextMenu')
+        });
     });
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
