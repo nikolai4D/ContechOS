@@ -7,25 +7,25 @@ const ContextMenu = (d) => {
         return obj.title === nodeGroup;
     }).nodeTypes;
 
-    const nodeTypesDetail = nodeDefs.nodeTypes.filter((type, index) => {
+    const nodeTypesDetail = nodeDefs.nodeTypes.filter((type) => {
         if (validNodeTypesByNodeGroup.includes(type.nodeTypeId))
             return type
     });
 
-    const data = nodeTypesDetail.map((type) => { return { "title": `Create ${type.title}`, "id": `${type.id}` } })
 
+
+    const data = nodeTypesDetail.map((type) => { return { "title": `Create ${type.title}`, "id": `${type.nodeTypeId}` } })
+    console.log(data)
     let dataArray = data.map(obj =>
-        `<li class="item">
-            <div class="itemContent" id="${obj.nodeTypeId}">
+        `<div class="list-group-item list-group-item-action context_menu_item" id="${obj.id}">
                 ${obj.title}
-            </div>
-        </li>`);
+        </div>`);
 
     const template = `  
-        <div class="contextMenu">
-            <ul class="menu">
+        <div class="contextMenu position-absolute">
+            <div class="list-group">
                 ${dataArray.join("")}
-            </ul>
+            </div>
         </div>
     `;
 
