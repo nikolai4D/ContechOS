@@ -77,6 +77,29 @@ class Record {
     return node;
   }
 
+  async getByProp(propKey, propVal) {
+    const nodes = [];
+
+    console.log(propKey, propVal);
+
+    //nodes
+    const dir = `../db/${this.nodeType}/`;
+    const nodeFiles = fs.readdirSync(dir);
+
+    nodeFiles.forEach(function (file) {
+      let node = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      console.log(node);
+      if (node[propKey] === propVal) {
+        delete node.created;
+        delete node.updated;
+        node.id = file.slice(0, -5);
+        nodes.push(node);
+      }
+    });
+
+    return nodes;
+  }
+
   async getAll() {
     const nodes = [];
 
