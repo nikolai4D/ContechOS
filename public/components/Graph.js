@@ -115,13 +115,18 @@ const Graph = async (view) => {
         .select(".contextMenu")
         .style("top", d.clientY + "px")
         .style("left", d.clientX + "px");
+
+      let x_cord = d.clientX
+      let y_cord = d.clientY
+
       d3.selectAll(".context_menu_item")
         .on("click", (d) => {
           d3.select(".contextMenuContainer").remove();
           d3.select(".FormMenuContainer").remove();
 
-          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(FormNode(d)).select('.contextMenu')
-
+          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(FormNode(d)).select('.formNode')
+            .style("top", y_cord + "px")
+            .style("left", x_cord + "px");
           d3.selectAll('.FormNodeSubmit').on('click', async e => {
 
             const nodeTypesDetail = nodeDefs.nodeTypes.find(obj => {

@@ -1,4 +1,3 @@
-
 const nodeDefs = {
     "general": [{
         "attributes":
@@ -22,7 +21,7 @@ const nodeDefs = {
             "abbr": "pk",
             "attributes": {
                 "title": "",
-                "propTypeId": `pt_GUID`
+                "propTypeId": { "nodeTypeId": 1, "attributes": "id" }
             }
         },
         {
@@ -31,7 +30,7 @@ const nodeDefs = {
             "abbr": "pv",
             "attributes": {
                 "title": "",
-                "propKey": `pk_GUID`
+                "propKey": { "nodeTypeId": 2, "attributes": "id" }
             }
         },
         {
@@ -40,7 +39,7 @@ const nodeDefs = {
             "abbr": "c",
             "attributes": {
                 "title": "",
-                "propKeys": [`pk_GUID`],
+                "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }],
             }
         },
         {
@@ -49,9 +48,9 @@ const nodeDefs = {
             "abbr": "cr",
             "attributes": {
                 "title": "",
-                "propKeys": [`pk_GUID`],
-                "source": `c_GUID`,
-                "target": `c_GUID`,
+                "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }],
+                "source": { "nodeTypeId": 4, "attributes": "id" },
+                "target": { "nodeTypeId": 4, "attributes": "id" },
                 "modelRel": Boolean
             }
 
@@ -62,8 +61,13 @@ const nodeDefs = {
             "abbr": "d",
             "attributes": {
                 "title": "",
-                "props": [{ "pk_GUID": "pv_GUID" }],
-                "config": `c_GUID`
+                "props": [
+                    {
+                        key: { "nodeTypeId": 2, "attributes": "id" },
+                        value: { "nodeTypeId": 3, "attributes": "id" }
+                    }
+                ],
+                "config": { "nodeTypeId": 4, "attributes": "id" }
             }
         },
         {
@@ -71,13 +75,17 @@ const nodeDefs = {
             "title": "dataRel",
             "abbr": "dr",
             "attributes": {
-                "title": `cr_GUID.key`,
-                "props": [`pk_GUID`],
-                "source": `d_GUID`,
-                "target": `d_GUID`,
-                "props": [{ "pk_GUID": "pv_GUID" }],
-                "configRel": `cr_GUID`,
-
+                "title": { "nodeTypeId": 5, "attributes": "title" },
+                "props": [{ "nodeTypeId": 2, "attributes": "id" }],
+                "source": { "nodeTypeId": 6, "attributes": "id" },
+                "target": { "nodeTypeId": 6, "attributes": "id" },
+                "props": [
+                    {
+                        key: { "nodeTypeId": 2, "attributes": "id" },
+                        value: { "nodeTypeId": 3, "attributes": "id" }
+                    }
+                ],
+                "configRel": { "nodeTypeId": 5, "attributes": "id" },
             }
         }
     ],

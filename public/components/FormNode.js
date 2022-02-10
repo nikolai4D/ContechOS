@@ -14,7 +14,7 @@ const FormNode = (d) => {
     );
 
     const template = `  
-        <div class="card position-absolute">
+        <div class="formNode card position-absolute">
             <div class="card-body">
                 ${dataArray.join("")}
                 <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
