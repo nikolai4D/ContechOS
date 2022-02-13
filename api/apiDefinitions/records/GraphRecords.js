@@ -12,7 +12,7 @@ class GraphRecords {
     let relType = "";
 
     if (this.nodeGroup === "configs") {
-      nodeType = "config";
+      nodeType = "configDef";
       relType = "configRel";
     }
 

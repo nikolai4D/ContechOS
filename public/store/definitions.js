@@ -60,7 +60,7 @@ const nodeDefs = {
         },
         {
             "nodeTypeId": 4,
-            "title": "def",
+            "title": "configDef",
             "abbr": "cd",
             "attributes": [
                 { "title": "" },

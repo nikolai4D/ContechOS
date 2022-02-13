@@ -10,6 +10,7 @@ class Record {
   async create(reqBody) {
     const {
       title,
+      propKeys,
       propTypeId,
       propKeyId,
       source,
@@ -17,6 +18,7 @@ class Record {
       configId,
       configRelId,
     } = reqBody;
+    console.log("before!!!")
 
     const idAbbr = apiDefs.nodeTypes.find((obj) => obj.title === this.nodeType)
       .abbr;
@@ -39,25 +41,30 @@ class Record {
       node.propKeyId = propKeyId;
     }
 
-    if (this.nodeType === "config") {
+    if (this.nodeType === "configDef") {
+      console.log("after!!!")
+      node.propKeys = propKeys
     }
 
-    if (this.nodeType === "configRel") {
-      node.source = source;
-      node.target = target;
-      nodeId = `${nodeId}-${source}-${target}`;
-    }
+    // if (this.nodeType === "config") {
+    // }
 
-    if (this.nodeType === "data") {
-      node.configId = configId;
-    }
+    // if (this.nodeType === "configRel") {
+    //   node.source = source;
+    //   node.target = target;
+    //   nodeId = `${nodeId}-${source}-${target}`;
+    // }
 
-    if (this.nodeType === "dataRel") {
-      node.source = source;
-      node.target = target;
-      node.configRelId = configRelId;
-      nodeId = `${nodeId}-${source}-${target}`;
-    }
+    // if (this.nodeType === "data") {
+    //   node.configId = configId;
+    // }
+
+    // if (this.nodeType === "dataRel") {
+    //   node.source = source;
+    //   node.target = target;
+    //   node.configRelId = configRelId;
+    //   nodeId = `${nodeId}-${source}-${target}`;
+    // }
 
     fs.writeFileSync(
       `../db/${this.nodeType}/${nodeId}.json`,

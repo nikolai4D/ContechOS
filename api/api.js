@@ -35,8 +35,9 @@ api.use("/propVal", require("./apiDefinitions/apiPropVal.js"));
 api.use("/props", require("./apiDefinitions/graphProps.js"));
 
 //----------config----------//
-//config
-api.use("/config", require("./apiDefinitions/apiConfig.js"));
+//configDef
+api.use("/configDef", require("./apiDefinitions/apiConfigDef.js"));
+
 
 //configRel
 api.use("/configRel", require("./apiDefinitions/apiConfigRel.js"));
