@@ -127,6 +127,7 @@ const Graph = async (view) => {
           d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(d)).select('.formNode')
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
+
           d3.selectAll('.FormNodeSubmit').on('click', async e => {
 
             const nodeTypesDetail = nodeDefs.nodeTypes.find(obj => {
@@ -139,8 +140,20 @@ const Graph = async (view) => {
             await Actions.CREATE(view, nodeTypesDetail.title, attrs)
           });
 
+          d3.selectAll(".form_add_more_props_button")
+            .on("click", (d) => {
+              // console.log("hellooo")
+              d3.selectAll(".form_add_props")
+                .append("div")
+                .clone(d3.selectAll(".form_add_props"))
+                .html("<div>hello</div>")
+
+              // return document.getElementById("form_add_props")
+            })
         });
     });
+
+
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
 

@@ -56,7 +56,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         navigateTo("/login");
         //location.reload();
         console.log("Logout");
-        ß;
       }
     }
   });

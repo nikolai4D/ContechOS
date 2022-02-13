@@ -21,7 +21,8 @@ const dropDown = async (key, attr = null) => {
 
 
 const dropDownKeyValue = async (title, key, value, attr = null) => {
-    return await `<div style="display: flex; padding: 0.5em">
+    return await `<div class="form_add_props" style="display: flex; padding: 0.5em">
+    <button class="form_add_more_props_button">Add more props</button>
         <label class="form-label">${title}:</label>
             <select class="form-select" aria-label="key" id="form_${key}" name="${key}" ${attr}>
                 <option selected>Open this select menu</option>
@@ -39,12 +40,7 @@ const dropDownKeyValue = async (title, key, value, attr = null) => {
     </div>`;
 };
 
-const addButton = async () => {
-    return `<button>Add more props</button>`;
-};
-
-
-const FormNode = async (d) => {
+const FormNode = async (d, data) => {
 
     const nodeTypesDetail = await nodeDefs.nodeTypes.find(obj => {
         return obj.nodeTypeId === parseInt(d.target.id);
@@ -65,12 +61,9 @@ const FormNode = async (d) => {
 
         if (typeof (valueOfAttr) === 'string') {
             formString.push(await inputForm(keyOfAttr))
-            // formString += `${keyOfAttr}: input (${title}),`
         }
-
         else if (Array.isArray(valueOfAttr)) {
             if (valueOfAttr[0]['nodeTypeId']) {
-                // formString += `${keyOfAttr}: dropdown multiple (${valueOfAttr[0].title}),`
                 formString.push(await dropDown(keyOfAttr, "multiple"))
             }
             else {
@@ -83,11 +76,19 @@ const FormNode = async (d) => {
         else if (typeof (valueOfAttr) === 'object') {
             // formString += `${keyOfAttr}: dropdown (${valueOfAttr.title}),`
             formString.push(await dropDown(keyOfAttr))
-
         }
-
     });
+    console.log(await formString.join(""))
 
+    const template = await `  
+    <div class="formNode card position-absolute">
+        <div class="card-body">
+            ${await formString.join("")}
+            <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+        </div>
+    </div>
+`;
+    return await template;
 
 
 
@@ -155,20 +156,7 @@ const FormNode = async (d) => {
     //     </div>
     // `;
 
-    const template = await `  
-    <div class="formNode card position-absolute">
-        <div class="card-body">
-            ${await formString.join("")}
-            ${await addButton()}
-            <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
-        </div>
-    </div>
-`;
 
-
-
-
-    return await template;
 };
 
 export default FormNode;
