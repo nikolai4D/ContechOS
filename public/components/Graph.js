@@ -120,11 +120,11 @@ const Graph = async (view) => {
       let y_cord = d.clientY
 
       d3.selectAll(".context_menu_item")
-        .on("click", (d) => {
+        .on("click", async (d) => {
           d3.select(".contextMenuContainer").remove();
           d3.select(".FormMenuContainer").remove();
 
-          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(FormNode(d)).select('.formNode')
+          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(d)).select('.formNode')
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
           d3.selectAll('.FormNodeSubmit').on('click', async e => {
