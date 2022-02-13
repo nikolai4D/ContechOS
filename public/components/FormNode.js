@@ -1,94 +1,71 @@
 import nodeDefs from "../store/definitions.js";
+import Actions from "../store/Actions.js";
+import dropDownKeyValue from "./DropDownFieldKeyValue.js";
+import dropDown from "./DropDownField.js"
+import inputField from "./InputField.js";
 
-const inputForm = async (key) => {
-    return await `<div style="display: flex; padding: 0.5em">
-        <label class="form-label" for="form_${key}">${key}:</label>
-        <input type="text" class="form-control" id="form_${key}" name="${key}" value=""><br>
-    </div>`;
+export function getNodeTypeDetails(id) {
+    return nodeDefs.nodeTypes.find(obj => {
+        return obj.nodeTypeId === id;
+    })
 };
 
-const dropDown = async (key, attr = null) => {
-    return await `<div style="display: flex; padding: 0.5em">
-        <label class="form-label" for="form_${key}">${key}:</label>
-            <select class="form-select" aria-label="key" id="form_${key}" name="${key}" ${attr}>
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-    </div>`;
-};
+const getNodeTypesAttrs = (nodeTypeId) => {
+    const nodeType = (getNodeTypeDetails(nodeTypeId)).title;
+    Actions.GETALL(nodeType);
+    return JSON.parse(sessionStorage.getItem(`${nodeType}`));
+}
 
+export function FormNode(d) {
 
-const dropDownKeyValue = async (title, key, value, attr = null) => {
-    return await `<div class="form_add_props" style="display: flex; padding: 0.5em">
-    <button class="form_add_more_props_button">Add more props</button>
-        <label class="form-label">${title}:</label>
-            <select class="form-select" aria-label="key" id="form_${key}" name="${key}" ${attr}>
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-            :
-            <select class="form-select" aria-label="key" id="form_${value}" name="${value}" ${attr}>
-            <option selected>Open this select menu</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-        </select>
-    </div>`;
-};
-
-const FormNode = async (d, data) => {
-
-    const nodeTypesDetail = await nodeDefs.nodeTypes.find(obj => {
-        return obj.nodeTypeId === parseInt(d.target.id);
-    });
-
+    const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id))
     console.log(nodeTypesDetail, 'nodeTypesDetails')
 
-    // let title = nodeTypesDetail.title
-    let arrayWithEntries = await nodeTypesDetail.attributes
-
+    let arrayWithEntries = nodeTypesDetail.attributes
     console.log(arrayWithEntries, 'arrayWithEntries')
 
-    let formString = [];
+    let fieldsArray = [];
 
-    await arrayWithEntries.forEach(async obj => {
-        let valueOfAttr = Object.values(obj)[0]
-        let keyOfAttr = Object.keys(obj)[0]
+    arrayWithEntries.forEach(obj => {
+        let keyOfAttr = Object.keys(obj)[0];
+        let valueOfAttr = Object.values(obj)[0];
 
         if (typeof (valueOfAttr) === 'string') {
-            formString.push(await inputForm(keyOfAttr))
+            // Returns input forms
+            fieldsArray.push(inputField(keyOfAttr));
         }
         else if (Array.isArray(valueOfAttr)) {
             if (valueOfAttr[0]['nodeTypeId']) {
-                formString.push(await dropDown(keyOfAttr, "multiple"))
+                // Returns dropwdowns with multiple choice
+                let allNodesByType = getNodeTypesAttrs(valueOfAttr[0]['nodeTypeId']);
+                let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple")
+                console.log('dropDownString', dropDownString)
+                fieldsArray.push(dropDownString);
             }
             else {
-                formString.push(await dropDownKeyValue(keyOfAttr, valueOfAttr[0].key.title, valueOfAttr[0].value.title))
-
-                // formString.push(`${keyOfAttr}: dropdown:dropdown (${valueOfAttr[0].key.title}, ${valueOfAttr[0].value.title}),`)
-                // formString.push(`${await dropDown(keyOfAttr)} : ${await dropDown(keyOfAttr)}`)
+                // Returns 2 dropdowns as key and value pair, with "Add more props" button
+                fieldsArray.push(dropDownKeyValue(keyOfAttr, valueOfAttr[0].key.title, valueOfAttr[0].value.title))
             }
         }
         else if (typeof (valueOfAttr) === 'object') {
-            // formString += `${keyOfAttr}: dropdown (${valueOfAttr.title}),`
-            formString.push(await dropDown(keyOfAttr))
+            // Returns single dropdown
+
+            fieldsArray.push(dropDown(keyOfAttr, []))
         }
     });
-    console.log(await formString.join(""))
+    console.log(fieldsArray.join(""))
 
-    const template = await `  
+    const template = `  
     <div class="formNode card position-absolute">
         <div class="card-body">
-            ${await formString.join("")}
-            <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+           <form id="formNode" >
+             ${fieldsArray.join("")}
+                <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+            </form>
         </div>
     </div>
 `;
-    return await template;
+    return template;
 
 
 
@@ -158,6 +135,4 @@ const FormNode = async (d, data) => {
 
 
 };
-
-export default FormNode;
 

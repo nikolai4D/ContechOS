@@ -1,14 +1,14 @@
 import nodeDefs from "../store/definitions.js";
 
 const ContextMenu = (d) => {
-    const nodeGroup = window.location.pathname.substring(1);
+    const group = window.location.pathname.substring(1);
 
-    const validNodeTypesByNodeGroup = nodeDefs.nodeGroups.find(obj => {
-        return obj.title === nodeGroup;
+    const validNodeTypesByGroup = nodeDefs.groups.find(obj => {
+        return obj.title === group;
     }).nodeTypes;
 
     const nodeTypesDetail = nodeDefs.nodeTypes.filter((type) => {
-        if (validNodeTypesByNodeGroup.includes(type.nodeTypeId))
+        if (validNodeTypesByGroup.includes(type.nodeTypeId))
             return type
     });
 

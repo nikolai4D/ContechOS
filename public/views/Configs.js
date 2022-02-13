@@ -1,15 +1,15 @@
 import Graph from "../components/Graph.js"
-import store from "../store/store.js"
+import Actions from "../store/Actions.js";
 
 export default class Configs {
-    
+
     constructor() {
         document.title = "Config";
     }
 
     async getTemplate() {
         const view = "configs"
-        await store.GETALL(view)
+        await Actions.GETALL(view)
         return Graph(view)
     }
 }

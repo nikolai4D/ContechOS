@@ -1,7 +1,7 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
-import Actions from "../store/store.js";
+import Actions from "../store/Actions.js";
 import ContextMenu from "./ContextMenu.js";
-import FormNode from './FormNode.js';
+import { FormNode, getNodeTypeDetails } from './FormNode.js';
 import nodeDefs from "../store/definitions.js";
 
 const Graph = async (view) => {
@@ -128,21 +128,36 @@ const Graph = async (view) => {
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
-          d3.selectAll('.FormNodeSubmit').on('click', async e => {
+          d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
+            event.preventDefault();
+            const formData = document.getElementById("formNode");
+            // console.log(formData)
 
-            const nodeTypesDetail = nodeDefs.nodeTypes.find(obj => {
-              return obj.nodeTypeId === parseInt(d.target.id);
-            });
-            const data = Object.keys(nodeTypesDetail.attributes)
-            const attrs = {}
+            let formDataObj = {}
 
-            data.forEach(obj => attrs[obj] = d3.select(`#form_${obj}`)._groups[0][0].value)
-            await Actions.CREATE(view, nodeTypesDetail.title, attrs)
+
+            const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id));
+
+            console.log(nodeTypesDetail, 'nodeTypesDetail')
+            nodeTypesDetail.attributes.forEach(attr => {
+
+              let attrKey = Object.keys(attr)[0]
+              let formAttr = formData[`field_${attrKey}`]
+              let attrValue = '';
+              if (formAttr.tagName === "INPUT") {
+                attrValue = formAttr.value;
+              }
+              else if (formAttr.tagName === "SELECT") {
+                attrValue = [...formAttr.selectedOptions].map(option => option.value)
+              }
+              formDataObj[attrKey] = attrValue;
+            })
+            await Actions.CREATE(view, nodeTypesDetail.title, formDataObj)
           });
 
           d3.selectAll(".form_add_more_props_button")
             .on("click", (d) => {
-              // console.log("hellooo")
+
               d3.selectAll(".form_add_props")
                 .append("div")
                 .clone(d3.selectAll(".form_add_props"))
