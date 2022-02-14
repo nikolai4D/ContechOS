@@ -4,7 +4,8 @@ import ContextMenu from "./ContextMenu.js";
 import { FormNode, getNodeTypeDetails } from './FormNode.js';
 import nodeDefs from "../store/definitions.js";
 
-const Graph = async (view) => {
+async function Graph(view) {
+
   let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
 
   let width = window.innerWidth,
@@ -116,8 +117,8 @@ const Graph = async (view) => {
         .style("top", d.clientY + "px")
         .style("left", d.clientX + "px");
 
-      let x_cord = d.clientX
-      let y_cord = d.clientY
+      let x_cord = d.clientX;
+      let y_cord = d.clientY;
 
       d3.selectAll(".context_menu_item")
         .on("click", async (d) => {
@@ -131,28 +132,27 @@ const Graph = async (view) => {
           d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
             event.preventDefault();
             const formData = document.getElementById("formNode");
-            // console.log(formData)
-
             let formDataObj = {}
-
 
             const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id));
 
-            console.log(nodeTypesDetail, 'nodeTypesDetail')
             nodeTypesDetail.attributes.forEach(attr => {
 
-              let attrKey = Object.keys(attr)[0]
-              let formAttr = formData[`field_${attrKey}`]
+              let attrKey = Object.keys(attr)[0];
+              let formAttr = formData[`field_${attrKey}`];
               let attrValue = '';
               if (formAttr.tagName === "INPUT") {
                 attrValue = formAttr.value;
               }
               else if (formAttr.tagName === "SELECT") {
-                attrValue = [...formAttr.selectedOptions].map(option => option.value)
+                attrValue = [...formAttr.selectedOptions].map(option => option.value);
               }
               formDataObj[attrKey] = attrValue;
-            })
-            await Actions.CREATE(view, nodeTypesDetail.title, formDataObj)
+            });
+            await Actions.CREATE(view, nodeTypesDetail.title, formDataObj);
+            graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
+
+            nodes, rels = graphJsonData[0]
           });
 
           d3.selectAll(".form_add_more_props_button")
@@ -211,13 +211,14 @@ const Graph = async (view) => {
     event.preventDefault();
   };
 
+
   const link = g
     .append("g")
     .style("stroke", linkSvgStyle.stroke)
     .style("fill", linkSvgStyle.fill)
     .attr("class", "linkSVG")
     .selectAll("path")
-    .data(rels)
+    .data(rels, d => d)
     .join((enter) => {
       const link_enter = enter
         .append("path")
@@ -228,55 +229,79 @@ const Graph = async (view) => {
           return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
         });
       return link_enter;
-    })
+    },
+      update => update,
+      exit => exit.remove()
+    )
     .join("path")
     .on("click", clicked)
     .on("contextmenu", rightClicked);
 
   const linkLabel = g
     .selectAll(".linkLabel")
-    .data(rels)
+    .data(rels, d => d)
     .join((enter) => {
       const linkLabel = enter
         .append("text")
         .text((link) => link.title)
-        .attr("id", function (d) {
-          return "linkLabel" + d.id;
-        })
-        .attr("class", "linkLabel")
-        .style("color", "#fff")
-        .attr("dy", 0);
-
       return linkLabel;
-    });
+    },
+      update => update,
+      exit => exit.remove()
+
+    ).attr("id", function (d) {
+      return "linkLabel" + d.id;
+    })
+    .attr("class", "linkLabel")
+    .style("color", "#fff")
+    .attr("dy", 0);
 
   const node = g
     .append("g")
     .selectAll("circle")
-    .data(nodes)
-    .join("circle")
-    .style("stroke-with", nodeStyle.strokeWidth)
-    .attr("stroke-with", (d) => nodeStyle.strokeWidth)
-    .attr("fill", (d) => nodeFill)
-    .attr("stroke", (d) => nodeStyle.borderColor)
+    .data(nodes, d => d)
+    .join(enter => {
+      let entered =
+        enter.append("circle")
+          .style("stroke-with", nodeStyle.strokeWidth)
+          .attr("stroke-with", (d) => nodeStyle.strokeWidth)
+          .attr("fill", (d) => nodeFill)
+
+      return entered;
+    },
+      update => update
+        .attr("fill", "blue")
+        .call((update) => console.log('updated!', update)),
+      exit => exit.remove()
+
+    ).attr("stroke", (d) => nodeStyle.borderColor)
     .attr("r", r)
     .call(drag(simulation))
     .on("click", clicked)
     .on("contextmenu", rightClicked)
-    .attr("class", "node");
+    .attr("class", "node")
+
 
   const nodeLabel = g
     .append("g")
     .selectAll("text")
-    .data(nodes)
-    .enter()
-    .append("text")
-    .text((node) => node.title)
-    .style("text-anchor", nodeLabelStyle.textAnchor)
-    .style("fill", nodeLabelStyle.fill)
-    .style("font-size", nodeLabelStyle.fontSize)
+    .data(nodes, d => d)
+    .join(enter => {
+      let entered =
+        enter.append("text")
+          .text((node) => node.title)
+          .style("text-anchor", nodeLabelStyle.textAnchor)
+          .style("fill", nodeLabelStyle.fill)
+
+      return entered;
+    },
+      update => update
+      ,
+      exit => exit.remove()
+
+    ).style("font-size", nodeLabelStyle.fontSize)
     .attr("class", "nodeLabel")
-    .attr("dy", 4);
+    .attr("dy", 4)
 
   /* Sets angle on link label */
   const angle = (cx, cy, ex, ey) => {
@@ -334,7 +359,8 @@ const Graph = async (view) => {
 
     nodeLabel.attr("x", (data) => data.x).attr("y", (data) => data.y);
   });
-
+  console.log('reload')
   return svg.node();
+
 };
 export default Graph;
