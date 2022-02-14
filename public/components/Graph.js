@@ -4,15 +4,27 @@ import ContextMenu from "./ContextMenu.js";
 import { FormNode, getNodeTypeDetails } from './FormNode.js';
 import nodeDefs from "../store/definitions.js";
 
+
+
 async function Graph(view) {
 
-  let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
+  let nodes, rels = []
 
+  const updateData = async (view) => {
+
+    let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
+    nodes = graphJsonData[0].nodes;
+    rels = graphJsonData[0].rels;
+    return nodes, rels
+  }
+
+
+  console.log(await updateData(view), 'initial');
+  nodes, rels = await updateData(view)
   let width = window.innerWidth,
     height = window.innerHeight - 20;
 
-  let { nodes, rels } = graphJsonData[0],
-    r = 38,
+  let r = 38,
     svgStyle = {
       position: "absolute",
     },
@@ -37,7 +49,6 @@ async function Graph(view) {
       stroke: "#000",
       fill: "#000",
     }
-
   const simulation = d3
     .forceSimulation(nodes)
     .force(
@@ -90,7 +101,7 @@ async function Graph(view) {
   };
 
 
-  const svg = d3
+  let svg = d3
     .create("svg")
     .style("position", svgStyle.position)
     .attr("width", width)
@@ -150,9 +161,9 @@ async function Graph(view) {
               formDataObj[attrKey] = attrValue;
             });
             await Actions.CREATE(view, nodeTypesDetail.title, formDataObj);
-            graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
-
-            nodes, rels = graphJsonData[0]
+            await updateData(view);
+            await render(view)
+            console.log(nodes, rels)
           });
 
           d3.selectAll(".form_add_more_props_button")
@@ -212,94 +223,29 @@ async function Graph(view) {
   };
 
 
-  const link = g
+  let link = g
     .append("g")
     .style("stroke", linkSvgStyle.stroke)
     .style("fill", linkSvgStyle.fill)
     .attr("class", "linkSVG")
     .selectAll("path")
-    .data(rels, d => d)
-    .join((enter) => {
-      const link_enter = enter
-        .append("path")
-        .attr("id", function (d) {
-          return "edge" + d.id;
-        })
-        .attr("marker-end", (d) => {
-          return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
-        });
-      return link_enter;
-    },
-      update => update,
-      exit => exit.remove()
-    )
-    .join("path")
-    .on("click", clicked)
-    .on("contextmenu", rightClicked);
 
-  const linkLabel = g
+  let linkLabel = g
     .selectAll(".linkLabel")
-    .data(rels, d => d)
-    .join((enter) => {
-      const linkLabel = enter
-        .append("text")
-        .text((link) => link.title)
-      return linkLabel;
-    },
-      update => update,
-      exit => exit.remove()
-
-    ).attr("id", function (d) {
-      return "linkLabel" + d.id;
-    })
     .attr("class", "linkLabel")
     .style("color", "#fff")
     .attr("dy", 0);
 
-  const node = g
+  let node = g
     .append("g")
     .selectAll("circle")
-    .data(nodes, d => d)
-    .join(enter => {
-      let entered =
-        enter.append("circle")
-          .style("stroke-with", nodeStyle.strokeWidth)
-          .attr("stroke-with", (d) => nodeStyle.strokeWidth)
-          .attr("fill", (d) => nodeFill)
-
-      return entered;
-    },
-      update => update
-        .attr("fill", "blue")
-        .call((update) => console.log('updated!', update)),
-      exit => exit.remove()
-
-    ).attr("stroke", (d) => nodeStyle.borderColor)
-    .attr("r", r)
-    .call(drag(simulation))
-    .on("click", clicked)
-    .on("contextmenu", rightClicked)
+    .attr("stroke", "#fff")
     .attr("class", "node")
 
-
-  const nodeLabel = g
+  let nodeLabel = g
     .append("g")
     .selectAll("text")
-    .data(nodes, d => d)
-    .join(enter => {
-      let entered =
-        enter.append("text")
-          .text((node) => node.title)
-          .style("text-anchor", nodeLabelStyle.textAnchor)
-          .style("fill", nodeLabelStyle.fill)
-
-      return entered;
-    },
-      update => update
-      ,
-      exit => exit.remove()
-
-    ).style("font-size", nodeLabelStyle.fontSize)
+    .style("font-size", nodeLabelStyle.fontSize)
     .attr("class", "nodeLabel")
     .attr("dy", 4)
 
@@ -359,8 +305,127 @@ async function Graph(view) {
 
     nodeLabel.attr("x", (data) => data.x).attr("y", (data) => data.y);
   });
-  console.log('reload')
-  return svg.node();
+  async function render(view) {
+    updateData(view);
+    simulation.stop();
 
+    link = g
+      .selectAll(".linkSVG")
+      .data(rels, d => d)
+      .join((enter) => {
+        const link_enter = enter
+
+          .append("path")
+          .attr("id", function (d) {
+            return "edge" + d.id;
+          })
+          .attr("marker-end", (d) => {
+            return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
+          })
+          .call(drag(simulation))
+
+        return link_enter;
+      },
+        update => {
+          const link_enter =
+            update.append("path")
+              .attr("id", function (d) {
+                return "edge" + d.id;
+              })
+              .attr("marker-end", (d) => {
+                return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
+              })
+              .call(drag(simulation))
+
+          return link_enter
+        },
+        exit => exit.remove()
+      )
+      .join("path")
+      .on("click", clicked)
+      .on("contextmenu", rightClicked);
+
+    linkLabel = g
+      .selectAll(".linkLabel")
+      .data(rels, d => d)
+      .join((enter) => {
+        const linkLabel = enter
+          .append("text")
+          .text((link) => link.title)
+          .call(drag(simulation))
+
+        return linkLabel;
+      },
+        update => {
+          const linkLabel = update
+            .append("text")
+            .text((link) => link.title)
+            .call(drag(simulation))
+
+          return linkLabel;
+        },
+        exit => exit.remove()
+
+      ).attr("id", function (d) {
+        return "linkLabel" + d.id;
+      })
+      .attr("class", "linkLabel")
+      .style("color", "#fff")
+      .attr("dy", 0);
+
+    node = g
+      .selectAll(".node")
+      .data(nodes, d => d)
+      .join(enter => {
+        let entered =
+          enter.append("circle")
+            .style("stroke-with", nodeStyle.strokeWidth)
+            .attr("stroke-with", (d) => nodeStyle.strokeWidth)
+            .attr("fill", (d) => nodeFill)
+            .attr("class", "node")
+            .call(drag(simulation))
+
+        return entered;
+      },
+        update => {
+          let updated = update
+            .attr("fill", nodeFill)
+          return updated
+        },
+        exit => exit.remove()
+
+
+      ).attr("stroke", (d) => nodeStyle.borderColor)
+      .attr("r", r)
+      .call(drag(simulation))
+      .on("click", clicked)
+      .on("contextmenu", rightClicked)
+
+    nodeLabel = g
+      .selectAll("text")
+      .data(nodes, d => d)
+      .join(enter => {
+        let entered =
+          enter.append("text")
+            .text((node) => node.title)
+            .style("text-anchor", nodeLabelStyle.textAnchor)
+            .style("fill", nodeLabelStyle.fill)
+            .attr("dy", 4)
+        return entered;
+      },
+        update => update
+        ,
+        exit => exit.remove()
+
+      )
+    simulation
+      .nodes(nodes)
+      .force("link")
+      .links(rels);
+    simulation.alpha(1).restart();
+
+  }
+  await render(view)
+  return svg.node();
 };
 export default Graph;
