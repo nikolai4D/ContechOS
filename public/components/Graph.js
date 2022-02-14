@@ -61,7 +61,7 @@ async function Graph(view) {
         .id((d) => d.id)
         .distance(linkLength)
     )
-    .force("charge", d3.forceManyBody().strength(-50))
+    .force("charge", d3.forceManyBody().strength(-1000))
     .force(
       "x",
       d3
@@ -199,8 +199,9 @@ async function Graph(view) {
     .attr("markerWidth", 11)
     .attr("markerHeight", 11)
     .attr("orient", "auto")
-    .attr("class", "linkSVG")
+    // .attr("class", "linkSVG")
     .append("path")
+    .attr("fill", linkSvgStyle.fill)
     .attr("d", "M 0,-5 L 10 ,0 L 0,5");
 
   // self arrow
@@ -213,8 +214,10 @@ async function Graph(view) {
     .attr("markerWidth", 11)
     .attr("markerHeight", 11)
     .attr("orient", "168deg")
-    .attr("class", "linkSVG")
+    // .attr("class", "linkSVG")
     .append("path")
+    .attr("fill", linkSvgStyle.fill)
+
     .attr("d", "M 0,-5 L 10 ,0 L 0,5");
 
   const clicked = (event, d) => {
@@ -229,10 +232,9 @@ async function Graph(view) {
 
   let link = g
     .append("g")
-    .style("stroke", linkSvgStyle.stroke)
-    .style("fill", linkSvgStyle.fill)
-    .attr("class", "linkSVG")
-    .selectAll("path")
+    .attr("class", "forLinks")
+    .select(".forLinks");
+  // .selectAll("path")
 
   let linkLabel = g
     .selectAll(".linkLabel")
@@ -313,34 +315,31 @@ async function Graph(view) {
     updateData(view);
     simulation.stop();
 
-    link = g
+    link = svg
+      .select(".forLinks")
       .selectAll(".linkSVG")
-      .data(rels, d => d)
-      .join((enter) => {
-        const link_enter = enter
 
-          .append("path")
-          .attr("id", function (d) {
-            return "edge" + d.id;
-          })
+      .data(rels)
+      .join(
+        enter => {
+          const link_enter = enter
+            .append("path")
+            .style("stroke", linkSvgStyle.stroke)
+            .style("fill", linkSvgStyle.fill)
+            .attr("class", "linkSVG")
+            .attr("marker-end", d => {
+              return d.source == d.target
+                ? "url(#self-arrow)"
+                : "url(#end-arrow)";
+            });
+          return link_enter;
+        },
+
+        update => update
+
           .attr("marker-end", (d) => {
             return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
           })
-
-        return link_enter;
-      },
-        update => {
-          const link_enter =
-            update.append("path")
-              .attr("id", function (d) {
-                return "edge" + d.id;
-              })
-              .attr("marker-end", (d) => {
-                return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
-              })
-
-          return link_enter
-        }
       )
       .join("path")
       .on("click", clicked)
