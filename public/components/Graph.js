@@ -9,18 +9,21 @@ import nodeDefs from "../store/definitions.js";
 async function Graph(view) {
 
   let nodes, rels = []
+  let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
+
+  nodes = graphJsonData[0].nodes;
+  rels = graphJsonData[0].rels;
 
   const updateData = async (view) => {
-
-    let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
-    nodes = graphJsonData[0].nodes;
-    rels = graphJsonData[0].rels;
-    return nodes, rels
+    // Preserve position of nodes/rels
+    const old = new Map(nodes.map(d => [d.id, d]));
+    graphJsonData = await JSON.parse(sessionStorage.getItem(view));
+    nodes = graphJsonData[0].nodes.map(d =>
+      Object.assign(old.get(d.id) || {}, d)
+    );
+    rels = graphJsonData[0].rels.map(d => Object.assign({}, d));
   }
 
-
-  console.log(await updateData(view), 'initial');
-  nodes, rels = await updateData(view)
   let width = window.innerWidth,
     height = window.innerHeight - 20;
 
@@ -163,6 +166,7 @@ async function Graph(view) {
             await Actions.CREATE(view, nodeTypesDetail.title, formDataObj);
             await updateData(view);
             await render(view)
+
             console.log(nodes, rels)
           });
 
@@ -322,7 +326,6 @@ async function Graph(view) {
           .attr("marker-end", (d) => {
             return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
           })
-          .call(drag(simulation))
 
         return link_enter;
       },
@@ -335,11 +338,9 @@ async function Graph(view) {
               .attr("marker-end", (d) => {
                 return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
               })
-              .call(drag(simulation))
 
           return link_enter
-        },
-        exit => exit.remove()
+        }
       )
       .join("path")
       .on("click", clicked)
@@ -347,21 +348,17 @@ async function Graph(view) {
 
     linkLabel = g
       .selectAll(".linkLabel")
-      .data(rels, d => d)
+      .data(rels, d => d['id'])
       .join((enter) => {
         const linkLabel = enter
           .append("text")
           .text((link) => link.title)
-          .call(drag(simulation))
-
         return linkLabel;
       },
         update => {
           const linkLabel = update
             .append("text")
             .text((link) => link.title)
-            .call(drag(simulation))
-
           return linkLabel;
         },
         exit => exit.remove()
@@ -374,15 +371,15 @@ async function Graph(view) {
       .attr("dy", 0);
 
     node = g
-      .selectAll(".node")
-      .data(nodes, d => d)
+      .selectAll("circle")
+      .data(nodes, d => d['id'])
       .join(enter => {
         let entered =
           enter.append("circle")
-            .style("stroke-with", nodeStyle.strokeWidth)
-            .attr("stroke-with", (d) => nodeStyle.strokeWidth)
             .attr("fill", (d) => nodeFill)
             .attr("class", "node")
+            .attr("stroke", (d) => nodeStyle.borderColor)
+            .attr("r", r)
             .call(drag(simulation))
 
         return entered;
@@ -391,19 +388,14 @@ async function Graph(view) {
           let updated = update
             .attr("fill", nodeFill)
           return updated
-        },
-        exit => exit.remove()
+        }
 
 
-      ).attr("stroke", (d) => nodeStyle.borderColor)
-      .attr("r", r)
-      .call(drag(simulation))
-      .on("click", clicked)
-      .on("contextmenu", rightClicked)
+      )
 
     nodeLabel = g
       .selectAll("text")
-      .data(nodes, d => d)
+      .data(nodes, d => d['id'])
       .join(enter => {
         let entered =
           enter.append("text")
@@ -414,8 +406,7 @@ async function Graph(view) {
         return entered;
       },
         update => update
-        ,
-        exit => exit.remove()
+
 
       )
     simulation
