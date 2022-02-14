@@ -1,11 +1,11 @@
 import Mutations from "./Mutations.js";
+// import { stack } from "d3";
 
 class Actions {
     constructor() {
     }
 
     async CREATE(view, nodeType, attrs) {
-
         try {
             const record = await fetch(`/api/${nodeType}/create`, {
                 method: 'POST',
@@ -13,7 +13,7 @@ class Actions {
                     'Content-Type': 'application/json',
                     authorization: sessionStorage.getItem("accessToken"),
                 },
-                body: JSON.stringify(attrs),
+                body: JSON.stringify(await attrs),
             })
             const recordJson = await record.json();
 
@@ -23,7 +23,7 @@ class Actions {
 
             if (view === 'props' && nodeType === 'propKey') {
                 let source = recordJson.id;
-                let target = attrs.propTypeId;
+                let target = await attrs.propTypeId;
                 let newRel = { "id": `${source}_${target}`, source, target, "title": "has propType" }
                 recordsInView[0].rels.push(newRel)
 

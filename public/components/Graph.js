@@ -148,26 +148,33 @@ async function Graph(view) {
             const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id));
 
 
-            nodeTypesDetail.attributes.forEach(attr => {
+            nodeTypesDetail.attributes.forEach(async attr => {
 
               let attrKey = Object.keys(attr)[0];
               let formAttr = formData[`field_${attrKey}`];
+              console.log(formAttr, 'formAttr')
+              // console.log(formAttr.value, "input", [...formAttr.selectedOptions].map(option => option.value), "mupltiple")
+
               let attrValue = '';
               if (formAttr.tagName === "INPUT") {  // if input
                 attrValue = formAttr.value;
-              }
-              else if (formAttr.tagName === "SELECT") {
-                if (Object.values(attr)[0]['nodeTypeId']) {  // If regular dropdown
-                  attrValue = formAttr.value;
-                }
-              }
-              else { // if dropdown multiple
-                attrValue = [...formAttr.selectedOptions].map(option => option.value);
 
               }
-              formDataObj[attrKey] = attrValue;
+              else if (formAttr.tagName === "SELECT") {
+
+                if (Object.values(attr)[0]['nodeTypeId']) {  // If regular dropdown
+                  attrValue = formAttr.value;
+
+                }
+                else { // if dropdown multiple
+                  attrValue = await [...formAttr.selectedOptions].map(option => option.value);
+                  console.log('attrValue', attrValue)
+                }
+              }
+              formDataObj[attrKey] = await attrValue;
+
             });
-            await Actions.CREATE(view, nodeTypesDetail.title, formDataObj);
+            await Actions.CREATE(view, nodeTypesDetail.title, await formDataObj);
             d3.select(".FormMenuContainer").remove();
 
             await updateData(view);
