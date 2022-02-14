@@ -2,9 +2,6 @@ import * as d3 from "https://cdn.skypack.dev/d3@6";
 import Actions from "../store/Actions.js";
 import ContextMenu from "./ContextMenu.js";
 import { FormNode, getNodeTypeDetails } from './FormNode.js';
-import nodeDefs from "../store/definitions.js";
-
-
 
 async function Graph(view) {
 
@@ -150,24 +147,31 @@ async function Graph(view) {
 
             const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id));
 
+
             nodeTypesDetail.attributes.forEach(attr => {
 
               let attrKey = Object.keys(attr)[0];
               let formAttr = formData[`field_${attrKey}`];
               let attrValue = '';
-              if (formAttr.tagName === "INPUT") {
+              if (formAttr.tagName === "INPUT") {  // if input
                 attrValue = formAttr.value;
               }
               else if (formAttr.tagName === "SELECT") {
+                if (Object.values(attr)[0]['nodeTypeId']) {  // If regular dropdown
+                  attrValue = formAttr.value;
+                }
+              }
+              else { // if dropdown multiple
                 attrValue = [...formAttr.selectedOptions].map(option => option.value);
+
               }
               formDataObj[attrKey] = attrValue;
             });
             await Actions.CREATE(view, nodeTypesDetail.title, formDataObj);
+            d3.select(".FormMenuContainer").remove();
+
             await updateData(view);
             await render(view)
-
-            console.log(nodes, rels)
           });
 
           d3.selectAll(".form_add_more_props_button")
@@ -179,7 +183,7 @@ async function Graph(view) {
                 .html("<div>hello</div>")
 
               // return document.getElementById("form_add_props")
-            })
+            });
         });
     });
 

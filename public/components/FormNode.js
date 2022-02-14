@@ -19,10 +19,8 @@ const getNodeTypesAttrs = (nodeTypeId) => {
 export function FormNode(d) {
 
     const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id))
-    console.log(nodeTypesDetail, 'nodeTypesDetails')
 
     let arrayWithEntries = nodeTypesDetail.attributes
-    console.log(arrayWithEntries, 'arrayWithEntries')
 
     let fieldsArray = [];
 
@@ -39,7 +37,6 @@ export function FormNode(d) {
                 // Returns dropwdowns with multiple choice
                 let allNodesByType = getNodeTypesAttrs(valueOfAttr[0]['nodeTypeId']);
                 let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple")
-                console.log('dropDownString', dropDownString)
                 fieldsArray.push(dropDownString);
             }
             else {
@@ -49,11 +46,11 @@ export function FormNode(d) {
         }
         else if (typeof (valueOfAttr) === 'object') {
             // Returns single dropdown
-
-            fieldsArray.push(dropDown(keyOfAttr, []))
+            let allNodesByType = getNodeTypesAttrs(valueOfAttr['nodeTypeId']);
+            let dropDownString = dropDown(keyOfAttr, allNodesByType)
+            fieldsArray.push(dropDownString);
         }
     });
-    console.log(fieldsArray.join(""))
 
     const template = `  
     <div class="formNode card position-absolute">

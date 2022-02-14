@@ -21,6 +21,13 @@ class Actions {
 
             recordsInView[0].nodes.push(recordJson)
 
+            if (view === 'props' && nodeType === 'propKey') {
+                let source = recordJson.id;
+                let target = attrs.propTypeId;
+                let newRel = { "id": `${source}_${target}`, source, target, "title": "has propType" }
+                recordsInView[0].rels.push(newRel)
+
+            }
             sessionStorage.setItem(view, JSON.stringify(recordsInView));
 
         }
