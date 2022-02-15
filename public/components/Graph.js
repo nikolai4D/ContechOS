@@ -16,12 +16,15 @@ async function Graph(view) {
 
   const updateData = async (view) => {
     // Preserve position of nodes/rels
-    const old = new Map(nodes.map(d => [d.id, d]));
-    graphJsonData = await JSON.parse(sessionStorage.getItem(view));
-    nodes = graphJsonData[0].nodes.map(d =>
-      Object.assign(old.get(d.id) || {}, d)
-    );
-    rels = graphJsonData[0].rels.map(d => Object.assign({}, d));
+    if (nodes !== undefined) {
+
+      const old = new Map(nodes.map(d => [d.id, d]));
+      graphJsonData = await JSON.parse(sessionStorage.getItem(view));
+      nodes = graphJsonData[0].nodes.map(d =>
+        Object.assign(old.get(d.id) || {}, d)
+      );
+      rels = graphJsonData[0].rels.map(d => Object.assign({}, d));
+    }
   }
 
   let width = window.innerWidth,
