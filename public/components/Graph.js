@@ -1,7 +1,6 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
-import Actions from "../store/Actions.js";
 import ContextMenu from "./ContextMenu.js";
-import { FormNode, getNodeTypeDetails } from './FormNode.js';
+import { FormNode } from './FormNode.js';
 import styles from './graphComponents/styles.js';
 import endArrow from './graphComponents/endArrow.js';
 import startArrow from './graphComponents/startArrow.js';
@@ -96,26 +95,96 @@ async function Graph(view) {
       d3.select(".FormMenuContainer").remove();
     })
     .on("contextmenu", (d) => {
+      let clickedObj = d;
+
+      if (d.target.tagName === 'svg') {
+        console.log(d.target.tagName)
+
+        d3.select(".FormMenuContainer").remove();
+        d3.select(".contextMenuContainer").remove();
+        event.preventDefault();
+        d3.select("#app")
+          .append("div")
+          .attr("class", "contextMenuContainer")
+          .html(ContextMenu(event, d))
+          .select(".contextMenu")
+          .style("top", d.clientY + "px")
+          .style("left", d.clientX + "px");
+        let clickEvent = event;
+        let x_cord = d.clientX;
+        let y_cord = d.clientY;
+
+        d3.selectAll(".context_menu_item")
+          .on("click", async (d) => {
+            d3.select(".contextMenuContainer").remove();
+            d3.select(".FormMenuContainer").remove();
+
+            d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(clickEvent, d, clickedObj)).select('.formNode')
+              .style("top", y_cord + "px")
+              .style("left", x_cord + "px");
+
+            d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
+              await formNodeFunction(view, d)
+
+              await updateData(view);
+              await render(view)
+            });
+
+            // d3.selectAll(".form_add_more_props_button")
+            //   .on("click", (d) => {
+
+            //     d3.selectAll(".form_add_props")
+            //       .append("div")
+            //       .clone(d3.selectAll(".form_add_props"))
+            //       .html("<div>hello</div>")
+
+            //     // return document.getElementById("form_add_props")
+            //   });
+          });
+      }
+    });
+
+  const firstG = svg.append("g").attr("transform", `translate(20,20)`);
+  const g = firstG.append("g").attr("class", "secondG")
+
+  // end arrow
+  endArrow(g);
+
+  // start arrow
+  startArrow(g);
+
+  const clicked = (event, d) => {
+    console.log(d);
+  };
+
+  const rightClicked = (event, d) => {
+
+    event.preventDefault();
+    let clickedObj = d;
+
+    if (event.target.tagName === 'circle') {
+      console.log(event.target.tagName)
+
       d3.select(".FormMenuContainer").remove();
       d3.select(".contextMenuContainer").remove();
       event.preventDefault();
       d3.select("#app")
         .append("div")
         .attr("class", "contextMenuContainer")
-        .html(ContextMenu(d))
+        .html(ContextMenu(event, d))
         .select(".contextMenu")
-        .style("top", d.clientY + "px")
-        .style("left", d.clientX + "px");
-
-      let x_cord = d.clientX;
-      let y_cord = d.clientY;
+        .style("top", event.clientY + "px")
+        .style("left", event.clientX + "px");
+      let clickEvent = event;
+      let x_cord = event.clientX;
+      let y_cord = event.clientY;
 
       d3.selectAll(".context_menu_item")
         .on("click", async (d) => {
           d3.select(".contextMenuContainer").remove();
           d3.select(".FormMenuContainer").remove();
 
-          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(d)).select('.formNode')
+          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(clickEvent, d, clickedObj)).select('.formNode')
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
@@ -137,28 +206,8 @@ async function Graph(view) {
           //     // return document.getElementById("form_add_props")
           //   });
         });
-    });
-
-  const firstG = svg.append("g").attr("transform", `translate(20,20)`);
-  const g = firstG.append("g").attr("class", "secondG")
-
-  // end arrow
-  endArrow(g);
-
-  // start arrow
-  startArrow(g);
-
-  const clicked = (event, d) => {
-    console.log(d);
-  };
-
-  const rightClicked = (event, d) => {
-
-    if (event.target.tagName === 'circle') {
-      let nodeType = d.nodeType;
     }
-    console.log(d, "right");
-    event.preventDefault();
+
   };
 
 

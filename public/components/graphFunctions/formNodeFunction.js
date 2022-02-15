@@ -1,5 +1,5 @@
 import Actions from "../../store/Actions.js";
-import { getNodeTypeDetails } from '../FormNode.js';
+import { getTypeDetails } from '../FormNode.js';
 import { select } from "https://cdn.skypack.dev/d3@6";
 
 const formNodeFunction = async (view, d) => {
@@ -8,7 +8,7 @@ const formNodeFunction = async (view, d) => {
     const formData = document.getElementById("formNode");
     let formDataObj = {}
 
-    const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id));
+    const nodeTypesDetail = getTypeDetails(parseInt(d.target.id), "nodeType", "nodeTypeId");
 
     nodeTypesDetail.attributes.forEach(async attr => {
 

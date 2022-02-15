@@ -4,29 +4,26 @@ import dropDownKeyValue from "./DropDownFieldKeyValue.js";
 import dropDown from "./DropDownField.js"
 import inputField from "./InputField.js";
 
-export function getNodeTypeDetails(id) {
-    return nodeDefs.nodeTypes.find(obj => {
-        return obj.nodeTypeId === id;
+export function getTypeDetails(id, types, typeId) {
+    return nodeDefs[types].find(obj => {
+        return obj[typeId] === id;
     })
 };
 
 const getNodeTypesAttrs = (nodeTypeId) => {
-    const nodeType = (getNodeTypeDetails(nodeTypeId)).title;
+    const nodeType = (getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId")).title;
     Actions.GETALL(nodeType);
     return JSON.parse(sessionStorage.getItem(`${nodeType}`));
 }
 
-export function FormNode(d) {
+function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
 
-    const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id))
-
-    let arrayWithEntries = nodeTypesDetail.attributes
-
-    let fieldsArray = [];
-
-    arrayWithEntries.forEach(obj => {
+    for (let obj of arrayWithEntries) {
+        console.log(obj, 'obj')
         let keyOfAttr = Object.keys(obj)[0];
         let valueOfAttr = Object.values(obj)[0];
+        if (valueOfAttr['hidden']) { continue };
+
 
         if (typeof (valueOfAttr) === 'string') {
             // Returns input forms
@@ -35,7 +32,7 @@ export function FormNode(d) {
         else if (Array.isArray(valueOfAttr)) {
             if (valueOfAttr[0]['nodeTypeId']) {
                 // Returns dropwdowns with multiple choice
-                let allNodesByType = getNodeTypesAttrs(valueOfAttr[0]['nodeTypeId']);
+                let allNodesByType = getNodeTypesAttrs(valueOfAttr[0]['nodeTypeId'])
                 let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple")
                 fieldsArray.push(dropDownString);
             }
@@ -46,11 +43,31 @@ export function FormNode(d) {
         }
         else if (typeof (valueOfAttr) === 'object') {
             // Returns single dropdown
-            let allNodesByType = getNodeTypesAttrs(valueOfAttr['nodeTypeId']);
+
+            let allNodesByType = getNodeTypesAttrs(valueOfAttr['nodeTypeId']).filter(obj => obj.id !== clickedObj.id)
+
             let dropDownString = dropDown(keyOfAttr, allNodesByType)
             fieldsArray.push(dropDownString);
         }
-    });
+    };
+}
+
+export function FormNode(event, d, clickedObj) {
+    let typesDetail = []
+    if (event.target.tagName === 'circle') {
+        typesDetail = getTypeDetails(parseInt(d.target.id), "relTypes", "relTypeId");
+        console.log(typesDetail, 'typesdetail')
+
+    }
+    else if (event.target.tagName === 'svg') {
+        typesDetail = getTypeDetails(parseInt(d.target.id), "nodeTypes", "nodeTypeId");
+    }
+
+    let arrayWithEntries = typesDetail.attributes;
+
+    let fieldsArray = [];
+
+    updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj);
 
     const template = `  
     <div class="formNode card position-absolute">
@@ -112,7 +129,7 @@ export function FormNode(d) {
     */
 
 
-    // const data = Object.keys(nodeTypesDetail.attributes)
+    // const data = Object.keys(typesDetail.attributes)
 
     // let dataArray = data.map(obj =>
     //     `<div >

@@ -14,7 +14,7 @@ const nodeDefs = {
             "attributes": [
                 { "title": "" },
                 { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-                { "source": { "nodeTypeId": 4, "attributes": "id" } } // target is set to source in the API 
+                { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } } // target is set to source in the API 
             ]
         },
         {
@@ -24,7 +24,7 @@ const nodeDefs = {
             "attributes": [
                 { "title": "" },
                 { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-                { "source": { "nodeTypeId": 4, "attributes": "id" } },
+                { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } },
                 { "target": { "nodeTypeId": 4, "attributes": "id" } } // target !== source (validated in the API)
             ]
         },
@@ -66,7 +66,8 @@ const nodeDefs = {
                 { "title": "" },
                 { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }, // dropdown multiple
             ],
-            "relTypes": [1, 2]
+            "relTypes": [1, 2
+            ]
         },
 
         // {
@@ -134,11 +135,14 @@ const nodeDefs = {
         {
             "groupId": 3,
             "title": "props",
-            "nodeTypes": [1, 2]
+            "nodeTypes": [1, 2],
+            "relTypes": []
         }, {
             "groupId": 4,
             "title": "propVals",
-            "nodeTypes": [3]
+            "nodeTypes": [3],
+            "relTypes": []
+
         }
     ]
 };
