@@ -5,6 +5,7 @@ import { FormNode, getNodeTypeDetails } from './FormNode.js';
 import styles from './graphComponents/styles.js';
 import endArrow from './graphComponents/endArrow.js';
 import startArrow from './graphComponents/startArrow.js';
+import formNodeFunction from './graphFunctions/formNodeFunction.js'
 
 async function Graph(view) {
 
@@ -96,7 +97,6 @@ async function Graph(view) {
     })
     .on("contextmenu", (d) => {
       d3.select(".FormMenuContainer").remove();
-
       d3.select(".contextMenuContainer").remove();
       event.preventDefault();
       d3.select("#app")
@@ -120,41 +120,7 @@ async function Graph(view) {
             .style("left", x_cord + "px");
 
           d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
-            event.preventDefault();
-            const formData = document.getElementById("formNode");
-            let formDataObj = {}
-
-            const nodeTypesDetail = getNodeTypeDetails(parseInt(d.target.id));
-
-
-            nodeTypesDetail.attributes.forEach(async attr => {
-
-              let attrKey = Object.keys(attr)[0];
-              let formAttr = formData[`field_${attrKey}`];
-              console.log(formAttr, 'formAttr')
-              // console.log(formAttr.value, "input", [...formAttr.selectedOptions].map(option => option.value), "mupltiple")
-
-              let attrValue = '';
-              if (formAttr.tagName === "INPUT") {  // if input
-                attrValue = formAttr.value;
-
-              }
-              else if (formAttr.tagName === "SELECT") {
-
-                if (Object.values(attr)[0]['nodeTypeId']) {  // If regular dropdown
-                  attrValue = formAttr.value;
-
-                }
-                else { // if dropdown multiple
-                  attrValue = await [...formAttr.selectedOptions].map(option => option.value);
-                  console.log('attrValue', attrValue)
-                }
-              }
-              formDataObj[attrKey] = await attrValue;
-
-            });
-            await Actions.CREATE(view, nodeTypesDetail.title, await formDataObj);
-            d3.select(".FormMenuContainer").remove();
+            await formNodeFunction(view, d)
 
             await updateData(view);
             await render(view)
@@ -187,6 +153,10 @@ async function Graph(view) {
   };
 
   const rightClicked = (event, d) => {
+
+    if (event.target.tagName === 'circle') {
+      let nodeType = d.nodeType;
+    }
     console.log(d, "right");
     event.preventDefault();
   };
@@ -209,13 +179,6 @@ async function Graph(view) {
   let node = g
     .append("g")
     .selectAll("circle")
-  // .attr("stroke", "#fff")
-  // .attr("class", "node")
-
-
-  // .selectAll(".linklabel")
-  // .append("text")
-  // .classed("linkLabel", true)
 
   let nodeLabel = g
     .append("g")
@@ -324,7 +287,8 @@ async function Graph(view) {
             .attr("stroke", (d) => styles.node.borderColor)
             .attr("r", styles.node.radius)
             .call(drag(simulation))
-
+            .on("click", clicked)
+            .on("contextmenu", rightClicked);
         return entered;
       },
         update => {

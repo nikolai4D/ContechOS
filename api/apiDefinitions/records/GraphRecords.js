@@ -36,6 +36,7 @@ class GraphRecords {
       delete node.created;
       delete node.updated;
       node.id = file.slice(0, -5);
+      node.nodeType = nodeType;
       nodes.push(node);
     });
 

@@ -65,19 +65,10 @@ const nodeDefs = {
             "attributes": [
                 { "title": "" },
                 { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }, // dropdown multiple
-            ]
+            ],
+            "relTypes": [1, 2]
         },
 
-
-        // {
-        //     "nodeTypeId": 4,
-        //     "title": "config",
-        //     "abbr": "c",
-        //     "attributes": [
-        //         { "title": "" },
-        //         { "propKeys": [{ "nodeTypeId": 2, "attributes": "id", "title": "propKey" }] }, // dropdown multiple
-        //     ]
-        // },
         // {
         //     "nodeTypeId": 5,
         //     "title": "configRel",

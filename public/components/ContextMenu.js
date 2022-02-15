@@ -1,20 +1,44 @@
 import nodeDefs from "../store/definitions.js";
 
-const ContextMenu = (d) => {
+const ContextMenu = (event, d) => {
+
+
     const group = window.location.pathname.substring(1);
 
-    const validNodeTypesByGroup = nodeDefs.groups.find(obj => {
+    let validNodeTypesByGroup = nodeDefs.groups.find(obj => {
         return obj.title === group;
-    }).nodeTypes;
+    })
 
-    const nodeTypesDetail = nodeDefs.nodeTypes.filter((type) => {
-        if (validNodeTypesByGroup.includes(type.nodeTypeId))
-            return type
-    });
+    let typesDetail = [];
+    let data = [];
+
+    function getTypesDetail(types, typeId) {
+        validNodeTypesByGroup = validNodeTypesByGroup[types];
+        typesDetail = nodeDefs[types].filter((type) => {
+            if (validNodeTypesByGroup.includes(type[typeId]))
+                return type;
+        });
+    }
+    function getDataByTypesDetail(typeId) {
+
+        data = typesDetail.map((type) => { return { "title": `Create ${type.title}`, "id": `${type[typeId]}` } })
+    }
+
+    if (event.target.tagName === 'circle') {
+        getTypesDetail("relTypes", "relTypeId")
+        getDataByTypesDetail("relTypeId")
+
+    }
+    else if (event.target.tagName === 'svg') {
+        getTypesDetail("nodeTypes", "nodeTypeId")
+        getDataByTypesDetail("nodeTypeId")
+    }
 
 
 
-    const data = nodeTypesDetail.map((type) => { return { "title": `Create ${type.title}`, "id": `${type.nodeTypeId}` } })
+
+
+
     console.log(data)
     let dataArray = data.map(obj =>
         `<div class="list-group-item list-group-item-action context_menu_item" id="${obj.id}">
