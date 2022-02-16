@@ -92,8 +92,7 @@
           {
             "propTypeId": {
               "nodeTypeId": 1,
-              "attributes": "id",
-              "title": "propType"
+              "attributes": "id"
             }
           }
         ]
@@ -105,10 +104,9 @@
         "attributes": [
           { "title": "" },
           {
-            "propKey": {
+            "propKeyId": {
               "nodeTypeId": 2,
-              "attributes": "id",
-              "title": "propKey"
+              "attributes": "id"
             }
           }
         ]
@@ -161,7 +159,7 @@
       {
         "groupId": 3,
         "title": "props",
-        "nodeTypes": [1, 2],
+        "nodeTypes": [1, 2, 3],
         "relTypes": []
       },
       {
