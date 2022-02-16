@@ -4,6 +4,8 @@ import { FormNode } from "./FormNode.js";
 import styles from "./graphComponents/styles.js";
 import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
+import selfArrow from "./graphComponents/selfArrow.js";
+
 import formNodeFunction from "./graphFunctions/formNodeFunction.js";
 import Actions from "../store/Actions.js";
 
@@ -153,11 +155,11 @@ async function Graph(view) {
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
   const g = firstG.append("g").attr("class", "secondG");
 
-  // end arrow
   endArrow(g);
 
-  // start arrow
   startArrow(g);
+
+  selfArrow(g);
 
   const clicked = (event, d) => {
     console.log(d);
@@ -305,7 +307,8 @@ async function Graph(view) {
           const link_enter = enter
             .append("path")
             .style("stroke", styles.link.stroke)
-            .style("fill", styles.link.fill)
+            .style("fill", "none")
+
             .attr("class", "linkSVG")
             .attr("marker-end", (d) => {
               return d.source == d.target
