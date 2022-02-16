@@ -127,7 +127,7 @@ async function Graph(view) {
               .style("left", x_cord + "px");
 
             d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
-              await formNodeFunction(view, d, 'node')
+              await formNodeFunction(view, d, 'node', clickedObj)
 
               await updateData(view);
               await render(view)
@@ -192,7 +192,7 @@ async function Graph(view) {
             .style("left", x_cord + "px");
 
           d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
-            await formNodeFunction(view, d)
+            await formNodeFunction(view, d, "rel", clickedObj)
 
             await updateData(view);
             await render(view)
@@ -364,7 +364,6 @@ async function Graph(view) {
       },
         update => update
       )
-
 
     linkLabel = g
       .selectAll(".linkLabel")
