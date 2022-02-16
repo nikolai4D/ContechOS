@@ -2,7 +2,7 @@ import Mutations from "./Mutations.js";
 // import { stack } from "d3";
 
 class Actions {
-  constructor() {}
+  constructor() { }
 
   async CREATE(view, nodeType, attrs) {
     try {
@@ -18,7 +18,14 @@ class Actions {
 
       const recordsInView = JSON.parse(sessionStorage.getItem(view));
 
-      recordsInView[0].nodes.push(recordJson);
+
+      let type = "nodes";
+      console.log(nodeType)
+      if (nodeType.slice(-3) === "Rel") {
+        type = "rels"
+      }
+
+      recordsInView[0][type].push(recordJson);
       console.log(recordJson, recordsInView);
 
       if (view === "props" && nodeType === "propKey") {
