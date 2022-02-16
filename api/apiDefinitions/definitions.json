@@ -21,6 +21,55 @@
           { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } },
           { "target": { "nodeTypeId": 4, "attributes": "id" } }
         ]
+      },
+      {
+        "relTypeId": 3,
+        "title": "configObjInternalRel",
+        "abbr": "coir",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "source": { "nodeTypeId": 5, "attributes": "id", "hidden": true } },
+          { "configDefInteralRelId": { "relTypeId": 1, "attributes": "id" } }
+        ]
+      },
+      {
+        "relTypeId": 4,
+        "title": "configObjExternalRel",
+        "abbr": "coer",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "source": { "nodeTypeId": 5, "attributes": "id", "hidden": true } },
+          { "target": { "nodeTypeId": 5, "attributes": "id" } },
+          { "configDefExternalRelId": { "relTypeId": 2, "attributes": "id" } }
+        ]
       }
     ],
     "nodeTypes": [
@@ -73,14 +122,40 @@
           { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
         ],
         "relTypes": [1, 2]
+      },
+      {
+        "nodeTypeId": 5,
+        "title": "configObj",
+        "abbr": "co",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "configDefId": { "nodeTypeId": 4, "attributes": "id" } },
+          { "typeDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
+          { "instanceDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
+        ],
+        "relTypes": []
       }
     ],
     "groups": [
       {
         "groupId": 1,
         "title": "configs",
-        "nodeTypes": [4],
-        "relTypes": [1, 2]
+        "nodeTypes": [4, 5],
+        "relTypes": [1, 2, 3, 4]
       },
 
       {
