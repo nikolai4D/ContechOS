@@ -1,90 +1,100 @@
 {
-  "relTypes": [
-    {
-      "relTypeId": 1,
-      "title": "defInternalRel",
-      "abbr": "cdir",
-      "attributes": [
-        { "title": "" },
-        { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-        { "source": { "nodeTypeId": 4, "attributes": "id" } }
-      ]
-    },
-    {
-      "relTypeId": 2,
-      "title": "defExternalRel",
-      "abbr": "cder",
-      "attributes": [
-        { "title": "" },
-        { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-        { "source": { "nodeTypeId": 4, "attributes": "id" } },
-        { "target": { "nodeTypeId": 4, "attributes": "id" } }
-      ]
-    }
-  ],
-  "nodeTypes": [
-    {
-      "nodeTypeId": 1,
-      "title": "propType",
-      "abbr": "pt",
-      "attributes": [
-        {
-          "title": ""
-        }
-      ]
-    },
-    {
-      "nodeTypeId": 2,
-      "title": "propKey",
-      "abbr": "pk",
-      "attributes": [
-        { "title": "" },
-        {
-          "propTypeId": {
-            "nodeTypeId": 1,
-            "attributes": "id",
-            "title": "propType"
+  "nodeDefs": {
+    "relTypes": [
+      {
+        "relTypeId": 1,
+        "title": "configDefInternalRel",
+        "abbr": "cdir",
+        "attributes": [
+          { "title": "" },
+          { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
+          { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } }
+        ]
+      },
+      {
+        "relTypeId": 2,
+        "title": "configDefExternalRel",
+        "abbr": "cder",
+        "attributes": [
+          { "title": "" },
+          { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
+          { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } },
+          { "target": { "nodeTypeId": 4, "attributes": "id" } }
+        ]
+      }
+    ],
+    "nodeTypes": [
+      {
+        "nodeTypeId": 1,
+        "title": "propType",
+        "abbr": "pt",
+        "attributes": [
+          {
+            "title": ""
           }
-        }
-      ]
-    },
-    {
-      "nodeTypeId": 3,
-      "title": "propVal",
-      "abbr": "pv",
-      "attributes": [
-        { "title": "" },
-        {
-          "propKey": { "nodeTypeId": 2, "attributes": "id", "title": "propKey" }
-        }
-      ]
-    },
-    {
-      "nodeTypeId": 4,
-      "title": "configDef",
-      "abbr": "cd",
-      "attributes": [
-        { "title": "" },
-        { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
-      ]
-    }
-  ],
-  "groups": [
-    {
-      "groupId": 1,
-      "title": "configs",
-      "nodeTypes": [4],
-      "relTypes": [1, 2]
-    },
-    {
-      "groupId": 3,
-      "title": "props",
-      "nodeTypes": [1, 2]
-    },
-    {
-      "groupId": 4,
-      "title": "propVals",
-      "nodeTypes": [3]
-    }
-  ]
+        ]
+      },
+      {
+        "nodeTypeId": 2,
+        "title": "propKey",
+        "abbr": "pk",
+        "attributes": [
+          { "title": "" },
+          {
+            "propTypeId": {
+              "nodeTypeId": 1,
+              "attributes": "id",
+              "title": "propType"
+            }
+          }
+        ]
+      },
+      {
+        "nodeTypeId": 3,
+        "title": "propVal",
+        "abbr": "pv",
+        "attributes": [
+          { "title": "" },
+          {
+            "propKey": {
+              "nodeTypeId": 2,
+              "attributes": "id",
+              "title": "propKey"
+            }
+          }
+        ]
+      },
+      {
+        "nodeTypeId": 4,
+        "title": "configDef",
+        "abbr": "cd",
+        "attributes": [
+          { "title": "" },
+          { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
+        ],
+        "relTypes": [1, 2]
+      }
+    ],
+    "groups": [
+      {
+        "groupId": 1,
+        "title": "configs",
+        "nodeTypes": [4],
+        "relTypes": [1, 2]
+      },
+
+      {
+        "groupId": 3,
+        "title": "props",
+        "nodeTypes": [1, 2],
+        "relTypes": []
+      },
+      {
+        "groupId": 4,
+        "title": "propVals",
+        "nodeTypes": [3],
+        "relTypes": []
+      }
+    ]
+  }
 }

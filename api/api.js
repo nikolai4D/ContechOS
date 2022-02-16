@@ -17,6 +17,9 @@ api.use("/logout", require("./apiDefinitions/logout.js"));
 //PROTECTED APIs//
 api.use(verifyAccess);
 
+//----------definitions----------//
+api.use("/definitions", require("./apiDefinitions/apiDefinitions.js"));
+
 //----------users----------//
 api.use("/user", require("./apiDefinitions/user.js"));
 
@@ -38,9 +41,17 @@ api.use("/props", require("./apiDefinitions/graphProps.js"));
 //configDef
 api.use("/configDef", require("./apiDefinitions/apiConfigDef.js"));
 
+//configDefInternalRel
+api.use(
+  "/configDefInternalRel",
+  require("./apiDefinitions/apiConfigDefInternalRel.js")
+);
 
-//configRel
-api.use("/configRel", require("./apiDefinitions/apiConfigRel.js"));
+//configDefExternalRel
+api.use(
+  "/configDefExternalRel",
+  require("./apiDefinitions/apiConfigDefExternalRel.js")
+);
 
 //configs >>> gets config and configRel as nodes and rels
 api.use("/configs", require("./apiDefinitions/graphConfigs.js"));

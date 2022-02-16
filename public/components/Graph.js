@@ -1,14 +1,17 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
 import ContextMenu from "./ContextMenu.js";
-import { FormNode } from './FormNode.js';
-import styles from './graphComponents/styles.js';
-import endArrow from './graphComponents/endArrow.js';
-import startArrow from './graphComponents/startArrow.js';
-import formNodeFunction from './graphFunctions/formNodeFunction.js'
+import { FormNode } from "./FormNode.js";
+import styles from "./graphComponents/styles.js";
+import endArrow from "./graphComponents/endArrow.js";
+import startArrow from "./graphComponents/startArrow.js";
+import formNodeFunction from "./graphFunctions/formNodeFunction.js";
+import Actions from "../store/Actions.js";
 
 async function Graph(view) {
+  Actions.GETDEF();
 
-  let nodes, rels = []
+  let nodes,
+    rels = [];
   let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
 
   nodes = graphJsonData[0].nodes;
@@ -17,19 +20,17 @@ async function Graph(view) {
   const updateData = async (view) => {
     // Preserve position of nodes/rels
     if (nodes !== undefined) {
-
-      const old = new Map(nodes.map(d => [d.id, d]));
+      const old = new Map(nodes.map((d) => [d.id, d]));
       graphJsonData = await JSON.parse(sessionStorage.getItem(view));
-      nodes = graphJsonData[0].nodes.map(d =>
+      nodes = graphJsonData[0].nodes.map((d) =>
         Object.assign(old.get(d.id) || {}, d)
       );
-      rels = graphJsonData[0].rels.map(d => Object.assign({}, d));
+      rels = graphJsonData[0].rels.map((d) => Object.assign({}, d));
     }
-  }
+  };
 
   let width = window.innerWidth,
     height = window.innerHeight - 20;
-
 
   const simulation = d3
     .forceSimulation(nodes)
@@ -82,7 +83,6 @@ async function Graph(view) {
       .on("end", dragended);
   };
 
-
   let svg = d3
     .create("svg")
     .style("position", styles.svg.position)
@@ -100,8 +100,8 @@ async function Graph(view) {
     .on("contextmenu", (d) => {
       let clickedObj = d;
 
-      if (d.target.tagName === 'svg') {
-        console.log(d.target.tagName)
+      if (d.target.tagName === "svg") {
+        console.log(d.target.tagName);
 
         d3.select(".FormMenuContainer").remove();
         d3.select(".contextMenuContainer").remove();
@@ -117,38 +117,41 @@ async function Graph(view) {
         let x_cord = d.clientX;
         let y_cord = d.clientY;
 
-        d3.selectAll(".context_menu_item")
-          .on("click", async (d) => {
-            d3.select(".contextMenuContainer").remove();
-            d3.select(".FormMenuContainer").remove();
+        d3.selectAll(".context_menu_item").on("click", async (d) => {
+          d3.select(".contextMenuContainer").remove();
+          d3.select(".FormMenuContainer").remove();
 
-            d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(clickEvent, d, clickedObj)).select('.formNode')
-              .style("top", y_cord + "px")
-              .style("left", x_cord + "px");
+          d3.select("#root")
+            .append("div")
+            .attr("class", "FormMenuContainer")
+            .html(await FormNode(clickEvent, d, clickedObj))
+            .select(".formNode")
+            .style("top", y_cord + "px")
+            .style("left", x_cord + "px");
 
-            d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
-              await formNodeFunction(view, d, 'node', clickedObj)
+          d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
+            await formNodeFunction(view, d, "node", clickedObj);
 
-              await updateData(view);
-              await render(view)
-            });
-
-            // d3.selectAll(".form_add_more_props_button")
-            //   .on("click", (d) => {
-
-            //     d3.selectAll(".form_add_props")
-            //       .append("div")
-            //       .clone(d3.selectAll(".form_add_props"))
-            //       .html("<div>hello</div>")
-
-            //     // return document.getElementById("form_add_props")
-            //   });
+            await updateData(view);
+            await render(view);
           });
+
+          // d3.selectAll(".form_add_more_props_button")
+          //   .on("click", (d) => {
+
+          //     d3.selectAll(".form_add_props")
+          //       .append("div")
+          //       .clone(d3.selectAll(".form_add_props"))
+          //       .html("<div>hello</div>")
+
+          //     // return document.getElementById("form_add_props")
+          //   });
+        });
       }
     });
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
-  const g = firstG.append("g").attr("class", "secondG")
+  const g = firstG.append("g").attr("class", "secondG");
 
   // end arrow
   endArrow(g);
@@ -161,12 +164,11 @@ async function Graph(view) {
   };
 
   const rightClicked = (event, d) => {
-
     event.preventDefault();
     let clickedObj = d;
 
-    if (event.target.tagName === 'circle') {
-      console.log(event.target.tagName)
+    if (event.target.tagName === "circle") {
+      console.log(event.target.tagName);
 
       d3.select(".FormMenuContainer").remove();
       d3.select(".contextMenuContainer").remove();
@@ -182,44 +184,41 @@ async function Graph(view) {
       let x_cord = event.clientX;
       let y_cord = event.clientY;
 
-      d3.selectAll(".context_menu_item")
-        .on("click", async (d) => {
-          d3.select(".contextMenuContainer").remove();
-          d3.select(".FormMenuContainer").remove();
+      d3.selectAll(".context_menu_item").on("click", async (d) => {
+        d3.select(".contextMenuContainer").remove();
+        d3.select(".FormMenuContainer").remove();
 
-          d3.select('#root').append("div").attr("class", "FormMenuContainer").html(await FormNode(clickEvent, d, clickedObj)).select('.formNode')
-            .style("top", y_cord + "px")
-            .style("left", x_cord + "px");
+        d3.select("#root")
+          .append("div")
+          .attr("class", "FormMenuContainer")
+          .html(await FormNode(clickEvent, d, clickedObj))
+          .select(".formNode")
+          .style("top", y_cord + "px")
+          .style("left", x_cord + "px");
 
-          d3.selectAll('.FormNodeSubmit').on('click', async (e) => {
-            await formNodeFunction(view, d, "rel", clickedObj)
+        d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
+          await formNodeFunction(view, d, "rel", clickedObj);
 
-            await updateData(view);
-            await render(view)
-          });
-
-          // d3.selectAll(".form_add_more_props_button")
-          //   .on("click", (d) => {
-
-          //     d3.selectAll(".form_add_props")
-          //       .append("div")
-          //       .clone(d3.selectAll(".form_add_props"))
-          //       .html("<div>hello</div>")
-
-          //     // return document.getElementById("form_add_props")
-          //   });
+          await updateData(view);
+          await render(view);
         });
-    }
 
+        // d3.selectAll(".form_add_more_props_button")
+        //   .on("click", (d) => {
+
+        //     d3.selectAll(".form_add_props")
+        //       .append("div")
+        //       .clone(d3.selectAll(".form_add_props"))
+        //       .html("<div>hello</div>")
+
+        //     // return document.getElementById("form_add_props")
+        //   });
+      });
+    }
   };
 
-
-  let link = g
-    .append("g")
-    .attr("class", "forLinks")
-    .select(".forLinks");
+  let link = g.append("g").attr("class", "forLinks").select(".forLinks");
   // .selectAll("path")
-
 
   let linkLabel = g
     .selectAll(".linkLabel")
@@ -227,10 +226,7 @@ async function Graph(view) {
     .style("color", "#fff")
     .attr("dy", 0);
 
-
-  let node = g
-    .append("g")
-    .selectAll("circle")
+  let node = g.append("g").selectAll("circle");
 
   let nodeLabel = g
     .append("g")
@@ -238,7 +234,7 @@ async function Graph(view) {
     .append("text")
     .style("font-size", styles.nodeLabel.fontSize)
     .attr("class", "nodeLabel")
-    .attr("dy", 4)
+    .attr("dy", 4);
 
   /* Sets angle on link label */
   const angle = (cx, cy, ex, ey) => {
@@ -305,23 +301,24 @@ async function Graph(view) {
       .selectAll(".linkSVG")
       .data(rels)
       .join(
-        enter => {
+        (enter) => {
           const link_enter = enter
             .append("path")
             .style("stroke", styles.link.stroke)
             .style("fill", styles.link.fill)
             .attr("class", "linkSVG")
-            .attr("marker-end", d => {
+            .attr("marker-end", (d) => {
               return d.source == d.target
                 ? "url(#self-arrow)"
                 : "url(#end-arrow)";
             });
           return link_enter;
         },
-        update => update
-
-          .attr("marker-end", (d) => {
-            return d.source == d.target ? "url(#self-arrow)" : "url(#end-arrow)";
+        (update) =>
+          update.attr("marker-end", (d) => {
+            return d.source == d.target
+              ? "url(#self-arrow)"
+              : "url(#end-arrow)";
           })
       )
       .join("path")
@@ -330,10 +327,11 @@ async function Graph(view) {
 
     node = g
       .selectAll("circle")
-      .data(nodes, d => d['id'])
-      .join(enter => {
-        let entered =
-          enter.append("circle")
+      .data(nodes, (d) => d["id"])
+      .join(
+        (enter) => {
+          let entered = enter
+            .append("circle")
             .attr("fill", (d) => styles.node.fill)
             .attr("class", "node")
             .attr("stroke", (d) => styles.node.borderColor)
@@ -341,61 +339,54 @@ async function Graph(view) {
             .call(drag(simulation))
             .on("click", clicked)
             .on("contextmenu", rightClicked);
-        return entered;
-      },
-        update => {
-          let updated = update
-            .attr("fill", styles.node.fill)
-          return updated
+          return entered;
+        },
+        (update) => {
+          let updated = update.attr("fill", styles.node.fill);
+          return updated;
         }
-      )
+      );
 
     nodeLabel = g
       .selectAll("text")
-      .data(nodes, d => d['id'])
-      .join(enter => {
-        let entered =
-          enter.append("text")
+      .data(nodes, (d) => d["id"])
+      .join(
+        (enter) => {
+          let entered = enter
+            .append("text")
             .text((node) => node.title)
             .style("text-anchor", styles.nodeLabel.textAnchor)
             .style("fill", styles.nodeLabel.fill)
-            .attr("dy", 4)
-        return entered;
-      },
-        update => update
-      )
+            .attr("dy", 4);
+          return entered;
+        },
+        (update) => update
+      );
 
     linkLabel = g
       .selectAll(".linkLabel")
-      .data(rels, d => d['id'])
-      .join((enter) => {
-        const linkLabel = enter
-          .append("text")
-          .text((link) => link.title)
-        return linkLabel;
-      },
-        update => {
-          const linkLabel = update
-            .append("text")
-            .text((link) => link.title)
+      .data(rels, (d) => d["id"])
+      .join(
+        (enter) => {
+          const linkLabel = enter.append("text").text((link) => link.title);
           return linkLabel;
         },
-
-      ).attr("id", function (d) {
+        (update) => {
+          const linkLabel = update.append("text").text((link) => link.title);
+          return linkLabel;
+        }
+      )
+      .attr("id", function (d) {
         return "linkLabel" + d.id;
       })
       .attr("class", "linkLabel")
       .style("color", "#fff")
       .attr("dy", 0);
 
-    simulation
-      .nodes(nodes)
-      .force("link")
-      .links(rels);
+    simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
-
   }
-  await render(view)
+  await render(view);
   return svg.node();
-};
+}
 export default Graph;
