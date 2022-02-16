@@ -1,99 +1,104 @@
-import nodeDefs from "../store/definitions.js";
+//import nodeDefs from "../store/definitions.js";
+import Actions from "../store/Actions.js";
+import dropDownKeyValue from "./DropDownFieldKeyValue.js";
+import dropDown from "./DropDownField.js";
+import inputField from "./InputField.js";
 
-const inputForm = async (key) => {
-    return await `<div style="display: flex; padding: 0.5em">
-        <label class="form-label" for="form_${key}">${key}:</label>
-        <input type="text" class="form-control" id="form_${key}" name="${key}" value=""><br>
-    </div>`;
+let nodeDefs = "";
+export function getTypeDetails(id, types, typeId) {
+  console.log(id, types, typeId, nodeDefs);
+  return nodeDefs[types].find((obj) => {
+    return obj[typeId] === id;
+  });
+}
+
+const getNodeTypesAttrs = (nodeTypeId) => {
+  const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
+  Actions.GETALL(nodeType);
+  return JSON.parse(sessionStorage.getItem(`${nodeType}`));
 };
 
-const dropDown = async (key, attr = null) => {
-    return await `<div style="display: flex; padding: 0.5em">
-        <label class="form-label" for="form_${key}">${key}:</label>
-            <select class="form-select" aria-label="key" id="form_${key}" name="${key}" ${attr}>
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-    </div>`;
-};
+function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
+  for (let obj of arrayWithEntries) {
+    console.log(obj, "obj");
+    let keyOfAttr = Object.keys(obj)[0];
+    let valueOfAttr = Object.values(obj)[0];
+    if (valueOfAttr["hidden"]) {
+      continue;
+    }
 
+    if (typeof valueOfAttr === "string") {
+      // Returns input forms
+      fieldsArray.push(inputField(keyOfAttr));
+    } else if (Array.isArray(valueOfAttr)) {
+      if (valueOfAttr[0]["nodeTypeId"]) {
+        // Returns dropwdowns with multiple choice
+        let allNodesByType = getNodeTypesAttrs(valueOfAttr[0]["nodeTypeId"]);
+        let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple");
+        fieldsArray.push(dropDownString);
+      } else {
+        // Returns 2 dropdowns as key and value pair, with "Add more props" button
+        fieldsArray.push(
+          dropDownKeyValue(
+            keyOfAttr,
+            valueOfAttr[0].key.title,
+            valueOfAttr[0].value.title
+          )
+        );
+      }
+    } else if (typeof valueOfAttr === "object") {
+      // Returns single dropdown
 
-const dropDownKeyValue = async (title, key, value, attr = null) => {
-    return await `<div class="form_add_props" style="display: flex; padding: 0.5em">
-    <button class="form_add_more_props_button">Add more props</button>
-        <label class="form-label">${title}:</label>
-            <select class="form-select" aria-label="key" id="form_${key}" name="${key}" ${attr}>
-                <option selected>Open this select menu</option>
-                <option value="1">One</option>
-                <option value="2">Two</option>
-                <option value="3">Three</option>
-            </select>
-            :
-            <select class="form-select" aria-label="key" id="form_${value}" name="${value}" ${attr}>
-            <option selected>Open this select menu</option>
-            <option value="1">One</option>
-            <option value="2">Two</option>
-            <option value="3">Three</option>
-        </select>
-    </div>`;
-};
+      let allNodesByType = getNodeTypesAttrs(valueOfAttr["nodeTypeId"]).filter(
+        (obj) => obj.id !== clickedObj.id
+      );
 
-const FormNode = async (d, data) => {
+      let dropDownString = dropDown(keyOfAttr, allNodesByType);
+      fieldsArray.push(dropDownString);
+    }
+  }
+}
 
-    const nodeTypesDetail = await nodeDefs.nodeTypes.find(obj => {
-        return obj.nodeTypeId === parseInt(d.target.id);
-    });
+export function FormNode(event, d, clickedObj) {
+  nodeDefs = JSON.parse(sessionStorage.getItem("definitions"))[0];
+  let typesDetail = [];
+  //   await getNodeDefs();
 
-    console.log(nodeTypesDetail, 'nodeTypesDetails')
+  if (event.target.tagName === "circle") {
+    typesDetail = getTypeDetails(
+      parseInt(d.target.id),
+      "relTypes",
+      "relTypeId"
+    );
+    console.log(typesDetail, "typesdetail");
+  } else if (event.target.tagName === "svg") {
+    typesDetail = getTypeDetails(
+      parseInt(d.target.id),
+      "nodeTypes",
+      "nodeTypeId"
+    );
+  }
 
-    // let title = nodeTypesDetail.title
-    let arrayWithEntries = await nodeTypesDetail.attributes
+  let arrayWithEntries = typesDetail.attributes;
 
-    console.log(arrayWithEntries, 'arrayWithEntries')
+  let fieldsArray = [];
 
-    let formString = [];
+  updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj);
 
-    await arrayWithEntries.forEach(async obj => {
-        let valueOfAttr = Object.values(obj)[0]
-        let keyOfAttr = Object.keys(obj)[0]
-
-        if (typeof (valueOfAttr) === 'string') {
-            formString.push(await inputForm(keyOfAttr))
-        }
-        else if (Array.isArray(valueOfAttr)) {
-            if (valueOfAttr[0]['nodeTypeId']) {
-                formString.push(await dropDown(keyOfAttr, "multiple"))
-            }
-            else {
-                formString.push(await dropDownKeyValue(keyOfAttr, valueOfAttr[0].key.title, valueOfAttr[0].value.title))
-
-                // formString.push(`${keyOfAttr}: dropdown:dropdown (${valueOfAttr[0].key.title}, ${valueOfAttr[0].value.title}),`)
-                // formString.push(`${await dropDown(keyOfAttr)} : ${await dropDown(keyOfAttr)}`)
-            }
-        }
-        else if (typeof (valueOfAttr) === 'object') {
-            // formString += `${keyOfAttr}: dropdown (${valueOfAttr.title}),`
-            formString.push(await dropDown(keyOfAttr))
-        }
-    });
-    console.log(await formString.join(""))
-
-    const template = await `  
+  const template = `  
     <div class="formNode card position-absolute">
         <div class="card-body">
-            ${await formString.join("")}
-            <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+           <form id="formNode" >
+             ${fieldsArray.join("")}
+                <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+            </form>
         </div>
     </div>
 `;
-    return await template;
+  return template;
 
-
-
-    // TODO:
-    /*
+  // TODO:
+  /*
      
     function getNodesByNodeTypeReturnDropdown(node):
             In nodeDefs, get object where nodeType === node.nodeTypeId 
@@ -137,27 +142,21 @@ const FormNode = async (d, data) => {
      
     */
 
+  // const data = Object.keys(typesDetail.attributes)
 
-    // const data = Object.keys(nodeTypesDetail.attributes)
+  // let dataArray = data.map(obj =>
+  //     `<div >
+  //             <label class="form-label" for="form_${obj}">${obj}:</label>
+  //             <input type="text" class="form-control" id="form_${obj}" name="${obj}" value=""><br>
+  //     </div>`
+  // );
 
-    // let dataArray = data.map(obj =>
-    //     `<div >
-    //             <label class="form-label" for="form_${obj}">${obj}:</label>
-    //             <input type="text" class="form-control" id="form_${obj}" name="${obj}" value=""><br>
-    //     </div>`
-    // );
-
-    // const template = `  
-    //     <div class="formNode card position-absolute">
-    //         <div class="card-body">
-    //             ${dataArray.join("")}
-    //             <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
-    //         </div>
-    //     </div>
-    // `;
-
-
-};
-
-export default FormNode;
-
+  // const template = `
+  //     <div class="formNode card position-absolute">
+  //         <div class="card-body">
+  //             ${dataArray.join("")}
+  //             <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+  //         </div>
+  //     </div>
+  // `;
+}

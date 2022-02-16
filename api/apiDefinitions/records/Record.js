@@ -1,15 +1,25 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
-const apiDefs = require("../definitions.json");
+
+const fileNodeDefs = JSON.parse(
+  fs.readFileSync("./api/apiDefinitions/definitions.json", "utf8")
+);
+
+const { nodeTypes, relTypes } = fileNodeDefs.nodeDefs;
+
+const apiDefsAll = [...nodeTypes, ...relTypes];
 
 class Record {
-  constructor(nodeType) {
-    this.nodeType = nodeType;
+  constructor(defType) {
+    this.defType = defType;
   }
+
+  //CREATE
 
   async create(reqBody) {
     const {
       title,
+      propKeys,
       propTypeId,
       propKeyId,
       source,
@@ -18,120 +28,132 @@ class Record {
       configRelId,
     } = reqBody;
 
-    const idAbbr = apiDefs.nodeTypes.find((obj) => obj.title === this.nodeType)
-      .abbr;
+    const idAbbr = apiDefsAll.find((obj) => obj.title === this.defType).abbr;
 
-    let nodeId = `${idAbbr}_${uuidv4()}`;
+    let defTypeId = `${idAbbr}_${uuidv4()}`;
 
-    const node = {
+    const defType = {
       created: Date(),
       updated: Date(),
       title: title,
     };
-    if (this.nodeType === "propType") {
+    if (this.defType === "propType") {
     }
 
-    if (this.nodeType === "propKey") {
-      node.propTypeId = propTypeId;
+    if (this.defType === "propKey") {
+      defType.propTypeId = propTypeId;
     }
 
-    if (this.nodeType === "propVal") {
-      node.propKeyId = propKeyId;
+    if (this.defType === "propVal") {
+      defType.propKeyId = propKeyId;
     }
 
-    if (this.nodeType === "config") {
+    if (this.defType === "configDef") {
+      defType.propKeys = propKeys;
     }
 
-    if (this.nodeType === "configRel") {
-      node.source = source;
-      node.target = target;
-      nodeId = `${nodeId}-${source}-${target}`;
+    if (this.defType === "configDefInternalRel") {
+      defType.source = source;
+      defType.target = source;
+      defTypeId = `${defTypeId}-${source}-${source}`;
     }
 
-    if (this.nodeType === "data") {
-      node.configId = configId;
+    if (this.defType === "configDefExternalRel") {
+      defType.source = source;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
     }
 
-    if (this.nodeType === "dataRel") {
-      node.source = source;
-      node.target = target;
-      node.configRelId = configRelId;
-      nodeId = `${nodeId}-${source}-${target}`;
-    }
+    // if (this.defType === "data") {
+    //   defType.configId = configId;
+    // }
+
+    // if (this.defType === "dataRel") {
+    //   defType.source = source;
+    //   defType.target = target;
+    //   defType.configRelId = configRelId;
+    //   defTypeId = `${defTypeId}-${source}-${target}`;
+    // }
 
     fs.writeFileSync(
-      `../db/${this.nodeType}/${nodeId}.json`,
-      JSON.stringify(node, null, 2)
+      `../db/${this.defType}/${defTypeId}.json`,
+      JSON.stringify(defType, null, 2)
     );
-    node.id = nodeId;
+    defType.id = defTypeId;
 
-    return node;
+    return defType;
   }
 
+  //READ
+
   async getById(id) {
-    //node id
-    const node = JSON.parse(
-      fs.readFileSync(`../db/${this.nodeType}/${id}.json`, "utf8")
+    //defType id
+    const defType = JSON.parse(
+      fs.readFileSync(`../db/${this.defType}/${id}.json`, "utf8")
     );
-    node.id = id;
-    return node;
+    defType.id = id;
+    return defType;
   }
 
   async getByProp(propKey, propVal) {
-    const nodes = [];
+    const defTypes = [];
 
     console.log(propKey, propVal);
 
-    //nodes
-    const dir = `../db/${this.nodeType}/`;
-    const nodeFiles = fs.readdirSync(dir);
+    //defTypes
+    const dir = `../db/${this.defType}/`;
+    const defTypeFiles = fs.readdirSync(dir);
 
-    nodeFiles.forEach(function (file) {
-      let node = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-      console.log(node);
-      if (node[propKey] === propVal) {
-        delete node.created;
-        delete node.updated;
-        node.id = file.slice(0, -5);
-        nodes.push(node);
+    defTypeFiles.forEach(function (file) {
+      let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      console.log(defType);
+      if (defType[propKey] === propVal) {
+        delete defType.created;
+        delete defType.updated;
+        defType.id = file.slice(0, -5);
+        defTypes.push(defType);
       }
     });
 
-    return nodes;
+    return defTypes;
   }
 
   async getAll() {
-    const nodes = [];
+    const defTypes = [];
 
-    //nodes
-    const dir = `../db/${this.nodeType}/`;
-    const nodeFiles = fs.readdirSync(dir);
+    //defTypes
+    const dir = `../db/${this.defType}/`;
+    const defTypeFiles = fs.readdirSync(dir);
 
-    nodeFiles.forEach(function (file) {
-      let node = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-      delete node.created;
-      delete node.updated;
-      node.id = file.slice(0, -5);
-      nodes.push(node);
+    defTypeFiles.forEach(function (file) {
+      let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      delete defType.created;
+      delete defType.updated;
+      defType.id = file.slice(0, -5);
+      defTypes.push(defType);
     });
 
-    return nodes;
+    return defTypes;
   }
 
   async getAllId() {
-    const nodes = [];
+    const defTypes = [];
 
-    //all nodes Ids
-    const dir = `../db/${this.nodeType}/`;
-    const nodeFiles = fs.readdirSync(dir);
+    //all defTypes Ids
+    const dir = `../db/${this.defType}/`;
+    const defTypeFiles = fs.readdirSync(dir);
 
-    nodeFiles.forEach(function (file) {
-      let nodeId = file.slice(0, -5);
-      nodes.push(nodeId);
+    defTypeFiles.forEach(function (file) {
+      let defTypeId = file.slice(0, -5);
+      defTypes.push(defTypeId);
     });
 
-    return nodes;
+    return defTypes;
   }
+
+  //UPDATE
+
+  //DELETE
 }
 
 module.exports = Record;

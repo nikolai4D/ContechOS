@@ -1,5 +1,5 @@
 import Graph from "../components/Graph.js";
-import store from "../store/store.js";
+import Actions from "../store/Actions.js";
 
 export default class Datas {
   constructor() {
@@ -8,7 +8,7 @@ export default class Datas {
 
   async getTemplate() {
     const view = "datas";
-    await store.GETALL(view);
+    await Actions.GETALL(view);
     return Graph(view);
   }
 }

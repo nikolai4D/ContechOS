@@ -8,14 +8,11 @@ const configsRecords = new GraphRecords("configs");
 // Bodyparser
 configs.use(bodyParser.json());
 
-// configs.get('/', (req, res) => {
-//   res.json("Get and Post CONFIGS via /api");
-// });
-
 configs.get("/", async (req, res) => {
   //console.log(await configsRecords.getAll())
   try {
     result = await configsRecords.getAll();
+
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
