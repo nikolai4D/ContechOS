@@ -29,8 +29,8 @@ class GraphRecords {
     }
 
     if (this.nodeGroup === "props") {
-      nodeTypes = ["propType"];
-      relTypes = ["propKey"];
+      nodeTypes = ["propType", "propKey", "propVal"];
+      relTypes = ["propKey", "propVal"];
     }
 
     //Nodes
@@ -70,19 +70,23 @@ class GraphRecords {
         const relFiles = fs.readdirSync(dirRels);
 
         relFiles.forEach(function (file) {
-          let node = JSON.parse(fs.readFileSync(dirRels + file, "utf8"));
-          delete node.created;
-          delete node.updated;
-          node.id = file.slice(0, -5);
+          let parentId = "";
+          let rel = JSON.parse(fs.readFileSync(dirRels + file, "utf8"));
+          delete rel.created;
+          delete rel.updated;
+          if (rel.propTypeId) {
+            parentId = rel.propTypeId;
+            rel.title = "has propType";
+          }
+          if (rel.propKeyId) {
+            parentId = rel.propKeyId;
+            rel.title = "has propKey";
+          }
+          let nodeId = file.slice(0, -5);
+          rel.id = nodeId + parentId;
+          rel.source = nodeId;
+          rel.target = parentId;
 
-          nodes.push(node);
-
-          let rel = {
-            id: node.id + "_" + node.propTypeId,
-            source: node.id,
-            target: node.propTypeId,
-            title: "has propType",
-          };
           rels.push(rel);
         });
       });
