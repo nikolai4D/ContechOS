@@ -39,6 +39,18 @@ class Actions {
         };
         recordsInView[0].rels.push(newRel);
       }
+      if (view === "props" && nodeType === "propVal") {
+        let source = recordJson.id;
+        let target = await attrs.propKeyId;
+        let newRel = {
+          id: `${source}_${target}`,
+          source,
+          target,
+          title: "has propKey",
+        };
+        recordsInView[0].rels.push(newRel);
+      }
+
       sessionStorage.setItem(view, JSON.stringify(recordsInView));
     } catch (err) {
       console.log(err);

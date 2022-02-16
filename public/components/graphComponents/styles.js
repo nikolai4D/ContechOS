@@ -6,26 +6,26 @@ const styles = {
         radius: 38,
         fill: "#FFCCCC",
         strokeWidth: 0,
-        borderColor: "#000",
+        borderColor: "white",
     },
     nodeLabel: {
         textAnchor: "middle",
-        fill: "#000",
+        fill: "rgba(0,0,0,.9)",
         fontSize: "12px",
     },
     link: {
         length: 200,
-        stroke: "#000",
-        fill: "#000",
+        stroke: "rgba(0,0,0,.9)",
+        fill: "rgba(0,0,0,.9)",
     },
     linkLabel: {
         textAnchor: "middle",
-        fill: "#000",
+        fill: "rgba(0,0,0,.9)",
         fontSize: "12px",
         backgroundColor: "#fff",
     },
     arrows: {
-        fill: "#000"
+        fill: "rgba(0,0,0,.9)"
     },
 };
 
