@@ -2,7 +2,6 @@ import nodeDefs from "../store/definitions.js";
 
 const ContextMenu = (event, d) => {
 
-
     const group = window.location.pathname.substring(1);
 
     let validNodeTypesByGroup = nodeDefs.groups.find(obj => {
@@ -35,11 +34,6 @@ const ContextMenu = (event, d) => {
     }
 
 
-
-
-
-
-    console.log(data)
     let dataArray = data.map(obj =>
         `<div class="list-group-item list-group-item-action context_menu_item" id="${obj.id}">
                 ${obj.title}

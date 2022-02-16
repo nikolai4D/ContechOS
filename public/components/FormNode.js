@@ -5,6 +5,7 @@ import dropDown from "./DropDownField.js"
 import inputField from "./InputField.js";
 
 export function getTypeDetails(id, types, typeId) {
+    console.log(id, types, typeId, nodeDefs)
     return nodeDefs[types].find(obj => {
         return obj[typeId] === id;
     })

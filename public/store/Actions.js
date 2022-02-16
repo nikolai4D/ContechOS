@@ -20,6 +20,7 @@ class Actions {
             const recordsInView = JSON.parse(sessionStorage.getItem(view));
 
             recordsInView[0].nodes.push(recordJson)
+            console.log(recordJson, recordsInView)
 
             if (view === 'props' && nodeType === 'propKey') {
                 let source = recordJson.id;
@@ -29,13 +30,11 @@ class Actions {
 
             }
             sessionStorage.setItem(view, JSON.stringify(recordsInView));
-
         }
         catch (err) {
             console.log(err)
-
         }
-    }
+    };
 
     async GETALL(view) {
         try {

@@ -2,15 +2,16 @@ import Actions from "../../store/Actions.js";
 import { getTypeDetails } from '../FormNode.js';
 import { select } from "https://cdn.skypack.dev/d3@6";
 
-const formNodeFunction = async (view, d) => {
+const formNodeFunction = async (view, d, type) => {
 
     event.preventDefault();
     const formData = document.getElementById("formNode");
     let formDataObj = {}
 
-    const nodeTypesDetail = getTypeDetails(parseInt(d.target.id), "nodeType", "nodeTypeId");
+    console.log(`${type}Types`, `${type}TypeId`)
+    const typesDetail = getTypeDetails(parseInt(d.target.id), `${type}Types`, `${type}TypeId`);
 
-    nodeTypesDetail.attributes.forEach(async attr => {
+    typesDetail.attributes.forEach(async attr => {
 
         let attrKey = Object.keys(attr)[0];
         let formAttr = formData[`field_${attrKey}`];
@@ -36,7 +37,7 @@ const formNodeFunction = async (view, d) => {
         formDataObj[attrKey] = await attrValue;
 
     });
-    await Actions.CREATE(view, nodeTypesDetail.title, await formDataObj);
+    await Actions.CREATE(view, typesDetail.title, await formDataObj);
     select(".FormMenuContainer").remove();
 }
 
