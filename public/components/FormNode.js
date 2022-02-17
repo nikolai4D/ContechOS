@@ -1,94 +1,26 @@
-//import nodeDefs from "../store/definitions.js";
 import Actions from "../store/Actions.js";
-import dropDownKeyValue from "./DropDownFieldKeyValue.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
 
 let nodeDefs = "";
-export function getTypeDetails(id, types, typeId) {
-  return nodeDefs[types].find((obj) => {
-    return obj[typeId] === id;
-  });
-}
-
-const getNodeTypesAttrs = (nodeTypeId) => {
-
-  const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
-  Actions.GETALL(nodeType);
-  return JSON.parse(sessionStorage.getItem(`${nodeType}`));
-};
-
-function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
-  for (let obj of arrayWithEntries) {
-    let keyOfAttr = Object.keys(obj)[0];
-    let valueOfAttr = Object.values(obj)[0];
-    if (valueOfAttr["hidden"]) {
-      continue;
-    }
-
-    if (typeof valueOfAttr === "string") {
-      // Returns input forms
-      fieldsArray.push(inputField(keyOfAttr));
-    } else if (Array.isArray(valueOfAttr)) {
-      if (valueOfAttr[0]["nodeTypeId"]) {
-        // Returns dropwdowns with multiple choice
-        let allNodesByType = getNodeTypesAttrs(valueOfAttr[0]["nodeTypeId"]);
-        let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple");
-        fieldsArray.push(dropDownString);
-      } else {
-
-        let allNodesByTypeKey = getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"])
-        let allNodesByTypeValue = getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"])
-
-        // Returns 2 dropdowns as key and value pair, with "Add more props" button
-
-        dropDownKeyValue(
-          keyOfAttr,
-          allNodesByTypeKey,
-          allNodesByTypeValue
-        )
-
-        let astring = '';
-
-        allNodesByTypeKey.forEach(propkey => {
-          console.log(propkey)
-          console.log(allNodesByTypeValue)
-          let filtered = allNodesByTypeValue.filter(propVal => propVal.propKeyId === propkey.id)
-          console.log(filtered)
-          if (filtered.length > 0) {
-            astring += dropDown(propkey.title, filtered, null, propkey.id)
-          }
-        })
-
-        // dropDown(keyOfAttr, allNodesByTypeKey)
-
-        fieldsArray.push(astring);
-      }
-    } else if (typeof valueOfAttr === "object") {
-      // Returns single dropdown
-
-      let allNodesByType = getNodeTypesAttrs(valueOfAttr["nodeTypeId"]).filter(
-        (obj) => obj.id !== clickedObj.id
-      );
-
-      let dropDownString = dropDown(keyOfAttr, allNodesByType);
-      fieldsArray.push(dropDownString);
-    }
-  }
-}
 
 export function FormNode(event, d, clickedObj) {
+  // Getting definitions 
+
   nodeDefs = JSON.parse(sessionStorage.getItem("definitions"))[0];
   let typesDetail = [];
-  //   await getNodeDefs();
 
   if (event.target.tagName === "circle") {
+    // Get details of reltype of contextmenu item 
+
     typesDetail = getTypeDetails(
       parseInt(d.target.id),
       "relTypes",
       "relTypeId"
     );
   } else if (event.target.tagName === "svg") {
+    // Get details of nodetype of contextmenu item 
+
     typesDetail = getTypeDetails(
       parseInt(d.target.id),
       "nodeTypes",
@@ -96,10 +28,13 @@ export function FormNode(event, d, clickedObj) {
     );
   }
 
+  // Get the attributes of that rel/nodetype to later loop throufg
   let arrayWithEntries = typesDetail.attributes;
 
+  // initialise array to put fields into
   let fieldsArray = [];
 
+  // Run function that gives all of the different field
   updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj);
 
   const template = `  
@@ -113,67 +48,112 @@ export function FormNode(event, d, clickedObj) {
     </div>
 `;
   return template;
+}
 
-  // TODO:
+export function getTypeDetails(id, types, typeId) {
+  // Getting details about rel/nodetype by comparing id in definitions (to later take out attributes)
+  return nodeDefs[types].find((obj) => {
+    return obj[typeId] === id;
+  });
+}
+
+const getNodeTypesAttrs = (nodeTypeId) => {
+
+  const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
+  Actions.GETALL(nodeType);
+  return JSON.parse(sessionStorage.getItem(`${nodeType}`));
+};
+
+function createInput(fieldsArray, keyOfAttr) {
+  fieldsArray.push(inputField(keyOfAttr));
+}
+
+function createDropdown(fieldsArray, id, keyOfAttr, clickedObj) {
+  let allNodesByType = getNodeTypesAttrs(id).filter(
+    (obj) => obj.id !== clickedObj.id
+  );
+  let dropDownString = dropDown(keyOfAttr, allNodesByType);
+  fieldsArray.push(dropDownString);
+}
+
+function createDropdownMultiple(fieldsArray, id, keyOfAttr) {
+  let allNodesByType = getNodeTypesAttrs(id);
+  let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple");
+  fieldsArray.push(dropDownString);
+}
+
+function createDropdownKeyValue(fieldsArray, key, value) {
+  let astring = '';
+  let allNodesByTypeKey = getNodeTypesAttrs(key)
+  let allNodesByTypeValue = getNodeTypesAttrs(value)
+
+  allNodesByTypeKey.forEach(propkey => {
+    let filtered = allNodesByTypeValue.filter(propVal => propVal.propKeyId === propkey.id)
+    if (filtered.length > 0) {
+      astring += dropDown(propkey.title, filtered, null, propkey.id)
+    }
+  })
+  fieldsArray.push(astring);
+}
+
+
+async function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
   /*
-     
-    function getNodesByNodeTypeReturnDropdown(node):
-            In nodeDefs, get object where nodeType === node.nodeTypeId 
-            ley allNodeWithSameNodeType = Get all of nodeTypes with that nodenodeTypeId from the db (by title)
-            keyToGetValueFrom = nodeDefsObj['attributes']
-            iternate allNodeWithSameNodeType in a dropdown, show node[keyToGetValueFrom] as value
-            return drowpdown                
-     
-     
-     
-    - For each attribute
-         if value is string(number or boolean:?)
-            return empty input
-     
-        - Else if value is an Object:
-                if Object['nodeTypeId']:
-                    getNodesByNodeTypeReturnDropdown(value)
-     
-        - Else if Array:
-            if an Object:
-                if Object['nodeTypeId']:
-                    getNodesByNodeTypeReturnDropdown(value)
-                    return add mulitple in dropdown
-                
-                else:
-                    key:
-                        getNodesByNodeTypeReturnDropdown(value)
-                    value:
-                        getNodesByNodeTypeReturnDropdown(value)
-    
-                    when pick key from dropdown --> filter valueList where propKeyId == keyId
-    
-            (if contains string, number or boolean:
-                return dropdown with )
-        
-    str, boolean -> input
-    object with node['nodetype'] -> dropdown 
-    arrays with objects with node['nodetype'] -> multiple choice dropdown 
-    arrays with objects with objects of keys and values -> dropdown : dropdown per element
-     
-     
-    */
+  Gets fields:
+    - input
+    - dropdowns
+    - dropdowns with multiple choice
+    - dropdowns as "key - value", where "key" is a label
+  */
+  arrayWithEntries.forEach(attr => {
+    let keyOfAttr = Object.keys(attr)[0];
+    let valueOfAttr = Object.values(attr)[0];
 
-  // const data = Object.keys(typesDetail.attributes)
+    if (typeof valueOfAttr === "string") {
+      console.log('hello')
+    }
+    else if (Array.isArray(valueOfAttr)) {
+      if (valueOfAttr[0]["nodeTypeId"]) {
+        getNodeTypesAttrs(valueOfAttr[0]["nodeTypeId"])
 
-  // let dataArray = data.map(obj =>
-  //     `<div >
-  //             <label class="form-label" for="form_${obj}">${obj}:</label>
-  //             <input type="text" class="form-control" id="form_${obj}" name="${obj}" value=""><br>
-  //     </div>`
-  // );
+      }
+      else {
+        getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"])
+        getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"])
 
-  // const template = `
-  //     <div class="formNode card position-absolute">
-  //         <div class="card-body">
-  //             ${dataArray.join("")}
-  //             <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
-  //         </div>
-  //     </div>
-  // `;
+      }
+    }
+    else if (typeof valueOfAttr === "object") {
+      getNodeTypesAttrs(valueOfAttr["nodeTypeId"])
+
+    }
+  })
+
+  for (let obj of arrayWithEntries) {
+    // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
+
+    let keyOfAttr = Object.keys(obj)[0];
+    let valueOfAttr = Object.values(obj)[0];
+    if (valueOfAttr["hidden"]) {
+      continue;
+    }
+
+    if (typeof valueOfAttr === "string") {
+      // Returns input forms
+      createInput(fieldsArray, keyOfAttr)
+    }
+    else if (Array.isArray(valueOfAttr)) {
+      if (valueOfAttr[0]["nodeTypeId"]) {
+        // Returns dropwdowns with multiple choice
+        createDropdownMultiple(fieldsArray, valueOfAttr[0]["nodeTypeId"], keyOfAttr)
+      }
+      else {
+        createDropdownKeyValue(fieldsArray, valueOfAttr[0].key["nodeTypeId"], valueOfAttr[0].value["nodeTypeId"])
+      }
+    }
+    else if (typeof valueOfAttr === "object") {
+      // Returns single dropdown
+      createDropdown(fieldsArray, valueOfAttr["nodeTypeId"], keyOfAttr, clickedObj)
+    }
+  }
 }

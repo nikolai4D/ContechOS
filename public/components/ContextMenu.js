@@ -1,9 +1,7 @@
-//import nodeDefs from "../store/definitions.js";
+//import nodeDefs from../store/definitions.js.jsjs";
 
 const ContextMenu = (event, d) => {
   const nodeDefs = JSON.parse(sessionStorage.getItem("definitions"))[0];
-
-  console.log(nodeDefs, "nodeDefs");
 
   const group = window.location.pathname.substring(1);
 
@@ -15,22 +13,17 @@ const ContextMenu = (event, d) => {
   let data = [];
 
   function getTypesDetail(types, typeId) {
-    console.log(nodeDefs, "nodeDefs2");
     validNodeTypesByGroup = validNodeTypesByGroup[types];
     typesDetail = nodeDefs[types].filter((type) => {
       if (validNodeTypesByGroup.includes(type[typeId])) return type;
     });
   }
-  console.log(validNodeTypesByGroup, "validNodeTypesByGroup");
-  console.log(typesDetail, "typesDetail");
 
   function getDataByTypesDetail(typeId) {
     data = typesDetail.map((type) => {
       return { title: `Create ${type.title}`, id: `${type[typeId]}` };
     });
   }
-
-  console.log(data, "data");
 
   if (event.target.tagName === "circle") {
     getTypesDetail("relTypes", "relTypeId");
@@ -46,8 +39,6 @@ const ContextMenu = (event, d) => {
                 ${obj.title}
         </div>`
   );
-
-  console.log(dataArray, "dataArray");
 
   const template = `  
         <div class="contextMenu position-absolute">
