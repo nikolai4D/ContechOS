@@ -145,7 +145,7 @@
           { "typeDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
           { "instanceDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
         ],
-        "relTypes": []
+        "relTypes": [3, 4]
       }
     ],
     "groups": [
@@ -160,12 +160,6 @@
         "groupId": 3,
         "title": "props",
         "nodeTypes": [1, 2, 3],
-        "relTypes": []
-      },
-      {
-        "groupId": 4,
-        "title": "propVals",
-        "nodeTypes": [3],
         "relTypes": []
       }
     ]

@@ -264,8 +264,6 @@ async function Graph(view) {
       .style("background-color", styles.linkLabel.backgroundColor)
       .attr("x", (d) => (d.source.x + d.target.x) / 2)
       .attr("y", (d) => (d.source.y + d.target.y) / 2)
-      .style("text-shadow", styles.linkLabel.textShadow)
-
 
     linkLabel.attr("transform", function (d) {
       let bbox = this.getBBox();
@@ -375,12 +373,8 @@ async function Graph(view) {
         return "linkLabel" + d.id;
       })
       .attr("class", "linkLabel")
-      .style("text-shadow", styles.linkLabel.textShadow)
-
       .style("color", "#fff")
       .attr("dy", 0)
-      .style("text-shadow", styles.linkLabel.textShadow)
-
 
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
