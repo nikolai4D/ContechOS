@@ -200,21 +200,9 @@ async function Graph(view) {
 
         d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
           await formNodeFunction(view, d, "rel", clickedObj);
-
           await updateData(view);
           await render(view);
         });
-
-        // d3.selectAll(".form_add_more_props_button")
-        //   .on("click", (d) => {
-
-        //     d3.selectAll(".form_add_props")
-        //       .append("div")
-        //       .clone(d3.selectAll(".form_add_props"))
-        //       .html("<div>hello</div>")
-
-        //     // return document.getElementById("form_add_props")
-        //   });
       });
     }
   };
@@ -226,6 +214,7 @@ async function Graph(view) {
     .selectAll(".linkLabel")
     .attr("class", "linkLabel")
     .style("color", "#fff")
+
     .attr("dy", 0);
 
   let node = g.append("g").selectAll("circle");
@@ -271,9 +260,12 @@ async function Graph(view) {
       .style("text-anchor", styles.linkLabel.textAnchor)
       .style("fill", styles.linkLabel.fill)
       .style("font-size", styles.linkLabel.fontSize)
+
       .style("background-color", styles.linkLabel.backgroundColor)
       .attr("x", (d) => (d.source.x + d.target.x) / 2)
-      .attr("y", (d) => (d.source.y + d.target.y) / 2);
+      .attr("y", (d) => (d.source.y + d.target.y) / 2)
+      .style("text-shadow", styles.linkLabel.textShadow)
+
 
     linkLabel.attr("transform", function (d) {
       let bbox = this.getBBox();
@@ -371,7 +363,7 @@ async function Graph(view) {
       .data(rels, (d) => d["id"])
       .join(
         (enter) => {
-          const linkLabel = enter.append("text").text((link) => link.title);
+          const linkLabel = enter.append("text").text((link) => link.title)
           return linkLabel;
         },
         (update) => {
@@ -383,8 +375,12 @@ async function Graph(view) {
         return "linkLabel" + d.id;
       })
       .attr("class", "linkLabel")
+      .style("text-shadow", styles.linkLabel.textShadow)
+
       .style("color", "#fff")
-      .attr("dy", 0);
+      .attr("dy", 0)
+      .style("text-shadow", styles.linkLabel.textShadow)
+
 
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();

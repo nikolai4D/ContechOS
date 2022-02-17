@@ -6,13 +6,13 @@ import inputField from "./InputField.js";
 
 let nodeDefs = "";
 export function getTypeDetails(id, types, typeId) {
-  console.log(id, types, typeId, nodeDefs);
   return nodeDefs[types].find((obj) => {
     return obj[typeId] === id;
   });
 }
 
 const getNodeTypesAttrs = (nodeTypeId) => {
+
   const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
   Actions.GETALL(nodeType);
   return JSON.parse(sessionStorage.getItem(`${nodeType}`));
@@ -20,7 +20,6 @@ const getNodeTypesAttrs = (nodeTypeId) => {
 
 function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
   for (let obj of arrayWithEntries) {
-    console.log(obj, "obj");
     let keyOfAttr = Object.keys(obj)[0];
     let valueOfAttr = Object.values(obj)[0];
     if (valueOfAttr["hidden"]) {
@@ -37,14 +36,33 @@ function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
         let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple");
         fieldsArray.push(dropDownString);
       } else {
+
+        let allNodesByTypeKey = getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"])
+        let allNodesByTypeValue = getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"])
+
         // Returns 2 dropdowns as key and value pair, with "Add more props" button
-        fieldsArray.push(
-          dropDownKeyValue(
-            keyOfAttr,
-            valueOfAttr[0].key.title,
-            valueOfAttr[0].value.title
-          )
-        );
+
+        dropDownKeyValue(
+          keyOfAttr,
+          allNodesByTypeKey,
+          allNodesByTypeValue
+        )
+
+        let astring = '';
+
+        allNodesByTypeKey.forEach(propkey => {
+          console.log(propkey)
+          console.log(allNodesByTypeValue)
+          let filtered = allNodesByTypeValue.filter(propVal => propVal.propKeyId === propkey.id)
+          console.log(filtered)
+          if (filtered.length > 0) {
+            astring += dropDown(propkey.title, filtered, null, propkey.id)
+          }
+        })
+
+        // dropDown(keyOfAttr, allNodesByTypeKey)
+
+        fieldsArray.push(astring);
       }
     } else if (typeof valueOfAttr === "object") {
       // Returns single dropdown
@@ -70,7 +88,6 @@ export function FormNode(event, d, clickedObj) {
       "relTypes",
       "relTypeId"
     );
-    console.log(typesDetail, "typesdetail");
   } else if (event.target.tagName === "svg") {
     typesDetail = getTypeDetails(
       parseInt(d.target.id),
