@@ -1,24 +1,25 @@
 const express = require("express");
-const refresh = express.Router();
+const router = express.Router();
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const bodyParser = require("body-parser");
 const Record = require("./records/UserRecord.js");
 
+const routerType = "user";
 //Record instance
-const userRecord = new Record("user");
+const record = new Record(routerType);
 
 //Bodyparser
-refresh.use(bodyParser.json());
+router.use(bodyParser.json());
 
 //APIs
-refresh.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   const cookies = req.cookies;
 
   //   if (!cookies?.jwt) return res.sendStatus(401);
   if (!cookies?.jwt) return res.status(401).json({ accessToken: false });
   const refreshToken = cookies.jwt;
-  const foundUser = (await userRecord.getAll()).find(
+  const foundUser = (await record.getAll()).find(
     (person) => person.refreshToken === refreshToken
   );
   //   if (!foundUser) return res.sendStatus(403); //Forbidden
@@ -35,4 +36,4 @@ refresh.get("/", async (req, res) => {
   });
 });
 
-module.exports = refresh;
+module.exports = router;

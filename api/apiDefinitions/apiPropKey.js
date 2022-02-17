@@ -1,62 +1,58 @@
-const express = require('express')
-const propKey = express.Router()
-const bodyParser = require('body-parser')
-const Record = require('./records/Record.js')
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const Record = require("./records/Record.js");
 
-//API type
-const apiType = "propKey";
-
+const routerType = "propKey";
 //Record instances
-const propKeyRecord = new Record(apiType)
-const propTypeRecord = new Record("propType")
+const record = new Record(routerType);
+const propTypeRecord = new Record("propType");
 
 // Bodyparser
-propKey.use(bodyParser.json())
+router.use(bodyParser.json());
 
 //APIs
 
-propKey.post("/create", async (req, res) => {
-
-  const { title, propTypeId } = req.body
+router.post("/create", async (req, res) => {
+  const { title, propTypeId } = req.body;
 
   if (!title || !propTypeId) {
-    return res.status(400).json("title and/or propTypeId missing")
+    return res.status(400).json("title and/or propTypeId missing");
   }
-  const propTypeArray = await propTypeRecord.getAllId()
+  const propTypeArray = await propTypeRecord.getAllId();
   if (!propTypeArray.includes(propTypeId)) {
-    return res.status(400).json("propTypeId does not exist")
-  } 
-  
-  try {
-    result = await propKeyRecord.create({ title, propTypeId })
-    res.status(200).json(result)
-  } catch (error) {
-    res.status(500).json({ error })
+    return res.status(400).json("propTypeId does not exist");
   }
-})
 
-propKey.get("/", async (req, res) => {
   try {
-    result = await propKeyRecord.getAll()
-    res.status(200).json(result)
+    result = await record.create({ title, propTypeId });
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-propKey.get("/:id", async (req, res) => {
+router.get("/", async (req, res) => {
+  try {
+    result = await record.getAll();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
 
-  let propKeyArray = await propKeyRecord.getAllId()
+router.get("/:id", async (req, res) => {
+  let propKeyArray = await record.getAllId();
   if (!propKeyArray.includes(req.params.id)) {
-    return res.status(400).json("propKeyId does not exist")
+    return res.status(400).json("propKeyId does not exist");
   }
 
   try {
-    result = await propKeyRecord.getById(req.params.id)
-    res.status(200).json(result)
+    result = await record.getById(req.params.id);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-module.exports = propKey
+module.exports = router;

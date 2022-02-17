@@ -1,17 +1,18 @@
 const express = require("express");
-const configs = express.Router();
+const router = express.Router();
 const bodyParser = require("body-parser");
 const GraphRecords = require("./records/GraphRecords.js");
 
-const configsRecords = new GraphRecords("configs");
+const routerType = "configs";
+//Record instance
+const record = new GraphRecords(routerType);
 
 // Bodyparser
-configs.use(bodyParser.json());
+router.use(bodyParser.json());
 
-configs.get("/", async (req, res) => {
-  //console.log(await configsRecords.getAll())
+router.get("/", async (req, res) => {
   try {
-    result = await configsRecords.getAll();
+    result = await record.getAll();
 
     res.status(200).json(result);
   } catch (error) {
@@ -19,4 +20,4 @@ configs.get("/", async (req, res) => {
   }
 });
 
-module.exports = configs;
+module.exports = router;

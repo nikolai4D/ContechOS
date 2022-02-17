@@ -1,24 +1,22 @@
-const express = require('express')
-const datas = express.Router()
-const bodyParser = require('body-parser')
-const GraphRecords = require('./records/GraphRecords.js')
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const GraphRecords = require("./records/GraphRecords.js");
 
-const datasRecords = new GraphRecords("datas");
+const routerType = "datas";
+//Record instance
+const record = new GraphRecords(routerType);
 
 // Bodyparser
-datas.use(bodyParser.json())
+router.use(bodyParser.json());
 
-// datas.get('/', (req, res) => {
-//   res.json("Get and Post DATAS via /api");
-// });
-
-datas.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    result = await datasRecords.getAll()
-    res.status(200).json(result)
+    result = await record.getAll();
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-module.exports = datas
+module.exports = router;

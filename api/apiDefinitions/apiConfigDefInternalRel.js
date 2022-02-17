@@ -1,20 +1,18 @@
 const express = require("express");
-const configDefInternalRel = express.Router();
+const router = express.Router();
 const bodyParser = require("body-parser");
 const Record = require("./records/Record.js");
 
-//API type
-const apiType = "configDefInternalRel";
-
+const routerType = "configDefInternalRel";
 //Record instances
-const configDefInternalRelRecord = new Record(apiType);
+const record = new Record(routerType);
 const configDefRecord = new Record("configDef");
 const propKeyRecord = new Record("propKey");
 
 // Bodyparser
-configDefInternalRel.use(bodyParser.json());
+router.use(bodyParser.json());
 
-configDefInternalRel.post("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
   const { title, source, propKeys } = req.body;
 
   if (!title || !source || !propKeys) {
@@ -36,35 +34,35 @@ configDefInternalRel.post("/create", async (req, res) => {
   });
 
   try {
-    result = await configDefInternalRelRecord.create({ title, source });
+    result = await record.create({ title, source });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-configDefInternalRel.get("/", async (req, res) => {
-  console.log(await configDefInternalRelRecord.getAll());
+router.get("/", async (req, res) => {
+  console.log(await record.getAll());
   try {
-    result = await configDefInternalRelRecord.getAll();
+    result = await record.getAll();
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-configDefInternalRel.get("/:id", async (req, res) => {
-  let configArray = await configDefInternalRelRecord.getAllId();
+router.get("/:id", async (req, res) => {
+  let configArray = await record.getAllId();
   if (!configArray.includes(req.params.id)) {
     return res.status(400).json("configDefInternalId does not exist");
   }
 
   try {
-    result = await configDefInternalRelRecord.getById(req.params.id);
+    result = await record.getById(req.params.id);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-module.exports = configDefInternalRel;
+module.exports = router;

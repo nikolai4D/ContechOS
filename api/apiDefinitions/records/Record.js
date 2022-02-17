@@ -24,8 +24,12 @@ class Record {
       propKeyId,
       source,
       target,
-      configId,
-      configRelId,
+      configDefId,
+      configDefInternalRelId,
+      configDefExternalRelId,
+      props,
+      typePropKeys,
+      instancePropKeys,
     } = reqBody;
 
     const idAbbr = apiDefsAll.find((obj) => obj.title === this.defType).abbr;
@@ -56,12 +60,37 @@ class Record {
       defType.source = source;
       defType.target = source;
       defTypeId = `${defTypeId}-${source}-${source}`;
+      defType.propKeys = propKeys;
     }
 
     if (this.defType === "configDefExternalRel") {
       defType.source = source;
       defType.target = target;
       defTypeId = `${defTypeId}-${source}-${target}`;
+      defType.propKeys = propKeys;
+    }
+
+    if (this.defType === "configObj") {
+      defType.configDefId = configDefId;
+      defType.props = props;
+      defType.typePropKeys = typePropKeys;
+      defType.instancePropKeys = instancePropKeys;
+    }
+
+    if (this.defType === "configObjInternalRel") {
+      defType.source = source;
+      defType.target = source;
+      defTypeId = `${defTypeId}-${source}-${source}`;
+      defType.configDefInternalRelId = configDefInternalRelId;
+      defType.props = props;
+    }
+
+    if (this.defType === "configObjExternalRel") {
+      defType.source = source;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
+      defType.configDefExternalRelId = configDefExternalRelId;
+      defType.props = props;
     }
 
     // if (this.defType === "data") {

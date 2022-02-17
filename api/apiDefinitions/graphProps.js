@@ -1,24 +1,22 @@
-const express = require('express')
-const props = express.Router()
-const bodyParser = require('body-parser')
-const GraphRecords = require('./records/GraphRecords.js')
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const GraphRecords = require("./records/GraphRecords.js");
 
-const propsRecords = new GraphRecords("props");
+const routerType = "props";
+//Record instance
+const record = new GraphRecords(routerType);
 
 // Bodyparser
-props.use(bodyParser.json())
+router.use(bodyParser.json());
 
-// props.get('/', (req, res) => {
-//   res.json("Get and Post PROPS via /api");
-// });
-
-props.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   try {
-    result = await propsRecords.getAll()
-    res.status(200).json(result)
+    result = await record.getAll();
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-module.exports = props
+module.exports = router;

@@ -1,20 +1,18 @@
 const express = require("express");
-const configDefExternalRel = express.Router();
+const router = express.Router();
 const bodyParser = require("body-parser");
 const Record = require("./records/Record.js");
 
-//API type
-const apiType = "configDefExternalRel";
-
+const routerType = "configDefExternalRel";
 //Record instances
-const configDefExternalRelRecord = new Record(apiType);
+const record = new Record(routerType);
 const configDefRecord = new Record("configDef");
 const propKeyRecord = new Record("propKey");
 
 // Bodyparser
-configDefExternalRel.use(bodyParser.json());
+router.use(bodyParser.json());
 
-configDefExternalRel.post("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
   const { title, source, target, propKeys } = req.body;
 
   if (!title || !source || !target || !propKeys) {
@@ -44,7 +42,7 @@ configDefExternalRel.post("/create", async (req, res) => {
   });
 
   try {
-    result = await configDefExternalRelRecord.create({
+    result = await record.create({
       title,
       source,
       target,
@@ -56,28 +54,28 @@ configDefExternalRel.post("/create", async (req, res) => {
   }
 });
 
-configDefExternalRel.get("/", async (req, res) => {
-  console.log(await configDefExternalRelRecord.getAll());
+router.get("/", async (req, res) => {
+  console.log(await record.getAll());
   try {
-    result = await configDefExternalRelRecord.getAll();
+    result = await record.getAll();
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-configDefExternalRel.get("/:id", async (req, res) => {
-  let configArray = await configDefExternalRelRecord.getAllId();
+router.get("/:id", async (req, res) => {
+  let configArray = await record.getAllId();
   if (!configArray.includes(req.params.id)) {
     return res.status(400).json("configDefExpernalId does not exist");
   }
 
   try {
-    result = await configDefExternalRelRecord.getById(req.params.id);
+    result = await record.getById(req.params.id);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-module.exports = configDefExternalRel;
+module.exports = router;

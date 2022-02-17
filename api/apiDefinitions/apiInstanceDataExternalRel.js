@@ -1,18 +1,21 @@
-const fs = require("fs");
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
+const Record = require("./records/Record.js");
 
-const definitionsJSON = JSON.parse(
-  fs.readFileSync("./api/apiDefinitions/definitions.json", "utf8")
-);
+const routerType = "instanceDataExternalRel";
+//Record instance
+const record = new Record(routerType);
 
-// Bodyparser
+//Bodyparser
 router.use(bodyParser.json());
+
+//APIs
 
 router.get("/", async (req, res) => {
   try {
-    res.status(200).json(definitionsJSON.nodeDefs);
+    // result = await record.getAll();
+    res.status(200).json(routerType);
   } catch (error) {
     res.status(500).json({ error });
   }
