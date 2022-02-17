@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const Record = require("./records/UserRecord.js");
 
-const routerType = "user";
+const routerType = "users";
 //Record instance
 const record = new Record(routerType);
 

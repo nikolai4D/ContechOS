@@ -42,8 +42,9 @@
               }
             ]
           },
-          { "source": { "nodeTypeId": 5, "attributes": "id", "hidden": true } },
-          { "configDefInteralRelId": { "relTypeId": 1, "attributes": "id" } }
+          { "source": { "nodeTypeId": 5, "attributes": "id" } },
+          { "target": { "nodeTypeId": 5, "attributes": "id" } },
+          { "parentId": { "relTypeId": 1, "attributes": "id" } }
         ]
       },
       {
@@ -66,9 +67,109 @@
               }
             ]
           },
-          { "source": { "nodeTypeId": 5, "attributes": "id", "hidden": true } },
+          { "source": { "nodeTypeId": 5, "attributes": "id" } },
           { "target": { "nodeTypeId": 5, "attributes": "id" } },
-          { "configDefExternalRelId": { "relTypeId": 2, "attributes": "id" } }
+          { "parentId": { "relTypeId": 2, "attributes": "id" } }
+        ]
+      },
+      {
+        "relTypeId": 5,
+        "title": "typeDataExternalRel",
+        "abbr": "tder",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "source": { "nodeTypeId": 6, "attributes": "id" } },
+          { "target": { "nodeTypeId": 6, "attributes": "id" } },
+          { "parentId": { "relTypeId": 4, "attributes": "id" } }
+        ]
+      },
+      {
+        "relTypeId": 6,
+        "title": "typeDataInternalRel",
+        "abbr": "tdir",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "source": { "nodeTypeId": 6, "attributes": "id" } },
+          { "target": { "nodeTypeId": 6, "attributes": "id" } },
+          { "parentId": { "relTypeId": 3, "attributes": "id" } }
+        ]
+      },
+      {
+        "relTypeId": 7,
+        "title": "instanceDataInternalRel",
+        "abbr": "idir",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "source": { "nodeTypeId": 7, "attributes": "id" } },
+          { "target": { "nodeTypeId": 7, "attributes": "id" } },
+          { "parentId": { "relTypeId": 6, "attributes": "id" } }
+        ]
+      },
+      {
+        "relTypeId": 8,
+        "title": "instanceDataExternalRel",
+        "abbr": "ider",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "source": { "nodeTypeId": 7, "attributes": "id" } },
+          { "target": { "nodeTypeId": 7, "attributes": "id" } },
+          { "parentId": { "relTypeId": 5, "attributes": "id" } }
         ]
       }
     ],
@@ -90,7 +191,7 @@
         "attributes": [
           { "title": "" },
           {
-            "propTypeId": {
+            "parentId": {
               "nodeTypeId": 1,
               "attributes": "id"
             }
@@ -104,7 +205,7 @@
         "attributes": [
           { "title": "" },
           {
-            "propKeyId": {
+            "parentId": {
               "nodeTypeId": 2,
               "attributes": "id"
             }
@@ -141,11 +242,59 @@
               }
             ]
           },
-          { "configDefId": { "nodeTypeId": 4, "attributes": "id" } },
+          { "parentId": { "nodeTypeId": 4, "attributes": "id" } },
           { "typeDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
           { "instanceDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
         ],
         "relTypes": [3, 4]
+      },
+      {
+        "nodeTypeId": 6,
+        "title": "typeData",
+        "abbr": "td",
+        "attributes": [
+          { "title": "" },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "parentId": { "nodeTypeId": 5, "attributes": "id" } }
+        ],
+        "relTypes": [5, 6]
+      },
+      {
+        "nodeTypeId": 7,
+        "title": "instanceData",
+        "abbr": "id",
+        "attributes": [
+          { "title": { "nodeTypeId": 6, "attributes": "title" } },
+          {
+            "props": [
+              {
+                "key": {
+                  "nodeTypeId": 2,
+                  "attributes": "id"
+                },
+                "value": {
+                  "nodeTypeId": 3,
+                  "attributes": "id"
+                }
+              }
+            ]
+          },
+          { "parentId": { "nodeTypeId": 6, "attributes": "id" } }
+        ],
+        "relTypes": [7, 8]
       }
     ],
     "groups": [
@@ -155,7 +304,12 @@
         "nodeTypes": [4, 5],
         "relTypes": [1, 2, 3, 4]
       },
-
+      {
+        "groupId": 2,
+        "title": "datas",
+        "nodeTypes": [6, 7],
+        "relTypes": [5, 6, 7, 8]
+      },
       {
         "groupId": 3,
         "title": "props",
