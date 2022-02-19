@@ -61,6 +61,7 @@ class GraphRecords {
           delete rel.created;
           delete rel.updated;
           rel.id = file.slice(0, -5);
+          rel.relType = relType;
           rels.push(rel);
         });
       });
@@ -91,7 +92,7 @@ class GraphRecords {
         });
       });
     }
-    console.log({ nodes, rels });
+
     return { nodes, rels };
   }
 }

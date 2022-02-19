@@ -127,16 +127,13 @@ class Record {
   async getByProp(propKey, propVal) {
     const defTypes = [];
 
-    console.log(propKey, propVal);
-
     //defTypes
     const dir = `../db/${this.defType}/`;
     const defTypeFiles = fs.readdirSync(dir);
 
     defTypeFiles.forEach(function (file) {
-      let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-      console.log(defType);
-      if (defType[propKey] === propVal) {
+      let defTypeFile = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      if (defTypeFile[propKey] === propVal) {
         delete defType.created;
         delete defType.updated;
         defType.id = file.slice(0, -5);
@@ -151,7 +148,8 @@ class Record {
     const defTypes = [];
 
     //defTypes
-    const dir = `../db/${this.defType}/`;
+    const thisDefType = this.defType;
+    const dir = `../db/${thisDefType}/`;
     const defTypeFiles = fs.readdirSync(dir);
 
     defTypeFiles.forEach(function (file) {
@@ -159,6 +157,7 @@ class Record {
       delete defType.created;
       delete defType.updated;
       defType.id = file.slice(0, -5);
+      defType.type = thisDefType;
       defTypes.push(defType);
     });
 
