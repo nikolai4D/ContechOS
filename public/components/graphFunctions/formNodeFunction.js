@@ -27,7 +27,7 @@ const formNodeFunction = async (view, d, type, clickedObj) => {
 
       if (typeof valueOfAttr === "string") {
         // Returns input forms
-
+        attrValue = formAttr.value;
       }
       else if (Array.isArray(valueOfAttr)) {
         if (valueOfAttr[0]["nodeTypeId"]) {
