@@ -5,6 +5,7 @@ const ContextMenu = (event, d) => {
 
   const group = window.location.pathname.substring(1);
 
+  // group object 
   let validNodeTypesByGroup = nodeDefs.groups.find((obj) => {
     return obj.title === group;
   });
@@ -12,8 +13,22 @@ const ContextMenu = (event, d) => {
   let typesDetail = [];
   let data = [];
 
+  if (event.target.tagName === "circle") {
+    getTypesDetail("relTypes", "relTypeId")
+    console.log(d, 'd')
+    getDataByTypesDetail("relTypeId");
+  } else if (event.target.tagName === "svg") {
+    getTypesDetail("nodeTypes", "nodeTypeId");
+    getDataByTypesDetail("nodeTypeId");
+  }
+
   function getTypesDetail(types, typeId) {
     validNodeTypesByGroup = validNodeTypesByGroup[types];
+    if (group !== 'props' && event.target.tagName === "circle") {
+      // Only getting relTypes that are in nodeType object in definitions
+      let validRelTypesByNodeType = nodeDefs.nodeTypes.find(nodeType => nodeType.title === d.nodeType).relTypes;
+      validNodeTypesByGroup = validRelTypesByNodeType;
+    }
     typesDetail = nodeDefs[types].filter((type) => {
       if (validNodeTypesByGroup.includes(type[typeId])) return type;
     });
@@ -23,14 +38,6 @@ const ContextMenu = (event, d) => {
     data = typesDetail.map((type) => {
       return { title: `Create ${type.title}`, id: `${type[typeId]}` };
     });
-  }
-
-  if (event.target.tagName === "circle") {
-    getTypesDetail("relTypes", "relTypeId");
-    getDataByTypesDetail("relTypeId");
-  } else if (event.target.tagName === "svg") {
-    getTypesDetail("nodeTypes", "nodeTypeId");
-    getDataByTypesDetail("nodeTypeId");
   }
 
   let dataArray = data.map(

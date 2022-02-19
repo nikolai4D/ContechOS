@@ -4,7 +4,7 @@ const fs = require("fs");
 const bodyParser = require("body-parser");
 const Record = require("./records/record.js");
 
-const routerType = "user";
+const routerType = "users";
 //Record instance
 const record = new Record(routerType);
 

@@ -1,13 +1,13 @@
 import Actions from "../../store/Actions.js";
-import { getTypeDetails } from "../FormNode.js";
+import { getTypeDetails, getNodeTypesAttrs } from "../FormNode.js";
 import { select } from "https://cdn.skypack.dev/d3@6";
+
 
 const formNodeFunction = async (view, d, type, clickedObj) => {
   event.preventDefault();
   const formData = document.getElementById("formNode");
   let formDataObj = {};
 
-  console.log(`${type}Types`, `${type}TypeId`);
   const typesDetail = getTypeDetails(
     parseInt(d.target.id),
     `${type}Types`,
@@ -21,30 +21,49 @@ const formNodeFunction = async (view, d, type, clickedObj) => {
     if (valueOfAttr["hidden"]) {
       formDataObj[attrKey] = await clickedObj.id;
     } else {
+
+      let attrValue = ''
       let formAttr = formData[`field_${attrKey}`];
-      console.log(attrKey, "attrKey");
-      console.log(formData, "formData");
 
-      console.log(formAttr, "formAttr");
-      // console.log(formAttr.value, "input", [...formAttr.selectedOptions].map(option => option.value), "mupltiple")
+      if (typeof valueOfAttr === "string") {
+        // Returns input forms
 
-      let attrValue = "";
-      if (formAttr.tagName === "INPUT") {
-        // if input
-        attrValue = formAttr.value;
-      } else if (formAttr.tagName === "SELECT") {
-        if (Object.values(attr)[0]["nodeTypeId"]) {
-          // If regular dropdown
-          attrValue = formAttr.value;
-        } else {
-          // if dropdown multiple
+      }
+      else if (Array.isArray(valueOfAttr)) {
+        if (valueOfAttr[0]["nodeTypeId"]) {
+          // Returns dropwdowns with multiple choice
           attrValue = await [...formAttr.selectedOptions].map(
             (option) => option.value
           );
-          console.log("attrValue", attrValue);
+
+        }
+        else {
+          // props with key value pair
+
+          let allNodesByTypeKey = getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"])
+          let allNodesByTypeValue = getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"])
+
+          let propKeyList = allNodesByTypeKey.filter(propkey => {
+            let filtered = allNodesByTypeValue.filter(propVal => propVal.propKeyId === propkey.id)
+            if (filtered.length > 0) {
+              return filtered
+            }
+          });
+
+          let props = propKeyList.map(propKey => {
+            let propKeyId = propKey.id
+            let propValue = formData[`field_${propKey.title}`].value;
+            return { [propKeyId]: propValue }
+          });
+          attrValue = props;
         }
       }
+      else if (typeof valueOfAttr === "object") {
+        // Returns single dropdown
+        attrValue = formAttr.value;
+      }
       formDataObj[attrKey] = await attrValue;
+
     }
   });
   await Actions.CREATE(view, typesDetail.title, await formDataObj);

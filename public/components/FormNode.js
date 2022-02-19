@@ -57,7 +57,7 @@ export function getTypeDetails(id, types, typeId) {
   });
 }
 
-const getNodeTypesAttrs = (nodeTypeId) => {
+export function getNodeTypesAttrs(nodeTypeId) {
 
   const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
   Actions.GETALL(nodeType);
