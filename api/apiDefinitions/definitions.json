@@ -1,321 +1,396 @@
 {
-  "nodeDefs": {
-    "relTypes": [
-      {
-        "relTypeId": 1,
-        "title": "configDefInternalRel",
-        "abbr": "cdir",
-        "attributes": [
-          { "title": "" },
-          { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-          { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } }
-        ]
-      },
-      {
-        "relTypeId": 2,
-        "title": "configDefExternalRel",
-        "abbr": "cder",
-        "attributes": [
-          { "title": "" },
-          { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-          { "source": { "nodeTypeId": 4, "attributes": "id", "hidden": true } },
-          { "target": { "nodeTypeId": 4, "attributes": "id" } }
-        ]
-      },
-      {
-        "relTypeId": 3,
-        "title": "configObjInternalRel",
-        "abbr": "coir",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
-              }
-            ]
-          },
-          { "source": { "nodeTypeId": 5, "attributes": "id" } },
-          { "target": { "nodeTypeId": 5, "attributes": "id" } },
-          { "parentId": { "relTypeId": 1, "attributes": "id" } }
-        ]
-      },
-      {
-        "relTypeId": 4,
-        "title": "configObjExternalRel",
-        "abbr": "coer",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
-              }
-            ]
-          },
-          { "source": { "nodeTypeId": 5, "attributes": "id" } },
-          { "target": { "nodeTypeId": 5, "attributes": "id" } },
-          { "parentId": { "relTypeId": 2, "attributes": "id" } }
-        ]
-      },
-      {
-        "relTypeId": 5,
-        "title": "typeDataExternalRel",
-        "abbr": "tder",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
-              }
-            ]
-          },
-          { "source": { "nodeTypeId": 6, "attributes": "id" } },
-          { "target": { "nodeTypeId": 6, "attributes": "id" } },
-          { "parentId": { "relTypeId": 4, "attributes": "id" } }
-        ]
-      },
-      {
-        "relTypeId": 6,
-        "title": "typeDataInternalRel",
-        "abbr": "tdir",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
-              }
-            ]
-          },
-          { "source": { "nodeTypeId": 6, "attributes": "id" } },
-          { "target": { "nodeTypeId": 6, "attributes": "id" } },
-          { "parentId": { "relTypeId": 3, "attributes": "id" } }
-        ]
-      },
-      {
-        "relTypeId": 7,
-        "title": "instanceDataInternalRel",
-        "abbr": "idir",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
-              }
-            ]
-          },
-          { "source": { "nodeTypeId": 7, "attributes": "id" } },
-          { "target": { "nodeTypeId": 7, "attributes": "id" } },
-          { "parentId": { "relTypeId": 6, "attributes": "id" } }
-        ]
-      },
-      {
-        "relTypeId": 8,
-        "title": "instanceDataExternalRel",
-        "abbr": "ider",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
-              }
-            ]
-          },
-          { "source": { "nodeTypeId": 7, "attributes": "id" } },
-          { "target": { "nodeTypeId": 7, "attributes": "id" } },
-          { "parentId": { "relTypeId": 5, "attributes": "id" } }
-        ]
-      }
-    ],
-    "nodeTypes": [
-      {
-        "nodeTypeId": 1,
-        "title": "propType",
-        "abbr": "pt",
-        "attributes": [
-          {
-            "title": ""
-          }
-        ]
-      },
-      {
-        "nodeTypeId": 2,
-        "title": "propKey",
-        "abbr": "pk",
-        "attributes": [
-          { "title": "" },
-          {
-            "parentId": {
-              "nodeTypeId": 1,
-              "attributes": "id"
+  "defs": [
+    {
+      "defId": 1,
+      "type": "node",
+      "title": "nodeTypes",
+      "defTypes": [
+        {
+          "defTypeId": 1,
+          "title": "propType",
+          "abbr": "pt",
+          "attributes": [
+            {
+              "title": ""
             }
-          }
-        ]
-      },
-      {
-        "nodeTypeId": 3,
-        "title": "propVal",
-        "abbr": "pv",
-        "attributes": [
-          { "title": "" },
-          {
-            "parentId": {
-              "nodeTypeId": 2,
-              "attributes": "id"
+          ],
+          "contextMenu": [{ "defId": 1, "defTypeId": 2 }]
+        },
+        {
+          "defTypeId": 2,
+          "title": "propKey",
+          "abbr": "pk",
+          "attributes": [
+            { "title": "" },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 1,
+                "attributes": "id"
+              }
             }
-          }
-        ]
-      },
-      {
-        "nodeTypeId": 4,
-        "title": "configDef",
-        "abbr": "cd",
-        "attributes": [
-          { "title": "" },
-          { "propKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
-        ],
-        "relTypes": [1, 2]
-      },
-      {
-        "nodeTypeId": 5,
-        "title": "configObj",
-        "abbr": "co",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
-                }
+          ],
+          "contextMenu": [{ "defId": 1, "defTypeId": 3 }]
+        },
+        {
+          "defTypeId": 3,
+          "title": "propVal",
+          "abbr": "pv",
+          "attributes": [
+            { "title": "" },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 2,
+                "attributes": "id"
               }
-            ]
-          },
-          { "parentId": { "nodeTypeId": 4, "attributes": "id" } },
-          { "typeDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] },
-          { "instanceDataPropKeys": [{ "nodeTypeId": 2, "attributes": "id" }] }
-        ],
-        "relTypes": [3, 4]
-      },
-      {
-        "nodeTypeId": 6,
-        "title": "typeData",
-        "abbr": "td",
-        "attributes": [
-          { "title": "" },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 4,
+          "title": "configDef",
+          "abbr": "cd",
+          "attributes": [
+            { "title": "" },
+            { "propKeys": [{ "defId": 1, "defTypeId": 2, "attributes": "id" }] }
+          ],
+          "contextMenu": [
+            { "defId": 1, "defTypeId": 5 },
+            { "defId": 2, "defTypeId": 1 },
+            { "defId": 2, "defTypeId": 2 }
+          ]
+        },
+        {
+          "defTypeId": 5,
+          "title": "configObj",
+          "abbr": "co",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
                 }
-              }
-            ]
-          },
-          { "parentId": { "nodeTypeId": 5, "attributes": "id" } }
-        ],
-        "relTypes": [5, 6]
-      },
-      {
-        "nodeTypeId": 7,
-        "title": "instanceData",
-        "abbr": "id",
-        "attributes": [
-          { "title": { "nodeTypeId": 6, "attributes": "title" } },
-          {
-            "props": [
-              {
-                "key": {
-                  "nodeTypeId": 2,
-                  "attributes": "id"
-                },
-                "value": {
-                  "nodeTypeId": 3,
-                  "attributes": "id"
+              ]
+            },
+            { "parentId": { "defId": 1, "defTypeId": 4, "attributes": "id" } },
+            {
+              "typeDataPropKeys": [
+                { "defId": 1, "defTypeId": 2, "attributes": "id" }
+              ]
+            },
+            {
+              "instanceDataPropKeys": [
+                { "defId": 1, "defTypeId": 2, "attributes": "id" }
+              ]
+            }
+          ],
+          "contextMenu": [
+            { "defId": 2, "defTypeId": 3 },
+            { "defId": 2, "defTypeId": 4 }
+          ]
+        },
+        {
+          "defTypeId": 6,
+          "title": "typeData",
+          "abbr": "td",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
                 }
+              ]
+            },
+            { "parentId": { "defId": 1, "defTypeId": 5, "attributes": "id" } }
+          ],
+          "contextMenu": [
+            { "defId": 1, "defTypeId": 7 },
+            { "defId": 2, "defTypeId": 5 },
+            { "defId": 2, "defTypeId": 6 }
+          ]
+        },
+        {
+          "defTypeId": 7,
+          "title": "instanceData",
+          "abbr": "id",
+          "attributes": [
+            { "title": { "defId": 1, "defTypeId": 6, "attributes": "title" } },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "parentId": { "defId": 1, "defTypeId": 6, "attributes": "id" } }
+          ],
+          "contextMenu": [
+            { "defId": 2, "defTypeId": 7 },
+            { "defId": 2, "defTypeId": 8 }
+          ]
+        }
+      ]
+    },
+    {
+      "defId": 2,
+      "type": "rel",
+      "title": "relTypes",
+      "defTypes": [
+        {
+          "defTypeId": 1,
+          "title": "configDefInternalRel",
+          "abbr": "cdir",
+          "attributes": [
+            { "title": "" },
+            {
+              "propKeys": [{ "defId": 1, "defTypeId": 2, "attributes": "id" }]
+            },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 4,
+                "attributes": "id",
+                "hidden": true
               }
-            ]
-          },
-          { "parentId": { "nodeTypeId": 6, "attributes": "id" } }
-        ],
-        "relTypes": [7, 8]
-      }
-    ],
-    "groups": [
-      {
-        "groupId": 1,
-        "title": "configs",
-        "nodeTypes": [4, 5],
-        "relTypes": [1, 2, 3, 4]
-      },
-      {
-        "groupId": 2,
-        "title": "datas",
-        "nodeTypes": [6, 7],
-        "relTypes": [5, 6, 7, 8]
-      },
-      {
-        "groupId": 3,
-        "title": "props",
-        "nodeTypes": [1, 2, 3],
-        "relTypes": []
-      }
-    ]
-  }
+            }
+          ]
+        },
+        {
+          "defId": 2,
+          "title": "configDefExternalRel",
+          "abbr": "cder",
+          "attributes": [
+            { "title": "" },
+            {
+              "propKeys": [{ "defId": 1, "defTypeId": 2, "attributes": "id" }]
+            },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 4,
+                "attributes": "id",
+                "hidden": true
+              }
+            },
+            { "target": { "defId": 1, "defTypeId": 4, "attributes": "id" } }
+          ]
+        },
+        {
+          "defId": 3,
+          "title": "configObjInternalRel",
+          "abbr": "coir",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "source": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
+            { "target": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
+            { "parentId": { "defId": 2, "defTypeId": 1, "attributes": "id" } }
+          ]
+        },
+        {
+          "defId": 4,
+          "title": "configObjExternalRel",
+          "abbr": "coer",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "source": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
+            { "target": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
+            { "parentId": { "defId": 2, "defTypeId": 2, "attributes": "id" } }
+          ]
+        },
+        {
+          "defId": 5,
+          "title": "typeDataExternalRel",
+          "abbr": "tder",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "source": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
+            { "target": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
+            { "parentId": { "defId": 2, "defTypeId": 4, "attributes": "id" } }
+          ]
+        },
+        {
+          "defId": 6,
+          "title": "typeDataInternalRel",
+          "abbr": "tdir",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "source": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
+            { "target": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
+            { "parentId": { "defId": 2, "defTypeId": 3, "attributes": "id" } }
+          ]
+        },
+        {
+          "defId": 7,
+          "title": "instanceDataInternalRel",
+          "abbr": "idir",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "source": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
+            { "target": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
+            { "parentId": { "defId": 2, "defTypeId": 6, "attributes": "id" } }
+          ]
+        },
+        {
+          "defId": 8,
+          "title": "instanceDataExternalRel",
+          "abbr": "ider",
+          "attributes": [
+            { "title": "" },
+            {
+              "props": [
+                {
+                  "key": {
+                    "defId": 1,
+                    "defTypeId": 2,
+                    "attributes": "id"
+                  },
+                  "value": {
+                    "defId": 1,
+                    "defTypeId": 3,
+                    "attributes": "id"
+                  }
+                }
+              ]
+            },
+            { "source": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
+            { "target": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
+            { "parentId": { "defId": 2, "defTypeId": 5, "attributes": "id" } }
+          ]
+        }
+      ]
+    },
+    {
+      "defId": 3,
+      "type": "group",
+      "title": "groups",
+      "defTypes": [
+        {
+          "defId": 1,
+          "title": "configs",
+          "contextMenu": [{ "defId": 1, "defTypeId": 4 }]
+        },
+        {
+          "defId": 2,
+          "title": "datas",
+          "contextMenu": [{ "defId": 1, "defTypeId": 6 }]
+        },
+        {
+          "defId": 3,
+          "title": "props",
+          "contextMenu": [{ "defId": 1, "defTypeId": 1 }]
+        }
+      ]
+    }
+  ]
 }

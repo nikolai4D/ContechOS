@@ -1,11 +1,17 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
 
-const fileNodeDefs = JSON.parse(
+const definitions = JSON.parse(
   fs.readFileSync("./api/apiDefinitions/definitions.json", "utf8")
 );
 
-const { nodeTypes, relTypes } = fileNodeDefs.nodeDefs;
+// const { nodeTypes, relTypes } = definitions.nodeDefs;
+
+const nodeTypes = definitions.defs.find((obj) => obj.title === "nodeTypes")
+  .defTypes;
+
+const relTypes = definitions.defs.find((obj) => obj.title === "relTypes")
+  .defTypes;
 
 const apiDefsAll = [...nodeTypes, ...relTypes];
 

@@ -5,13 +5,13 @@ import inputField from "./InputField.js";
 let nodeDefs = "";
 
 export function FormNode(event, d, clickedObj) {
-  // Getting definitions 
+  // Getting definitions
 
   nodeDefs = JSON.parse(sessionStorage.getItem("definitions"))[0];
   let typesDetail = [];
 
   if (event.target.tagName === "circle") {
-    // Get details of reltype of contextmenu item 
+    // Get details of reltype of contextmenu item
 
     typesDetail = getTypeDetails(
       parseInt(d.target.id),
@@ -19,7 +19,7 @@ export function FormNode(event, d, clickedObj) {
       "relTypeId"
     );
   } else if (event.target.tagName === "svg") {
-    // Get details of nodetype of contextmenu item 
+    // Get details of nodetype of contextmenu item
 
     typesDetail = getTypeDetails(
       parseInt(d.target.id),
@@ -37,13 +37,16 @@ export function FormNode(event, d, clickedObj) {
   // Run function that gives all of the different field
   updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj);
 
-  const template = `  
-    <div class="formNode card position-absolute">
+  const template = `
+  <div class="formNode position-absolute">
+        <div><h3>create: ${typesDetail.title}</h3></div>
+        <div class="card">
         <div class="card-body">
            <form id="formNode" >
              ${fieldsArray.join("")}
                 <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
             </form>
+        </div>
         </div>
     </div>
 `;
@@ -58,11 +61,10 @@ export function getTypeDetails(id, types, typeId) {
 }
 
 export function getNodeTypesAttrs(nodeTypeId) {
-
   const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
   Actions.GETALL(nodeType);
   return JSON.parse(sessionStorage.getItem(`${nodeType}`));
-};
+}
 
 function createInput(fieldsArray, keyOfAttr) {
   fieldsArray.push(inputField(keyOfAttr));
@@ -83,19 +85,20 @@ function createDropdownMultiple(fieldsArray, id, keyOfAttr) {
 }
 
 function createDropdownKeyValue(fieldsArray, key, value) {
-  let astring = '';
-  let allNodesByTypeKey = getNodeTypesAttrs(key)
-  let allNodesByTypeValue = getNodeTypesAttrs(value)
+  let astring = "";
+  let allNodesByTypeKey = getNodeTypesAttrs(key);
+  let allNodesByTypeValue = getNodeTypesAttrs(value);
 
-  allNodesByTypeKey.forEach(propkey => {
-    let filtered = allNodesByTypeValue.filter(propVal => propVal.propKeyId === propkey.id)
+  allNodesByTypeKey.forEach((propkey) => {
+    let filtered = allNodesByTypeValue.filter(
+      (propVal) => propVal.propKeyId === propkey.id
+    );
     if (filtered.length > 0) {
-      astring += dropDown(propkey.title, filtered, null, propkey.id)
+      astring += dropDown(propkey.title, filtered, null, propkey.id);
     }
-  })
+  });
   fieldsArray.push(astring);
 }
-
 
 async function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
   /*
@@ -105,29 +108,22 @@ async function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
     - dropdowns with multiple choice
     - dropdowns as "key - value", where "key" is a label
   */
-  arrayWithEntries.forEach(attr => {
+  arrayWithEntries.forEach((attr) => {
     let keyOfAttr = Object.keys(attr)[0];
     let valueOfAttr = Object.values(attr)[0];
 
     if (typeof valueOfAttr === "string") {
-      console.log('hello')
-    }
-    else if (Array.isArray(valueOfAttr)) {
+    } else if (Array.isArray(valueOfAttr)) {
       if (valueOfAttr[0]["nodeTypeId"]) {
-        getNodeTypesAttrs(valueOfAttr[0]["nodeTypeId"])
-
+        getNodeTypesAttrs(valueOfAttr[0]["nodeTypeId"]);
+      } else {
+        getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"]);
+        getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"]);
       }
-      else {
-        getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"])
-        getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"])
-
-      }
+    } else if (typeof valueOfAttr === "object") {
+      getNodeTypesAttrs(valueOfAttr["nodeTypeId"]);
     }
-    else if (typeof valueOfAttr === "object") {
-      getNodeTypesAttrs(valueOfAttr["nodeTypeId"])
-
-    }
-  })
+  });
 
   for (let obj of arrayWithEntries) {
     // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
@@ -140,20 +136,30 @@ async function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
 
     if (typeof valueOfAttr === "string") {
       // Returns input forms
-      createInput(fieldsArray, keyOfAttr)
-    }
-    else if (Array.isArray(valueOfAttr)) {
+      createInput(fieldsArray, keyOfAttr);
+    } else if (Array.isArray(valueOfAttr)) {
       if (valueOfAttr[0]["nodeTypeId"]) {
         // Returns dropwdowns with multiple choice
-        createDropdownMultiple(fieldsArray, valueOfAttr[0]["nodeTypeId"], keyOfAttr)
+        createDropdownMultiple(
+          fieldsArray,
+          valueOfAttr[0]["nodeTypeId"],
+          keyOfAttr
+        );
+      } else {
+        createDropdownKeyValue(
+          fieldsArray,
+          valueOfAttr[0].key["nodeTypeId"],
+          valueOfAttr[0].value["nodeTypeId"]
+        );
       }
-      else {
-        createDropdownKeyValue(fieldsArray, valueOfAttr[0].key["nodeTypeId"], valueOfAttr[0].value["nodeTypeId"])
-      }
-    }
-    else if (typeof valueOfAttr === "object") {
+    } else if (typeof valueOfAttr === "object") {
       // Returns single dropdown
-      createDropdown(fieldsArray, valueOfAttr["nodeTypeId"], keyOfAttr, clickedObj)
+      createDropdown(
+        fieldsArray,
+        valueOfAttr["nodeTypeId"],
+        keyOfAttr,
+        clickedObj
+      );
     }
   }
 }

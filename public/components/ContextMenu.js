@@ -1,12 +1,15 @@
-//import nodeDefs from../store/definitions.js.jsjs";
+//import defs from../store/definitions.js.jsjs";
 
 const ContextMenu = (event, d) => {
-  const nodeDefs = JSON.parse(sessionStorage.getItem("definitions"))[0];
+  const definitions = JSON.parse(sessionStorage.getItem("definitions"))[0];
 
   const group = window.location.pathname.substring(1);
 
-  // group object 
-  let validNodeTypesByGroup = nodeDefs.groups.find((obj) => {
+  // group object
+
+  let groups = definitions.defs.find((obj) => obj.title === "groups").defTypes;
+
+  let validNodeTypesByGroup = groups.find((obj) => {
     return obj.title === group;
   });
 
@@ -14,8 +17,8 @@ const ContextMenu = (event, d) => {
   let data = [];
 
   if (event.target.tagName === "circle") {
-    getTypesDetail("relTypes", "relTypeId")
-    console.log(d, 'd')
+    getTypesDetail("relTypes", "relTypeId");
+    // console.log(d, "d");
     getDataByTypesDetail("relTypeId");
   } else if (event.target.tagName === "svg") {
     getTypesDetail("nodeTypes", "nodeTypeId");
@@ -24,19 +27,25 @@ const ContextMenu = (event, d) => {
 
   function getTypesDetail(types, typeId) {
     validNodeTypesByGroup = validNodeTypesByGroup[types];
-    if (group !== 'props' && event.target.tagName === "circle") {
+    if (group !== "props" && event.target.tagName === "circle") {
       // Only getting relTypes that are in nodeType object in definitions
-      let validRelTypesByNodeType = nodeDefs.nodeTypes.find(nodeType => nodeType.title === d.nodeType).relTypes;
+      let validRelTypesByNodeType = defs.nodeTypes.find(
+        (nodeType) => nodeType.title === d.nodeType
+      ).relTypes;
       validNodeTypesByGroup = validRelTypesByNodeType;
     }
-    typesDetail = nodeDefs[types].filter((type) => {
+
+    let definitionsTypes = definitions.defs.find((obj) => obj.title === types)
+      .defTypes;
+
+    typesDetail = definitionsTypes.filter((type) => {
       if (validNodeTypesByGroup.includes(type[typeId])) return type;
     });
   }
 
   function getDataByTypesDetail(typeId) {
     data = typesDetail.map((type) => {
-      return { title: `Create ${type.title}`, id: `${type[typeId]}` };
+      return { title: `${type.title}`, id: `${type[typeId]}` };
     });
   }
 
@@ -49,6 +58,7 @@ const ContextMenu = (event, d) => {
 
   const template = `  
         <div class="contextMenu position-absolute">
+        <div><h3>create:</h3></div>
             <div class="list-group">
                 ${dataArray.join("")}
             </div>
