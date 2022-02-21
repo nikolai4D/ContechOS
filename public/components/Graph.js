@@ -127,14 +127,14 @@ async function Graph(view) {
             .append("div")
             .attr("class", "FormMenuContainer")
             .html(await FormCreate(clickEvent, d, clickedObj))
-            .select(".formNode")
+            .select(".formCreate")
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
           // stop watching
           // d3.selectAll("#field_target").on()
 
-          d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
+          d3.selectAll(".formCreateSubmit").on("click", async (e) => {
             await formCreateFunction(view, d, "node", clickedObj);
 
             await updateData(view);
@@ -198,11 +198,11 @@ async function Graph(view) {
           .append("div")
           .attr("class", "FormMenuContainer")
           .html(await FormCreate(clickEvent, d, clickedObj))
-          .select(".formNode")
+          .select(".formCreate")
           .style("top", y_cord + "px")
           .style("left", x_cord + "px");
 
-        d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
+        d3.selectAll(".formCreateSubmit").on("click", async (e) => {
           await formCreateFunction(view, d, "rel", clickedObj);
           await updateData(view);
           await render(view);

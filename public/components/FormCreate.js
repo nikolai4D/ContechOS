@@ -37,7 +37,9 @@ export function FormCreate(event, d, clickedObj) {
       createInput(fieldsArray, keyOfAttribute)
     }
     else if (fieldType === 'dropDown') {
-      createDropdown(fieldsArray, getDefType(attribute.defId, attribute.defTypeId), keyOfAttribute, clickedObj);
+      const { defId, defTypeId } = valueOfAttribute;
+
+      createDropdown(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId));
 
     }
     else if (fieldType === 'dropDownMultiple') {
@@ -54,21 +56,19 @@ export function FormCreate(event, d, clickedObj) {
       <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
   </div>`;
       fieldsArray.push(htmlString);
-      // createInput(fieldsArray, keyOfAttribute)
-
 
     }
   }
 
 
   const template = `
-  <div class="formNode position-absolute">
+  <div class="formCreate position-absolute">
         <div><h3>create: ${defType.title}</h3></div>
         <div class="card">
         <div class="card-body">
-           <form id="formNode" >
+           <form id="formCreate" >
              ${fieldsArray.join("")}
-                <button type="submit" class="btn btn-primary FormNodeSubmit" value="submit">Submit</button>
+                <button type="submit" class="btn btn-primary formCreateSubmit" value="submit">Submit</button>
             </form>
         </div>
         </div>
@@ -87,13 +87,12 @@ const createInput = (fieldsArray, keyOfAttr) => {
   fieldsArray.push(inputField(keyOfAttr));
 };
 
-// const createDropdown = (fieldsArray, attribute, keyOfAttr, clickedObj) => {
-//   let allNodesByDefType = attribute.filter(
-//     (obj) => obj.id !== clickedObj.id
-//   );
-//   let dropDownString = dropDown(keyOfAttr, allNodesByDefType);
-//   fieldsArray.push(dropDownString);
-// }
+const createDropdown = (fieldsArray, keyOfAttribute, defType) => {
+  let allNodesByDefType = getDefTypeFromSessionStorage(defType);
+
+  let dropDownString = dropDown(keyOfAttribute, allNodesByDefType);
+  fieldsArray.push(dropDownString);
+}
 
 const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType) => {
   let allNodesByDefType = getDefTypeFromSessionStorage(defType);
@@ -118,7 +117,7 @@ const createDropdownKeyValue = (fieldsArray, key, value) => {
 };
 
 
-function getFieldProperties(valueOfAttribute, fieldProperties) {
+export function getFieldProperties(valueOfAttribute, fieldProperties) {
   let type = []
   if (valueOfAttribute?.fieldProperties && valueOfAttribute.fieldProperties) {
     type = valueOfAttribute.fieldProperties.map((property) => {
