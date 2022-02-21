@@ -26,6 +26,7 @@ class Record {
     const {
       title,
       propKeys,
+      parentId,
       propTypeId,
       propKeyId,
       source,
@@ -51,11 +52,11 @@ class Record {
     }
 
     if (this.defType === "propKey") {
-      defType.propTypeId = propTypeId;
+      defType.propTypeId = parentId;
     }
 
     if (this.defType === "propVal") {
-      defType.propKeyId = propKeyId;
+      defType.propKeyId = parentId;
     }
 
     if (this.defType === "configDef") {
