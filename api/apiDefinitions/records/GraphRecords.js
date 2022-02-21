@@ -19,13 +19,23 @@ class GraphRecords {
     // }
 
     if (this.nodeGroup === "configs") {
-      nodeTypes = ["configDef"];
-      relTypes = ["configDefInternalRel", "configDefExternalRel"];
+      nodeTypes = ["configDef", "configObj"];
+      relTypes = [
+        "configDefInternalRel",
+        "configDefExternalRel",
+        "configObjInternalRel",
+        "configObjExternalRel",
+      ];
     }
 
     if (this.nodeGroup === "datas") {
-      nodeTypes = ["data"];
-      relTypes = ["dataRel"];
+      nodeTypes = ["typeData", "instanceData"];
+      relTypes = [
+        "typeDataInternalRel",
+        "typeDataExternalRel",
+        "instanceDataInternalRel",
+        "instanceDataExternalRel",
+      ];
     }
 
     if (this.nodeGroup === "props") {

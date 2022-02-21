@@ -9,7 +9,6 @@ const record = new GraphRecords(routerType);
 
 // Bodyparser
 router.use(bodyParser.json());
-
 router.get("/", async (req, res) => {
   try {
     result = await record.getAll();
