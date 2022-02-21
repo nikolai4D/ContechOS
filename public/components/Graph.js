@@ -1,12 +1,12 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
 import ContextMenu from "./ContextMenu.js";
-import { FormNode } from "./FormNode.js";
+import { FormCreate } from "./FormCreate.js";
 import styles from "./graphComponents/styles.js";
 import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
 import selfArrow from "./graphComponents/selfArrow.js";
 
-import formNodeFunction from "./graphFunctions/formNodeFunction.js";
+import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
 
 async function Graph(view) {
@@ -126,13 +126,13 @@ async function Graph(view) {
           d3.select("#root")
             .append("div")
             .attr("class", "FormMenuContainer")
-            .html(await FormNode(clickEvent, d, clickedObj))
+            .html(await FormCreate(clickEvent, d, clickedObj))
             .select(".formNode")
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
           d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
-            await formNodeFunction(view, d, "node", clickedObj);
+            await formCreateFunction(view, d, "node", clickedObj);
 
             await updateData(view);
             await render(view);
@@ -193,13 +193,13 @@ async function Graph(view) {
         d3.select("#root")
           .append("div")
           .attr("class", "FormMenuContainer")
-          .html(await FormNode(clickEvent, d, clickedObj))
+          .html(await FormCreate(clickEvent, d, clickedObj))
           .select(".formNode")
           .style("top", y_cord + "px")
           .style("left", x_cord + "px");
 
         d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
-          await formNodeFunction(view, d, "rel", clickedObj);
+          await formCreateFunction(view, d, "rel", clickedObj);
           await updateData(view);
           await render(view);
         });

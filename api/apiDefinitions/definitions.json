@@ -1,12 +1,31 @@
 {
-  "fieldTypes": [
-    { "fieldTypeId": 1, "type": "text" },
-    { "fieldTypeId": 2, "type": "dropDownSingleValue" },
-    { "fieldTypeId": 3, "type": "dropDownMultiValue" },
-    { "fieldTypeId": 4, "type": "boolean" },
-    { "fieldTypeId": 5, "type": "externalNodeClick" },
-    { "fieldTypeId": 6, "type": "internalNodeClick" }
-  ],
+  "fields": {
+    "fieldTypes": [
+      {
+        "fieldTypeId": 1,
+        "type": "input",
+        "comments": "When parentId, the value should be the clicked object. When source, the value should be itself."
+      },
+      { "fieldTypeId": 2, "type": "dropDown" },
+      { "fieldTypeId": 3, "type": "dropDownMultiple" },
+      { "fieldTypeId": 4, "type": "dropDownKeyValue" },
+      { "fieldTypeId": 5, "type": "boolean" },
+      {
+        "fieldTypeId": 6,
+        "type": "externalNodeClick",
+        "comments": "When target, then value should not be same as source."
+      },
+      {
+        "fieldTypeId": 1,
+        "fieldProperties": [1, 2],
+        "type": "internalNodeClick"
+      }
+    ],
+    "fieldProperties": [
+      { "fieldPropertyId": 1, "type": "locked" },
+      { "fieldPropertyId": 2, "type": "hidden" }
+    ]
+  },
   "defs": [
     {
       "defId": 1,
@@ -19,7 +38,7 @@
           "abbr": "pt",
           "attributes": [
             {
-              "title": ""
+              "title": { "fieldTypeId": 1 }
             }
           ],
           "contextMenu": [{ "defId": 1, "defTypeId": 2 }]
@@ -29,12 +48,14 @@
           "title": "propKey",
           "abbr": "pk",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
               "parentId": {
                 "defId": 1,
                 "defTypeId": 1,
-                "attributes": "id"
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
               }
             }
           ],
@@ -45,12 +66,14 @@
           "title": "propVal",
           "abbr": "pv",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
               "parentId": {
                 "defId": 1,
                 "defTypeId": 2,
-                "attributes": "id"
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
               }
             }
           ],
@@ -61,8 +84,15 @@
           "title": "configDef",
           "abbr": "cd",
           "attributes": [
-            { "title": "" },
-            { "propKeys": [{ "defId": 1, "defTypeId": 2, "attributes": "id" }] }
+            { "title": { "fieldTypeId": 1 } },
+            {
+              "propKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
+            }
           ],
           "contextMenu": [
             { "defId": 1, "defTypeId": 5 },
@@ -75,33 +105,46 @@
           "title": "configObj",
           "abbr": "co",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
-            },
-            { "parentId": { "defId": 1, "defTypeId": 4, "attributes": "id" } },
-            {
-              "typeDataPropKeys": [
-                { "defId": 1, "defTypeId": 2, "attributes": "id" }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
             {
-              "instanceDataPropKeys": [
-                { "defId": 1, "defTypeId": 2, "attributes": "id" }
-              ]
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            },
+            {
+              "typeDataPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
+            },
+            {
+              "instanceDataPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
             }
           ],
           "contextMenu": [
@@ -114,24 +157,31 @@
           "title": "typeData",
           "abbr": "td",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
-            { "parentId": { "defId": 1, "defTypeId": 5, "attributes": "id" } }
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            }
           ],
           "contextMenu": [
             { "defId": 1, "defTypeId": 7 },
@@ -144,24 +194,38 @@
           "title": "instanceData",
           "abbr": "id",
           "attributes": [
-            { "title": { "defId": 1, "defTypeId": 6, "attributes": "title" } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "title": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "title",
+                "fieldTypeId": 2
+              }
             },
-            { "parentId": { "defId": 1, "defTypeId": 6, "attributes": "id" } }
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
+            },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
+              }
+            }
           ],
           "contextMenu": [
             { "defId": 2, "defTypeId": 7 },
@@ -180,18 +244,22 @@
           "title": "configDefInternalRel",
           "abbr": "cdir",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "propKeys": [{ "defId": 1, "defTypeId": 2, "attributes": "id" }]
+              "propKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
             },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 4,
-                "attributes": "id",
-                "hidden": true,
-                "fieldType": "none",
-                "fieldTypeValue": "self"
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
               }
             }
           ]
@@ -201,27 +269,30 @@
           "title": "configDefExternalRel",
           "abbr": "cder",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "propKeys": [{ "defId": 1, "defTypeId": 2, "attributes": "id" }]
+              "propKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
             },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 4,
-                "attributes": "id",
-                "hidden": true,
-                "fieldType": "none",
-                "fieldTypeValue": "self"
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
               }
             },
             {
               "target": {
                 "defId": 1,
                 "defTypeId": 4,
-                "attributes": "id",
-                "fieldType": "clicked node",
-                "fieldTypeValue": "!source"
+                "returnValue": "id",
+                "fieldTypeId": 6
               }
             }
           ]
@@ -231,48 +302,46 @@
           "title": "configObjInternalRel",
           "abbr": "coir",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 5,
-                "attributes": "id",
-                "fieldType": "none",
-                "fieldTypeValue": "self"
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
               }
             },
             {
               "target": {
                 "defId": 1,
                 "defTypeId": 5,
-                "attributes": "id",
-                "fieldType": "clicked node",
-                "fieldTypeValue": "!source"
+                "returnValue": "id",
+                "fieldTypeId": 6
               }
             },
             {
               "parentId": {
                 "defId": 2,
                 "defTypeId": 1,
-                "attributes": "id",
-                "fieldType": "none",
-                "fieldTypeValue": "clicked parent rel"
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
               }
             }
           ]
@@ -282,26 +351,48 @@
           "title": "configObjExternalRel",
           "abbr": "coer",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
-            { "source": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
-            { "target": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
-            { "parentId": { "defId": 2, "defTypeId": 2, "attributes": "id" } }
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 6
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            }
           ]
         },
         {
@@ -309,26 +400,48 @@
           "title": "typeDataExternalRel",
           "abbr": "tder",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
-            { "source": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
-            { "target": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
-            { "parentId": { "defId": 2, "defTypeId": 4, "attributes": "id" } }
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 6
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            }
           ]
         },
         {
@@ -336,26 +449,48 @@
           "title": "typeDataInternalRel",
           "abbr": "tdir",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
-            { "source": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
-            { "target": { "defId": 1, "defTypeId": 6, "attributes": "id" } },
-            { "parentId": { "defId": 2, "defTypeId": 3, "attributes": "id" } }
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 6
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 3,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            }
           ]
         },
         {
@@ -363,26 +498,48 @@
           "title": "instanceDataInternalRel",
           "abbr": "idir",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4
+              }
             },
-            { "source": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
-            { "target": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
-            { "parentId": { "defId": 2, "defTypeId": 6, "attributes": "id" } }
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 6
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            }
           ]
         },
         {
@@ -390,26 +547,49 @@
           "title": "instanceDataExternalRel",
           "abbr": "ider",
           "attributes": [
-            { "title": "" },
+            { "title": { "fieldTypeId": 1 } },
             {
-              "props": [
-                {
-                  "key": {
-                    "defId": 1,
-                    "defTypeId": 2,
-                    "attributes": "id"
-                  },
-                  "value": {
-                    "defId": 1,
-                    "defTypeId": 3,
-                    "attributes": "id"
-                  }
-                }
-              ]
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+
+                "fieldTypeId": 4
+              }
             },
-            { "source": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
-            { "target": { "defId": 1, "defTypeId": 7, "attributes": "id" } },
-            { "parentId": { "defId": 2, "defTypeId": 5, "attributes": "id" } }
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2]
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 6
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            }
           ]
         }
       ]
