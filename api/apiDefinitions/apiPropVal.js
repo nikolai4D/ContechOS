@@ -16,18 +16,18 @@ propVal.use(bodyParser.json());
 //APIs
 
 propVal.post("/create", async (req, res) => {
-  const { title, propKeyId } = req.body;
+  const { title, parentId } = req.body;
 
-  if (!title || !propKeyId) {
-    return res.status(400).json("title and/or propKeyId missing");
+  if (!title || !parentId) {
+    return res.status(400).json("title and/or parentId missing");
   }
   const propKeyArray = await propKeyRecord.getAllId();
-  if (!propKeyArray.includes(propKeyId)) {
-    return res.status(400).json("propKeyId does not exist");
+  if (!propKeyArray.includes(parentId)) {
+    return res.status(400).json("parentId does not exist");
   }
 
   try {
-    result = await propValRecord.create({ title, propKeyId });
+    result = await propValRecord.create({ title, parentId });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });

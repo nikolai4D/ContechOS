@@ -14,18 +14,18 @@ router.use(bodyParser.json());
 //APIs
 
 router.post("/create", async (req, res) => {
-  const { title, propTypeId } = req.body;
+  const { title, parentId } = req.body;
 
-  if (!title || !propTypeId) {
-    return res.status(400).json("title and/or propTypeId missing");
+  if (!title || !parentId) {
+    return res.status(400).json("title and/or parentId missing");
   }
   const propTypeArray = await propTypeRecord.getAllId();
-  if (!propTypeArray.includes(propTypeId)) {
-    return res.status(400).json("propTypeId does not exist");
+  if (!propTypeArray.includes(parentId)) {
+    return res.status(400).json("parentId does not exist");
   }
 
   try {
-    result = await record.create({ title, propTypeId });
+    result = await record.create({ title, parentId });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
