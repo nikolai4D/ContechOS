@@ -1,4 +1,12 @@
 {
+  "fieldTypes": [
+    { "fieldTypeId": 1, "type": "text" },
+    { "fieldTypeId": 2, "type": "dropDownSingleValue" },
+    { "fieldTypeId": 3, "type": "dropDownMultiValue" },
+    { "fieldTypeId": 4, "type": "boolean" },
+    { "fieldTypeId": 5, "type": "externalNodeClick" },
+    { "fieldTypeId": 6, "type": "internalNodeClick" }
+  ],
   "defs": [
     {
       "defId": 1,
@@ -181,13 +189,15 @@
                 "defId": 1,
                 "defTypeId": 4,
                 "attributes": "id",
-                "hidden": true
+                "hidden": true,
+                "fieldType": "none",
+                "fieldTypeValue": "self"
               }
             }
           ]
         },
         {
-          "defId": 2,
+          "defTypeId": 2,
           "title": "configDefExternalRel",
           "abbr": "cder",
           "attributes": [
@@ -200,14 +210,24 @@
                 "defId": 1,
                 "defTypeId": 4,
                 "attributes": "id",
-                "hidden": true
+                "hidden": true,
+                "fieldType": "none",
+                "fieldTypeValue": "self"
               }
             },
-            { "target": { "defId": 1, "defTypeId": 4, "attributes": "id" } }
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 4,
+                "attributes": "id",
+                "fieldType": "clicked node",
+                "fieldTypeValue": "!source"
+              }
+            }
           ]
         },
         {
-          "defId": 3,
+          "defTypeId": 3,
           "title": "configObjInternalRel",
           "abbr": "coir",
           "attributes": [
@@ -228,13 +248,37 @@
                 }
               ]
             },
-            { "source": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
-            { "target": { "defId": 1, "defTypeId": 5, "attributes": "id" } },
-            { "parentId": { "defId": 2, "defTypeId": 1, "attributes": "id" } }
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 5,
+                "attributes": "id",
+                "fieldType": "none",
+                "fieldTypeValue": "self"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 5,
+                "attributes": "id",
+                "fieldType": "clicked node",
+                "fieldTypeValue": "!source"
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 1,
+                "attributes": "id",
+                "fieldType": "none",
+                "fieldTypeValue": "clicked parent rel"
+              }
+            }
           ]
         },
         {
-          "defId": 4,
+          "defTypeId": 4,
           "title": "configObjExternalRel",
           "abbr": "coer",
           "attributes": [
@@ -261,7 +305,7 @@
           ]
         },
         {
-          "defId": 5,
+          "defTypeId": 5,
           "title": "typeDataExternalRel",
           "abbr": "tder",
           "attributes": [
@@ -288,7 +332,7 @@
           ]
         },
         {
-          "defId": 6,
+          "defTypeId": 6,
           "title": "typeDataInternalRel",
           "abbr": "tdir",
           "attributes": [
@@ -315,7 +359,7 @@
           ]
         },
         {
-          "defId": 7,
+          "defTypeId": 7,
           "title": "instanceDataInternalRel",
           "abbr": "idir",
           "attributes": [
@@ -342,7 +386,7 @@
           ]
         },
         {
-          "defId": 8,
+          "defTypeId": 8,
           "title": "instanceDataExternalRel",
           "abbr": "ider",
           "attributes": [

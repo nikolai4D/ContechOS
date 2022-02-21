@@ -1,45 +1,75 @@
 import Actions from "../store/Actions.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
+import getDefType from "./graphfunctions/getDefType.js";
 
-let nodeDefs = "";
+let definitions = "";
 
 export function FormNode(event, d, clickedObj) {
   // Getting definitions
 
-  nodeDefs = JSON.parse(sessionStorage.getItem("definitions"))[0];
+  definitions = JSON.parse(sessionStorage.getItem("definitions"))[0];
   let typesDetail = [];
+  const defId = parseInt(d.target.attributes.getNamedItem("data-defid").value);
+  const defTypeId = parseInt(
+    d.target.attributes.getNamedItem("data-deftypeid").value
+  );
 
-  if (event.target.tagName === "circle") {
-    // Get details of reltype of contextmenu item
-
-    typesDetail = getTypeDetails(
-      parseInt(d.target.id),
-      "relTypes",
-      "relTypeId"
-    );
-  } else if (event.target.tagName === "svg") {
-    // Get details of nodetype of contextmenu item
-
-    typesDetail = getTypeDetails(
-      parseInt(d.target.id),
-      "nodeTypes",
-      "nodeTypeId"
-    );
-  }
-
-  // Get the attributes of that rel/nodetype to later loop throufg
-  let arrayWithEntries = typesDetail.attributes;
+  const defType = getDefType(defId, defTypeId);
 
   // initialise array to put fields into
   let fieldsArray = [];
 
+  let defTypeAttrs = defType.attributes;
+
   // Run function that gives all of the different field
-  updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj);
+  updateFieldsArray(defTypeAttrs, fieldsArray, clickedObj);
+
+  async function updateFieldsArray(defTypeAttrs, fieldsArray, clickedObj) {
+    /*
+    Gets fields:
+      - input
+      - dropdowns
+      - dropdowns with multiple choice
+      - dropdowns as "key - value", where "key" is a label
+    */
+
+    for (let obj of defTypeAttrs) {
+      // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
+
+      let keyOfAttr = Object.keys(obj)[0];
+      let valueOfAttr = Object.values(obj)[0];
+      if (valueOfAttr["hidden"]) {
+        continue;
+      }
+
+      if (typeof valueOfAttr === "string") {
+        // Returns input forms
+        createInput(fieldsArray, keyOfAttr);
+      } else if (Array.isArray(valueOfAttr)) {
+        if (valueOfAttr[0]["defTypeId"]) {
+          // Returns dropwdowns with multiple choice
+          createDropdownMultiple(fieldsArray, valueOfAttr[0], keyOfAttr);
+        } else {
+          createDropdownKeyValue(
+            fieldsArray,
+            valueOfAttr[0].key,
+            valueOfAttr[0].value
+          );
+        }
+      } else if (typeof valueOfAttr === "object") {
+        // Returns single dropdown
+        createDropdown(fieldsArray, valueOfAttr, keyOfAttr, clickedObj);
+      }
+    }
+  }
+
+  //   let arrayWithEntries = defType.attributes;
+  //   console.log(arrayWithEntries);
 
   const template = `
   <div class="formNode position-absolute">
-        <div><h3>create: ${typesDetail.title}</h3></div>
+        <div><h3>create: ${defType.title}</h3></div>
         <div class="card">
         <div class="card-body">
            <form id="formNode" >
@@ -53,41 +83,50 @@ export function FormNode(event, d, clickedObj) {
   return template;
 }
 
-export function getTypeDetails(id, types, typeId) {
-  // Getting details about rel/nodetype by comparing id in definitions (to later take out attributes)
-  return nodeDefs[types].find((obj) => {
-    return obj[typeId] === id;
-  });
-}
+// export function getTypeDetails(id, types, typeId) {
+//   // Getting details about rel/nodetype by comparing id in definitions (to later take out attributes)
+//   return definitions[types].find((obj) => {
+//     return obj[typeId] === id;
+//   });
+// }
 
-export function getNodeTypesAttrs(nodeTypeId) {
-  const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
-  Actions.GETALL(nodeType);
-  return JSON.parse(sessionStorage.getItem(`${nodeType}`));
+// export function getDefTypesAttrs(defType) {
+//   console.log(defType);
+//   //const nodeType = getTypeDetails(nodeTypeId, "nodeTypes", "nodeTypeId").title;
+//   Actions.GETALL(defType.title);
+//   return JSON.parse(sessionStorage.getItem(`${defType.title}`));
+// }
+
+async function getDefTypeFromSessionStorage(defType) {
+  const defTypeTitle = getDefType(defType.defId, defType.defTypeId).title;
+  await Actions.GETALL(defTypeTitle);
+  return JSON.parse(sessionStorage.getItem(`${defTypeTitle}`));
 }
 
 function createInput(fieldsArray, keyOfAttr) {
   fieldsArray.push(inputField(keyOfAttr));
 }
 
-function createDropdown(fieldsArray, id, keyOfAttr, clickedObj) {
-  let allNodesByType = getNodeTypesAttrs(id).filter(
-    (obj) => obj.id !== clickedObj.id
-  );
-  let dropDownString = dropDown(keyOfAttr, allNodesByType);
-  fieldsArray.push(dropDownString);
-}
+// function createDropdown(fieldsArray, id, keyOfAttr, clickedObj) {
+//   let allNodesByType = getDefTypesAttrs(id).filter(
+//     (obj) => obj.id !== clickedObj.id
+//   );
+//   let dropDownString = dropDown(keyOfAttr, allNodesByType);
+//   fieldsArray.push(dropDownString);
+// }
 
 function createDropdownMultiple(fieldsArray, id, keyOfAttr) {
-  let allNodesByType = getNodeTypesAttrs(id);
+  let allNodesByType = getDefTypeFromSessionStorage(defType);
   let dropDownString = dropDown(keyOfAttr, allNodesByType, "multiple");
   fieldsArray.push(dropDownString);
 }
 
 function createDropdownKeyValue(fieldsArray, key, value) {
   let astring = "";
-  let allNodesByTypeKey = getNodeTypesAttrs(key);
-  let allNodesByTypeValue = getNodeTypesAttrs(value);
+  let allNodesByTypeKey = getDefTypesAttrs(key);
+  getDefTypeFromSessionStorage(defType);
+  let allNodesByTypeValue = getDefTypesAttrs(value);
+  getDefTypeFromSessionStorage(defType);
 
   allNodesByTypeKey.forEach((propkey) => {
     let filtered = allNodesByTypeValue.filter(
@@ -98,68 +137,4 @@ function createDropdownKeyValue(fieldsArray, key, value) {
     }
   });
   fieldsArray.push(astring);
-}
-
-async function updateFieldsArray(arrayWithEntries, fieldsArray, clickedObj) {
-  /*
-  Gets fields:
-    - input
-    - dropdowns
-    - dropdowns with multiple choice
-    - dropdowns as "key - value", where "key" is a label
-  */
-  arrayWithEntries.forEach((attr) => {
-    let keyOfAttr = Object.keys(attr)[0];
-    let valueOfAttr = Object.values(attr)[0];
-
-    if (typeof valueOfAttr === "string") {
-    } else if (Array.isArray(valueOfAttr)) {
-      if (valueOfAttr[0]["nodeTypeId"]) {
-        getNodeTypesAttrs(valueOfAttr[0]["nodeTypeId"]);
-      } else {
-        getNodeTypesAttrs(valueOfAttr[0].key["nodeTypeId"]);
-        getNodeTypesAttrs(valueOfAttr[0].value["nodeTypeId"]);
-      }
-    } else if (typeof valueOfAttr === "object") {
-      getNodeTypesAttrs(valueOfAttr["nodeTypeId"]);
-    }
-  });
-
-  for (let obj of arrayWithEntries) {
-    // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
-
-    let keyOfAttr = Object.keys(obj)[0];
-    let valueOfAttr = Object.values(obj)[0];
-    if (valueOfAttr["hidden"]) {
-      continue;
-    }
-
-    if (typeof valueOfAttr === "string") {
-      // Returns input forms
-      createInput(fieldsArray, keyOfAttr);
-    } else if (Array.isArray(valueOfAttr)) {
-      if (valueOfAttr[0]["nodeTypeId"]) {
-        // Returns dropwdowns with multiple choice
-        createDropdownMultiple(
-          fieldsArray,
-          valueOfAttr[0]["nodeTypeId"],
-          keyOfAttr
-        );
-      } else {
-        createDropdownKeyValue(
-          fieldsArray,
-          valueOfAttr[0].key["nodeTypeId"],
-          valueOfAttr[0].value["nodeTypeId"]
-        );
-      }
-    } else if (typeof valueOfAttr === "object") {
-      // Returns single dropdown
-      createDropdown(
-        fieldsArray,
-        valueOfAttr["nodeTypeId"],
-        keyOfAttr,
-        clickedObj
-      );
-    }
-  }
 }

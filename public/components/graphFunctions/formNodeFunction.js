@@ -1,5 +1,5 @@
 import Actions from "../../store/Actions.js";
-import { getTypeDetails, getNodeTypesAttrs } from "../FormNode.js";
+// import { getTypeDetails } from "../FormNode.js";
 import { select } from "https://cdn.skypack.dev/d3@6";
 
 const formNodeFunction = async (view, d, type, clickedObj) => {
@@ -35,10 +35,10 @@ const formNodeFunction = async (view, d, type, clickedObj) => {
         } else {
           // props with key value pair
 
-          let allNodesByTypeKey = getNodeTypesAttrs(
+          let allNodesByTypeKey = getDefTypesAttrs(
             valueOfAttr[0].key["nodeTypeId"]
           );
-          let allNodesByTypeValue = getNodeTypesAttrs(
+          let allNodesByTypeValue = getDefTypesAttrs(
             valueOfAttr[0].value["nodeTypeId"]
           );
 
