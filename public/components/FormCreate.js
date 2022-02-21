@@ -28,6 +28,11 @@ export function FormCreate(event, d, clickedObj) {
     let fieldTypeId = valueOfAttribute.fieldTypeId;
     let fieldType = fieldTypes.find(obj => obj.fieldTypeId === fieldTypeId).type;
 
+    let fieldPropertiesOfAttribute = getFieldProperties(valueOfAttribute, fieldProperties)
+    if (fieldPropertiesOfAttribute.some(obj => obj.type === 'hidden')) {
+      continue;
+    }
+
     if (fieldType === 'input') {
       createInput(fieldsArray, keyOfAttribute)
     }
@@ -41,6 +46,16 @@ export function FormCreate(event, d, clickedObj) {
     }
     else if (fieldType === 'dropDownKeyValue') {
       createDropdownKeyValue(fieldsArray, getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId), getDefType(valueOfAttribute.value.defId, valueOfAttribute.value.defTypeId));
+
+    }
+    else if (fieldType === 'externalNodeClick') {
+      let htmlString = `<div style="display: flex; padding: 0.5em">
+      <label class="form-label" for="field_${keyOfAttribute}">${keyOfAttribute}:</label>
+      <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
+  </div>`;
+      fieldsArray.push(htmlString);
+      // createInput(fieldsArray, keyOfAttribute)
+
 
     }
   }
@@ -101,3 +116,14 @@ const createDropdownKeyValue = (fieldsArray, key, value) => {
   });
   fieldsArray.push(dropDownHtmlString);
 };
+
+
+function getFieldProperties(valueOfAttribute, fieldProperties) {
+  let type = []
+  if (valueOfAttribute?.fieldProperties && valueOfAttribute.fieldProperties) {
+    type = valueOfAttribute.fieldProperties.map((property) => {
+      return fieldProperties.find(obj => obj.fieldPropertyId === property)
+    })
+  }
+  return type
+}

@@ -97,7 +97,7 @@ async function Graph(view) {
     )
     .on("click", () => {
       d3.select(".contextMenuContainer").remove();
-      d3.select(".FormMenuContainer").remove();
+
     })
     .on("contextmenu", (d) => {
       let clickedObj = d;
@@ -131,6 +131,9 @@ async function Graph(view) {
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
+          // stop watching
+          // d3.selectAll("#field_target").on()
+
           d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
             await formCreateFunction(view, d, "node", clickedObj);
 
@@ -163,6 +166,7 @@ async function Graph(view) {
 
   const clicked = (event, d) => {
     console.log(d);
+    document.getElementById("field_target").value = JSON.stringify(d.id)
   };
 
   const rightClicked = (event, d) => {
