@@ -2,11 +2,11 @@ import Mutations from "./Mutations.js";
 // import { stack } from "d3";
 
 class Actions {
-  constructor() {}
+  constructor() { }
 
-  async CREATE(view, nodeType, attrs) {
+  async CREATE(view, defTypeTitle, attrs) {
     try {
-      const record = await fetch(`/api/${nodeType}/create`, {
+      const record = await fetch(`/api/${defTypeTitle}/create`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -15,36 +15,27 @@ class Actions {
         body: JSON.stringify(await attrs),
       });
       const recordJson = await record.json();
+      recordJson.defTypeTitle = defTypeTitle;
+      delete recordJson.created;
+      delete recordJson.updated;
 
       const recordsInView = JSON.parse(sessionStorage.getItem(view));
 
       let type = "nodes";
-      if (nodeType.slice(-3) === "Rel") {
+      if (defTypeTitle.slice(-3) === "Rel") {
         type = "rels";
       }
 
       recordsInView[0][type].push(recordJson);
-      console.log(recordJson, recordsInView);
 
-      if (view === "props" && nodeType === "propKey") {
+      if (view === "props" && (defTypeTitle === "propKey" || defTypeTitle === "propVal")) {
         let source = recordJson.id;
-        let target = await attrs.propTypeId;
+        let target = await attrs.parentId;
         let newRel = {
           id: `${source}_${target}`,
           source,
           target,
-          title: "has propType",
-        };
-        recordsInView[0].rels.push(newRel);
-      }
-      if (view === "props" && nodeType === "propVal") {
-        let source = recordJson.id;
-        let target = await attrs.propKeyId;
-        let newRel = {
-          id: `${source}_${target}`,
-          source,
-          target,
-          title: "has propKey",
+          title: "has parent",
         };
         recordsInView[0].rels.push(newRel);
       }
@@ -61,6 +52,7 @@ class Actions {
         "Content-Type": "application/json",
         authorization: sessionStorage.getItem("accessToken"),
       };
+
       const records = await fetch(`/api/${view}`, {
         method: "GET",
         headers: getHeaders,

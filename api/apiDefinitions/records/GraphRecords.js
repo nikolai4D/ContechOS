@@ -54,7 +54,7 @@ class GraphRecords {
         delete node.created;
         delete node.updated;
         node.id = file.slice(0, -5);
-        node.nodeType = nodeType;
+        node.defTypeTitle = nodeType;
         nodes.push(node);
       });
     });
@@ -71,7 +71,7 @@ class GraphRecords {
           delete rel.created;
           delete rel.updated;
           rel.id = file.slice(0, -5);
-          rel.relType = relType;
+          rel.defTypeTitle = relType;
           rels.push(rel);
         });
       });
@@ -88,11 +88,15 @@ class GraphRecords {
           if (rel.parentId) {
             parentId = rel.parentId;
             rel.title = "has parent";
+<<<<<<< HEAD
           }
           if (rel.parentId) {
             parentId = rel.parentId;
             rel.title = "has propKey";
+=======
+>>>>>>> 220ad4be89b469ba4dabe9d7acd96abdd314b561
           }
+
           let nodeId = file.slice(0, -5);
           rel.id = nodeId + parentId;
           rel.source = nodeId;

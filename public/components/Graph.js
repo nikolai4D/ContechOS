@@ -31,6 +31,8 @@ async function Graph(view) {
     }
   };
 
+  console.log(nodes)
+
   let width = window.innerWidth,
     height = window.innerHeight - 20;
 
@@ -166,7 +168,7 @@ async function Graph(view) {
 
   const clicked = (event, d) => {
     console.log(d);
-    document.getElementById("field_target").value = JSON.stringify(d.id)
+    if (document.getElementById("field_target")) { document.getElementById("field_target").value = d.id }
   };
 
   const rightClicked = (event, d) => {

@@ -5,17 +5,17 @@ const ContextMenu = (event, d) => {
 
   if (event.target.tagName === "svg") {
     const group = window.location.pathname.substring(1);
-    let defTitle = "groups";
+    let defTitle = "group";
     data = getData(defTitle, group);
   } else if (event.target.tagName === "circle") {
-    let defTitle = "nodeTypes";
-    data = getData(defTitle, d.nodeType);
+    let defTitle = "nodeType";
+    data = getData(defTitle, d.defTypeTitle);
   }
 
   let dataArray = data.map(
     (obj) =>
       `<div class="list-group-item list-group-item-action context_menu_item" data-defId="${obj.defId}" data-defTypeId="${obj.defTypeId}">
-                ${obj.title}
+                ${obj.defTypeTitle}
         </div>`
   );
 
