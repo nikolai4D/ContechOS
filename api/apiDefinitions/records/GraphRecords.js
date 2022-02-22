@@ -85,12 +85,12 @@ class GraphRecords {
           let rel = JSON.parse(fs.readFileSync(dirRels + file, "utf8"));
           delete rel.created;
           delete rel.updated;
-          if (rel.propTypeId) {
-            parentId = rel.propTypeId;
-            rel.title = "has propType";
+          if (rel.parentId) {
+            parentId = rel.parentId;
+            rel.title = "has parent";
           }
-          if (rel.propKeyId) {
-            parentId = rel.propKeyId;
+          if (rel.parentId) {
+            parentId = rel.parentId;
             rel.title = "has propKey";
           }
           let nodeId = file.slice(0, -5);
