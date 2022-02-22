@@ -32,9 +32,12 @@ class Record {
       props,
       typeDataPropKeys,
       instanceDataPropKeys,
+      typeDataRelPropKeys,
+      instanceDataRelPropKeys,
     } = reqBody;
 
-    const idAbbr = apiDefsAll.find((obj) => obj.defTypeTitle === this.defType).abbr;
+    const idAbbr = apiDefsAll.find((obj) => obj.defTypeTitle === this.defType)
+      .abbr;
 
     let defTypeId = `${idAbbr}_${uuidv4()}`;
 
