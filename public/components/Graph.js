@@ -239,6 +239,31 @@ async function Graph(view) {
           document.getElementById('field_filteredProps').innerHTML = ""
           document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
         });
+
+        d3.selectAll(".field_configDefExternalRel").on("change", async (e) => {
+          const propsParentId = document.getElementById("field_configDefExternalRel").value;
+          let dropDownHtmlString = ''
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+
+          let parentConfigDefExternalRels = configRels.find(rel => { return rel.id === propsParentId })
+
+
+          parentConfigDefExternalRels.propKeys.forEach(propKey => {
+            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            // console.log(propKeyObj)
+            if (filtered.length > 0) {
+              propKeys.push({ "title": propKeyObj.title, "id": propKey })
+              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            }
+          })
+
+          document.getElementById('field_filteredProps').innerHTML = ""
+          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        });
       });
     }
   };
