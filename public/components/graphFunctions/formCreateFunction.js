@@ -47,51 +47,59 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
     else {
-      let formAttr = formData[`field_${keyOfAttribute}`];
+      console.log(keyOfAttribute, defType.defTypeTitle)
+      if (keyOfAttribute === 'parentId' && defType.defTypeTitle === 'typeData') {
+        formDataObj['parentId'] = formData[`field_parentId_typeData`].value;
 
-      if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
-        attrValue = formAttr.value;
       }
-      else if (fieldType === 'dropDownMultiple') {
-        attrValue = await [...formAttr.selectedOptions].map(
-          (option) => option.value
-        )
-      }
-      else if (fieldType === 'dropDownKeyValue') {
-        if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel') {
+      else {
+        let formAttr = formData[`field_${keyOfAttribute}`];
 
-          let props = propKeys.map(propKey => {
-            let theKey = propKey.id;
-            let theValue = formData[`field_${propKey.title}`].value;
-            return { [theKey]: theValue }
-          })
-          keyOfAttribute = "props"
-          attrValue = props
+        if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
+          attrValue = formAttr.value;
         }
-        else {
-
-          let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-          let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
-          let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
-
-          let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
-
-          let propKeyList = allKeysByParent.filter(propKey => {
-            let filtered = propsNodes.filter(node => node.parentId === propKey.id)
-            if (filtered.length > 0) {
-              return filtered;
-            }
-          })
-
-          let props = propKeyList.map((propKey) => {
-            let propKeyId = propKey.id;
-            let propValue = formData[`field_${propKey.title}`].value;
-            return { [propKeyId]: propValue };
-          });
-          attrValue = props;
+        else if (fieldType === 'dropDownMultiple') {
+          attrValue = await [...formAttr.selectedOptions].map(
+            (option) => option.value
+          )
         }
+        else if (fieldType === 'dropDownKeyValue') {
+          console.log(defType.defTypeTitle)
+          if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel' || defType.defTypeTitle === 'typeData') {
+
+            let props = propKeys.map(propKey => {
+              let theKey = propKey.id;
+              let theValue = formData[`field_${propKey.title}`].value;
+              return { [theKey]: theValue }
+            })
+            keyOfAttribute = "props"
+            attrValue = props
+          }
+          else {
+
+            let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+            let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
+            let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+
+            let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
+
+            let propKeyList = allKeysByParent.filter(propKey => {
+              let filtered = propsNodes.filter(node => node.parentId === propKey.id)
+              if (filtered.length > 0) {
+                return filtered;
+              }
+            })
+
+            let props = propKeyList.map((propKey) => {
+              let propKeyId = propKey.id;
+              let propValue = formData[`field_${propKey.title}`].value;
+              return { [propKeyId]: propValue };
+            });
+            attrValue = props;
+          }
+        }
+        formDataObj[keyOfAttribute] = attrValue;
       }
-      formDataObj[keyOfAttribute] = attrValue;
     }
   }
   console.log(formDataObj)

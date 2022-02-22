@@ -85,14 +85,28 @@ export function getDefTypeFromSessionStorage(defType) {
 };
 
 const createInput = (fieldsArray, keyOfAttr) => {
+
   fieldsArray.push(inputField(keyOfAttr));
 };
 
 const createDropdown = (fieldsArray, keyOfAttribute, defType) => {
   let allNodesByDefType = getDefTypeFromSessionStorage(defType);
 
-  let dropDownString = dropDown(keyOfAttribute, allNodesByDefType);
+  // let dropDownString = dropDown(keyOfAttribute, allNodesByDefType);
+  // fieldsArray.push(dropDownString);
+
+  let dropDownString = ''
+  console.log(defType)
+  if (defType.defTypeTitle === 'configObj') {
+    dropDownString = dropDown(keyOfAttribute, allNodesByDefType, null, `${keyOfAttribute}_typeData`, '_typeData');
+
+  }
+  else {
+    dropDownString = dropDown(keyOfAttribute, allNodesByDefType);
+  }
   fieldsArray.push(dropDownString);
+  fieldsArray.push(`<div id="field_filteredProps_typeData" name="field_filteredProps_typeData"></div>`);
+
 }
 
 const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType) => {
@@ -150,6 +164,22 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
     })
   }
 
+  else if (defType.defTypeTitle === 'typeData') {
+    // propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+    // let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
+    // allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+
+
+    // let allKeysByParent = propsNodesRels.filter(node => { return allKeyIdsByParent.includes(node.id) })
+
+    // allKeysByParent.forEach(propKey => {
+    //   let filtered = propsNodesRels.filter(node => node.parentId === propKey.id)
+    //   if (filtered.length > 0) {
+    //     dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
+    //   }
+    // })
+  }
   fieldsArray.push(dropDownHtmlString);
 
 

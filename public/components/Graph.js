@@ -137,15 +137,66 @@ async function Graph(view) {
 
           // stop watching
           // d3.selectAll("#field_target").on()
+          let propKeys = []
 
           d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-            await formCreateFunction(view, d, "node", clickedObj);
+            await formCreateFunction(view, d, "rel", clickedObj, propKeys);
 
             await updateData(view);
             await render(view);
           });
 
+          d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
+            const parentId = document.getElementById("field_parentId_typeData").value;
+            console.log(parentId)
 
+            let dropDownHtmlString = ''
+            let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
+            let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+            let parentConfigObject = configNodes.find(node => { return node.id === parentId })
+
+            // console.log(parentConfigObject)
+
+            parentConfigObject.typeDataPropKeys.forEach(propKey => {
+              let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+              console.log(filtered)
+
+              let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+              console.log(propKeyObj)
+              if (filtered.length > 0) {
+                propKeys.push({ "title": propKeyObj.title, "id": propKey })
+                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+              }
+            })
+
+            document.getElementById('field_filteredProps_typeData').innerHTML = ""
+            document.getElementById('field_filteredProps_typeData').innerHTML = dropDownHtmlString
+
+            // })
+
+            // let dropDownHtmlString = ''
+            // let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+            // let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+
+            // let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
+
+
+            // parentConfigDefInternalRels.propKeys.forEach(propKey => {
+            //   let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            //   let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            //   // console.log(propKeyObj)
+            //   if (filtered.length > 0) {
+            //     propKeys.push({ "title": propKeyObj.title, "id": propKey })
+            //     dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            //   }
+            // })
+
+            // document.getElementById('field_filteredProps').innerHTML = ""
+            // document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+          });
 
           // d3.selectAll(".form_add_more_props_button")
           //   .on("click", (d) => {
