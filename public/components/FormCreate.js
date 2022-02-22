@@ -105,22 +105,34 @@ const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType) => {
 }
 
 const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj) => {
-  let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+  let propsNodes = []
+  if (clickedObj.defTypeTitle === 'configObj') {
+    propsNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+    console.log(propsNodes)
 
-  let dropDownHtmlString = "";
-  let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
-  let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+  }
+  else if (clickedObj.defTypeTitle === 'configDef') {
+    propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
 
-  let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
+    let dropDownHtmlString = "";
+    let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
+    let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
 
-  allKeysByParent.forEach(propKey => {
-    let filtered = propsNodes.filter(node => node.parentId === propKey.id)
-    if (filtered.length > 0) {
-      dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
-    }
-  })
+    let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
-  fieldsArray.push(dropDownHtmlString);
+    allKeysByParent.forEach(propKey => {
+      let filtered = propsNodes.filter(node => node.parentId === propKey.id)
+      if (filtered.length > 0) {
+        dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
+      }
+    })
+
+    fieldsArray.push(dropDownHtmlString);
+
+  }
+
+
+
 };
 
 export function getFieldProperties(valueOfAttribute, fieldProperties) {

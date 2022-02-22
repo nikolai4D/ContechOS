@@ -88,13 +88,6 @@ class GraphRecords {
           if (rel.parentId) {
             parentId = rel.parentId;
             rel.title = "has parent";
-<<<<<<< HEAD
-          }
-          if (rel.parentId) {
-            parentId = rel.parentId;
-            rel.title = "has propKey";
-=======
->>>>>>> 220ad4be89b469ba4dabe9d7acd96abdd314b561
           }
 
           let nodeId = file.slice(0, -5);

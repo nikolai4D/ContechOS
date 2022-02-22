@@ -34,7 +34,7 @@ router.post("/create", async (req, res) => {
   });
 
   try {
-    result = await record.create({ title, source });
+    result = await record.create({ title, source, propKeys });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });

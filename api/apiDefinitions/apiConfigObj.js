@@ -49,7 +49,7 @@ router.post("/create", async (req, res) => {
   //the rest of the tests
 
   try {
-    result = await record.create({ title, propKeys });
+    result = await record.create({ title, props, parentId, typeDataPropKeys, instanceDataPropKeys });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
