@@ -149,13 +149,16 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
   if (defType.defTypeTitle === 'typeDataInternalRel') {
 
     let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+    console.log(clickedObj.parentId)
 
-    let parentConfigDefInternalRels = configRels.filter(rel => { return (rel.source === clickedObj.parentId && rel.target === clickedObj.parentId) })
+    let parentConfigDefInternalRels = configRels.filter(rel => { return (rel.defTypeTitle === 'configObjInternalRel' && (rel.source === clickedObj.parentId || rel.target === clickedObj.parentId)) })
+
+    // let parentConfigDefInternalRels = configRels.filter(rel => { return (rel.source === clickedObj.parentId && rel.target === clickedObj.parentId) })
     console.log(parentConfigDefInternalRels)
 
-    // let dropDownString = dropDown("configDefInternalRel", parentConfigDefInternalRels);
-    // fieldsArray.push(dropDownString);
-    // fieldsArray.push(`<div id="field_filteredProps" name="field_filteredProps"></div>`);
+    let dropDownString = dropDown("configObjInternalRel", parentConfigDefInternalRels);
+    fieldsArray.push(dropDownString);
+    fieldsArray.push(`<div id="field_filteredProps" name="field_filteredProps"></div>`);
 
   }
 

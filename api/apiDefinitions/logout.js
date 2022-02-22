@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const fs = require("fs");
 const bodyParser = require("body-parser");
-const Record = require("./records/record.js");
+const Record = require("./records/Record.js");
 
 const routerType = "users";
 //Record instance
