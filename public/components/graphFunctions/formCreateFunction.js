@@ -20,6 +20,7 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
 
   let defTypeAttributes = defType.attributes;
   let formDataObj = {};
+  console.log(defType)
 
   for (let attribute of defTypeAttributes) {
     //   // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
@@ -76,7 +77,7 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
   console.log(formDataObj)
 
 
-  await Actions.CREATE(view, defType.title, await formDataObj);
+  await Actions.CREATE(view, defType.defTypeTitle, await formDataObj);
   select(".FormMenuContainer").remove();
 };
 

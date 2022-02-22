@@ -7,10 +7,10 @@ const definitions = JSON.parse(
 
 // const { nodeTypes, relTypes } = definitions.nodeDefs;
 
-const nodeTypes = definitions.defs.find((obj) => obj.title === "nodeTypes")
+const nodeTypes = definitions.defs.find((obj) => obj.defTitle === "nodeType")
   .defTypes;
 
-const relTypes = definitions.defs.find((obj) => obj.title === "relTypes")
+const relTypes = definitions.defs.find((obj) => obj.defTitle === "relType")
   .defTypes;
 
 const apiDefsAll = [...nodeTypes, ...relTypes];
@@ -34,7 +34,7 @@ class Record {
       instanceDataPropKeys,
     } = reqBody;
 
-    const idAbbr = apiDefsAll.find((obj) => obj.title === this.defType).abbr;
+    const idAbbr = apiDefsAll.find((obj) => obj.defTypeTitle === this.defType).abbr;
 
     let defTypeId = `${idAbbr}_${uuidv4()}`;
 

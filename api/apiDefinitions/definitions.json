@@ -30,12 +30,12 @@
   "defs": [
     {
       "defId": 1,
-      "type": "node",
-      "title": "nodeTypes",
+      "def": "node",
+      "defTitle": "nodeType",
       "defTypes": [
         {
           "defTypeId": 1,
-          "title": "propType",
+          "defTypeTitle": "propType",
           "abbr": "pt",
           "attributes": [
             {
@@ -46,7 +46,7 @@
         },
         {
           "defTypeId": 2,
-          "title": "propKey",
+          "defTypeTitle": "propKey",
           "abbr": "pk",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -64,7 +64,7 @@
         },
         {
           "defTypeId": 3,
-          "title": "propVal",
+          "defTypeTitle": "propVal",
           "abbr": "pv",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -82,7 +82,7 @@
         },
         {
           "defTypeId": 4,
-          "title": "configDef",
+          "defTypeTitle": "configDef",
           "abbr": "cd",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -103,7 +103,7 @@
         },
         {
           "defTypeId": 5,
-          "title": "configObj",
+          "defTypeTitle": "configObj",
           "abbr": "co",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -155,7 +155,7 @@
         },
         {
           "defTypeId": 6,
-          "title": "typeData",
+          "defTypeTitle": "typeData",
           "abbr": "td",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -192,7 +192,7 @@
         },
         {
           "defTypeId": 7,
-          "title": "instanceData",
+          "defTypeTitle": "instanceData",
           "abbr": "id",
           "attributes": [
             {
@@ -237,12 +237,12 @@
     },
     {
       "defId": 2,
-      "type": "rel",
-      "title": "relTypes",
+      "def": "rel",
+      "defTitle": "relType",
       "defTypes": [
         {
           "defTypeId": 1,
-          "title": "configDefInternalRel",
+          "defTypeTitle": "configDefInternalRel",
           "abbr": "cdir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -267,7 +267,7 @@
         },
         {
           "defTypeId": 2,
-          "title": "configDefExternalRel",
+          "defTypeTitle": "configDefExternalRel",
           "abbr": "cder",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -300,7 +300,7 @@
         },
         {
           "defTypeId": 3,
-          "title": "configObjInternalRel",
+          "defTypeTitle": "configObjInternalRel",
           "abbr": "coir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -349,7 +349,7 @@
         },
         {
           "defTypeId": 4,
-          "title": "configObjExternalRel",
+          "defTypeTitle": "configObjExternalRel",
           "abbr": "coer",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -398,7 +398,7 @@
         },
         {
           "defTypeId": 5,
-          "title": "typeDataExternalRel",
+          "defTypeTitle": "typeDataExternalRel",
           "abbr": "tder",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -447,7 +447,7 @@
         },
         {
           "defTypeId": 6,
-          "title": "typeDataInternalRel",
+          "defTypeTitle": "typeDataInternalRel",
           "abbr": "tdir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -496,7 +496,7 @@
         },
         {
           "defTypeId": 7,
-          "title": "instanceDataInternalRel",
+          "defTypeTitle": "instanceDataInternalRel",
           "abbr": "idir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -545,7 +545,7 @@
         },
         {
           "defTypeId": 8,
-          "title": "instanceDataExternalRel",
+          "defTypeTitle": "instanceDataExternalRel",
           "abbr": "ider",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -597,22 +597,22 @@
     },
     {
       "defId": 3,
-      "type": "group",
-      "title": "groups",
+      "def": "group",
+      "defTitle": "group",
       "defTypes": [
         {
           "defId": 1,
-          "title": "configs",
+          "defTypeTitle": "configs",
           "contextMenu": [{ "defId": 1, "defTypeId": 4 }]
         },
         {
           "defId": 2,
-          "title": "datas",
+          "defTypeTitle": "datas",
           "contextMenu": [{ "defId": 1, "defTypeId": 6 }]
         },
         {
           "defId": 3,
-          "title": "props",
+          "defTypeTitle": "props",
           "contextMenu": [{ "defId": 1, "defTypeId": 1 }]
         }
       ]

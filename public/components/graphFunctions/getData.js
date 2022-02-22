@@ -1,11 +1,11 @@
 import getDefType from "./getDefType.js";
 
-export default function (defTitle, detTypeTitle) {
+export default function (defTitle, defTypeTitle) {
   const definitions = JSON.parse(sessionStorage.getItem("definitions"))[0];
-  let definiton = definitions.defs.find((obj) => obj.title === defTitle)
+  let definiton = definitions.defs.find((obj) => obj.defTitle === defTitle)
     .defTypes;
   let defTypeByDefintion = definiton.find((obj) => {
-    return obj.title === detTypeTitle;
+    return obj.defTypeTitle === defTypeTitle;
   });
 
   let contextMenuContent = defTypeByDefintion.contextMenu;

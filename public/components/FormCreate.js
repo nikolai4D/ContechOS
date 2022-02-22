@@ -63,7 +63,7 @@ export function FormCreate(event, d, clickedObj) {
 
   const template = `
   <div class="formCreate position-absolute">
-        <div><h3>create: ${defType.title}</h3></div>
+        <div><h3>create: ${defType.defTypeTitle}</h3></div>
         <div class="card">
         <div class="card-body">
            <form id="formCreate" >
@@ -78,7 +78,7 @@ export function FormCreate(event, d, clickedObj) {
 }
 
 function getDefTypeFromSessionStorage(defType) {
-  const defTypeTitle = getDefType(defType.defId, defType.defTypeId).title;
+  const defTypeTitle = getDefType(defType.defId, defType.defTypeId).defTypeTitle;
   Actions.GETALL(defTypeTitle);
   return JSON.parse(sessionStorage.getItem(`${defTypeTitle}`));
 };
