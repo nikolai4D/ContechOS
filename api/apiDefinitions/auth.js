@@ -1,5 +1,5 @@
 const express = require("express");
-const auth = express.Router();
+const router = express.Router();
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const fs = require("fs");
@@ -7,20 +7,21 @@ const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const Record = require("./records/UserRecord.js");
 
+const routerType = "users";
 //Record instance
-const userRecord = new Record("user");
+const record = new Record(routerType);
 
 //Bodyparser
-auth.use(bodyParser.json());
+router.use(bodyParser.json());
 
 //APIs
 
-auth.post("/", async (req, res) => {
+router.post("/", async (req, res) => {
   const { email, pwd } = req.body;
   if (!email || !pwd)
     return res.status(400).json({ message: "email and/or pwd missing." });
 
-  const foundUser = (await userRecord.getAll()).find(
+  const foundUser = (await record.getAll()).find(
     (person) => person.email === email
   );
   if (!foundUser) return res.sendStatus(401); //Unauthorized
@@ -61,4 +62,4 @@ auth.post("/", async (req, res) => {
   }
 });
 
-module.exports = auth;
+module.exports = router;

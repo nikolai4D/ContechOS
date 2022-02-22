@@ -19,13 +19,23 @@ class GraphRecords {
     // }
 
     if (this.nodeGroup === "configs") {
-      nodeTypes = ["configDef"];
-      relTypes = ["configDefInternalRel", "configDefExternalRel"];
+      nodeTypes = ["configDef", "configObj"];
+      relTypes = [
+        "configDefInternalRel",
+        "configDefExternalRel",
+        "configObjInternalRel",
+        "configObjExternalRel",
+      ];
     }
 
     if (this.nodeGroup === "datas") {
-      nodeTypes = ["data"];
-      relTypes = ["dataRel"];
+      nodeTypes = ["typeData", "instanceData"];
+      relTypes = [
+        "typeDataInternalRel",
+        "typeDataExternalRel",
+        "instanceDataInternalRel",
+        "instanceDataExternalRel",
+      ];
     }
 
     if (this.nodeGroup === "props") {
@@ -44,7 +54,7 @@ class GraphRecords {
         delete node.created;
         delete node.updated;
         node.id = file.slice(0, -5);
-        node.nodeType = nodeType;
+        node.defTypeTitle = nodeType;
         nodes.push(node);
       });
     });
@@ -61,6 +71,7 @@ class GraphRecords {
           delete rel.created;
           delete rel.updated;
           rel.id = file.slice(0, -5);
+          rel.defTypeTitle = relType;
           rels.push(rel);
         });
       });
@@ -74,14 +85,11 @@ class GraphRecords {
           let rel = JSON.parse(fs.readFileSync(dirRels + file, "utf8"));
           delete rel.created;
           delete rel.updated;
-          if (rel.propTypeId) {
-            parentId = rel.propTypeId;
-            rel.title = "has propType";
+          if (rel.parentId) {
+            parentId = rel.parentId;
+            rel.title = "has parent";
           }
-          if (rel.propKeyId) {
-            parentId = rel.propKeyId;
-            rel.title = "has propKey";
-          }
+
           let nodeId = file.slice(0, -5);
           rel.id = nodeId + parentId;
           rel.source = nodeId;
@@ -91,7 +99,7 @@ class GraphRecords {
         });
       });
     }
-    console.log({ nodes, rels });
+
     return { nodes, rels };
   }
 }

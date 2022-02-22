@@ -1,19 +1,21 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const GraphRecords = require("./records/GraphRecords.js");
+const Record = require("./records/Record.js");
 
-const routerType = "props";
+const routerType = "roles";
 //Record instance
-const record = new GraphRecords(routerType);
+const record = new Record(routerType);
 
-// Bodyparser
+//Bodyparser
 router.use(bodyParser.json());
+
+//APIs
 
 router.get("/", async (req, res) => {
   try {
-    result = await record.getAll();
-    res.status(200).json(result);
+    // result = await record.getAll();
+    res.status(200).json(routerType);
   } catch (error) {
     res.status(500).json({ error });
   }

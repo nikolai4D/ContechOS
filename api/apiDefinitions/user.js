@@ -1,25 +1,26 @@
 const express = require("express");
-const user = express.Router();
+const router = express.Router();
 const bcrypt = require("bcryptjs");
 const bodyParser = require("body-parser");
 const Record = require("./records/UserRecord.js");
 
+const routerType = "users";
 //Record instance
-const userRecord = new Record("user");
+const record = new Record(routerType);
 
 //Bodyparser
-user.use(bodyParser.json());
+router.use(bodyParser.json());
 
 //APIs
 
-user.post("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
   const { email, pwd } = req.body;
 
   if (!email || !pwd) {
     return res.status(400).json("email and/or pwd missing");
   }
 
-  const duplicate = (await userRecord.getAll()).find(
+  const duplicate = (await record.getAll()).find(
     (person) => person.email === email
   );
   if (duplicate) return res.sendStatus(409); //Conflict
@@ -27,21 +28,21 @@ user.post("/create", async (req, res) => {
   const hashedPwd = await bcrypt.hash(pwd, 10);
 
   try {
-    result = await userRecord.create({ email, hashedPwd });
+    result = await record.create({ email, hashedPwd });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-user.post("/updatePwd", async (req, res) => {
+router.post("/updatePwd", async (req, res) => {
   const { email, oldPwd, newPwd } = req.body;
 
   if (!email || !oldPwd || !newPwd) {
     return res.status(400).json("email oldPwd and/or newPwd missing");
   }
 
-  const foundUser = (await userRecord.getAll()).find(
+  const foundUser = (await record.getAll()).find(
     (person) => person.email === email
   );
   if (!foundUser) return res.sendStatus(409); //Conflict
@@ -53,35 +54,34 @@ user.post("/updatePwd", async (req, res) => {
   const userId = foundUser.id;
 
   try {
-    result = await userRecord.updatePwd({ userId, hashedNewPwd });
+    result = await record.updatePwd({ userId, hashedNewPwd });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error: "???" });
   }
 });
 
-user.get("/", async (req, res) => {
-  console.log(await userRecord.getAll());
+router.get("/", async (req, res) => {
   try {
-    result = await userRecord.getAll();
+    result = await record.getAll();
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-user.get("/:id", async (req, res) => {
-  let userArray = await userRecord.getAllId();
+router.get("/:id", async (req, res) => {
+  let userArray = await record.getAllId();
   if (!userArray.includes(req.params.id)) {
     return res.status(400).json("userId does not exist");
   }
 
   try {
-    result = await userRecord.getById(req.params.id);
+    result = await record.getById(req.params.id);
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
 });
 
-module.exports = user;
+module.exports = router;

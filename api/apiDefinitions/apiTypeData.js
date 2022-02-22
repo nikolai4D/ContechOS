@@ -3,29 +3,39 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const Record = require("./records/Record.js");
 
-const routerType = "propKey";
-//Record instances
+const routerType = "typeData";
+const routerParentType = "configObj";
+const routerPropKey = "propKey";
+//Record instance
 const record = new Record(routerType);
-const propTypeRecord = new Record("propType");
+const parentRecord = new Record(routerParentType);
+const propKeyRecord = new Record(routerPropKey);
 
-// Bodyparser
+//Bodyparser
 router.use(bodyParser.json());
 
 //APIs
-
 router.post("/create", async (req, res) => {
-  const { title, parentId } = req.body;
+  const { title, props, parentId } = req.body;
 
-  if (!title || !parentId) {
-    return res.status(400).json("title and/or parentId missing");
+  if (!title || !props || !parentId) {
+    return res.status(400).json("something is missing: title, props, parentId");
   }
-  const propTypeArray = await propTypeRecord.getAllId();
-  if (!propTypeArray.includes(parentId)) {
+
+  //test parentID
+  let recordParentArray = await parentRecord.getAllId();
+  if (!recordParentArray.includes(parentId)) {
     return res.status(400).json("parentId does not exist");
   }
 
+  //the rest of the tests
+
   try {
-    result = await record.create({ title, parentId });
+    result = await record.create({
+      title,
+      props,
+      parentId,
+    });
     res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
@@ -42,9 +52,9 @@ router.get("/", async (req, res) => {
 });
 
 router.get("/:id", async (req, res) => {
-  let propKeyArray = await record.getAllId();
-  if (!propKeyArray.includes(req.params.id)) {
-    return res.status(400).json("propKeyId does not exist");
+  let recordArray = await record.getAllId();
+  if (!recordArray.includes(req.params.id)) {
+    return res.status(400).json("configId does not exist");
   }
 
   try {

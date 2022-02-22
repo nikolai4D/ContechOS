@@ -1,12 +1,13 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
 import ContextMenu from "./ContextMenu.js";
-import { FormNode } from "./FormNode.js";
+import { FormCreate } from "./FormCreate.js";
 import styles from "./graphComponents/styles.js";
 import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
 import selfArrow from "./graphComponents/selfArrow.js";
+import dropDown from "./DropDownField.js";
 
-import formNodeFunction from "./graphFunctions/formNodeFunction.js";
+import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
 
 async function Graph(view) {
@@ -30,6 +31,8 @@ async function Graph(view) {
       rels = graphJsonData[0].rels.map((d) => Object.assign({}, d));
     }
   };
+
+  console.log(nodes)
 
   let width = window.innerWidth,
     height = window.innerHeight - 20;
@@ -97,7 +100,7 @@ async function Graph(view) {
     )
     .on("click", () => {
       d3.select(".contextMenuContainer").remove();
-      d3.select(".FormMenuContainer").remove();
+
     })
     .on("contextmenu", (d) => {
       let clickedObj = d;
@@ -126,16 +129,73 @@ async function Graph(view) {
           d3.select("#root")
             .append("div")
             .attr("class", "FormMenuContainer")
-            .html(await FormNode(clickEvent, d, clickedObj))
-            .select(".formNode")
+            .html(await FormCreate(clickEvent, d, clickedObj))
+            .select(".formCreate")
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
-          d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
-            await formNodeFunction(view, d, "node", clickedObj);
+
+          // stop watching
+          // d3.selectAll("#field_target").on()
+          let propKeys = []
+
+          d3.selectAll(".formCreateSubmit").on("click", async (e) => {
+            await formCreateFunction(view, d, "rel", clickedObj, propKeys);
 
             await updateData(view);
             await render(view);
+          });
+
+          d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
+            const parentId = document.getElementById("field_parentId_typeData").value;
+            console.log(parentId)
+
+            let dropDownHtmlString = ''
+            let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
+            let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+            let parentConfigObject = configNodes.find(node => { return node.id === parentId })
+
+            // console.log(parentConfigObject)
+
+            parentConfigObject.typeDataPropKeys.forEach(propKey => {
+              let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+              console.log(filtered)
+
+              let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+              console.log(propKeyObj)
+              if (filtered.length > 0) {
+                propKeys.push({ "title": propKeyObj.title, "id": propKey })
+                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+              }
+            })
+
+            document.getElementById('field_filteredProps_typeData').innerHTML = ""
+            document.getElementById('field_filteredProps_typeData').innerHTML = dropDownHtmlString
+
+            // })
+
+            // let dropDownHtmlString = ''
+            // let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+            // let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+
+            // let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
+
+
+            // parentConfigDefInternalRels.propKeys.forEach(propKey => {
+            //   let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            //   let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            //   // console.log(propKeyObj)
+            //   if (filtered.length > 0) {
+            //     propKeys.push({ "title": propKeyObj.title, "id": propKey })
+            //     dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            //   }
+            // })
+
+            // document.getElementById('field_filteredProps').innerHTML = ""
+            // document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
           });
 
           // d3.selectAll(".form_add_more_props_button")
@@ -163,6 +223,7 @@ async function Graph(view) {
 
   const clicked = (event, d) => {
     console.log(d);
+    if (document.getElementById("field_target")) { document.getElementById("field_target").value = d.id }
   };
 
   const rightClicked = (event, d) => {
@@ -193,28 +254,67 @@ async function Graph(view) {
         d3.select("#root")
           .append("div")
           .attr("class", "FormMenuContainer")
-          .html(await FormNode(clickEvent, d, clickedObj))
-          .select(".formNode")
+          .html(await FormCreate(clickEvent, d, clickedObj))
+          .select(".formCreate")
           .style("top", y_cord + "px")
           .style("left", x_cord + "px");
 
-        d3.selectAll(".FormNodeSubmit").on("click", async (e) => {
-          await formNodeFunction(view, d, "rel", clickedObj);
-
+        let propKeys = [];
+        d3.selectAll(".formCreateSubmit").on("click", async (e) => {
+          await formCreateFunction(view, d, "rel", clickedObj, propKeys);
           await updateData(view);
           await render(view);
         });
 
-        // d3.selectAll(".form_add_more_props_button")
-        //   .on("click", (d) => {
+        d3.selectAll(".field_configDefInternalRel").on("change", async (e) => {
+          const propsParentId = document.getElementById("field_configDefInternalRel").value;
+          let dropDownHtmlString = ''
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
 
-        //     d3.selectAll(".form_add_props")
-        //       .append("div")
-        //       .clone(d3.selectAll(".form_add_props"))
-        //       .html("<div>hello</div>")
 
-        //     // return document.getElementById("form_add_props")
-        //   });
+          let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
+
+
+          parentConfigDefInternalRels.propKeys.forEach(propKey => {
+            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            // console.log(propKeyObj)
+            if (filtered.length > 0) {
+              propKeys.push({ "title": propKeyObj.title, "id": propKey })
+              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            }
+          })
+
+          document.getElementById('field_filteredProps').innerHTML = ""
+          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        });
+
+        d3.selectAll(".field_configDefExternalRel").on("change", async (e) => {
+          const propsParentId = document.getElementById("field_configDefExternalRel").value;
+          let dropDownHtmlString = ''
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+
+          let parentConfigDefExternalRels = configRels.find(rel => { return rel.id === propsParentId })
+
+
+          parentConfigDefExternalRels.propKeys.forEach(propKey => {
+            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            // console.log(propKeyObj)
+            if (filtered.length > 0) {
+              propKeys.push({ "title": propKeyObj.title, "id": propKey })
+              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            }
+          })
+
+          document.getElementById('field_filteredProps').innerHTML = ""
+          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        });
       });
     }
   };
@@ -226,6 +326,7 @@ async function Graph(view) {
     .selectAll(".linkLabel")
     .attr("class", "linkLabel")
     .style("color", "#fff")
+
     .attr("dy", 0);
 
   let node = g.append("g").selectAll("circle");
@@ -271,9 +372,10 @@ async function Graph(view) {
       .style("text-anchor", styles.linkLabel.textAnchor)
       .style("fill", styles.linkLabel.fill)
       .style("font-size", styles.linkLabel.fontSize)
+
       .style("background-color", styles.linkLabel.backgroundColor)
       .attr("x", (d) => (d.source.x + d.target.x) / 2)
-      .attr("y", (d) => (d.source.y + d.target.y) / 2);
+      .attr("y", (d) => (d.source.y + d.target.y) / 2)
 
     linkLabel.attr("transform", function (d) {
       let bbox = this.getBBox();
@@ -328,6 +430,31 @@ async function Graph(view) {
       .on("click", clicked)
       .on("contextmenu", rightClicked);
 
+    function setColour(d) {
+      if (d.defTypeTitle === 'propType') {
+        return '#89A7B0'
+      }
+      else if (d.defTypeTitle === 'propKey') {
+        return '#E9BD60'
+      }
+      else if (d.defTypeTitle === 'propVal') {
+        return '#C3B65B'
+      }
+      else if (d.defTypeTitle === 'configDef') {
+        return '#70AA6C'
+      }
+      else if (d.defTypeTitle === 'configObj') {
+        return '#32BCC3'
+      }
+      else if (d.defTypeTitle === 'typeData') {
+        return '#E44167'
+      }
+      else if (d.defTypeTitle === 'instanceData') {
+        return '#A79587'
+
+      }
+    }
+
     node = g
       .selectAll("circle")
       .data(nodes, (d) => d["id"])
@@ -335,7 +462,7 @@ async function Graph(view) {
         (enter) => {
           let entered = enter
             .append("circle")
-            .attr("fill", (d) => styles.node.fill)
+            .attr("fill", (d) => setColour(d))
             .attr("class", "node")
             .attr("stroke", (d) => styles.node.borderColor)
             .attr("r", styles.node.radius)
@@ -345,8 +472,7 @@ async function Graph(view) {
           return entered;
         },
         (update) => {
-          let updated = update.attr("fill", styles.node.fill);
-          return updated;
+          return update;
         }
       );
 
@@ -371,7 +497,7 @@ async function Graph(view) {
       .data(rels, (d) => d["id"])
       .join(
         (enter) => {
-          const linkLabel = enter.append("text").text((link) => link.title);
+          const linkLabel = enter.append("text").text((link) => link.title)
           return linkLabel;
         },
         (update) => {
@@ -384,7 +510,7 @@ async function Graph(view) {
       })
       .attr("class", "linkLabel")
       .style("color", "#fff")
-      .attr("dy", 0);
+      .attr("dy", 0)
 
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();

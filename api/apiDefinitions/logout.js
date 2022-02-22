@@ -1,19 +1,19 @@
 const express = require("express");
-const logout = express.Router();
+const router = express.Router();
 const fs = require("fs");
-
 const bodyParser = require("body-parser");
-const Record = require("./records/UserRecord.js");
+const Record = require("./records/record.js");
 
+const routerType = "users";
 //Record instance
-const userRecord = new Record("user");
+const record = new Record(routerType);
 
 //Bodyparser
-logout.use(bodyParser.json());
+router.use(bodyParser.json());
 
 //APIs
 
-logout.get("/", async (req, res) => {
+router.get("/", async (req, res) => {
   // On client, also delete accessToken
 
   const cookies = req.cookies;
@@ -22,7 +22,7 @@ logout.get("/", async (req, res) => {
 
   //Is refreshToken in db?
 
-  const foundUser = (await userRecord.getAll()).find(
+  const foundUser = (await record.getAll()).find(
     (person) => person.refreshToken === refreshToken
   );
   if (!foundUser) {
@@ -43,4 +43,4 @@ logout.get("/", async (req, res) => {
   res.sendStatus(204);
 });
 
-module.exports = logout;
+module.exports = router;

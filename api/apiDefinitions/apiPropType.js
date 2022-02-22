@@ -1,54 +1,53 @@
-const express = require('express');
-const propType = express.Router();
-const bodyParser = require('body-parser');
-const Record = require('./records/Record.js');
+const express = require("express");
+const router = express.Router();
+const bodyParser = require("body-parser");
+const Record = require("./records/Record.js");
 
+const routerType = "propType";
 //Record instance
-const propTypeRecord = new Record("propType");
+const record = new Record(routerType);
 
 //Bodyparser
-propType.use(bodyParser.json())
+router.use(bodyParser.json());
 
 //APIs
 
-propType.post("/create", async (req, res) => {
-  const { title } = req.body
+router.post("/create", async (req, res) => {
+  const { title } = req.body;
 
   if (!title) {
-    return res.status(400).json("title missing")
+    return res.status(400).json("title missing");
   }
 
   try {
-    result = await propTypeRecord.create({ title })
-    res.status(200).json(result)
+    result = await record.create({ title });
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-propType.get("/", async (req, res) => {
-  console.log(await propTypeRecord.getAll())
+router.get("/", async (req, res) => {
   try {
-    result = await propTypeRecord.getAll()
-    res.status(200).json(result)
+    result = await record.getAll();
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-propType.get("/:id", async (req, res) => {
-
-  let propTypeArray = await propTypeRecord.getAllId()
+router.get("/:id", async (req, res) => {
+  let propTypeArray = await record.getAllId();
   if (!propTypeArray.includes(req.params.id)) {
-    return res.status(400).json("propTypeId does not exist")
+    return res.status(400).json("propTypeId does not exist");
   }
 
   try {
-    result = await propTypeRecord.getById(req.params.id)
-    res.status(200).json(result)
+    result = await record.getById(req.params.id);
+    res.status(200).json(result);
   } catch (error) {
-    res.status(500).json({ error })
+    res.status(500).json({ error });
   }
-})
+});
 
-module.exports = propType
+module.exports = router;

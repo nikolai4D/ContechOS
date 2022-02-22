@@ -23,6 +23,7 @@ const styles = {
         fill: "rgba(0,0,0,.9)",
         fontSize: "12px",
         backgroundColor: "#fff",
+        textShadow: "0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white, 0 0 2px white;"
     },
     arrows: {
         fill: "rgba(0,0,0,.9)"
