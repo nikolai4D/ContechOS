@@ -23,12 +23,20 @@ export function FormCreate(event, d, clickedObj) {
 
   for (let attribute of defTypeAttributes) {
     //   // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
+    //TODO :
+
+    // Check what attribute defid/deftypeid, check if is dependent on parentId, get parentId by clickedObj, get attribute+s from parentId. These are the keys. THEN, for the keys, get values.
+    // Later, look 
+
+    function checkIfDependent() {
+
+    }
     let keyOfAttribute = Object.keys(attribute)[0];
     let valueOfAttribute = Object.values(attribute)[0];
     let fieldTypeId = valueOfAttribute.fieldTypeId;
     let fieldType = fieldTypes.find(obj => obj.fieldTypeId === fieldTypeId).type;
 
-    let fieldPropertiesOfAttribute = getFieldProperties(valueOfAttribute, fieldProperties)
+    let fieldPropertiesOfAttribute = getFieldProperties(valueOfAttribute, fieldProperties);
     if (fieldPropertiesOfAttribute.some(obj => obj.type === 'hidden')) {
       continue;
     }
@@ -38,17 +46,15 @@ export function FormCreate(event, d, clickedObj) {
     }
     else if (fieldType === 'dropDown') {
       const { defId, defTypeId } = valueOfAttribute;
-
       createDropdown(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId));
-
     }
     else if (fieldType === 'dropDownMultiple') {
       const { defId, defTypeId } = valueOfAttribute;
       createDropdownMultiple(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId));
     }
     else if (fieldType === 'dropDownKeyValue') {
-      createDropdownKeyValue(fieldsArray, getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId), getDefType(valueOfAttribute.value.defId, valueOfAttribute.value.defTypeId));
 
+      createDropdownKeyValue(fieldsArray, valueOfAttribute, clickedObj);
     }
     else if (fieldType === 'externalNodeClick') {
       let htmlString = `<div style="display: flex; padding: 0.5em">
@@ -56,10 +62,8 @@ export function FormCreate(event, d, clickedObj) {
       <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
   </div>`;
       fieldsArray.push(htmlString);
-
     }
   }
-
 
   const template = `
   <div class="formCreate position-absolute">
@@ -77,7 +81,7 @@ export function FormCreate(event, d, clickedObj) {
   return template;
 }
 
-function getDefTypeFromSessionStorage(defType) {
+export function getDefTypeFromSessionStorage(defType) {
   const defTypeTitle = getDefType(defType.defId, defType.defTypeId).defTypeTitle;
   Actions.GETALL(defTypeTitle);
   return JSON.parse(sessionStorage.getItem(`${defTypeTitle}`));
@@ -100,22 +104,24 @@ const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType) => {
   fieldsArray.push(dropDownString);
 }
 
-const createDropdownKeyValue = (fieldsArray, key, value) => {
-  let dropDownHtmlString = "";
-  let allNodesByDefTypeKey = getDefTypeFromSessionStorage(key);
-  let allNodesByDefTypeValue = getDefTypeFromSessionStorage(value);
+const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj) => {
+  let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
 
-  allNodesByDefTypeKey.forEach((propkey) => {
-    let filtered = allNodesByDefTypeValue.filter(
-      (propVal) => propVal.propKeyId === propkey.id
-    );
+  let dropDownHtmlString = "";
+  let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
+  let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+
+  let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
+
+  allKeysByParent.forEach(propKey => {
+    let filtered = propsNodes.filter(node => node.parentId === propKey.id)
     if (filtered.length > 0) {
-      dropDownHtmlString += dropDown(propkey.title, filtered, null, propkey.id);
+      dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
     }
-  });
+  })
+
   fieldsArray.push(dropDownHtmlString);
 };
-
 
 export function getFieldProperties(valueOfAttribute, fieldProperties) {
   let type = []

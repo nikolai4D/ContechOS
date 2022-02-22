@@ -168,7 +168,7 @@ async function Graph(view) {
 
   const clicked = (event, d) => {
     console.log(d);
-    if (document.getElementById("field_target")) { document.getElementById("field_target").value = JSON.stringify(d.id) }
+    if (document.getElementById("field_target")) { document.getElementById("field_target").value = d.id }
   };
 
   const rightClicked = (event, d) => {

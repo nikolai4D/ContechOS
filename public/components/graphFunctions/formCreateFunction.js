@@ -1,6 +1,6 @@
 import Actions from "../../store/Actions.js";
 import getDefType from "./getDefType.js";
-import { getFieldProperties } from "../FormCreate.js";
+import { getFieldProperties, getDefTypeFromSessionStorage } from "../FormCreate.js";
 
 import { select } from "https://cdn.skypack.dev/d3@6";
 let definitions = "";
@@ -38,7 +38,7 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
     else {
       let formAttr = formData[`field_${keyOfAttribute}`];
 
-      if (fieldType === 'input' || fieldType === 'dropDown') {
+      if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
         attrValue = formAttr.value;
       }
       else if (fieldType === 'dropDownMultiple') {
@@ -47,13 +47,15 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
         )
       }
       else if (fieldType === 'dropDownKeyValue') {
-        let allNodesByDefTypeKey = getDefTypeFromSessionStorage(valueOfAttribute.key);
-        let allNodesByDefTypeValue = getDefTypeFromSessionStorage(valueOfAttribute.value);
 
-        let propKeyList = allNodesByDefTypeKey.filter((propkey) => {
-          let filtered = allNodesByDefTypeValue.filter(
-            (propVal) => propVal.propKeyId === propkey.id
-          );
+        let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+        let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
+        let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+
+        let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
+
+        let propKeyList = allKeysByParent.filter(propKey => {
+          let filtered = propsNodes.filter(node => node.parentId === propKey.id)
           if (filtered.length > 0) {
             return filtered;
           }
@@ -65,74 +67,14 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
           return { [propKeyId]: propValue };
         });
         attrValue = props;
-
       }
-      else if (fieldType === 'externalNodeClick') { }
-
       formDataObj[keyOfAttribute] = attrValue;
-
     }
-
   }
   console.log(formDataObj)
-
 
   await Actions.CREATE(view, defType.defTypeTitle, await formDataObj);
   select(".FormMenuContainer").remove();
 };
 
 export default formCreateFunction;
-
-
-
-// typesDetail.attributes.forEach(async (attr) => {
-//   let keyOfAttribute = Object.keys(attr)[0];
-
-//   let valueOfAttr = Object.values(attr)[0];
-//   if (valueOfAttr["hidden"]) {
-//     formDataObj[keyOfAttribute] = await clickedObj.id; //source
-//   } else {
-//     let attrValue = "";
-//     let formAttr = formData[`field_${keyOfAttribute}`];
-
-//     if (typeof valueOfAttr === "string") {
-//       // Returns input forms
-//       attrValue = formAttr.value;
-//     } else if (Array.isArray(valueOfAttr)) {
-//       if (valueOfAttr[0]["nodeTypeId"]) {
-//         // Returns dropwdowns with multiple choice
-//         attrValue = await [...formAttr.selectedOptions].map(
-//           (option) => option.value
-//         );
-//       } else {
-//         // props with key value pair
-
-
-
-//         let allNodesByTypeKey = getDefTypesAttrs(
-//           valueOfAttr[0].key["nodeTypeId"]
-//         );
-//         let allNodesByTypeValue = getDefTypesAttrs(
-//           valueOfAttr[0].value["nodeTypeId"]
-//         );
-
-//         let propKeyList = allNodesByTypeKey.filter((propkey) => {
-//           let filtered = allNodesByTypeValue.filter(
-//             (propVal) => propVal.propKeyId === propkey.id
-//           );
-//           if (filtered.length > 0) {
-//             return filtered;
-//           }
-//         });
-
-//         let props = propKeyList.map((propKey) => {
-//           let propKeyId = propKey.id;
-//           let propValue = formData[`field_${propKey.title}`].value;
-//           return { [propKeyId]: propValue };
-//         });
-//         attrValue = props;
-//       }
-//     } else if (typeof valueOfAttr === "object") {
-//       // Returns single dropdown
-//       attrValue = formAttr.value;
-//     }

@@ -108,11 +108,21 @@
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
             {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2]
+              }
+            },
+            {
               "props": {
                 "key": {
                   "defId": 1,
                   "defTypeId": 2,
-                  "returnValue": "id"
+                  "returnValue": "id",
+                  "dependantOn": "parentId"
                 },
                 "value": {
                   "defId": 1,
@@ -122,15 +132,7 @@
                 "fieldTypeId": 4
               }
             },
-            {
-              "parentId": {
-                "defId": 1,
-                "defTypeId": 4,
-                "returnValue": "id",
-                "fieldTypeId": 1,
-                "fieldProperties": [1, 2]
-              }
-            },
+
             {
               "typeDataPropKeys": {
                 "defId": 1,
