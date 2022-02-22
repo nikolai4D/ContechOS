@@ -346,6 +346,22 @@
                 "fieldTypeId": 1,
                 "fieldProperties": [1, 2]
               }
+            },
+            {
+              "typeDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
+            },
+            {
+              "instanceDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
             }
           ]
         },
@@ -394,6 +410,22 @@
                 "returnValue": "id",
                 "fieldTypeId": 1,
                 "fieldProperties": [1, 2]
+              }
+            },
+            {
+              "typeDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
+              }
+            },
+            {
+              "instanceDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3
               }
             }
           ]
