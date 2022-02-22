@@ -396,8 +396,7 @@ async function Graph(view) {
           return entered;
         },
         (update) => {
-          let updated = update.attr("fill", styles.node.fill);
-          return updated;
+          return update;
         }
       );
 
