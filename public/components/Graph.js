@@ -5,6 +5,7 @@ import styles from "./graphComponents/styles.js";
 import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
 import selfArrow from "./graphComponents/selfArrow.js";
+import dropDown from "./DropDownField.js";
 
 import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
@@ -133,6 +134,7 @@ async function Graph(view) {
             .style("top", y_cord + "px")
             .style("left", x_cord + "px");
 
+
           // stop watching
           // d3.selectAll("#field_target").on()
 
@@ -142,6 +144,8 @@ async function Graph(view) {
             await updateData(view);
             await render(view);
           });
+
+
 
           // d3.selectAll(".form_add_more_props_button")
           //   .on("click", (d) => {
@@ -204,10 +208,36 @@ async function Graph(view) {
           .style("top", y_cord + "px")
           .style("left", x_cord + "px");
 
+        let propKeys = [];
         d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-          await formCreateFunction(view, d, "rel", clickedObj);
+          await formCreateFunction(view, d, "rel", clickedObj, propKeys);
           await updateData(view);
           await render(view);
+        });
+
+        d3.selectAll(".field_configDefInternalRel").on("change", async (e) => {
+          const propsParentId = document.getElementById("field_configDefInternalRel").value;
+          let dropDownHtmlString = ''
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+
+          let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
+
+
+          parentConfigDefInternalRels.propKeys.forEach(propKey => {
+            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            // console.log(propKeyObj)
+            if (filtered.length > 0) {
+              propKeys.push({ "title": propKeyObj.title, "id": propKey })
+              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            }
+          })
+
+          document.getElementById('field_filteredProps').innerHTML = ""
+          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
         });
       });
     }
@@ -324,6 +354,31 @@ async function Graph(view) {
       .on("click", clicked)
       .on("contextmenu", rightClicked);
 
+    function setColour(d) {
+      if (d.defTypeTitle === 'propType') {
+        return '#89A7B0'
+      }
+      else if (d.defTypeTitle === 'propKey') {
+        return '#E9BD60'
+      }
+      else if (d.defTypeTitle === 'propVal') {
+        return '#C3B65B'
+      }
+      else if (d.defTypeTitle === 'configDef') {
+        return '#70AA6C'
+      }
+      else if (d.defTypeTitle === 'configObj') {
+        return '#32BCC3'
+      }
+      else if (d.defTypeTitle === 'typeData') {
+        return '#E44167'
+      }
+      else if (d.defTypeTitle === 'instanceData') {
+        return '#A79587'
+
+      }
+    }
+
     node = g
       .selectAll("circle")
       .data(nodes, (d) => d["id"])
@@ -331,7 +386,7 @@ async function Graph(view) {
         (enter) => {
           let entered = enter
             .append("circle")
-            .attr("fill", (d) => styles.node.fill)
+            .attr("fill", (d) => setColour(d))
             .attr("class", "node")
             .attr("stroke", (d) => styles.node.borderColor)
             .attr("r", styles.node.radius)

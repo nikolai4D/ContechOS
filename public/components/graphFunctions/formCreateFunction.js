@@ -5,7 +5,7 @@ import { getFieldProperties, getDefTypeFromSessionStorage } from "../FormCreate.
 import { select } from "https://cdn.skypack.dev/d3@6";
 let definitions = "";
 
-const formCreateFunction = async (view, d, type, clickedObj) => {
+const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
   event.preventDefault();
   const formData = document.getElementById("formCreate");
 
@@ -33,7 +33,14 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
 
     let fieldPropertiesOfAttribute = getFieldProperties(valueOfAttribute, fieldProperties)
     if (fieldPropertiesOfAttribute.some(obj => obj.type === 'hidden')) {
-      formDataObj[keyOfAttribute] = clickedObj.id; //source, parentId
+      if (defType.defTypeTitle === 'configObjInternalRel' && keyOfAttribute === 'parentId') {
+
+        formDataObj['parentId'] = formData[`field_configDefInternalRel`].value;
+      }
+      else {
+        formDataObj[keyOfAttribute] = clickedObj.id; //source, parentId
+
+      }
     }
     else {
       let formAttr = formData[`field_${keyOfAttribute}`];
@@ -47,26 +54,38 @@ const formCreateFunction = async (view, d, type, clickedObj) => {
         )
       }
       else if (fieldType === 'dropDownKeyValue') {
+        if (defType.defTypeTitle === 'configObjInternalRel') {
 
-        let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-        let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
-        let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+          let props = propKeys.map(propKey => {
+            let theKey = propKey.id;
+            let theValue = formData[`field_${propKey.title}`].value;
+            return { [theKey]: theValue }
+          })
+          keyOfAttribute = "props"
+          attrValue = props
+        }
+        else {
 
-        let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
+          let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+          let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
+          let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
 
-        let propKeyList = allKeysByParent.filter(propKey => {
-          let filtered = propsNodes.filter(node => node.parentId === propKey.id)
-          if (filtered.length > 0) {
-            return filtered;
-          }
-        })
+          let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
-        let props = propKeyList.map((propKey) => {
-          let propKeyId = propKey.id;
-          let propValue = formData[`field_${propKey.title}`].value;
-          return { [propKeyId]: propValue };
-        });
-        attrValue = props;
+          let propKeyList = allKeysByParent.filter(propKey => {
+            let filtered = propsNodes.filter(node => node.parentId === propKey.id)
+            if (filtered.length > 0) {
+              return filtered;
+            }
+          })
+
+          let props = propKeyList.map((propKey) => {
+            let propKeyId = propKey.id;
+            let propValue = formData[`field_${propKey.title}`].value;
+            return { [propKeyId]: propValue };
+          });
+          attrValue = props;
+        }
       }
       formDataObj[keyOfAttribute] = attrValue;
     }
