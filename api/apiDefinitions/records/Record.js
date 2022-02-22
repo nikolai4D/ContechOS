@@ -27,16 +27,11 @@ class Record {
       title,
       propKeys,
       parentId,
-      propTypeId,
-      propKeyId,
       source,
       target,
-      configDefId,
-      configDefInternalRelId,
-      configDefExternalRelId,
       props,
-      typePropKeys,
-      instancePropKeys,
+      typeDataPropKeys,
+      instanceDataPropKeys,
     } = reqBody;
 
     const idAbbr = apiDefsAll.find((obj) => obj.title === this.defType).abbr;
@@ -52,11 +47,11 @@ class Record {
     }
 
     if (this.defType === "propKey") {
-      defType.propTypeId = parentId;
+      defType.parentId = parentId;
     }
 
     if (this.defType === "propVal") {
-      defType.propKeyId = parentId;
+      defType.parentId = parentId;
     }
 
     if (this.defType === "configDef") {
@@ -78,38 +73,73 @@ class Record {
     }
 
     if (this.defType === "configObj") {
-      defType.configDefId = configDefId;
+      defType.parentId = parentId;
       defType.props = props;
-      defType.typePropKeys = typePropKeys;
-      defType.instancePropKeys = instancePropKeys;
+      defType.typeDataPropKeys = typeDataPropKeys;
+      defType.instanceDataPropKeys = instanceDataPropKeys;
     }
 
     if (this.defType === "configObjInternalRel") {
+      defType.parentId = parentId;
       defType.source = source;
-      defType.target = source;
-      defTypeId = `${defTypeId}-${source}-${source}`;
-      defType.configDefInternalRelId = configDefInternalRelId;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
       defType.props = props;
+      defType.typeDataRelPropKeys = typeDataRelPropKeys;
+      defType.instanceDataRelPropKeys = instanceDataRelPropKeys;
     }
 
     if (this.defType === "configObjExternalRel") {
       defType.source = source;
       defType.target = target;
       defTypeId = `${defTypeId}-${source}-${target}`;
-      defType.configDefExternalRelId = configDefExternalRelId;
+      defType.parentId = parentId;
+      defType.props = props;
+      defType.typeDataRelPropKeys = typeDataRelPropKeys;
+      defType.instanceDataRelPropKeys = instanceDataRelPropKeys;
+    }
+
+    if (this.defType === "typeData") {
+      defType.parentId = parentId;
       defType.props = props;
     }
 
-    // if (this.defType === "data") {
-    //   defType.configId = configId;
-    // }
+    if (this.defType === "typeDataInternalRel") {
+      defType.parentId = parentId;
+      defType.source = source;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
+      defType.props = props;
+    }
 
-    // if (this.defType === "dataRel") {
-    //   defType.source = source;
-    //   defType.target = target;
-    //   defType.configRelId = configRelId;
-    //   defTypeId = `${defTypeId}-${source}-${target}`;
-    // }
+    if (this.defType === "typeDataExternalRel") {
+      defType.parentId = parentId;
+      defType.source = source;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
+      defType.props = props;
+    }
+
+    if (this.defType === "instanceData") {
+      defType.parentId = parentId;
+      defType.props = props;
+    }
+
+    if (this.defType === "instanceDataInternalRel") {
+      defType.parentId = parentId;
+      defType.source = source;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
+      defType.props = props;
+    }
+
+    if (this.defType === "instanceDataExternalRel") {
+      defType.parentId = parentId;
+      defType.source = source;
+      defType.target = target;
+      defTypeId = `${defTypeId}-${source}-${target}`;
+      defType.props = props;
+    }
 
     fs.writeFileSync(
       `../db/${this.defType}/${defTypeId}.json`,
