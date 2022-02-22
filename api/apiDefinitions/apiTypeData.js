@@ -4,18 +4,62 @@ const bodyParser = require("body-parser");
 const Record = require("./records/Record.js");
 
 const routerType = "typeData";
+const routerParentType = "configObj";
+const routerPropKey = "propKey";
 //Record instance
 const record = new Record(routerType);
+const parentRecord = new Record(routerParentType);
+const propKeyRecord = new Record(routerPropKey);
 
 //Bodyparser
 router.use(bodyParser.json());
 
 //APIs
+router.post("/create", async (req, res) => {
+  const { title, props, parentId } = req.body;
+
+  if (!title || !props || !parentId) {
+    return res.status(400).json("something is missing: title, props, parentId");
+  }
+
+  //test parentID
+  let recordParentArray = await parentRecord.getAllId();
+  if (!recordParentArray.includes(parentId)) {
+    return res.status(400).json("parentId does not exist");
+  }
+
+  //the rest of the tests
+
+  try {
+    result = await record.create({
+      title,
+      props,
+      parentId,
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
 
 router.get("/", async (req, res) => {
   try {
-    // result = await record.getAll();
-    res.status(200).json(routerType);
+    result = await record.getAll();
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
+router.get("/:id", async (req, res) => {
+  let recordArray = await record.getAllId();
+  if (!recordArray.includes(req.params.id)) {
+    return res.status(400).json("configId does not exist");
+  }
+
+  try {
+    result = await record.getById(req.params.id);
+    res.status(200).json(result);
   } catch (error) {
     res.status(500).json({ error });
   }
