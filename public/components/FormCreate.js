@@ -1,7 +1,7 @@
 import Actions from "../store/Actions.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
-import getDefType from "./graphfunctions/getDefType.js";
+import getDefType from "./graphFunctions/getDefType.js";
 
 let definitions = "";
 
