@@ -34,7 +34,7 @@ app.use(cookieParser());
 app.use("/api", require("./api/api.js"));
 
 // Set static protected folder
-app.use("/", express.static("public"));
+app.use("/", express.static(__dirname + "/public"));
 
 // Redirect to link
 app.get("/*", (req, res) => {
