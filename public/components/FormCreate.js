@@ -184,6 +184,19 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
 
   }
 
+  else if (defType.defTypeTitle === 'instanceDataExternalRel') {
+
+    let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
+
+
+    let parentConfigDefExternalRels = configRels.filter(rel => { return (rel.defTypeTitle === 'typeDataExternalRel' && (rel.source === clickedObj.parentId || rel.target === clickedObj.parentId)) })
+
+    let dropDownString = dropDown("typeDataExternalRel", parentConfigDefExternalRels);
+    fieldsArray.push(dropDownString);
+    fieldsArray.push(`<div id="field_filteredProps" name="field_filteredProps"></div>`);
+
+  }
+
   else if (defType.defTypeTitle === 'typeDataExternalRel') {
 
     let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
@@ -220,25 +233,17 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
     propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
     let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
 
-    // let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
-    // allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
     let getParent = clickedObj.parentId
 
     let getParentsParent = configNodes.filter(node => node.id === getParent)
 
-    console.log(getParentsParent)
     let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
 
-
-
-    console.log(instanceDataPropKeys)
     let allKeysByParent = propsNodesRels.filter(node => { return instanceDataPropKeys.includes(node.id) })
 
-    console.log(allKeysByParent)
 
     allKeysByParent.forEach(propKey => {
       let filtered = propsNodesRels.filter(node => node.parentId === propKey.id)
-      console.log(filtered)
       if (filtered.length > 0) {
         dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
       }
@@ -247,10 +252,6 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
 
 
   fieldsArray.push(dropDownHtmlString);
-
-
-
-
 
 };
 

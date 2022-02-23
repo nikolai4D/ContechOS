@@ -54,6 +54,11 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
 
       }
 
+      else if (defType.defTypeTitle === 'instanceDataExternalRel' && keyOfAttribute === 'parentId') {
+        formDataObj['parentId'] = formData[`field_typeDataExternalRel`].value;
+
+      }
+
       else {
         formDataObj[keyOfAttribute] = clickedObj.id; //source, parentId
 
@@ -78,7 +83,7 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
         }
         else if (fieldType === 'dropDownKeyValue') {
           console.log(defType.defTypeTitle)
-          if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel' || defType.defTypeTitle === 'typeData' || defType.defTypeTitle === 'typeDataInternalRel' || defType.defTypeTitle === 'typeDataExternalRel' || defType.defTypeTitle === 'instanceDataInternalRel') {
+          if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel' || defType.defTypeTitle === 'typeData' || defType.defTypeTitle === 'typeDataInternalRel' || defType.defTypeTitle === 'typeDataExternalRel' || defType.defTypeTitle === 'instanceDataInternalRel' || defType.defTypeTitle === 'instanceDataExternalRel') {
 
             let props = propKeys.map(propKey => {
               let theKey = propKey.id;
