@@ -83,6 +83,34 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
             keyOfAttribute = "props"
             attrValue = props
           }
+
+          else if (defType.defTypeTitle === 'instanceData') {
+
+            let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+            let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
+
+            let getParent = clickedObj.parentId
+
+            let getParentsParent = configNodes.filter(node => node.id === getParent)
+
+            let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
+
+            let allKeysByParent = propsNodesRels.filter(node => { return instanceDataPropKeys.includes(node.id) })
+
+            let propKeyList = allKeysByParent.filter(propKey => {
+              let filtered = propsNodesRels.filter(node => node.parentId === propKey.id)
+              if (filtered.length > 0) {
+                return filtered
+              }
+            })
+            let props = propKeyList.map((propKey) => {
+              let propKeyId = propKey.id;
+              let propValue = formData[`field_${propKey.title}`].value;
+              return { [propKeyId]: propValue };
+            });
+            attrValue = props;
+
+          }
           else {
 
             let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;

@@ -1,7 +1,7 @@
 import Actions from "../store/Actions.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
-import getDefType from "./graphfunctions/getDefType.js";
+import getDefType from "./graphFunctions/getDefType.js";
 
 let definitions = "";
 
@@ -38,8 +38,9 @@ export function FormCreate(event, d, clickedObj) {
       continue;
     }
 
+
     if (fieldType === 'input') {
-      createInput(fieldsArray, keyOfAttribute)
+      createInput(fieldsArray, keyOfAttribute, defType, clickedObj)
     }
     else if (fieldType === 'dropDown') {
       const { defId, defTypeId } = valueOfAttribute;
@@ -84,9 +85,15 @@ export function getDefTypeFromSessionStorage(defType) {
   return JSON.parse(sessionStorage.getItem(`${defTypeTitle}`));
 };
 
-const createInput = (fieldsArray, keyOfAttr) => {
+const createInput = (fieldsArray, keyOfAttr, defType, clickedObj) => {
 
-  fieldsArray.push(inputField(keyOfAttr));
+  if (defType.defTypeTitle === 'instanceData') {
+    fieldsArray.push(inputField(keyOfAttr, clickedObj.title, "disabled"));
+
+  }
+  else {
+    fieldsArray.push(inputField(keyOfAttr))
+  }
 };
 
 const createDropdown = (fieldsArray, keyOfAttribute, defType) => {
@@ -194,22 +201,36 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
     })
   }
 
-  else if (defType.defTypeTitle === 'typeData') {
-    // propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+  else if (clickedObj.defTypeTitle === 'typeData') {
+    propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+    let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
 
     // let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
     // allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+    let getParent = clickedObj.parentId
+
+    let getParentsParent = configNodes.filter(node => node.id === getParent)
+
+    console.log(getParentsParent)
+    let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
 
 
-    // let allKeysByParent = propsNodesRels.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
-    // allKeysByParent.forEach(propKey => {
-    //   let filtered = propsNodesRels.filter(node => node.parentId === propKey.id)
-    //   if (filtered.length > 0) {
-    //     dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
-    //   }
-    // })
+    console.log(instanceDataPropKeys)
+    let allKeysByParent = propsNodesRels.filter(node => { return instanceDataPropKeys.includes(node.id) })
+
+    console.log(allKeysByParent)
+
+    allKeysByParent.forEach(propKey => {
+      let filtered = propsNodesRels.filter(node => node.parentId === propKey.id)
+      console.log(filtered)
+      if (filtered.length > 0) {
+        dropDownHtmlString += dropDown(propKey.title, filtered, null, propKey.id);
+      }
+    })
   }
+
+
   fieldsArray.push(dropDownHtmlString);
 
 
