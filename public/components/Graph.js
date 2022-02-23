@@ -317,6 +317,51 @@ async function Graph(view) {
           document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
         });
 
+        d3.selectAll(".field_typeDataInternalRel").on("change", async (e) => {
+          const propsParentId = document.getElementById("field_typeDataInternalRel").value;
+          console.log(propsParentId)
+          let dropDownHtmlString = ''
+          let datasRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+
+          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+
+          let parentDatasRels = datasRels.find(rel => { return rel.id === propsParentId }).parentId
+
+          let getParentsParent = configRels.find(node => node.id === parentDatasRels)
+
+          console.log(getParentsParent)
+
+          getParentsParent.instanceDataRelPropKeys.forEach(propKey => {
+            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+            console.log(propKeyObj)
+            if (filtered.length > 0) {
+              propKeys.push({ "title": propKeyObj.title, "id": propKey })
+              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+            }
+          })
+
+
+          // parentConfigDefInternalRels.instanceDataRelPropKeys.forEach(propKey => {
+          //   let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
+
+          //   let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
+          //   console.log(propKeyObj)
+          //   if (filtered.length > 0) {
+          //     propKeys.push({ "title": propKeyObj.title, "id": propKey })
+          //     dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+          //   }
+          // })
+
+          document.getElementById('field_filteredProps').innerHTML = ""
+          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        });
+
+
+
         d3.selectAll(".field_configObjExternalRel").on("change", async (e) => {
           const propsParentId = document.getElementById("field_configObjExternalRel").value;
           console.log(propsParentId)

@@ -167,6 +167,21 @@ const createDropdownKeyValue = (fieldsArray, valueOfAttribute, clickedObj, defTy
     fieldsArray.push(dropDownString);
     fieldsArray.push(`<div id="field_filteredProps" name="field_filteredProps"></div>`);
 
+
+
+  }
+
+  else if (defType.defTypeTitle === 'instanceDataInternalRel') {
+
+    let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
+
+
+    let parentConfigDefInternalRels = configRels.filter(rel => { return (rel.defTypeTitle === 'typeDataInternalRel' && (rel.source === clickedObj.parentId || rel.target === clickedObj.parentId)) })
+
+    let dropDownString = dropDown("typeDataInternalRel", parentConfigDefInternalRels);
+    fieldsArray.push(dropDownString);
+    fieldsArray.push(`<div id="field_filteredProps" name="field_filteredProps"></div>`);
+
   }
 
   else if (defType.defTypeTitle === 'typeDataExternalRel') {
