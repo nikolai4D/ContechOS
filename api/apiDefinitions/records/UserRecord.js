@@ -79,6 +79,22 @@ class UserRecord {
     return users;
   }
 
+  async getRegisterCode() {
+    const codes = [];
+
+    //users
+    const dir = `../db/users/`;
+    const userFiles = fs.readdirSync(dir);
+
+    userFiles.forEach(function (file) {
+      let user = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      let apiKey = user.apiKey.slice(-12);
+      codes.push(apiKey);
+    });
+
+    return codes;
+  }
+
   async getAllId() {
     const userIds = [];
 

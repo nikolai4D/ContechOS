@@ -10,6 +10,7 @@ api.use(bodyParser.json());
 
 //----------auth----------//
 api.use("/auth", require("./apiDefinitions/auth.js")); //auth
+api.use("/register", require("./apiDefinitions/register.js")); //auth
 api.use("/verify", require("./apiDefinitions/verify.js")); //verify
 api.use("/refresh", require("./apiDefinitions/refresh.js")); //refresh
 api.use("/logout", require("./apiDefinitions/logout.js")); //logout
@@ -34,7 +35,7 @@ api.use("/propVal", require("./apiDefinitions/apiPropVal.js")); //propVal
 api.use("/props", require("./apiDefinitions/graphProps.js"));
 
 //----------config----------//
-api.use("/configDef", require("./apiDefinitions/apiConfigDef.js")); //configDef
+api.use("/definition", require("./apiDefinitions/apiConfigDef.js")); //configDef
 api.use(
   "/configDefInternalRel",
   require("./apiDefinitions/apiConfigDefInternalRel.js")
@@ -43,7 +44,7 @@ api.use(
   "/configDefExternalRel",
   require("./apiDefinitions/apiConfigDefExternalRel.js")
 ); //configDefExternalRel
-api.use("/configObj", require("./apiDefinitions/apiConfigObj.js")); //configObj
+api.use("/object", require("./apiDefinitions/apiConfigObj.js")); //configObj
 api.use(
   "/configObjInternalRel",
   require("./apiDefinitions/apiConfigObjInternalRel.js")
@@ -57,7 +58,7 @@ api.use(
 api.use("/configs", require("./apiDefinitions/graphConfigs.js"));
 
 //----------data----------//
-api.use("/typeData", require("./apiDefinitions/apiTypeData.js")); //typeData
+api.use("/type", require("./apiDefinitions/apiTypeData.js")); //typeData
 api.use(
   "/typeDataInternalRel",
   require("./apiDefinitions/apiTypeDataInternalRel.js")
@@ -66,7 +67,7 @@ api.use(
   "/typeDataExternalRel",
   require("./apiDefinitions/apiTypeDataExternalRel.js")
 ); //typeDataExternalRel
-api.use("/instanceData", require("./apiDefinitions/apiInstanceData.js")); //instanceData
+api.use("/instance", require("./apiDefinitions/apiInstanceData.js")); //instanceData
 api.use(
   "/instanceDataInternalRel",
   require("./apiDefinitions/apiInstanceDataInternalRel.js")
