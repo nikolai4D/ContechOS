@@ -32,8 +32,6 @@ async function Graph(view) {
     }
   };
 
-  console.log(nodes)
-
   let width = window.innerWidth,
     height = window.innerHeight - 20;
 
@@ -146,22 +144,16 @@ async function Graph(view) {
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
             const parentId = document.getElementById("field_parentId_typeData").value;
-            console.log(parentId)
-
             let dropDownHtmlString = ''
             let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
             let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
 
             let parentConfigObject = configNodes.find(node => { return node.id === parentId })
 
-            // console.log(parentConfigObject)
-
             parentConfigObject.typeDataPropKeys.forEach(propKey => {
               let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-              console.log(filtered)
 
               let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-              console.log(propKeyObj)
               if (filtered.length > 0) {
                 propKeys.push({ "title": propKeyObj.title, "id": propKey })
                 dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
@@ -187,16 +179,13 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
-    console.log(d);
     if (document.getElementById("field_target")) { document.getElementById("field_target").value = d.id }
   };
 
   const rightClicked = (event, d) => {
     event.preventDefault();
     let clickedObj = d;
-    console.log(event.target.className, d)
     if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel' || event.target.className.baseVal === 'linkLabel' || event.target.className.baseVal === 'linkSVG') {
-      console.log(event.target.tagName);
 
       d3.select(".FormMenuContainer").remove();
       d3.select(".contextMenuContainer").remove();
@@ -212,7 +201,6 @@ async function Graph(view) {
       let x_cord = event.clientX;
       let y_cord = event.clientY
 
-      console.log(d)
       document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")
       document.getElementById("delete-item").innerHTML = `- Delete (${d.title})`
 
@@ -254,7 +242,6 @@ async function Graph(view) {
             let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            // console.log(propKeyObj)
             if (filtered.length > 0) {
               propKeys.push({ "title": propKeyObj.title, "id": propKey })
               dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
@@ -267,7 +254,6 @@ async function Graph(view) {
 
         d3.selectAll(".field_configObjInternalRel").on("change", async (e) => {
           const propsParentId = document.getElementById("field_configObjInternalRel").value;
-          console.log(propsParentId)
           let dropDownHtmlString = ''
           let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
           let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
@@ -275,12 +261,10 @@ async function Graph(view) {
 
           let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
 
-          console.log(parentConfigDefInternalRels)
           parentConfigDefInternalRels.typeDataRelPropKeys.forEach(propKey => {
             let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            console.log(propKeyObj)
             if (filtered.length > 0) {
               propKeys.push({ "title": propKeyObj.title, "id": propKey })
               dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
@@ -293,7 +277,7 @@ async function Graph(view) {
 
         d3.selectAll(".field_typeDataInternalRel").on("change", async (e) => {
           const propsParentId = document.getElementById("field_typeDataInternalRel").value;
-          console.log(propsParentId)
+
           let dropDownHtmlString = ''
           let datasRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
           let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
@@ -305,38 +289,25 @@ async function Graph(view) {
 
           let getParentsParent = configRels.find(node => node.id === parentDatasRels)
 
-          console.log(getParentsParent)
+
 
           getParentsParent.instanceDataRelPropKeys.forEach(propKey => {
             let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            console.log(propKeyObj)
+
             if (filtered.length > 0) {
               propKeys.push({ "title": propKeyObj.title, "id": propKey })
               dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
             }
           })
-
-
-          // parentConfigDefInternalRels.instanceDataRelPropKeys.forEach(propKey => {
-          //   let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-          //   let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-          //   console.log(propKeyObj)
-          //   if (filtered.length > 0) {
-          //     propKeys.push({ "title": propKeyObj.title, "id": propKey })
-          //     dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-          //   }
-          // })
-
           document.getElementById('field_filteredProps').innerHTML = ""
           document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
         });
 
         d3.selectAll(".field_typeDataExternalRel").on("change", async (e) => {
           const propsParentId = document.getElementById("field_typeDataExternalRel").value;
-          console.log(propsParentId)
+
           let dropDownHtmlString = ''
           let datasRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
           let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
@@ -348,13 +319,11 @@ async function Graph(view) {
 
           let getParentsParent = configRels.find(node => node.id === parentDatasRels)
 
-          console.log(getParentsParent)
-
           getParentsParent.instanceDataRelPropKeys.forEach(propKey => {
             let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            console.log(propKeyObj)
+
             if (filtered.length > 0) {
               propKeys.push({ "title": propKeyObj.title, "id": propKey })
               dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
@@ -369,7 +338,7 @@ async function Graph(view) {
 
         d3.selectAll(".field_configObjExternalRel").on("change", async (e) => {
           const propsParentId = document.getElementById("field_configObjExternalRel").value;
-          console.log(propsParentId)
+
           let dropDownHtmlString = ''
           let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
           let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
@@ -377,12 +346,11 @@ async function Graph(view) {
 
           let parentConfigObjExternalRels = configRels.find(rel => { return rel.id === propsParentId })
 
-          console.log(parentConfigObjExternalRels)
           parentConfigObjExternalRels.typeDataRelPropKeys.forEach(propKey => {
             let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            console.log(propKeyObj)
+
             if (filtered.length > 0) {
               propKeys.push({ "title": propKeyObj.title, "id": propKey })
               dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
@@ -408,7 +376,6 @@ async function Graph(view) {
             let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            // console.log(propKeyObj)
             if (filtered.length > 0) {
               propKeys.push({ "title": propKeyObj.title, "id": propKey })
               dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
@@ -597,8 +564,6 @@ async function Graph(view) {
             .on("click",
               (d) => {
                 event.preventDefault();
-                // d.srcElement.__data__
-                console.log('hello!', d.srcElement)
               }
             )
             .on("contextmenu",

@@ -272,6 +272,14 @@
                 "fieldTypeId": 1,
                 "fieldProperties": [2]
               }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 6
+              }
             }
           ],
           "contextMenu": []

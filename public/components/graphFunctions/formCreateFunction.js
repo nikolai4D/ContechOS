@@ -20,7 +20,7 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
 
   let defTypeAttributes = defType.attributes;
   let formDataObj = {};
-  console.log(defType)
+
 
   for (let attribute of defTypeAttributes) {
     //   // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
@@ -65,7 +65,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
     else {
-      console.log(keyOfAttribute, defType.defTypeTitle)
       if (keyOfAttribute === 'parentId' && defType.defTypeTitle === 'typeData') {
         formDataObj['parentId'] = formData[`field_parentId_typeData`].value;
 
@@ -82,7 +81,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
           )
         }
         else if (fieldType === 'dropDownKeyValue') {
-          console.log(defType.defTypeTitle)
           if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel' || defType.defTypeTitle === 'typeData' || defType.defTypeTitle === 'typeDataInternalRel' || defType.defTypeTitle === 'typeDataExternalRel' || defType.defTypeTitle === 'instanceDataInternalRel' || defType.defTypeTitle === 'instanceDataExternalRel') {
 
             let props = propKeys.map(propKey => {
