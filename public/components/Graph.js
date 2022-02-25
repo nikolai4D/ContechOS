@@ -194,8 +194,8 @@ async function Graph(view) {
   const rightClicked = (event, d) => {
     event.preventDefault();
     let clickedObj = d;
-
-    if (event.target.tagName === "circle") {
+    console.log(event.target.className, d)
+    if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel') {
       console.log(event.target.tagName);
 
       d3.select(".FormMenuContainer").remove();
@@ -586,9 +586,24 @@ async function Graph(view) {
         (enter) => {
           let entered = enter
             .append("text")
+            .attr("class", "nodeLabel")
+
             .text((node) => node.title)
             .style("text-anchor", styles.nodeLabel.textAnchor)
+            .style("cursor", "default")
+
             .style("fill", styles.nodeLabel.fill)
+            .on("click",
+              (d) => {
+                event.preventDefault();
+                // d.srcElement.__data__
+                console.log('hello!', d.srcElement)
+              }
+            )
+            .on("contextmenu",
+              rightClicked
+
+            )
             .attr("dy", 4);
           return entered;
         },
@@ -600,13 +615,14 @@ async function Graph(view) {
       .data(rels, (d) => d["id"])
       .join(
         (enter) => {
-          const linkLabel = enter.append("text").text((link) => link.title)
+          const linkLabel = enter
+            .append("text")
+            .text((link) => link.title)
+
           return linkLabel;
         },
-        (update) => {
-          const linkLabel = update.append("text").text((link) => link.title);
-          return linkLabel;
-        }
+        update => { return update }
+
       )
       .attr("id", function (d) {
         return "linkLabel" + d.id;
