@@ -7,7 +7,7 @@ const ContextMenu = (event, d) => {
     const group = window.location.pathname.substring(1);
     let defTitle = "group";
     data = getData(defTitle, group);
-  } else if (event.target.tagName === "circle") {
+  } else if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel') {
     let defTitle = "nodeType";
     data = getData(defTitle, d.defTypeTitle);
   }
