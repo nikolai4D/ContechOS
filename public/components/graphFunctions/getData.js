@@ -8,6 +8,8 @@ export default function (defTitle, defTypeTitle) {
     return obj.defTypeTitle === defTypeTitle;
   });
 
+  console.log(defTypeByDefintion, "defTypeByDefintion");
+
   let contextMenuContent = defTypeByDefintion.contextMenu;
 
   return contextMenuContent.map((element) => {

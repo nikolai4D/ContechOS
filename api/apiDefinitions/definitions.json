@@ -36,6 +36,7 @@
         {
           "defTypeId": 1,
           "defTypeTitle": "propType",
+          "defTypeDisplayTitle": "Property Type",
           "abbr": "pt",
           "attributes": [
             {
@@ -47,6 +48,7 @@
         {
           "defTypeId": 2,
           "defTypeTitle": "propKey",
+          "defTypeDisplayTitle": "Property Key",
           "abbr": "pk",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -65,6 +67,7 @@
         {
           "defTypeId": 3,
           "defTypeTitle": "propVal",
+          "defTypeDisplayTitle": "Property Value",
           "abbr": "pv",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -83,6 +86,7 @@
         {
           "defTypeId": 4,
           "defTypeTitle": "configDef",
+          "defTypeDisplayTitle": "Definition",
           "abbr": "cd",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -104,6 +108,7 @@
         {
           "defTypeId": 5,
           "defTypeTitle": "configObj",
+          "defTypeDisplayTitle": "Object",
           "abbr": "co",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -158,6 +163,7 @@
         {
           "defTypeId": 6,
           "defTypeTitle": "typeData",
+          "defTypeDisplayTitle": "Type",
           "abbr": "td",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -195,6 +201,7 @@
         {
           "defTypeId": 7,
           "defTypeTitle": "instanceData",
+          "defTypeDisplayTitle": "Instance",
           "abbr": "id",
           "attributes": [
             {
@@ -245,6 +252,7 @@
         {
           "defTypeId": 1,
           "defTypeTitle": "configDefInternalRel",
+          "defTypeDisplayTitle": "Definition Internal Relationship",
           "abbr": "cdir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -270,6 +278,7 @@
         {
           "defTypeId": 2,
           "defTypeTitle": "configDefExternalRel",
+          "defTypeDisplayTitle": "Definition External Relationship",
           "abbr": "cder",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -303,6 +312,7 @@
         {
           "defTypeId": 3,
           "defTypeTitle": "configObjInternalRel",
+          "defTypeDisplayTitle": "Object Internal Relationship",
           "abbr": "coir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -368,6 +378,7 @@
         {
           "defTypeId": 4,
           "defTypeTitle": "configObjExternalRel",
+          "defTypeDisplayTitle": "Object External Relationship",
           "abbr": "coer",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -433,6 +444,7 @@
         {
           "defTypeId": 5,
           "defTypeTitle": "typeDataExternalRel",
+          "defTypeDisplayTitle": "Type External Relationship",
           "abbr": "tder",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -482,6 +494,7 @@
         {
           "defTypeId": 6,
           "defTypeTitle": "typeDataInternalRel",
+          "defTypeDisplayTitle": "Type Internal Relationship",
           "abbr": "tdir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -531,6 +544,7 @@
         {
           "defTypeId": 7,
           "defTypeTitle": "instanceDataInternalRel",
+          "defTypeDisplayTitle": "Instance Internal Relationship",
           "abbr": "idir",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
@@ -580,6 +594,7 @@
         {
           "defTypeId": 8,
           "defTypeTitle": "instanceDataExternalRel",
+          "defTypeDisplayTitle": "Instance External Relationship",
           "abbr": "ider",
           "attributes": [
             { "title": { "fieldTypeId": 1 } },
