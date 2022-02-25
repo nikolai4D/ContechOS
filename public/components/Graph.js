@@ -590,6 +590,8 @@ async function Graph(view) {
 
             .text((node) => node.title)
             .style("text-anchor", styles.nodeLabel.textAnchor)
+            .style("cursor", "default")
+
             .style("fill", styles.nodeLabel.fill)
             .on("click",
               (d) => {
