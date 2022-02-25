@@ -20,9 +20,10 @@ const ContextMenu = (event, d) => {
   );
 
   const template = `  
-        <div class="contextMenu position-absolute">
-            <div class="list-group">
+        <div id="contextMenu" class="contextMenu position-absolute">
+            <div id="list-group-contextmenu" class="list-group list-group-contextmenu">
                 ${dataArray.join("")}
+                <div id="delete-item"></div>
             </div>
         </div>
     `;

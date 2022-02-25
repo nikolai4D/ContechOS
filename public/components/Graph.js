@@ -106,8 +106,6 @@ async function Graph(view) {
       let clickedObj = d;
 
       if (d.target.tagName === "svg") {
-        console.log(d.target.tagName);
-
         d3.select(".FormMenuContainer").remove();
         d3.select(".contextMenuContainer").remove();
         event.preventDefault();
@@ -173,41 +171,8 @@ async function Graph(view) {
             document.getElementById('field_filteredProps_typeData').innerHTML = ""
             document.getElementById('field_filteredProps_typeData').innerHTML = dropDownHtmlString
 
-            // })
-
-            // let dropDownHtmlString = ''
-            // let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-            // let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-            // let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
-
-
-            // parentConfigDefInternalRels.propKeys.forEach(propKey => {
-            //   let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            //   let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            //   // console.log(propKeyObj)
-            //   if (filtered.length > 0) {
-            //     propKeys.push({ "title": propKeyObj.title, "id": propKey })
-            //     dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            //   }
-            // })
-
-            // document.getElementById('field_filteredProps').innerHTML = ""
-            // document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
           });
 
-          // d3.selectAll(".form_add_more_props_button")
-          //   .on("click", (d) => {
-
-          //     d3.selectAll(".form_add_props")
-          //       .append("div")
-          //       .clone(d3.selectAll(".form_add_props"))
-          //       .html("<div>hello</div>")
-
-          //     // return document.getElementById("form_add_props")
-          //   });
         });
       }
     });
@@ -245,7 +210,16 @@ async function Graph(view) {
         .style("left", event.clientX + "px");
       let clickEvent = event;
       let x_cord = event.clientX;
-      let y_cord = event.clientY;
+      let y_cord = event.clientY
+
+      console.log(d)
+      document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")
+      document.getElementById("delete-item").innerHTML = `- Delete`
+
+
+      d3.selectAll("#delete-item").on("click", async (d) => {
+        console.log(`Delete ${clickedObj.defTypeTitle}!`)
+      })
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
         d3.select(".contextMenuContainer").remove();
