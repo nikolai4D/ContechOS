@@ -273,7 +273,8 @@
                 "fieldProperties": [2]
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 2,
@@ -307,7 +308,8 @@
                 "fieldTypeId": 6
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 3,
@@ -373,7 +375,8 @@
                 "fieldTypeId": 3
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 4,
@@ -439,7 +442,8 @@
                 "fieldTypeId": 3
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 5,
@@ -489,7 +493,8 @@
                 "fieldProperties": [1, 2]
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 6,
@@ -539,7 +544,8 @@
                 "fieldProperties": [1, 2]
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 7,
@@ -589,7 +595,8 @@
                 "fieldProperties": [1, 2]
               }
             }
-          ]
+          ],
+          "contextMenu": []
         },
         {
           "defTypeId": 8,
@@ -640,7 +647,8 @@
                 "fieldProperties": [1, 2]
               }
             }
-          ]
+          ],
+          "contextMenu": []
         }
       ]
     },

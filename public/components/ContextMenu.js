@@ -11,6 +11,10 @@ const ContextMenu = (event, d) => {
     let defTitle = "nodeType";
     data = getData(defTitle, d.defTypeTitle);
   }
+  else if (event.target.className.baseVal === "linkLabel" || event.target.className.baseVal === 'linkSVG') {
+    let defTitle = "relType";
+    data = getData(defTitle, d.defTypeTitle);
+  }
 
   let dataArray = data.map(
     (obj) =>

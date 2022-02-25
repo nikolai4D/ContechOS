@@ -195,7 +195,7 @@ async function Graph(view) {
     event.preventDefault();
     let clickedObj = d;
     console.log(event.target.className, d)
-    if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel') {
+    if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel' || event.target.className.baseVal === 'linkLabel' || event.target.className.baseVal === 'linkSVG') {
       console.log(event.target.tagName);
 
       d3.select(".FormMenuContainer").remove();
@@ -214,7 +214,7 @@ async function Graph(view) {
 
       console.log(d)
       document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")
-      document.getElementById("delete-item").innerHTML = `- Delete`
+      document.getElementById("delete-item").innerHTML = `- Delete (${d.title})`
 
 
       d3.selectAll("#delete-item").on("click", async (d) => {
@@ -513,6 +513,7 @@ async function Graph(view) {
             .append("path")
             .style("stroke", styles.link.stroke)
             .style("fill", "none")
+            .on("contextmenu", rightClicked)
 
             .attr("class", "linkSVG")
             .attr("marker-end", (d) => {
@@ -618,7 +619,10 @@ async function Graph(view) {
           const linkLabel = enter
             .append("text")
             .text((link) => link.title)
+            .on("contextmenu",
+              rightClicked
 
+            )
           return linkLabel;
         },
         update => { return update }
