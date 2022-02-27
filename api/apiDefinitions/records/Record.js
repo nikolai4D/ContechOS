@@ -204,7 +204,7 @@ class Record {
     return defTypes;
   }
 
-  async getAllId() {
+  getAllId() {
     const defTypes = [];
 
     //all defTypes Ids
@@ -218,10 +218,49 @@ class Record {
 
     return defTypes;
   }
+  isTarget(id) {
+    const foundTargets = [];
+
+    //all defTypes Ids
+    const dirExternalRel = `../db/${this.defType}ExternalRel/`;
+    const dirInternalRel = `../db/${this.defType}InternalRel/`;
+    const externalFiles = fs.readdirSync(dirExternalRel);
+    const internalFiles = fs.readdirSync(dirInternalRel);
+
+    externalFiles.forEach(function (file) {
+      let externalFile = JSON.parse(
+        fs.readFileSync(dirExternalRel + file, "utf8")
+      );
+
+      if (externalFile.target === id) {
+        externalFile.id = file.slice(0, -5);
+        foundTargets.push(externalFile.id);
+      }
+    });
+
+    internalFiles.forEach(function (file) {
+      let internalFile = JSON.parse(
+        fs.readFileSync(dirInternalRel + file, "utf8")
+      );
+
+      if (internalFile.target === id) {
+        internalFile.id = file.slice(0, -5);
+        foundTargets.push(internalFile.id);
+      }
+    });
+
+    return foundTargets;
+  }
 
   //UPDATE
 
   //DELETE
-}
 
+  remove(id) {
+    const dir = `../db/${this.defType}/`;
+    const file = id + ".json";
+    fs.unlinkSync(dir + file);
+    return `removed: ${id}`;
+  }
+}
 module.exports = Record;
