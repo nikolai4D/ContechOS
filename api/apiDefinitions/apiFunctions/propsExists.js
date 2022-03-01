@@ -12,7 +12,6 @@ async function propsExists(props, res) {
 
   props.forEach(async (obj) => {
     let propsExists = false;
-    console.log(obj, "1");
     propsExists = false;
     if (!typeof obj === "object") {
       res.status(400).send(`props content must be objects`);
@@ -20,7 +19,6 @@ async function propsExists(props, res) {
     }
     //propVal
     const propVal = Object.values(obj)[0];
-    console.log(propVal, "2");
     if (!propValArray.includes(propVal)) {
       res.status(400).send(`propVal ${propVal} doesn't exist`);
       return false;
@@ -28,14 +26,12 @@ async function propsExists(props, res) {
     //get parentId from propVal and compare to propKey
     const propValParentId = (await propValRecord.getById(propVal)).parentId;
     const propKey = Object.keys(obj)[0];
-    console.log(propValParentId, propKey, "3");
     if (!propValParentId === propKey) {
       res.status(400).send(`propKey ${propKey} doesn't match propVal.parentId`);
       return false;
     }
 
     //check if propKey exists
-    console.log(propKeyArray.includes(propKey), "4");
     if (!propKeyArray.includes(propKey)) {
       res.status(400).send(`propKey ${propKey} doesn't exist`);
       return false;

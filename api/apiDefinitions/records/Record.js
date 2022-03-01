@@ -342,6 +342,71 @@ class Record {
     return foundParentId;
   }
 
+  isParentIdValid(parentId, source, target) {
+    //get defs for source, target, parentId
+    let sourceIds = {};
+    let targetIds = {};
+    let parentIds = {};
+    apiDefsAll.forEach((obj) => {
+      if (obj.defTypeTitle === this.defType) {
+        obj.attributes.forEach((el) => {
+          if (Object.keys(el).includes("source")) {
+            sourceIds.defId = el.source.defId;
+            sourceIds.defTypeId = el.source.defTypeId;
+          }
+          if (Object.keys(el).includes("target")) {
+            targetIds.defId = el.target.defId;
+            targetIds.defTypeId = el.target.defTypeId;
+          }
+          if (Object.keys(el).includes("parentId")) {
+            parentIds.defId = el.parentId.defId;
+            parentIds.defTypeId = el.parentId.defTypeId;
+          }
+        });
+      }
+    });
+    //get parentIds for source and target
+
+    //sourceParentId
+    const sourceTitle = apiDefsAll.find(
+      (obj) =>
+        obj.defId === sourceIds.defId && obj.defTypeId === sourceIds.defTypeId
+    ).defTypeTitle;
+    //console.log(sourceTitle, "1");
+
+    const readSource = JSON.parse(
+      fs.readFileSync(`../db/${sourceTitle}/${source}.json`, "utf8")
+    );
+
+    const sourceParentId = readSource.parentId;
+
+    //targetParentId
+    const targetTitle = apiDefsAll.find(
+      (obj) =>
+        obj.defId === targetIds.defId && obj.defTypeId === targetIds.defTypeId
+    ).defTypeTitle;
+
+    const readTarget = JSON.parse(
+      fs.readFileSync(`../db/${targetTitle}/${target}.json`, "utf8")
+    );
+    const targetParentId = readTarget.parentId;
+
+    //targetParentId
+    const parentTitle = apiDefsAll.find(
+      (obj) =>
+        obj.defId === parentIds.defId && obj.defTypeId === parentIds.defTypeId
+    ).defTypeTitle;
+
+    const readParent = JSON.parse(
+      fs.readFileSync(`../db/${parentTitle}/${parentId}.json`, "utf8")
+    );
+
+    const parentSource = readParent.source;
+    const parentTarget = readParent.target;
+
+    return { sourceParentId, targetParentId, parentSource, parentTarget };
+  }
+
   //UPDATE
 
   //DELETE
