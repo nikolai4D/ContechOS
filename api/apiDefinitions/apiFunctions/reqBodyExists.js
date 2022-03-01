@@ -1,5 +1,5 @@
-function reqBodyExists(reqBody) {
-  const keys = [];
+const reqBodyExists = (reqBody, res) => {
+  let keys = [];
 
   if (Object.values(reqBody).includes(undefined)) {
     Object.keys(reqBody).forEach((key) => {
@@ -7,14 +7,11 @@ function reqBodyExists(reqBody) {
         keys.push(key);
       }
     });
-
-    return {
-      exists: false,
-      message: `missing: ${keys}`,
-    };
+    res.status(400).send(`missing: ${keys}`);
+    return false;
   } else {
-    return { exists: true };
+    return true;
   }
-}
+};
 
 module.exports = reqBodyExists;

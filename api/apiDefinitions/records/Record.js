@@ -15,6 +15,11 @@ const relTypes = definitions.defs.find((obj) => obj.defTitle === "relType")
 
 const apiDefsAll = [...nodeTypes, ...relTypes];
 
+// const parentDefTypeId = apiDefsAll.find(
+//   (obj) => obj.defTypeTitle === this.defType
+
+// const childDefType = apiDefsAll.find(obj) =>
+
 class Record {
   constructor(defType) {
     this.defType = defType;
@@ -250,6 +255,10 @@ class Record {
     });
 
     return foundTargets;
+  }
+
+  isParent(id) {
+    console.log(parentDefTypeId);
   }
 
   //UPDATE

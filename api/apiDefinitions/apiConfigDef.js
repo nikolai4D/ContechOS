@@ -3,10 +3,13 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const create = require("./apiFunctions/create.js");
 const readAll = require("./apiFunctions/readAll.js");
+const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
+const reqParamExists = require("./apiFunctions/reqParamExists.js");
 const readById = require("./apiFunctions/readById.js");
 const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
 const propKeysExists = require("./apiFunctions/propKeysExists.js");
 const isTarget = require("./apiFunctions/isTarget.js");
+const idExist = require("./apiFunctions/idExist.js");
 const remove = require("./apiFunctions/remove.js");
 const Record = require("./records/Record.js");
 
@@ -19,73 +22,51 @@ router.use(bodyParser.json());
 
 //APIs
 router.post("/create", async (req, res) => {
-  //deconstruct
   const { title, propKeys } = req.body;
   const reqBody = { title, propKeys };
-
-  if (!reqBodyExists(reqBody).exists) {
-    return res.status(400).json(reqBodyExists(reqBody).message);
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
   }
-  if (!propKeysExists(propKeys).exists) {
-    return res.status(400).json(propKeysExists(propKeys).message);
+  //check if provided propKeys exist
+  if (!(await propKeysExists(propKeys, res))) {
+    return res.statusCode;
   }
-  const result = await create(routerType, reqBody);
-  if (result.created) {
-    return res.status(200).json(result.result);
-  } else {
-    return res.status(500).json(result.result);
-  }
+  //create
+  await create(routerType, reqBody, res);
 });
 
 router.get("/", async (req, res) => {
-  if (Object.keys(req.query).includes("id")) {
-    const result = await readById(routerType, req.query.id);
-
-    if (!result.exists) {
-      return res.status(400).json(result.result);
-    } else {
-      if (result.read) {
-        return res.status(200).json(result.result);
-      } else {
-        return res.status(500).json(result.result);
-      }
-    }
-  } else {
-    const result = await readAll(routerType);
-
-    console.log(result);
-    if (result.read) {
-      return res.status(200).json(result.result);
-    } else {
-      return res.status(500).json(result.result);
-    }
+  //check if request includes query param id
+  if (!(await reqQueryExists(req.query, "id"))) {
+    //no id -> read all
+    return await readAll(routerType, res);
   }
+  //check if included id exists
+  if (!(await idExist(routerType, req.query.id, res))) {
+    return res.statusCode;
+  }
+  //read included id
+  await readById(routerType, req.query.id, res);
 });
 
 router.delete("/:id", async (req, res) => {
-  const result = await readById(routerType, req.params.id);
-  if (!result.exists) {
-    return res.status(400).json(result.result);
-  } else {
-    if (!result.read) {
-      return res.status(500).json(result.result);
-    } else {
-      const targets = await isTarget(routerType, result.result.id);
-      if (targets.length > 0) {
-        return res.status(400).json(`can't delete because of: ${targets}`);
-      } else {
-        removed = await remove(routerType, result.result.id);
-
-        if (removed.removed) {
-          return res.status(200).json(removed.result);
-        } else {
-          return res.status(500).json(removed.result);
-        }
-      }
-    }
+  console.log("before");
+  if (!(await idExist(routerType, req.params.id, res))) {
+    return res.statusCode;
   }
 
-  //check if is target
+  console.log("after idExist");
+
+  if (!(await isTarget(routerType, req.params.id, res))) {
+    console.log("!isTarget");
+    return res.statusCode;
+  }
+  console.log("after idTarget");
+
+  //isParent
+
+  //remove(routerType,req.params.id, res)
 });
 
 module.exports = router;

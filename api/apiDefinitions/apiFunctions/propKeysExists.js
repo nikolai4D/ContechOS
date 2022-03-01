@@ -1,5 +1,4 @@
-function propKeysExists(propKeys) {
-  let result = { exists: true };
+const propKeysExists = (propKeys, res) => {
   let keys = [];
   const Record = require("../records/Record.js");
   const propKeyRecord = new Record("propKey");
@@ -8,16 +7,15 @@ function propKeysExists(propKeys) {
   propKeys.forEach((key) => {
     if (!propKeyArray.includes(key)) {
       keys.push(key);
-      result.exists = false;
     }
   });
 
-  if (!result.exists) {
-    result.message = `missing propKeys: ${keys}`;
-    return result;
+  if (keys.length > 0) {
+    res.status(400).send(`missing propKeys: ${keys}`);
+    return false;
   } else {
-    return result;
+    return true;
   }
-}
+};
 
 module.exports = propKeysExists;
