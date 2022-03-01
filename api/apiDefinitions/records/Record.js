@@ -7,16 +7,30 @@ const definitions = JSON.parse(
 
 // const { nodeTypes, relTypes } = definitions.nodeDefs;
 
-const nodeTypes = definitions.defs.find((obj) => obj.defTitle === "nodeType")
-  .defTypes;
+const getNodeTypeArray = definitions.defs.find(
+  (obj) => obj.defTitle === "nodeType"
+);
 
-const relTypes = definitions.defs.find((obj) => obj.defTitle === "relType")
-  .defTypes;
+let nodeTypes = getNodeTypeArray.defTypes;
+
+nodeTypes.forEach((obj) => {
+  obj.defId = getNodeTypeArray.defId;
+});
+
+const getRelTypeArray = definitions.defs.find(
+  (obj) => obj.defTitle === "relType"
+);
+
+let relTypes = getRelTypeArray.defTypes;
+
+relTypes.forEach((obj) => {
+  obj.defId = getRelTypeArray.defId;
+});
+
+// const relTypes = definitions.defs.find((obj) => obj.defTitle === "relType")
+//   .defTypes;
 
 const apiDefsAll = [...nodeTypes, ...relTypes];
-
-// const parentDefTypeId = apiDefsAll.find(
-//   (obj) => obj.defTypeTitle === this.defType
 
 // const childDefType = apiDefsAll.find(obj) =>
 
@@ -258,7 +272,46 @@ class Record {
   }
 
   isParent(id) {
-    console.log(parentDefTypeId);
+    let foundChildren = [];
+    let parents = [];
+    const parentDefType = apiDefsAll.find(
+      (obj) => obj.defTypeTitle === this.defType
+    );
+
+    const parentDefTypeId = parentDefType.defTypeId;
+    const parentDefId = parentDefType.defId;
+
+    //console.log(apiDefsAll);
+
+    apiDefsAll.forEach((obj) => {
+      obj.attributes.forEach((el) => {
+        if (Object.keys(el).includes("parentId")) {
+          if (
+            el.parentId.defTypeId === parentDefTypeId &&
+            el.parentId.defId === parentDefId
+          ) {
+            parents.push(obj.defTypeTitle);
+          }
+        }
+      });
+    });
+
+    parents.forEach((parent) => {
+      const dirChild = `../db/${parent}/`;
+      const childFiles = fs.readdirSync(dirChild);
+
+      childFiles.forEach(function (file) {
+        let childFile = JSON.parse(fs.readFileSync(dirChild + file, "utf8"));
+
+        if (childFile.parentId === id) {
+          childFile.id = file.slice(0, -5);
+          foundChildren.push(childFile.id);
+        }
+      });
+    });
+
+    console.log(foundChildren);
+    return foundChildren;
   }
 
   //UPDATE

@@ -9,6 +9,7 @@ const readById = require("./apiFunctions/readById.js");
 const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
 const propKeysExists = require("./apiFunctions/propKeysExists.js");
 const isTarget = require("./apiFunctions/isTarget.js");
+const isParent = require("./apiFunctions/isParent.js");
 const idExist = require("./apiFunctions/idExist.js");
 const remove = require("./apiFunctions/remove.js");
 const Record = require("./records/Record.js");
@@ -56,17 +57,17 @@ router.delete("/:id", async (req, res) => {
     return res.statusCode;
   }
 
-  console.log("after idExist");
-
   if (!(await isTarget(routerType, req.params.id, res))) {
     console.log("!isTarget");
     return res.statusCode;
   }
-  console.log("after idTarget");
 
-  //isParent
+  if (!(await isParent(routerType, req.params.id, res))) {
+    console.log("!isParent");
+    return res.statusCode;
+  }
 
-  //remove(routerType,req.params.id, res)
+  await remove(routerType, req.params.id, res);
 });
 
 module.exports = router;
