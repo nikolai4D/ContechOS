@@ -4,7 +4,7 @@ async function idExist(routerType, reqId, res) {
   const recordArray = await record.getAllId();
 
   if (!recordArray.includes(reqId)) {
-    res.status(400).json(`missing: ${reqId}`);
+    res.status(400).json(`missing id: ${reqId}`);
     return false;
   } else {
     return true;

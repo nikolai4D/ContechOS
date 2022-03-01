@@ -12,7 +12,6 @@ const isTarget = require("./apiFunctions/isTarget.js");
 const isParent = require("./apiFunctions/isParent.js");
 const idExist = require("./apiFunctions/idExist.js");
 const remove = require("./apiFunctions/remove.js");
-const Record = require("./records/Record.js");
 
 const routerType = "configDef";
 //Record instance
@@ -52,18 +51,15 @@ router.get("/", async (req, res) => {
 });
 
 router.delete("/:id", async (req, res) => {
-  console.log("before");
   if (!(await idExist(routerType, req.params.id, res))) {
     return res.statusCode;
   }
 
   if (!(await isTarget(routerType, req.params.id, res))) {
-    console.log("!isTarget");
     return res.statusCode;
   }
 
   if (!(await isParent(routerType, req.params.id, res))) {
-    console.log("!isParent");
     return res.statusCode;
   }
 

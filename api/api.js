@@ -37,20 +37,20 @@ api.use("/props", require("./apiDefinitions/graphProps.js"));
 //----------config----------//
 api.use("/definition", require("./apiDefinitions/apiConfigDef.js")); //configDef
 api.use(
-  "/configDefInternalRel",
+  "/definitionInternalRel",
   require("./apiDefinitions/apiConfigDefInternalRel.js")
 ); //configDefInternalRel
 api.use(
-  "/configDefExternalRel",
+  "/definitionExternalRel",
   require("./apiDefinitions/apiConfigDefExternalRel.js")
 ); //configDefExternalRel
 api.use("/object", require("./apiDefinitions/apiConfigObj.js")); //configObj
 api.use(
-  "/configObjInternalRel",
+  "/objectInternalRel",
   require("./apiDefinitions/apiConfigObjInternalRel.js")
 ); //configObjInternalRel
 api.use(
-  "/configObjExternalRel",
+  "/objectExternalRel",
   require("./apiDefinitions/apiConfigObjExternalRel.js")
 ); //configObjExternalRel
 
@@ -60,20 +60,20 @@ api.use("/configs", require("./apiDefinitions/graphConfigs.js"));
 //----------data----------//
 api.use("/type", require("./apiDefinitions/apiTypeData.js")); //typeData
 api.use(
-  "/typeDataInternalRel",
+  "/typeInternalRel",
   require("./apiDefinitions/apiTypeDataInternalRel.js")
 ); //typeDataInternalRel
 api.use(
-  "/typeDataExternalRel",
+  "/typeExternalRel",
   require("./apiDefinitions/apiTypeDataExternalRel.js")
 ); //typeDataExternalRel
 api.use("/instance", require("./apiDefinitions/apiInstanceData.js")); //instanceData
 api.use(
-  "/instanceDataInternalRel",
+  "/instanceInternalRel",
   require("./apiDefinitions/apiInstanceDataInternalRel.js")
 ); //instanceDataInternalRel
 api.use(
-  "/instanceDataExternalRel",
+  "/instanceExternalRel",
   require("./apiDefinitions/apiInstanceDataExternalRel.js")
 ); //instanceDataExternalRel
 
