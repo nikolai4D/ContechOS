@@ -35,22 +35,22 @@ api.use("/propVal", require("./apiDefinitions/apiPropVal.js")); //propVal
 api.use("/props", require("./apiDefinitions/graphProps.js"));
 
 //----------config----------//
-api.use("/definition", require("./apiDefinitions/apiConfigDef.js")); //configDef
+api.use("/configDef", require("./apiDefinitions/apiConfigDef.js")); //configDef
 api.use(
-  "/definitionInternalRel",
+  "/configDefInternalRel",
   require("./apiDefinitions/apiConfigDefInternalRel.js")
 ); //configDefInternalRel
 api.use(
-  "/definitionExternalRel",
+  "/configDefExternalRel",
   require("./apiDefinitions/apiConfigDefExternalRel.js")
 ); //configDefExternalRel
-api.use("/object", require("./apiDefinitions/apiConfigObj.js")); //configObj
+api.use("/configObj", require("./apiDefinitions/apiConfigObj.js")); //configObj
 api.use(
-  "/objectInternalRel",
+  "/configObjInternalRel",
   require("./apiDefinitions/apiConfigObjInternalRel.js")
 ); //configObjInternalRel
 api.use(
-  "/objectExternalRel",
+  "/configObjExternalRel",
   require("./apiDefinitions/apiConfigObjExternalRel.js")
 ); //configObjExternalRel
 
@@ -58,22 +58,22 @@ api.use(
 api.use("/configs", require("./apiDefinitions/graphConfigs.js"));
 
 //----------data----------//
-api.use("/type", require("./apiDefinitions/apiTypeData.js")); //typeData
+api.use("/typeData", require("./apiDefinitions/apiTypeData.js")); //typeData
 api.use(
-  "/typeInternalRel",
+  "/typeDataInternalRel",
   require("./apiDefinitions/apiTypeDataInternalRel.js")
 ); //typeDataInternalRel
 api.use(
-  "/typeExternalRel",
+  "/typeDataExternalRel",
   require("./apiDefinitions/apiTypeDataExternalRel.js")
 ); //typeDataExternalRel
-api.use("/instance", require("./apiDefinitions/apiInstanceData.js")); //instanceData
+api.use("/instanceData", require("./apiDefinitions/apiInstanceData.js")); //instanceData
 api.use(
-  "/instanceInternalRel",
+  "/instanceDataInternalRel",
   require("./apiDefinitions/apiInstanceDataInternalRel.js")
 ); //instanceDataInternalRel
 api.use(
-  "/instanceExternalRel",
+  "/instanceDataExternalRel",
   require("./apiDefinitions/apiInstanceDataExternalRel.js")
 ); //instanceDataExternalRel
 
