@@ -12,10 +12,7 @@ const isTarget = require("./apiFunctions/isTarget.js");
 const isParent = require("./apiFunctions/isParent.js");
 const idExist = require("./apiFunctions/idExist.js");
 const remove = require("./apiFunctions/remove.js");
-
 const routerType = "configDef";
-//Record instance
-// const record = new Record(routerType);
 
 //Bodyparser
 router.use(bodyParser.json());

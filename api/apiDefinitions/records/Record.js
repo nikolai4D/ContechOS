@@ -281,8 +281,6 @@ class Record {
     const parentDefTypeId = parentDefType.defTypeId;
     const parentDefId = parentDefType.defId;
 
-    //console.log(apiDefsAll);
-
     apiDefsAll.forEach((obj) => {
       obj.attributes.forEach((el) => {
         if (Object.keys(el).includes("parentId")) {
@@ -309,9 +307,39 @@ class Record {
         }
       });
     });
-
-    console.log(foundChildren);
     return foundChildren;
+  }
+
+  parentIdExist(parentId) {
+    let parentIds = {};
+    let foundParentId = false;
+    apiDefsAll.forEach((obj) => {
+      if (obj.defTypeTitle === this.defType) {
+        obj.attributes.forEach((el) => {
+          if (Object.keys(el).includes("parentId")) {
+            parentIds.defId = el.parentId.defId;
+            parentIds.defTypeId = el.parentId.defTypeId;
+          }
+        });
+      }
+    });
+
+    const parentTitle = apiDefsAll.find(
+      (obj) =>
+        obj.defId === parentIds.defId && obj.defTypeId === parentIds.defTypeId
+    ).defTypeTitle;
+
+    const parentDir = `../db/${parentTitle}/`;
+    const parentFiles = fs.readdirSync(parentDir);
+
+    parentFiles.forEach(function (file) {
+      let parsedParentId = file.slice(0, -5);
+      if (parsedParentId === parentId) {
+        foundParentId = true;
+      }
+    });
+
+    return foundParentId;
   }
 
   //UPDATE

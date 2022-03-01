@@ -4,6 +4,11 @@ const propKeysExists = (propKeys, res) => {
   const propKeyRecord = new Record("propKey");
   const propKeyArray = propKeyRecord.getAllId();
 
+  if (!Array.isArray(propKeys)) {
+    res.status(400).send(`propKeys must be an array`);
+    return false;
+  }
+
   propKeys.forEach((key) => {
     if (!propKeyArray.includes(key)) {
       keys.push(key);
