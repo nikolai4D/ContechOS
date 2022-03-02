@@ -70,32 +70,23 @@ class Actions {
 
         else {
           let newRecords = recordsInView[0].rels.filter(obj => obj.source !== id)
-          console.log(newRecords, 'rels')
+          recordsInView[0].rels = newRecords;
         }
 
         let newRecords = recordsInView[0][type].filter(obj => obj.id !== id)
-
         recordsInView[0][type] = newRecords;
-        console.log(id, newRecords, recordsInView, view, type)
-
         sessionStorage.setItem(view, JSON.stringify(recordsInView));
 
+        if (view === "props" && (defType === "propKey" || defType === "propVal")) {
 
-        // if (view === "props" && (defType === "propKey" || defType === "propVal")) {
-        //   let source = recordJson.id;
-        //   let target = await attrs.parentId;
-        //   let newRel = {
-        //     id: `${source}_${target}`,
-        //     source,
-        //     target,
-        //     title: "has parent",
-        //   };
-        //   recordsInView[0].rels.push(newRel);
-        // }
 
+          let newRecords = recordsInView[0].rels.filter(obj => obj.source !== id);
+          recordsInView[0].rels = newRecords;
+
+          recordsInView[0].rels.push(newRel);
+        }
       }
     } catch (err) {
-      console.log('error!')
       console.log(err);
     }
   }
