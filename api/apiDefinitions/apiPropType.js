@@ -10,7 +10,7 @@ const parentIdExist = require("./apiFunctions/parentIdExist.js");
 const isParent = require("./apiFunctions/isParent.js");
 const idExist = require("./apiFunctions/idExist.js");
 const remove = require("./apiFunctions/remove.js");
-const routerType = "propVal";
+const routerType = "propType";
 
 //Bodyparser
 router.use(bodyParser.json());
