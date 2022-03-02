@@ -142,8 +142,8 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
-    console.log(d);
 
+    console.log(d)
     if (document.getElementById("field_target")) {
 
       if (State.clickedObj.defTypeTitle === d.defTypeTitle) {
@@ -152,8 +152,6 @@ async function Graph(view) {
 
         // decide on which relationship to use
         State['targetObject'] = d;
-        console.log(State.clickedObj, State.targetObject)
-
         if (State.clickedObj.defTypeTitle === "configDef") {
           if (State.clickedObj.id === State.targetObject.id) {
             State['validDefTypeRels'] = ["configDefInternalRel"]
@@ -169,20 +167,50 @@ async function Graph(view) {
             State['validDefTypeRels'] = ["configObjExternalRel"]
           }
         } if (State.clickedObj.defTypeTitle === "typeData") {
-          if (State.clickedObj.parentId === State.targetObject.parentId) {
-            // check parents, what their relationship are. If there aren't any, reject the try. 
-            let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-            State['validDefTypeRels'] = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          // if (State.clickedObj.parentId === State.targetObject.parentId) {
+          // check parents, what their relationship are. If there aren't any, reject the try. 
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+          console.log(configRels)
+          let rel = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          if (rel.length > 0) {
+            rel = rel[0].defTypeTitle;
           }
+          if (rel === 'configObjInternalRel') {
+            State['validDefTypeRels'] = ['typeDataInternalRel']
+          }
+          else if (rel === 'configObjExternalRel') {
+            State['validDefTypeRels'] = ['typeDataExternalRel']
+          }
+          else {
+            State.validDefTypeRels = []
+          }
+          console.log(State.validDefTypeRels)
+
         } if (State.clickedObj.defTypeTitle === "instanceData") {
-          if (State.clickedObj.parentId === State.targetObject.parentId) {
-            // check parents, what their relationship are. If there aren't any, reject the try. 
-            let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
-            State['validDefTypeRels'] = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          // if (State.clickedObj.parentId === State.targetObject.parentId) {
+          // check parents, what their relationship are. If there aren't any, reject the try. 
+          let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
+          console.log(configRels)
+          let rel = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          if (rel.length > 0) {
+            rel = rel[0].defTypeTitle;
           }
+          if (rel === 'typeDataInternalRel') {
+            State['validDefTypeRels'] = ['instanceDataInternalRel']
+          }
+          else if (rel === 'typeDataExternalRel') {
+            State['validDefTypeRels'] = ['instanceDataExternalRel']
+          }
+          else {
+            State.validDefTypeRels = []
+          }
+          console.log(State.validDefTypeRels)
+
         }
-        console.log(State.validDefTypeRels)
         ReactiveFormCreate()
+
+        State.propKeys = [];
+        contextMenuItemClick(d3)
       }
       else {
         State.validDefTypeRels = []
@@ -208,12 +236,13 @@ async function Graph(view) {
         ActivateFormMenu(d3)
 
         State.propKeys = [];
+        // contextMenuItemClick(d3)
+
         d3.selectAll(".formCreateSubmit").on("click", async (e) => {
           await formCreateFunction(view, State.contextMenuItem, "rel", State.clickedObj, State.propKeys);
           await updateData(view);
           await render(view);
         });
-        contextMenuItemClick(d3)
       });
     }
   };

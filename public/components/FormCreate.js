@@ -29,18 +29,15 @@ export function FormCreate() {
       valueOfAttribute,
       fieldProperties
     );
-    console.log(fieldPropertiesOfAttribute)
 
     if (fieldPropertiesOfAttribute.some((obj) => obj.type === "hidden")) {
       continue;
     }
     if (fieldPropertiesOfAttribute.some((obj) => obj.type === "dependant")) {
       fieldsArray.push(`<div id='field_${keyOfAttribute}'></div>`);
-      console.log(`<div id='field_${keyOfAttribute}'></div>`)
       continue;
     }
     if (defId === 2) {
-      console.log(defType, defTypeAttributes)
     }
 
     if (fieldType === "input") {
@@ -196,7 +193,6 @@ const createDropdownKeyValue = (
           rel.target === State.clickedObj.parentId)
       );
     });
-    console.log(clickedObj)
 
     let dropDownString = dropDown(
       "typeDataInternalRel",
