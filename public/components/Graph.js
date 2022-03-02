@@ -145,8 +145,17 @@ async function Graph(view) {
 
     console.log(d)
     if (document.getElementById("field_target")) {
+      document.getElementById("field_target").classList.remove("is-invalid");
+      document.getElementsByClassName("formCreateSubmit")[0].classList.remove("disabled");
 
-      if (State.clickedObj.defTypeTitle === d.defTypeTitle) {
+      if ((State.clickedObj.id === d.id) && (d.id === State.clickedObj.id)) {
+        document.getElementById("field_target").value = "Cannot be self!";
+        document.getElementById("field_target").classList.add("is-invalid");
+        document.getElementById("field_props").innerHTML = "";
+        document.getElementsByClassName("formCreateSubmit")[0].classList.add("disabled");
+
+      }
+      else if ((State.clickedObj.defTypeTitle === d.defTypeTitle)) {
         document.getElementById("field_target").value = d.id;
         document.getElementById("field_target").setAttribute("data-parentId", d.parentId)
 
@@ -167,7 +176,6 @@ async function Graph(view) {
             State['validDefTypeRels'] = ["configObjExternalRel"]
           }
         } if (State.clickedObj.defTypeTitle === "typeData") {
-          // if (State.clickedObj.parentId === State.targetObject.parentId) {
           // check parents, what their relationship are. If there aren't any, reject the try. 
           let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
           console.log(configRels)
@@ -185,9 +193,10 @@ async function Graph(view) {
             State.validDefTypeRels = []
           }
           console.log(State.validDefTypeRels)
+        }
 
-        } if (State.clickedObj.defTypeTitle === "instanceData") {
-          // if (State.clickedObj.parentId === State.targetObject.parentId) {
+
+        if (State.clickedObj.defTypeTitle === "instanceData") {
           // check parents, what their relationship are. If there aren't any, reject the try. 
           let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
           console.log(configRels)
@@ -205,16 +214,15 @@ async function Graph(view) {
             State.validDefTypeRels = []
           }
           console.log(State.validDefTypeRels)
-
         }
         ReactiveFormCreate()
-
         State.propKeys = [];
         contextMenuItemClick(d3)
       }
-      else {
-        State.validDefTypeRels = []
-      }
+
+    }
+    else {
+      State.validDefTypeRels = []
     }
 
   };
@@ -237,7 +245,9 @@ async function Graph(view) {
 
         State.propKeys = [];
         // contextMenuItemClick(d3)
-
+        d3.selectAll(".close-button").on("click", (e) => {
+          d3.selectAll(".FormMenuContainer").remove()
+        })
         d3.selectAll(".formCreateSubmit").on("click", async (e) => {
           await formCreateFunction(view, State.contextMenuItem, "rel", State.clickedObj, State.propKeys);
           await updateData(view);

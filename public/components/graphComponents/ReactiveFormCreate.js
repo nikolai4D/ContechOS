@@ -11,6 +11,7 @@ export function ReactiveFormCreate() {
     let defType = State.definitions.defs[1].defTypes.find(obj => State.validDefTypeRels.includes(obj.defTypeTitle))
 
     if (defType === undefined) {
+        document.getElementsByClassName("formCreateSubmit")[0].classList.add("disabled");
         document.getElementById("field_props").innerHTML = 'No relationship available.'
         return
     }

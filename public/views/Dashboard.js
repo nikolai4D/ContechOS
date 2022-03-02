@@ -5,10 +5,11 @@ export default class Dashboard {
     document.title = "Dashboard";
   }
 
-  async getTemplate() {
-    await Actions.GETALL("props");
-    await Actions.GETALL("configs");
-    await Actions.GETALL("datas");
+  getTemplate() {
+    Actions.GETALL("props");
+    Actions.GETALL("configs");
+    Actions.GETALL("datas");
+
     return `
         <div class="container">
             <h1>Dashboard</h1>
