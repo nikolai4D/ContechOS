@@ -203,6 +203,28 @@ class Record {
     return defTypes;
   }
 
+  async getByParentId(parentId) {
+    const defTypes = [];
+
+    //defTypes
+    const thisDefType = this.defType;
+    const dir = `../db/${thisDefType}/`;
+    const defTypeFiles = fs.readdirSync(dir);
+
+    defTypeFiles.forEach(function (file) {
+      let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      if (defType.parentId === parentId) {
+        delete defType.created;
+        delete defType.updated;
+        defType.id = file.slice(0, -5);
+        defType.type = thisDefType;
+        defTypes.push(defType);
+      }
+    });
+
+    return defTypes;
+  }
+
   async getAll() {
     const defTypes = [];
 

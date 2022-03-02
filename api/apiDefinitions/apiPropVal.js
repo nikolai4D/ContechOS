@@ -5,6 +5,7 @@ const create = require("./apiFunctions/create.js");
 const readAll = require("./apiFunctions/readAll.js");
 const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
 const readById = require("./apiFunctions/readById.js");
+const readByParentId = require("./apiFunctions/readByParentId.js");
 const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
 const parentIdExist = require("./apiFunctions/parentIdExist.js");
 const isParent = require("./apiFunctions/isParent.js");
@@ -34,6 +35,16 @@ router.post("/create", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+  //check if request includes query param parentId
+  if (await reqQueryExists(req.query, "parentId")) {
+    //check if parentId exists
+    if (!(await parentIdExist(routerType, req.query.parentId, res))) {
+      return res.statusCode;
+    }
+    //read by parentId
+    return await readByParentId(routerType, req.query.parentId, res);
+  }
+
   //check if request includes query param id
   if (!(await reqQueryExists(req.query, "id"))) {
     //no id -> read all
