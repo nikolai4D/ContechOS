@@ -1,58 +1,66 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-const Record = require("./records/Record.js");
-
+const create = require("./apiFunctions/create.js");
+const readAll = require("./apiFunctions/readAll.js");
+const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
+const reqParamExists = require("./apiFunctions/reqParamExists.js");
+const readById = require("./apiFunctions/readById.js");
+const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
+const propKeysExists = require("./apiFunctions/propKeysExists.js");
+const propsExists = require("./apiFunctions/propsExists.js");
+const parentIdExist = require("./apiFunctions/parentIdExist.js");
+const isTarget = require("./apiFunctions/isTarget.js");
+const isParent = require("./apiFunctions/isParent.js");
+const idExist = require("./apiFunctions/idExist.js");
+const remove = require("./apiFunctions/remove.js");
 const routerType = "propKey";
-//Record instances
-const record = new Record(routerType);
-const propTypeRecord = new Record("propType");
 
-// Bodyparser
+//Bodyparser
 router.use(bodyParser.json());
 
 //APIs
-
 router.post("/create", async (req, res) => {
   const { title, parentId } = req.body;
-
-  if (!title || !parentId) {
-    return res.status(400).json("title and/or parentId missing");
-  }
-  const propTypeArray = await propTypeRecord.getAllId();
-  if (!propTypeArray.includes(parentId)) {
-    return res.status(400).json("parentId does not exist");
+  const reqBody = { title, parentId };
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
   }
 
-  try {
-    result = await record.create({ title, parentId });
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error });
+  //check if parentId exists
+  if (!(await parentIdExist(routerType, parentId, res))) {
+    return res.statusCode;
   }
+
+  //create
+  await create(routerType, reqBody, res);
 });
 
 router.get("/", async (req, res) => {
-  try {
-    result = await record.getAll();
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error });
+  //check if request includes query param id
+  if (!(await reqQueryExists(req.query, "id"))) {
+    //no id -> read all
+    return await readAll(routerType, res);
   }
+  //check if included id exists
+  if (!(await idExist(routerType, req.query.id, res))) {
+    return res.statusCode;
+  }
+  //read included id
+  await readById(routerType, req.query.id, res);
 });
 
-router.get("/:id", async (req, res) => {
-  let propKeyArray = await record.getAllId();
-  if (!propKeyArray.includes(req.params.id)) {
-    return res.status(400).json("propKeyId does not exist");
+router.delete("/:id", async (req, res) => {
+  if (!(await idExist(routerType, req.params.id, res))) {
+    return res.statusCode;
   }
 
-  try {
-    result = await record.getById(req.params.id);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error });
+  if (!(await isParent(routerType, req.params.id, res))) {
+    return res.statusCode;
   }
+
+  await remove(routerType, req.params.id, res);
 });
 
 module.exports = router;

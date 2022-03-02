@@ -1,60 +1,62 @@
 const express = require("express");
-const propVal = express.Router();
+const router = express.Router();
 const bodyParser = require("body-parser");
-const Record = require("./records/Record.js");
+const create = require("./apiFunctions/create.js");
+const readAll = require("./apiFunctions/readAll.js");
+const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
+const readById = require("./apiFunctions/readById.js");
+const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
+const parentIdExist = require("./apiFunctions/parentIdExist.js");
+const isParent = require("./apiFunctions/isParent.js");
+const idExist = require("./apiFunctions/idExist.js");
+const remove = require("./apiFunctions/remove.js");
+const routerType = "propVal";
 
-//API type
-const apiType = "propVal";
-
-//Record instances
-const propValRecord = new Record(apiType);
-const propKeyRecord = new Record("propKey");
-
-// Bodyparser
-propVal.use(bodyParser.json());
+//Bodyparser
+router.use(bodyParser.json());
 
 //APIs
-
-propVal.post("/create", async (req, res) => {
+router.post("/create", async (req, res) => {
   const { title, parentId } = req.body;
-
-  if (!title || !parentId) {
-    return res.status(400).json("title and/or parentId missing");
-  }
-  const propKeyArray = await propKeyRecord.getAllId();
-  if (!propKeyArray.includes(parentId)) {
-    return res.status(400).json("parentId does not exist");
+  const reqBody = { title, parentId };
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
   }
 
-  try {
-    result = await propValRecord.create({ title, parentId });
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error });
+  //check if parentId exists
+  if (!(await parentIdExist(routerType, parentId, res))) {
+    return res.statusCode;
   }
+
+  //create
+  await create(routerType, reqBody, res);
 });
 
-propVal.get("/", async (req, res) => {
-  try {
-    result = await propValRecord.getAll();
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error });
+router.get("/", async (req, res) => {
+  //check if request includes query param id
+  if (!(await reqQueryExists(req.query, "id"))) {
+    //no id -> read all
+    return await readAll(routerType, res);
   }
+  //check if included id exists
+  if (!(await idExist(routerType, req.query.id, res))) {
+    return res.statusCode;
+  }
+  //read included id
+  await readById(routerType, req.query.id, res);
 });
 
-propVal.get("/:id", async (req, res) => {
-  let propValArray = await propValRecord.getAllId();
-  if (!propValArray.includes(req.params.id)) {
-    return res.status(400).json("propValId does not exist");
+router.delete("/:id", async (req, res) => {
+  if (!(await idExist(routerType, req.params.id, res))) {
+    return res.statusCode;
   }
 
-  try {
-    result = await propValRecord.getById(req.params.id);
-    res.status(200).json(result);
-  } catch (error) {
-    res.status(500).json({ error });
+  if (!(await isParent(routerType, req.params.id, res))) {
+    return res.statusCode;
   }
+
+  await remove(routerType, req.params.id, res);
 });
 
-module.exports = propVal;
+module.exports = router;
