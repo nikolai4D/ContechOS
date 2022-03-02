@@ -4,6 +4,7 @@ async function checkPropsAndPropKeys(
   foundPropKeys,
   propKeysTitle
 ) {
+  const Record = require("../records/Record.js");
   if (
     routerType === "instanceData" ||
     routerType === "instanceDataExternalRel" ||
