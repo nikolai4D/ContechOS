@@ -72,9 +72,9 @@ router.post("/create", async (req, res) => {
     return res.statusCode;
   }
   //check that source and target is not equal
-  if (!(await isNotEqual(source, target, res))) {
-    return res.statusCode;
-  }
+  //   if (!(await isNotEqual(source, target, res))) {
+  //     return res.statusCode;
+  //   }
 
   //check if parentId exists
   if (!(await parentIdExist(routerType, parentId, res))) {
