@@ -120,6 +120,9 @@ async function Graph(view) {
 
           State.propKeys = []
 
+          d3.selectAll(".close-button").on("click", (e) => {
+            d3.selectAll(".FormMenuContainer").remove()
+          })
           d3.selectAll(".formCreateSubmit").on("click", async (e) => {
             await formCreateFunction(view, d, "rel", State.clickedObj, State.propKeys);
             await updateData(view);
@@ -148,7 +151,7 @@ async function Graph(view) {
       document.getElementById("field_target").classList.remove("is-invalid");
       document.getElementsByClassName("formCreateSubmit")[0].classList.remove("disabled");
 
-      if ((State.clickedObj.id === d.id) && (d.id === State.clickedObj.id)) {
+      if ((State.clickedObj.id === d.id) && (d.id === 'typeData' || d.id === 'instanceData')) {
         document.getElementById("field_target").value = "Cannot be self!";
         document.getElementById("field_target").classList.add("is-invalid");
         document.getElementById("field_props").innerHTML = "";
