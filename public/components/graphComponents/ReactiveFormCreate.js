@@ -132,7 +132,7 @@ const createDropdownKeyValue = (
 
         let parentConfigDefInternalRels = configRels.filter((rel) => {
             return (
-                rel.source === State.clickedObj.parentId && rel.target === State.clickedObj.parentId
+                rel.source === State.clickedObj.parentId && rel.target === State.targetObject.parentId
             );
         });
 
@@ -153,7 +153,7 @@ const createDropdownKeyValue = (
 
         let parentConfigDefExternalRels = configRels.filter((rel) => {
             return (
-                rel.source === State.clickedObj.parentId && rel.target !== State.clickedObj.parentId
+                rel.source === State.clickedObj.parentId && rel.target !== State.targetObject.parentId
             );
         });
 
