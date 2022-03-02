@@ -49,6 +49,57 @@ class Actions {
     }
   }
 
+  async DELETE(view, defType, id) {
+
+    try {
+      let response = await fetch(`/api/${defType}/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        }
+      });
+
+      if (response.status === 200) {
+        const recordsInView = JSON.parse(sessionStorage.getItem(view));
+
+        let type = "nodes";
+        if (defType.slice(-3) === "Rel") {
+          type = "rels";
+        }
+
+        else {
+          let newRecords = recordsInView[0].rels.filter(obj => obj.source !== id)
+          console.log(newRecords, 'rels')
+        }
+
+        let newRecords = recordsInView[0][type].filter(obj => obj.id !== id)
+
+        recordsInView[0][type] = newRecords;
+        console.log(id, newRecords, recordsInView, view, type)
+
+        sessionStorage.setItem(view, JSON.stringify(recordsInView));
+
+
+        // if (view === "props" && (defType === "propKey" || defType === "propVal")) {
+        //   let source = recordJson.id;
+        //   let target = await attrs.parentId;
+        //   let newRel = {
+        //     id: `${source}_${target}`,
+        //     source,
+        //     target,
+        //     title: "has parent",
+        //   };
+        //   recordsInView[0].rels.push(newRel);
+        // }
+
+      }
+    } catch (err) {
+      console.log('error!')
+      console.log(err);
+    }
+  }
+
   async GETALL(view) {
     try {
       let getHeaders = {

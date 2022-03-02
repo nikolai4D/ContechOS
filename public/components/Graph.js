@@ -19,6 +19,7 @@ import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from './graphComponents/ReactiveFormCreate.js';
 
 async function Graph(view) {
+  State.view = view;
   Actions.GETDEF();
 
   let nodes,
@@ -240,7 +241,20 @@ async function Graph(view) {
 
       ActivateContextMenu(d3)
       State.clickedObjEvent = event;
-      addDeleteButton(d3)
+
+      document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")
+      document.getElementById("delete-item").innerHTML = `- Delete (${State.clickedObj.title})`
+
+      d3.selectAll("#delete-item").on("click", async (e) => {
+        console.log(`Delete ${State.clickedObj.defTypeTitle}!`)
+        await Actions.DELETE(State.view, State.clickedObj.defTypeTitle, State.clickedObj.id)
+        await updateData(State.view);
+        await render(State.view);
+        d3.select(".contextMenuContainer").remove();
+
+      })
+
+
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
         State.contextMenuItem = d;
