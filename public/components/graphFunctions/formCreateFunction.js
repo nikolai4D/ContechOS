@@ -1,6 +1,7 @@
 import Actions from "../../store/Actions.js";
 import getDefType from "./getDefType.js";
-import { getFieldProperties, getDefTypeFromSessionStorage } from "../FormCreate.js";
+import getFieldProperties from './getFieldProperties.js';
+import { State } from '../../store/State.js';
 
 import { select } from "https://cdn.skypack.dev/d3@6";
 let definitions = "";
@@ -15,12 +16,15 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
   const defTypeId = parseInt(
     d.target.attributes.getNamedItem("data-deftypeid").value
   );
-  const defType = getDefType(defId, defTypeId);
+  let defType = getDefType(defId, defTypeId);
   const { fieldTypes, fieldProperties } = definitions.fields;
 
   let defTypeAttributes = defType.attributes;
   let formDataObj = {};
 
+  if (defId === 1) {
+    State.validDefTypeRels = null
+  }
 
   for (let attribute of defTypeAttributes) {
     //   // for attribute in attributes,  get the key and the value. If the value is "hidden", skip it all together.
@@ -32,29 +36,30 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
     let fieldType = fieldTypes.find(obj => obj.fieldTypeId === fieldTypeId).type;
 
     let fieldPropertiesOfAttribute = getFieldProperties(valueOfAttribute, fieldProperties)
-    if (fieldPropertiesOfAttribute.some(obj => obj.type === 'hidden')) {
-      if (defType.defTypeTitle === 'configObjInternalRel' && keyOfAttribute === 'parentId') {
+    if (fieldPropertiesOfAttribute.some(obj => obj.type === 'hidden') && defId === 2) {
+
+      if (State.validDefTypeRels[0] === 'configObjInternalRel' && keyOfAttribute === 'parentId') {
 
         formDataObj['parentId'] = formData[`field_configDefInternalRel`].value;
       }
-      else if (defType.defTypeTitle === 'configObjExternalRel' && keyOfAttribute === 'parentId') {
+      else if (State.validDefTypeRels[0] === 'configObjExternalRel' && keyOfAttribute === 'parentId') {
         formDataObj['parentId'] = formData[`field_configDefExternalRel`].value;
 
       }
-      else if (defType.defTypeTitle === 'typeDataInternalRel' && keyOfAttribute === 'parentId') {
+      else if (State.validDefTypeRels[0] === 'typeDataInternalRel' && keyOfAttribute === 'parentId') {
         formDataObj['parentId'] = formData[`field_configObjInternalRel`].value;
 
       }
-      else if (defType.defTypeTitle === 'typeDataExternalRel' && keyOfAttribute === 'parentId') {
+      else if (State.validDefTypeRels[0] === 'typeDataExternalRel' && keyOfAttribute === 'parentId') {
         formDataObj['parentId'] = formData[`field_configObjExternalRel`].value;
 
       }
-      else if (defType.defTypeTitle === 'instanceDataInternalRel' && keyOfAttribute === 'parentId') {
+      else if (State.validDefTypeRels[0] === 'instanceDataInternalRel' && keyOfAttribute === 'parentId') {
         formDataObj['parentId'] = formData[`field_typeDataInternalRel`].value;
 
       }
 
-      else if (defType.defTypeTitle === 'instanceDataExternalRel' && keyOfAttribute === 'parentId') {
+      else if (State.validDefTypeRels[0] === 'instanceDataExternalRel' && keyOfAttribute === 'parentId') {
         formDataObj['parentId'] = formData[`field_typeDataExternalRel`].value;
 
       }
@@ -69,7 +74,11 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
         formDataObj['parentId'] = formData[`field_parentId_typeData`].value;
 
       }
+      else if (keyOfAttribute === 'parentId' || keyOfAttribute === 'source') {
+        formDataObj['parentId'] = clickedObj.id;
+      }
       else {
+        console.log(keyOfAttribute)
         let formAttr = formData[`field_${keyOfAttribute}`];
 
         if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
@@ -81,7 +90,23 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
           )
         }
         else if (fieldType === 'dropDownKeyValue') {
-          if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel' || defType.defTypeTitle === 'typeData' || defType.defTypeTitle === 'typeDataInternalRel' || defType.defTypeTitle === 'typeDataExternalRel' || defType.defTypeTitle === 'instanceDataInternalRel' || defType.defTypeTitle === 'instanceDataExternalRel') {
+          if (State.validDefTypeRels !== null) {
+            if (State.validDefTypeRels[0] === 'configObjInternalRel' || State.validDefTypeRels[0] === 'configObjExternalRel' || defType.defTypeTitle === 'typeData' || State.validDefTypeRels[0] === 'typeDataInternalRel' || State.validDefTypeRels[0] === 'typeDataExternalRel' || State.validDefTypeRels[0] === 'instanceDataInternalRel' || State.validDefTypeRels[0] === 'instanceDataExternalRel') {
+
+              let props = propKeys.map(propKey => {
+                let theKey = propKey.id;
+                let theValue = formData[`field_${propKey.title}`].value;
+                return { [theKey]: theValue }
+              })
+              keyOfAttribute = "props"
+              attrValue = props
+            }
+
+
+          }
+
+
+          else if (defType.defTypeTitle === 'typeData') {
 
             let props = propKeys.map(propKey => {
               let theKey = propKey.id;
@@ -123,8 +148,9 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
 
             let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
             let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
-            let allKeyIdsByParent = clickedObj[`${titleOfKeyAttribute}s`]
+            let allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`]
 
+            console.log(propsNodes, titleOfKeyAttribute, allKeyIdsByParent, State)
             let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
             let propKeyList = allKeysByParent.filter(propKey => {
@@ -146,9 +172,11 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
   }
-  console.log(formDataObj)
-
-  await Actions.CREATE(view, defType.defTypeTitle, await formDataObj);
+  console.log(defId)
+  if (defId === 2) {
+    defType = { defTypeTitle: State.validDefTypeRels[0] }
+  }
+  await Actions.CREATE(view, defType, await formDataObj);
   select(".FormMenuContainer").remove();
 };
 

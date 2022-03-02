@@ -6,9 +6,17 @@ import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
 import selfArrow from "./graphComponents/selfArrow.js";
 import dropDown from "./DropDownField.js";
-
+import { State } from '../store/State.js';
 import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
+import ActivateContextMenu from './graphComponents/ActivateContextMenu.js';
+import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
+import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
+import getPropValForEveryPropKey from "./graphFunctions/getPropValForEveryPropKey.js";
+import addDeleteButton from './graphFunctions/addDeleteButton.js';
+import getPropKeysFromParentsParentIdTypeData from "./graphFunctions/getPropKeysFromParentsParentIdTypeData.js";
+import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
+import { ReactiveFormCreate } from './graphComponents/ReactiveFormCreate.js';
 
 async function Graph(view) {
   Actions.GETDEF();
@@ -101,68 +109,25 @@ async function Graph(view) {
 
     })
     .on("contextmenu", (d) => {
-      let clickedObj = d;
-
       if (d.target.tagName === "svg") {
-        d3.select(".FormMenuContainer").remove();
-        d3.select(".contextMenuContainer").remove();
-        event.preventDefault();
-        d3.select("#app")
-          .append("div")
-          .attr("class", "contextMenuContainer")
-          .html(ContextMenu(event, d))
-          .select(".contextMenu")
-          .style("top", d.clientY + "px")
-          .style("left", d.clientX + "px");
-        let clickEvent = event;
-        let x_cord = d.clientX;
-        let y_cord = d.clientY;
+        State.clickedObj = d;
+        ActivateContextMenu(d3)
+        State.clickedObjEvent = event;
 
-        d3.selectAll(".context_menu_item").on("click", async (d) => {
-          d3.select(".contextMenuContainer").remove();
-          d3.select(".FormMenuContainer").remove();
+        d3.selectAll(".context_menu_item").on("click", (d) => {
+          State.contextMenuItem = d;
+          ActivateFormMenu(d3);
 
-          d3.select("#root")
-            .append("div")
-            .attr("class", "FormMenuContainer")
-            .html(await FormCreate(clickEvent, d, clickedObj))
-            .select(".formCreate")
-            .style("top", y_cord + "px")
-            .style("left", x_cord + "px");
-
-
-          // stop watching
-          // d3.selectAll("#field_target").on()
-          let propKeys = []
+          State.propKeys = []
 
           d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-            await formCreateFunction(view, d, "rel", clickedObj, propKeys);
-
+            await formCreateFunction(view, d, "rel", State.clickedObj, State.propKeys);
             await updateData(view);
             await render(view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
-            const parentId = document.getElementById("field_parentId_typeData").value;
-            let dropDownHtmlString = ''
-            let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
-            let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-            let parentConfigObject = configNodes.find(node => { return node.id === parentId })
-
-            parentConfigObject.typeDataPropKeys.forEach(propKey => {
-              let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-              let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-              if (filtered.length > 0) {
-                propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-              }
-            })
-
-            document.getElementById('field_filteredProps_typeData').innerHTML = ""
-            document.getElementById('field_filteredProps_typeData').innerHTML = dropDownHtmlString
-
+            generatePropKeysFromParentIdTypeData('typeData', 'nodes');
           });
 
         });
@@ -173,218 +138,82 @@ async function Graph(view) {
   const g = firstG.append("g").attr("class", "secondG");
 
   endArrow(g);
-
   startArrow(g);
-
   selfArrow(g);
 
   const clicked = (event, d) => {
-    if (document.getElementById("field_target")) { document.getElementById("field_target").value = d.id }
+    console.log(d);
+
+    if (document.getElementById("field_target")) {
+
+      if (State.clickedObj.defTypeTitle === d.defTypeTitle) {
+        document.getElementById("field_target").value = d.id;
+        document.getElementById("field_target").setAttribute("data-parentId", d.parentId)
+
+        // decide on which relationship to use
+        State['targetObject'] = d;
+        console.log(State.clickedObj, State.targetObject)
+
+        if (State.clickedObj.defTypeTitle === "configDef") {
+          if (State.clickedObj.id === State.targetObject.id) {
+            State['validDefTypeRels'] = ["configDefInternalRel"]
+          }
+          else {
+            State['validDefTypeRels'] = ["configDefExternalRel"]
+          }
+        } if (State.clickedObj.defTypeTitle === "configObj") {
+          if (State.clickedObj.parentId === State.targetObject.parentId) {
+            State['validDefTypeRels'] = ["configObjInternalRel"]
+          }
+          else {
+            State['validDefTypeRels'] = ["configObjExternalRel"]
+          }
+        } if (State.clickedObj.defTypeTitle === "typeData") {
+          if (State.clickedObj.parentId === State.targetObject.parentId) {
+            // check parents, what their relationship are. If there aren't any, reject the try. 
+            let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+            State['validDefTypeRels'] = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          }
+        } if (State.clickedObj.defTypeTitle === "instanceData") {
+          if (State.clickedObj.parentId === State.targetObject.parentId) {
+            // check parents, what their relationship are. If there aren't any, reject the try. 
+            let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
+            State['validDefTypeRels'] = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          }
+        }
+        console.log(State.validDefTypeRels)
+        ReactiveFormCreate()
+      }
+      else {
+        State.validDefTypeRels = []
+      }
+    }
+
   };
 
   const rightClicked = (event, d) => {
     event.preventDefault();
-    let clickedObj = d;
+    d.clientX = event.clientX
+    d.clientY = event.clientY
+    State.clickedObj = d;
+
     if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel' || event.target.className.baseVal === 'linkLabel' || event.target.className.baseVal === 'linkSVG') {
 
-      d3.select(".FormMenuContainer").remove();
-      d3.select(".contextMenuContainer").remove();
-      event.preventDefault();
-      d3.select("#app")
-        .append("div")
-        .attr("class", "contextMenuContainer")
-        .html(ContextMenu(event, d))
-        .select(".contextMenu")
-        .style("top", event.clientY + "px")
-        .style("left", event.clientX + "px");
-      let clickEvent = event;
-      let x_cord = event.clientX;
-      let y_cord = event.clientY
-
-      document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")
-      document.getElementById("delete-item").innerHTML = `- Delete (${d.title})`
-
-
-      d3.selectAll("#delete-item").on("click", async (d) => {
-        console.log(`Delete ${clickedObj.defTypeTitle}!`)
-      })
+      ActivateContextMenu(d3)
+      State.clickedObjEvent = event;
+      addDeleteButton(d3)
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
-        d3.select(".contextMenuContainer").remove();
-        d3.select(".FormMenuContainer").remove();
+        State.contextMenuItem = d;
+        ActivateFormMenu(d3)
 
-        d3.select("#root")
-          .append("div")
-          .attr("class", "FormMenuContainer")
-          .html(await FormCreate(clickEvent, d, clickedObj))
-          .select(".formCreate")
-          .style("top", y_cord + "px")
-          .style("left", x_cord + "px");
-
-        let propKeys = [];
+        State.propKeys = [];
         d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-          await formCreateFunction(view, d, "rel", clickedObj, propKeys);
+          await formCreateFunction(view, State.contextMenuItem, "rel", State.clickedObj, State.propKeys);
           await updateData(view);
           await render(view);
         });
-
-        d3.selectAll(".field_configDefInternalRel").on("change", async (e) => {
-          const propsParentId = document.getElementById("field_configDefInternalRel").value;
-          let dropDownHtmlString = ''
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-          let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
-
-
-          parentConfigDefInternalRels.propKeys.forEach(propKey => {
-            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            if (filtered.length > 0) {
-              propKeys.push({ "title": propKeyObj.title, "id": propKey })
-              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            }
-          })
-
-          document.getElementById('field_filteredProps').innerHTML = ""
-          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
-        });
-
-        d3.selectAll(".field_configObjInternalRel").on("change", async (e) => {
-          const propsParentId = document.getElementById("field_configObjInternalRel").value;
-          let dropDownHtmlString = ''
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-          let parentConfigDefInternalRels = configRels.find(rel => { return rel.id === propsParentId })
-
-          parentConfigDefInternalRels.typeDataRelPropKeys.forEach(propKey => {
-            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            if (filtered.length > 0) {
-              propKeys.push({ "title": propKeyObj.title, "id": propKey })
-              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            }
-          })
-
-          document.getElementById('field_filteredProps').innerHTML = ""
-          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
-        });
-
-        d3.selectAll(".field_typeDataInternalRel").on("change", async (e) => {
-          const propsParentId = document.getElementById("field_typeDataInternalRel").value;
-
-          let dropDownHtmlString = ''
-          let datasRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-
-          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-          let parentDatasRels = datasRels.find(rel => { return rel.id === propsParentId }).parentId
-
-          let getParentsParent = configRels.find(node => node.id === parentDatasRels)
-
-
-
-          getParentsParent.instanceDataRelPropKeys.forEach(propKey => {
-            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-
-            if (filtered.length > 0) {
-              propKeys.push({ "title": propKeyObj.title, "id": propKey })
-              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            }
-          })
-          document.getElementById('field_filteredProps').innerHTML = ""
-          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
-        });
-
-        d3.selectAll(".field_typeDataExternalRel").on("change", async (e) => {
-          const propsParentId = document.getElementById("field_typeDataExternalRel").value;
-
-          let dropDownHtmlString = ''
-          let datasRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-
-          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-          let parentDatasRels = datasRels.find(rel => { return rel.id === propsParentId }).parentId
-
-          let getParentsParent = configRels.find(node => node.id === parentDatasRels)
-
-          getParentsParent.instanceDataRelPropKeys.forEach(propKey => {
-            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-
-            if (filtered.length > 0) {
-              propKeys.push({ "title": propKeyObj.title, "id": propKey })
-              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            }
-          })
-
-          document.getElementById('field_filteredProps').innerHTML = ""
-          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
-        });
-
-
-
-        d3.selectAll(".field_configObjExternalRel").on("change", async (e) => {
-          const propsParentId = document.getElementById("field_configObjExternalRel").value;
-
-          let dropDownHtmlString = ''
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-          let parentConfigObjExternalRels = configRels.find(rel => { return rel.id === propsParentId })
-
-          parentConfigObjExternalRels.typeDataRelPropKeys.forEach(propKey => {
-            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-
-            if (filtered.length > 0) {
-              propKeys.push({ "title": propKeyObj.title, "id": propKey })
-              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            }
-          })
-
-          document.getElementById('field_filteredProps').innerHTML = ""
-          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
-        });
-
-
-        d3.selectAll(".field_configDefExternalRel").on("change", async (e) => {
-          const propsParentId = document.getElementById("field_configDefExternalRel").value;
-          let dropDownHtmlString = ''
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-          let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
-
-          let parentConfigDefExternalRels = configRels.find(rel => { return rel.id === propsParentId })
-
-
-          parentConfigDefExternalRels.propKeys.forEach(propKey => {
-            let filtered = getPropsForParentId.filter(node => node.parentId === propKey)
-
-            let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
-            if (filtered.length > 0) {
-              propKeys.push({ "title": propKeyObj.title, "id": propKey })
-              dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
-            }
-          })
-
-          document.getElementById('field_filteredProps').innerHTML = ""
-          document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
-        });
+        contextMenuItemClick(d3)
       });
     }
   };
@@ -502,6 +331,7 @@ async function Graph(view) {
       .on("contextmenu", rightClicked);
 
     function setColour(d) {
+
       if (d.defTypeTitle === 'propType') {
         return '#89A7B0'
       }

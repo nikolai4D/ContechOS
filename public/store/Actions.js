@@ -4,7 +4,10 @@ import Mutations from "./Mutations.js";
 class Actions {
   constructor() { }
 
-  async CREATE(view, defTypeTitle, attrs) {
+  async CREATE(view, defType, attrs) {
+
+    let defTypeTitle = defType.defTypeTitle;
+
     try {
       const record = await fetch(`/api/${defTypeTitle}/create`, {
         method: "POST",
@@ -15,20 +18,20 @@ class Actions {
         body: JSON.stringify(await attrs),
       });
       const recordJson = await record.json();
-      recordJson.defTypeTitle = defTypeTitle;
+      recordJson.defTypeTitle = defType.defTypeTitle;
       delete recordJson.created;
       delete recordJson.updated;
 
       const recordsInView = JSON.parse(sessionStorage.getItem(view));
 
       let type = "nodes";
-      if (defTypeTitle.slice(-3) === "Rel") {
+      if (defType.defTypeTitle.slice(-3) === "Rel") {
         type = "rels";
       }
 
       recordsInView[0][type].push(recordJson);
 
-      if (view === "props" && (defTypeTitle === "propKey" || defTypeTitle === "propVal")) {
+      if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
         let source = recordJson.id;
         let target = await attrs.parentId;
         let newRel = {
