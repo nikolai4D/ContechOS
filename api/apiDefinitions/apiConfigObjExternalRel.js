@@ -59,7 +59,7 @@ router.post("/create", async (req, res) => {
   }
 
   //check if props exists
-  if (!(await propsExists(props, res))) {
+  if (!(await propsExists(parentId, routerType, props, res))) {
     return res.statusCode;
   }
 

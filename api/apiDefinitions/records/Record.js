@@ -407,6 +407,32 @@ class Record {
     return { sourceParentId, targetParentId, parentSource, parentTarget };
   }
 
+  getParent(parentId) {
+    let parentIds = {};
+    apiDefsAll.forEach((obj) => {
+      if (obj.defTypeTitle === this.defType) {
+        obj.attributes.forEach((el) => {
+          if (Object.keys(el).includes("parentId")) {
+            parentIds.defId = el.parentId.defId;
+            parentIds.defTypeId = el.parentId.defTypeId;
+          }
+        });
+      }
+    });
+    //targetParentId
+    const parentTitle = apiDefsAll.find(
+      (obj) =>
+        obj.defId === parentIds.defId && obj.defTypeId === parentIds.defTypeId
+    ).defTypeTitle;
+
+    let readParent = JSON.parse(
+      fs.readFileSync(`../db/${parentTitle}/${parentId}.json`, "utf8")
+    );
+    readParent.id = parentId;
+
+    return readParent;
+  }
+
   //UPDATE
 
   //DELETE
