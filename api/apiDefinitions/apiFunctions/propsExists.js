@@ -10,11 +10,27 @@ async function checkPropsAndPropKeys(
     routerType === "instanceDataExternalRel" ||
     routerType === "instanceDataInternalRel"
   ) {
-    const parentRouterTypeRecord = new Record(routerType);
-    let foundParentParentIdofProps = (
-      await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-    ).parentId;
-    foundParentIdofProps = foundParentParentIdofProps;
+    if (routerType === "instanceData") {
+      const parentRouterTypeRecord = new Record("typeData");
+      let foundParentParentIdofProps = (
+        await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
+      ).parentId;
+      foundParentIdofProps = foundParentParentIdofProps;
+    }
+    if (routerType === "instanceDataExternalRel") {
+      const parentRouterTypeRecord = new Record("typeDataExternalRel");
+      let foundParentParentIdofProps = (
+        await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
+      ).parentId;
+      foundParentIdofProps = foundParentParentIdofProps;
+    }
+    if (routerType === "instanceDataInternalRel") {
+      const parentRouterTypeRecord = new Record("typeDataInternalRel");
+      let foundParentParentIdofProps = (
+        await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
+      ).parentId;
+      foundParentIdofProps = foundParentParentIdofProps;
+    }
   }
 
   const propsFound = foundParentIdofProps[propKeysTitle];
