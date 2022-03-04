@@ -78,7 +78,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
         formDataObj['parentId'] = clickedObj.id;
       }
       else {
-        console.log(keyOfAttribute)
         let formAttr = formData[`field_${keyOfAttribute}`];
 
         if (keyOfAttribute === 'target') {
@@ -155,7 +154,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
             let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
             let allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`]
 
-            console.log(propsNodes, titleOfKeyAttribute, allKeyIdsByParent, State)
             let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
             let propKeyList = allKeysByParent.filter(propKey => {
@@ -177,7 +175,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
   }
-  console.log(formDataObj)
   if (defId === 2) {
     defType = { defTypeTitle: State.validDefTypeRels[0] }
   }

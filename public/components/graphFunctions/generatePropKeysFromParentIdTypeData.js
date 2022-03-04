@@ -2,7 +2,6 @@ import getPropValForEveryPropKey from "./getPropValForEveryPropKey.js";
 
 export default function (defType, type) {
 
-    console.log(defType, type)
     const parentId = document.getElementById(`field_parentId_${defType}`).value;
     let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0][type];
     let getPropsForParentId = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;

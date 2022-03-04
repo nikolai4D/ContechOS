@@ -202,7 +202,6 @@ async function Graph(view) {
         if (State.clickedObj.defTypeTitle === "instanceData") {
           // check parents, what their relationship are. If there aren't any, reject the try. 
           let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
-          console.log(configRels)
           let rel = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
           if (rel.length > 0) {
             rel = rel[0].defTypeTitle;
@@ -216,7 +215,6 @@ async function Graph(view) {
           else {
             State.validDefTypeRels = []
           }
-          console.log(State.validDefTypeRels)
         }
         ReactiveFormCreate()
         State.propKeys = [];
@@ -245,15 +243,12 @@ async function Graph(view) {
       document.getElementById("delete-item").innerHTML = `- Delete (${State.clickedObj.title})`
 
       d3.selectAll("#delete-item").on("click", async (e) => {
-        console.log(`Delete ${State.clickedObj.defTypeTitle}!`)
         await Actions.DELETE(State.view, State.clickedObj.defTypeTitle, State.clickedObj.id)
         await updateData(State.view);
         await render(State.view);
         d3.select(".contextMenuContainer").remove();
 
       })
-
-
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
         State.contextMenuItem = d;

@@ -7,7 +7,6 @@ import getPropKeysFromParentsParentIdTypeData from './getPropKeysFromParentsPare
 export default function (d3) {
 
     d3.selectAll(".field_configDefInternalRel").on("change", async () => {
-        console.log('hello')
         const propsParentId = document.getElementById("field_configDefInternalRel").value;
         let dropDownHtmlString = ''
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
@@ -58,7 +57,6 @@ export default function (d3) {
     });
 
     d3.selectAll(".field_configObjInternalRel").on("change", async () => {
-        console.log('hello')
         const propsParentId = document.getElementById("field_configObjInternalRel").value;
         let dropDownHtmlString = ''
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
@@ -137,8 +135,6 @@ export default function (d3) {
     });
 
     d3.selectAll(".field_typeDataExternalRel").on("change", async () => {
-        console.log('hello')
-
         const propsParentId = document.getElementById("field_typeDataExternalRel").value;
 
         let dropDownHtmlString = ''

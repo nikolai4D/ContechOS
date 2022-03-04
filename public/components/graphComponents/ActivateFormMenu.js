@@ -4,7 +4,6 @@ import { FormCreate } from '../FormCreate.js';
 export default function (d3) {
     d3.select(".contextMenuContainer").remove();
     d3.select(".FormMenuContainer").remove();
-    console.log(State.contextMenuItem)
 
     return d3.select("#root")
         .append("div")

@@ -7,7 +7,6 @@ import getDefType from "../graphFunctions/getDefType.js";
 
 export function ReactiveFormCreate() {
     let fieldsArray = [];
-    console.log(State)
     let defType = State.definitions.defs[1].defTypes.find(obj => State.validDefTypeRels.includes(obj.defTypeTitle))
 
     if (defType === undefined) {
