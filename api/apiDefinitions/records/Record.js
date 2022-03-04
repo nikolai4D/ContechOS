@@ -293,6 +293,40 @@ class Record {
     return foundTargets;
   }
 
+  ifIsSourceThenDeleteRels(id) {
+    const deletedRels = [];
+
+    //all defTypes Ids
+    const dirExternalRel = `../db/${this.defType}ExternalRel/`;
+    const dirInternalRel = `../db/${this.defType}InternalRel/`;
+    const externalFiles = fs.readdirSync(dirExternalRel);
+    const internalFiles = fs.readdirSync(dirInternalRel);
+
+    externalFiles.forEach(function (file) {
+      let externalFile = JSON.parse(
+        fs.readFileSync(dirExternalRel + file, "utf8")
+      );
+
+      if (externalFile.source === id) {
+        deletedRels.push(externalFile.id);
+        fs.unlinkSync(dirExternalRel + file);
+      }
+    });
+
+    internalFiles.forEach(function (file) {
+      let internalFile = JSON.parse(
+        fs.readFileSync(dirInternalRel + file, "utf8")
+      );
+
+      if (internalFile.source === id) {
+        deletedRels.push(internalFile.id);
+        fs.unlinkSync(dirInternalRel + file);
+      }
+    });
+
+    return deletedRels;
+  }
+
   isParent(id) {
     let foundChildren = [];
     let parents = [];

@@ -11,7 +11,7 @@ export default class Login {
                     <div class="col">
                     </div>
                     <div class="col">
-                        <i class="fas fa-user-astronaut justify-content-center" style="display: flex; text-align:center; font-size:30px; color:#0b5ed7; margin-top:50px; margin-bottom:50px"></i>
+                        <i class="bi bi-stars justify-content-center" style="display: flex; text-align:center; font-size:30px; color:#0b5ed7; margin-top:50px; margin-bottom:50px"></i>
                         <form id="login-form" >
                             <div class="mb-3  justify-content-center" style="display: flex;">
                                 <input type="text" class="form-control" name="email" aria-describedby="emailHelp" placeholder="email" style="width: 300px;">

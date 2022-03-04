@@ -12,6 +12,7 @@ const propKeysExists = require("./apiFunctions/propKeysExists.js");
 const propsExists = require("./apiFunctions/propsExists.js");
 const parentIdExist = require("./apiFunctions/parentIdExist.js");
 const isTarget = require("./apiFunctions/isTarget.js");
+const ifIsSourceThenDeleteRels = require("./apiFunctions/ifIsSourceThenDeleteRels.js");
 const isParent = require("./apiFunctions/isParent.js");
 const idExist = require("./apiFunctions/idExist.js");
 const remove = require("./apiFunctions/remove.js");
@@ -78,6 +79,10 @@ router.delete("/:id", async (req, res) => {
 
   if (!(await isParent(routerType, req.params.id, res))) {
     return res.statusCode;
+  }
+
+  if (await ifIsSourceThenDeleteRels(routerType, req.params.id, res)) {
+    console.log("deleted related rels");
   }
 
   await remove(routerType, req.params.id, res);
