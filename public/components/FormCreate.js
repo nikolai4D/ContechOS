@@ -72,7 +72,7 @@ export function FormCreate() {
 
   const template = `
   <div class="formCreate position-absolute">
-        <div><h5>+ ${defType.defTypeDisplayTitle}</h5></div>
+        <div><h5>+ ${defType.defTypeDisplayTitle.replace('Internal ', '').replace('External ', '')}</h5></div>
         <div class="card">
         <div class="card-body">
            <form id="formCreate" >
