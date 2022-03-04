@@ -81,7 +81,12 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
         console.log(keyOfAttribute)
         let formAttr = formData[`field_${keyOfAttribute}`];
 
-        if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
+        if (keyOfAttribute === 'target') {
+          attrValue = formAttr.getAttribute('data-id');
+
+        }
+
+        else if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
           attrValue = formAttr.value;
         }
         else if (fieldType === 'dropDownMultiple') {
@@ -172,7 +177,7 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
   }
-  console.log(defId)
+  console.log(formDataObj)
   if (defId === 2) {
     defType = { defTypeTitle: State.validDefTypeRels[0] }
   }

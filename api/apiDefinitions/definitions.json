@@ -41,7 +41,7 @@
           "abbr": "pt",
           "attributes": [
             {
-              "title": { "fieldTypeId": 1 }
+              "title": { "fieldTypeId": 1, "displayTitle": "Title" }
             }
           ],
           "contextMenu": [{ "defId": 1, "defTypeId": 2 }]
@@ -52,14 +52,15 @@
           "defTypeDisplayTitle": "Property Key",
           "abbr": "pk",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "parentId": {
                 "defId": 1,
                 "defTypeId": 1,
                 "returnValue": "id",
                 "fieldTypeId": 7,
-                "fieldProperties": [1, 2]
+                "fieldProperties": [1, 2],
+                "displayTitle": "Parent"
               }
             }
           ],
@@ -71,14 +72,15 @@
           "defTypeDisplayTitle": "Property Value",
           "abbr": "pv",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "parentId": {
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
                 "fieldTypeId": 7,
-                "fieldProperties": [1, 2]
+                "fieldProperties": [1, 2],
+                "displayTitle": "Parent"
               }
             }
           ],
@@ -90,13 +92,14 @@
           "defTypeDisplayTitle": "Definition",
           "abbr": "cd",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "propKeys": {
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Object Properties"
               }
             }
           ],
@@ -112,14 +115,15 @@
           "defTypeDisplayTitle": "Object",
           "abbr": "co",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "parentId": {
                 "defId": 1,
                 "defTypeId": 4,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [1, 2]
+                "fieldProperties": [1, 2],
+                "displayTitle": "Parent"
               }
             },
             {
@@ -138,13 +142,13 @@
                 "fieldTypeId": 4
               }
             },
-
             {
               "typeDataPropKeys": {
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Type Properties"
               }
             },
             {
@@ -152,7 +156,8 @@
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Instance Properties"
               }
             }
           ],
@@ -167,14 +172,15 @@
           "defTypeDisplayTitle": "Type",
           "abbr": "td",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
 
             {
               "parentId": {
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
-                "fieldTypeId": 2
+                "fieldTypeId": 2,
+                "displayTitle": "Parent"
               }
             },
             {
@@ -210,7 +216,8 @@
                 "defId": 1,
                 "defTypeId": 6,
                 "returnValue": "title",
-                "fieldTypeId": 1
+                "fieldTypeId": 1,
+                "displayTitle": "Title"
               }
             },
             {
@@ -234,7 +241,8 @@
                 "defTypeId": 6,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Parent"
               }
             }
           ],
@@ -253,17 +261,18 @@
         {
           "defTypeId": 1,
           "defTypeTitle": "configDefInternalRel",
-          "defTypeDisplayTitle": "Definition Internal Relationship",
+          "defTypeDisplayTitle": "Definition Internal Link",
           "abbr": "cdir",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 4,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -271,7 +280,8 @@
                 "defId": 1,
                 "defTypeId": 4,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -280,7 +290,8 @@
                 "defTypeId": 2,
                 "returnValue": "id",
                 "fieldTypeId": 3,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Object Properties"
               }
             }
           ],
@@ -289,17 +300,18 @@
         {
           "defTypeId": 2,
           "defTypeTitle": "configDefExternalRel",
-          "defTypeDisplayTitle": "Definition External Relationship",
+          "defTypeDisplayTitle": "Definition External Link",
           "abbr": "cder",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 4,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -307,7 +319,8 @@
                 "defId": 1,
                 "defTypeId": 4,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -316,7 +329,8 @@
                 "defTypeId": 2,
                 "returnValue": "id",
                 "fieldTypeId": 3,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Object Properties"
               }
             }
           ],
@@ -325,17 +339,18 @@
         {
           "defTypeId": 3,
           "defTypeTitle": "configObjInternalRel",
-          "defTypeDisplayTitle": "Object Internal Relationship",
+          "defTypeDisplayTitle": "Object Internal Link",
           "abbr": "coir",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -343,7 +358,8 @@
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -369,7 +385,8 @@
                 "defTypeId": 1,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2, 3]
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
               }
             },
             {
@@ -377,7 +394,8 @@
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Type Link Properties"
               }
             },
             {
@@ -385,7 +403,8 @@
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Instance Link Properties"
               }
             }
           ],
@@ -394,17 +413,18 @@
         {
           "defTypeId": 4,
           "defTypeTitle": "configObjExternalRel",
-          "defTypeDisplayTitle": "Object External Relationship",
+          "defTypeDisplayTitle": "Object External Link",
           "abbr": "coer",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -412,7 +432,8 @@
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -438,7 +459,8 @@
                 "defTypeId": 2,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2, 3]
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
               }
             },
             {
@@ -446,7 +468,8 @@
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Type Link Properties"
               }
             },
             {
@@ -454,7 +477,8 @@
                 "defId": 1,
                 "defTypeId": 2,
                 "returnValue": "id",
-                "fieldTypeId": 3
+                "fieldTypeId": 3,
+                "displayTitle": "Instance Link Properties"
               }
             }
           ],
@@ -463,17 +487,18 @@
         {
           "defTypeId": 5,
           "defTypeTitle": "typeDataExternalRel",
-          "defTypeDisplayTitle": "Type External Relationship",
+          "defTypeDisplayTitle": "Type External Link",
           "abbr": "tder",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 6,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -481,7 +506,8 @@
                 "defId": 1,
                 "defTypeId": 6,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -506,7 +532,8 @@
                 "defTypeId": 4,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2, 3]
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
               }
             }
           ],
@@ -515,17 +542,18 @@
         {
           "defTypeId": 6,
           "defTypeTitle": "typeDataInternalRel",
-          "defTypeDisplayTitle": "Type Internal Relationship",
+          "defTypeDisplayTitle": "Type Internal Link",
           "abbr": "tdir",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 6,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -533,7 +561,8 @@
                 "defId": 1,
                 "defTypeId": 6,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -559,7 +588,8 @@
                 "defTypeId": 3,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2, 3]
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
               }
             }
           ],
@@ -568,17 +598,18 @@
         {
           "defTypeId": 7,
           "defTypeTitle": "instanceDataInternalRel",
-          "defTypeDisplayTitle": "Instance Internal Relationship",
+          "defTypeDisplayTitle": "Instance Internal Link",
           "abbr": "idir",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 7,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -586,7 +617,8 @@
                 "defId": 1,
                 "defTypeId": 7,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -612,7 +644,8 @@
                 "defTypeId": 6,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2, 3]
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
               }
             }
           ],
@@ -621,17 +654,18 @@
         {
           "defTypeId": 8,
           "defTypeTitle": "instanceDataExternalRel",
-          "defTypeDisplayTitle": "Instance External Relationship",
+          "defTypeDisplayTitle": "Instance External Link",
           "abbr": "ider",
           "attributes": [
-            { "title": { "fieldTypeId": 1 } },
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
             {
               "source": {
                 "defId": 1,
                 "defTypeId": 7,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2]
+                "fieldProperties": [2],
+                "displayTitle": "Source"
               }
             },
             {
@@ -639,7 +673,8 @@
                 "defId": 1,
                 "defTypeId": 7,
                 "returnValue": "id",
-                "fieldTypeId": 6
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
               }
             },
             {
@@ -665,7 +700,8 @@
                 "defTypeId": 5,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [2, 3]
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
               }
             }
           ],

@@ -160,8 +160,9 @@ async function Graph(view) {
 
       }
       else if ((State.clickedObj.defTypeTitle === d.defTypeTitle)) {
-        document.getElementById("field_target").value = d.id;
+        document.getElementById("field_target").value = d.title;
         document.getElementById("field_target").setAttribute("data-parentId", d.parentId)
+        document.getElementById("field_target").setAttribute("data-id", d.id)
 
         // decide on which relationship to use
         State['targetObject'] = d;
@@ -182,7 +183,6 @@ async function Graph(view) {
         } if (State.clickedObj.defTypeTitle === "typeData") {
           // check parents, what their relationship are. If there aren't any, reject the try. 
           let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-          console.log(configRels)
           let rel = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
           if (rel.length > 0) {
             rel = rel[0].defTypeTitle;
@@ -196,7 +196,6 @@ async function Graph(view) {
           else {
             State.validDefTypeRels = []
           }
-          console.log(State.validDefTypeRels)
         }
 
 

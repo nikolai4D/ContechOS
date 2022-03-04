@@ -23,7 +23,7 @@ export default function (d3) {
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
             if (filtered.length > 0) {
                 propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+                dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })
 
@@ -49,7 +49,7 @@ export default function (d3) {
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
             if (filtered.length > 0) {
                 State.propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+                dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })
 
@@ -73,7 +73,7 @@ export default function (d3) {
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
             if (filtered.length > 0) {
                 State.propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+                dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })
 
@@ -98,7 +98,7 @@ export default function (d3) {
 
             if (filtered.length > 0) {
                 State.propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+                dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })
 
@@ -129,7 +129,7 @@ export default function (d3) {
 
             if (filtered.length > 0) {
                 State.propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+                dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })
         document.getElementById('field_filteredProps').innerHTML = ""
@@ -159,7 +159,7 @@ export default function (d3) {
 
             if (filtered.length > 0) {
                 State.propKeys.push({ "title": propKeyObj.title, "id": propKey })
-                dropDownHtmlString += dropDown(propKeyObj.title, filtered, null, propKey.id);
+                dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })
 

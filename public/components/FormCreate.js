@@ -19,6 +19,7 @@ export function FormCreate() {
   let defTypeAttributes = defType.attributes;
 
   for (let attribute of defTypeAttributes) {
+    let displayTitle = (Object.values(attribute)[0].displayTitle) ? Object.values(attribute)[0].displayTitle : Object.keys(attribute)[0];
     let keyOfAttribute = Object.keys(attribute)[0];
     let valueOfAttribute = Object.values(attribute)[0];
     let fieldTypeId = valueOfAttribute.fieldTypeId;
@@ -41,16 +42,17 @@ export function FormCreate() {
     }
 
     if (fieldType === "input") {
-      createInput(fieldsArray, keyOfAttribute, defType, State.clickedObj);
+      createInput(displayTitle, fieldsArray, keyOfAttribute, defType, State.clickedObj);
     } else if (fieldType === "dropDown") {
       const { defId, defTypeId } = valueOfAttribute;
-      createDropdown(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId));
+      createDropdown(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId), displayTitle);
     } else if (fieldType === "dropDownMultiple") {
       const { defId, defTypeId } = valueOfAttribute;
       createDropdownMultiple(
         fieldsArray,
         keyOfAttribute,
-        getDefType(defId, defTypeId)
+        getDefType(defId, defTypeId),
+        displayTitle
       );
     } else if (fieldType === "dropDownKeyValue") {
       createDropdownKeyValue(
@@ -61,7 +63,7 @@ export function FormCreate() {
       );
     } else if (fieldType === "externalNodeClick") {
       let htmlString = `<div style="display: flex; padding: 0.5em">
-    <label class="form-label" for="field_${keyOfAttribute}">${keyOfAttribute}:</label>
+    <label class="form-label" for="field_${keyOfAttribute}">${displayTitle}:</label>
     <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
 </div>`;
       fieldsArray.push(htmlString);
@@ -86,20 +88,21 @@ export function FormCreate() {
   return template;
 }
 
-const createInput = (fieldsArray, keyOfAttr, defType) => {
+const createInput = (displayTitle, fieldsArray, keyOfAttr, defType) => {
   if (defType.defTypeTitle === "instanceData") {
-    fieldsArray.push(inputField(keyOfAttr, State.clickedObj.title, "disabled"));
+    fieldsArray.push(inputField(displayTitle, keyOfAttr, State.clickedObj.title, "disabled"));
   } else {
-    fieldsArray.push(inputField(keyOfAttr));
+    fieldsArray.push(inputField(displayTitle, keyOfAttr));
   }
 };
 
-const createDropdown = (fieldsArray, keyOfAttribute, defType) => {
+const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
   let allNodesByDefType = getDefTypeFromSessionStorage(defType);
 
   let dropDownString = "";
   if (defType.defTypeTitle === "configObj") {
     dropDownString = dropDown(
+      displayTitle,
       keyOfAttribute,
       allNodesByDefType,
       null,
@@ -107,7 +110,7 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType) => {
       "_typeData"
     );
   } else {
-    dropDownString = dropDown(keyOfAttribute, allNodesByDefType);
+    dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType);
   }
   fieldsArray.push(dropDownString);
   fieldsArray.push(
@@ -115,9 +118,9 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType) => {
   );
 };
 
-const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType) => {
+const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
   let allNodesByDefType = getDefTypeFromSessionStorage(defType);
-  let dropDownString = dropDown(keyOfAttribute, allNodesByDefType, "multiple");
+  let dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType, "multiple");
   fieldsArray.push(dropDownString);
 };
 
@@ -141,6 +144,7 @@ const createDropdownKeyValue = (
 
     let dropDownString = dropDown(
       "configDefInternalRel",
+      "configDefInternalRel",
       parentConfigDefInternalRels
     );
     fieldsArray.push(dropDownString);
@@ -157,6 +161,7 @@ const createDropdownKeyValue = (
     });
 
     let dropDownString = dropDown(
+      "configDefExternalRel",
       "configDefExternalRel",
       parentConfigDefExternalRels
     );
@@ -179,6 +184,7 @@ const createDropdownKeyValue = (
 
     let dropDownString = dropDown(
       "configObjInternalRel",
+      "configObjInternalRel",
       parentConfigDefInternalRels
     );
     fieldsArray.push(dropDownString);
@@ -197,6 +203,7 @@ const createDropdownKeyValue = (
     });
 
     let dropDownString = dropDown(
+      "typeDataInternalRel",
       "typeDataInternalRel",
       parentConfigDefInternalRels
     );
@@ -217,6 +224,7 @@ const createDropdownKeyValue = (
 
     let dropDownString = dropDown(
       "typeDataExternalRel",
+      "typeDataExternalRel",
       parentConfigDefExternalRels
     );
     fieldsArray.push(dropDownString);
@@ -235,6 +243,7 @@ const createDropdownKeyValue = (
     });
 
     let dropDownString = dropDown(
+      "configObjExternalRel",
       "configObjExternalRel",
       parentConfigDefExternalRels
     );
@@ -263,9 +272,10 @@ const createDropdownKeyValue = (
       if (filtered.length > 0) {
         dropDownHtmlString += dropDown(
           propKey.title,
+          propKey.title,
           filtered,
           null,
-          propKey.id
+          propKey.id,
         );
       }
     });
@@ -276,7 +286,6 @@ const createDropdownKeyValue = (
     let getParent = State.clickedObj.parentId;
 
     let getParentsParent = configNodes.filter((node) => node.id === getParent);
-
     let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
 
     let allKeysByParent = propsNodesRels.filter((node) => {
@@ -289,6 +298,7 @@ const createDropdownKeyValue = (
       );
       if (filtered.length > 0) {
         dropDownHtmlString += dropDown(
+          propKey.title,
           propKey.title,
           filtered,
           null,
