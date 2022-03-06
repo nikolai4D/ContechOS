@@ -2,10 +2,9 @@ import Mutations from "./Mutations.js";
 // import { stack } from "d3";
 
 class Actions {
-  constructor() { }
+  constructor() {}
 
   async CREATE(view, defType, attrs) {
-
     let defTypeTitle = defType.defTypeTitle;
 
     try {
@@ -31,7 +30,14 @@ class Actions {
 
       recordsInView[0][type].push(recordJson);
 
-      if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
+      //   if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
+      console.log(defType.defTypeTitle);
+      if (
+        defType.defTypeTitle === "propKey" ||
+        defType.defTypeTitle === "propVal" ||
+        defType.defTypeTitle === "configObj" ||
+        defType.defTypeTitle === "instanceData"
+      ) {
         let source = recordJson.id;
         let target = await attrs.parentId;
         let newRel = {
@@ -50,14 +56,13 @@ class Actions {
   }
 
   async DELETE(view, defType, id) {
-
     try {
       let response = await fetch(`/api/${defType}/${id}`, {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
           authorization: sessionStorage.getItem("accessToken"),
-        }
+        },
       });
 
       if (response.status === 200) {
@@ -66,21 +71,24 @@ class Actions {
         let type = "nodes";
         if (defType.slice(-3) === "Rel") {
           type = "rels";
-        }
-
-        else {
-          let newRecords = recordsInView[0].rels.filter(obj => obj.source !== id)
+        } else {
+          let newRecords = recordsInView[0].rels.filter(
+            (obj) => obj.source !== id
+          );
           recordsInView[0].rels = newRecords;
         }
 
-        let newRecords = recordsInView[0][type].filter(obj => obj.id !== id)
+        let newRecords = recordsInView[0][type].filter((obj) => obj.id !== id);
         recordsInView[0][type] = newRecords;
         sessionStorage.setItem(view, JSON.stringify(recordsInView));
 
-        if (view === "props" && (defType === "propKey" || defType === "propVal")) {
-
-
-          let newRecords = recordsInView[0].rels.filter(obj => obj.source !== id);
+        if (
+          view === "props" &&
+          (defType === "propKey" || defType === "propVal")
+        ) {
+          let newRecords = recordsInView[0].rels.filter(
+            (obj) => obj.source !== id
+          );
           recordsInView[0].rels = newRecords;
 
           recordsInView[0].rels.push(newRel);

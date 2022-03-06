@@ -1,5 +1,5 @@
 export default class Navbar {
-  cconstructor() { }
+  cconstructor() {}
 
   async getTemplate() {
     return `
@@ -17,6 +17,9 @@ export default class Navbar {
           </li>
           <li class="nav-item">
             <a class="nav-link" href="#" data-link="/datas">Data</a>
+          </li>
+          <li class="nav-item">
+          <a class="nav-link" href="#" data-link="/apis">APIs</a>
           </li>
         </ul>
         <form class="d-flex">

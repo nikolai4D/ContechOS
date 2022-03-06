@@ -54,6 +54,14 @@ class GraphRecords {
         delete node.created;
         delete node.updated;
         node.id = file.slice(0, -5);
+        if (node.parentId && nodeType !== "typeData") {
+          let rel = {};
+          rel.title = "has parent";
+          rel.source = node.id;
+          rel.target = node.parentId;
+          rel.id = rel.source + "-" + rel.target;
+          rels.push(rel);
+        }
         node.defTypeTitle = nodeType;
         nodes.push(node);
       });
