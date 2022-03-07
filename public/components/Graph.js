@@ -6,17 +6,17 @@ import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
 import selfArrow from "./graphComponents/selfArrow.js";
 import dropDown from "./DropDownField.js";
-import { State } from '../store/State.js';
+import { State } from "../store/State.js";
 import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
-import ActivateContextMenu from './graphComponents/ActivateContextMenu.js';
+import ActivateContextMenu from "./graphComponents/ActivateContextMenu.js";
 import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import getPropValForEveryPropKey from "./graphFunctions/getPropValForEveryPropKey.js";
-import addDeleteButton from './graphFunctions/addDeleteButton.js';
+import addDeleteButton from "./graphFunctions/addDeleteButton.js";
 import getPropKeysFromParentsParentIdTypeData from "./graphFunctions/getPropKeysFromParentsParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
-import { ReactiveFormCreate } from './graphComponents/ReactiveFormCreate.js';
+import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 
 async function Graph(view) {
   State.view = view;
@@ -53,7 +53,7 @@ async function Graph(view) {
         .id((d) => d.id)
         .distance(styles.link.length)
     )
-    .force("charge", d3.forceManyBody().strength(-1000))
+    .force("charge", d3.forceManyBody().strength(-2000))
     .force(
       "x",
       d3
@@ -107,33 +107,37 @@ async function Graph(view) {
     )
     .on("click", () => {
       d3.select(".contextMenuContainer").remove();
-
     })
     .on("contextmenu", (d) => {
       if (d.target.tagName === "svg") {
         State.clickedObj = d;
-        ActivateContextMenu(d3)
+        ActivateContextMenu(d3);
         State.clickedObjEvent = event;
 
         d3.selectAll(".context_menu_item").on("click", (d) => {
           State.contextMenuItem = d;
           ActivateFormMenu(d3);
 
-          State.propKeys = []
+          State.propKeys = [];
 
           d3.selectAll(".close-button").on("click", (e) => {
-            d3.selectAll(".FormMenuContainer").remove()
-          })
+            d3.selectAll(".FormMenuContainer").remove();
+          });
           d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-            await formCreateFunction(view, d, "rel", State.clickedObj, State.propKeys);
+            await formCreateFunction(
+              view,
+              d,
+              "rel",
+              State.clickedObj,
+              State.propKeys
+            );
             await updateData(view);
             await render(view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
-            generatePropKeysFromParentIdTypeData('typeData', 'nodes');
+            generatePropKeysFromParentIdTypeData("typeData", "nodes");
           });
-
         });
       }
     });
@@ -146,121 +150,149 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
-
-    console.log(d)
+    console.log(d);
     if (document.getElementById("field_target")) {
       document.getElementById("field_target").classList.remove("is-invalid");
-      document.getElementsByClassName("formCreateSubmit")[0].classList.remove("disabled");
+      document
+        .getElementsByClassName("formCreateSubmit")[0]
+        .classList.remove("disabled");
 
-      if ((State.clickedObj.id === d.id) && (d.id === 'typeData' || d.id === 'instanceData')) {
+      if (
+        State.clickedObj.id === d.id &&
+        (d.id === "typeData" || d.id === "instanceData")
+      ) {
         document.getElementById("field_target").value = "Cannot be self!";
         document.getElementById("field_target").classList.add("is-invalid");
         document.getElementById("field_props").innerHTML = "";
-        document.getElementsByClassName("formCreateSubmit")[0].classList.add("disabled");
-
-      }
-      else if ((State.clickedObj.defTypeTitle === d.defTypeTitle)) {
+        document
+          .getElementsByClassName("formCreateSubmit")[0]
+          .classList.add("disabled");
+      } else if (State.clickedObj.defTypeTitle === d.defTypeTitle) {
         document.getElementById("field_target").value = d.title;
-        document.getElementById("field_target").setAttribute("data-parentId", d.parentId)
-        document.getElementById("field_target").setAttribute("data-id", d.id)
+        document
+          .getElementById("field_target")
+          .setAttribute("data-parentId", d.parentId);
+        document.getElementById("field_target").setAttribute("data-id", d.id);
 
         // decide on which relationship to use
-        State['targetObject'] = d;
+        State["targetObject"] = d;
         if (State.clickedObj.defTypeTitle === "configDef") {
           if (State.clickedObj.id === State.targetObject.id) {
-            State['validDefTypeRels'] = ["configDefInternalRel"]
+            State["validDefTypeRels"] = ["configDefInternalRel"];
+          } else {
+            State["validDefTypeRels"] = ["configDefExternalRel"];
           }
-          else {
-            State['validDefTypeRels'] = ["configDefExternalRel"]
-          }
-        } if (State.clickedObj.defTypeTitle === "configObj") {
+        }
+        if (State.clickedObj.defTypeTitle === "configObj") {
           if (State.clickedObj.parentId === State.targetObject.parentId) {
-            State['validDefTypeRels'] = ["configObjInternalRel"]
+            State["validDefTypeRels"] = ["configObjInternalRel"];
+          } else {
+            State["validDefTypeRels"] = ["configObjExternalRel"];
           }
-          else {
-            State['validDefTypeRels'] = ["configObjExternalRel"]
-          }
-        } if (State.clickedObj.defTypeTitle === "typeData") {
-          // check parents, what their relationship are. If there aren't any, reject the try. 
-          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
-          let rel = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+        }
+        if (State.clickedObj.defTypeTitle === "typeData") {
+          // check parents, what their relationship are. If there aren't any, reject the try.
+          let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0]
+            .rels;
+          let rel = configRels.filter(
+            (rel) =>
+              rel.source === State.clickedObj.parentId &&
+              rel.target === State.targetObject.parentId
+          );
           if (rel.length > 0) {
             rel = rel[0].defTypeTitle;
           }
-          if (rel === 'configObjInternalRel') {
-            State['validDefTypeRels'] = ['typeDataInternalRel']
-          }
-          else if (rel === 'configObjExternalRel') {
-            State['validDefTypeRels'] = ['typeDataExternalRel']
-          }
-          else {
-            State.validDefTypeRels = []
+          if (rel === "configObjInternalRel") {
+            State["validDefTypeRels"] = ["typeDataInternalRel"];
+          } else if (rel === "configObjExternalRel") {
+            State["validDefTypeRels"] = ["typeDataExternalRel"];
+          } else {
+            State.validDefTypeRels = [];
           }
         }
-
 
         if (State.clickedObj.defTypeTitle === "instanceData") {
-          // check parents, what their relationship are. If there aren't any, reject the try. 
+          // check parents, what their relationship are. If there aren't any, reject the try.
           let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
-          let rel = configRels.filter(rel => ((rel.source === State.clickedObj.parentId) && (rel.target === State.targetObject.parentId)))
+          let rel = configRels.filter(
+            (rel) =>
+              rel.source === State.clickedObj.parentId &&
+              rel.target === State.targetObject.parentId
+          );
           if (rel.length > 0) {
             rel = rel[0].defTypeTitle;
           }
-          if (rel === 'typeDataInternalRel') {
-            State['validDefTypeRels'] = ['instanceDataInternalRel']
-          }
-          else if (rel === 'typeDataExternalRel') {
-            State['validDefTypeRels'] = ['instanceDataExternalRel']
-          }
-          else {
-            State.validDefTypeRels = []
+          if (rel === "typeDataInternalRel") {
+            State["validDefTypeRels"] = ["instanceDataInternalRel"];
+          } else if (rel === "typeDataExternalRel") {
+            State["validDefTypeRels"] = ["instanceDataExternalRel"];
+          } else {
+            State.validDefTypeRels = [];
           }
         }
-        ReactiveFormCreate()
+        ReactiveFormCreate();
         State.propKeys = [];
-        contextMenuItemClick(d3)
+        contextMenuItemClick(d3);
       }
-
+    } else {
+      State.validDefTypeRels = [];
     }
-    else {
-      State.validDefTypeRels = []
-    }
-
   };
 
   const rightClicked = (event, d) => {
     event.preventDefault();
-    d.clientX = event.clientX
-    d.clientY = event.clientY
+    d.clientX = event.clientX;
+    d.clientY = event.clientY;
     State.clickedObj = d;
 
-    if (event.target.tagName === "circle" || event.target.className.baseVal === 'nodeLabel' || event.target.className.baseVal === 'linkLabel' || event.target.className.baseVal === 'linkSVG') {
-
-      ActivateContextMenu(d3)
+    if (
+      event.target.tagName === "circle" ||
+      event.target.className.baseVal === "nodeLabel" ||
+      event.target.className.baseVal === "linkLabel" ||
+      event.target.className.baseVal === "linkSVG"
+    ) {
+      ActivateContextMenu(d3);
       State.clickedObjEvent = event;
 
-      document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")
-      document.getElementById("delete-item").innerHTML = `- Delete (${State.clickedObj.title})`
+      document
+        .getElementById("delete-item")
+        .classList.add(
+          "list-group-item",
+          "list-group-item-action",
+          "text-danger"
+        );
+      document.getElementById(
+        "delete-item"
+      ).innerHTML = `- Delete (${State.clickedObj.title})`;
 
       d3.selectAll("#delete-item").on("click", async (e) => {
-        await Actions.DELETE(State.view, State.clickedObj.defTypeTitle, State.clickedObj.id)
+        await Actions.DELETE(
+          State.view,
+          State.clickedObj.defTypeTitle,
+          State.clickedObj.id
+        );
         await updateData(State.view);
         await render(State.view);
         d3.select(".contextMenuContainer").remove();
-
-      })
+      });
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
         State.contextMenuItem = d;
-        ActivateFormMenu(d3)
+        ActivateFormMenu(d3);
 
         State.propKeys = [];
         // contextMenuItemClick(d3)
         d3.selectAll(".close-button").on("click", (e) => {
-          d3.selectAll(".FormMenuContainer").remove()
-        })
+          d3.selectAll(".FormMenuContainer").remove();
+        });
         d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-          await formCreateFunction(view, State.contextMenuItem, "rel", State.clickedObj, State.propKeys);
+          await formCreateFunction(
+            view,
+            State.contextMenuItem,
+            "rel",
+            State.clickedObj,
+            State.propKeys
+          );
           await updateData(view);
           await render(view);
         });
@@ -324,7 +356,7 @@ async function Graph(view) {
 
       .style("background-color", styles.linkLabel.backgroundColor)
       .attr("x", (d) => (d.source.x + d.target.x) / 2)
-      .attr("y", (d) => (d.source.y + d.target.y) / 2)
+      .attr("y", (d) => (d.source.y + d.target.y) / 2);
 
     linkLabel.attr("transform", function (d) {
       let bbox = this.getBBox();
@@ -381,28 +413,20 @@ async function Graph(view) {
       .on("contextmenu", rightClicked);
 
     function setColour(d) {
-
-      if (d.defTypeTitle === 'propType') {
-        return '#89A7B0'
-      }
-      else if (d.defTypeTitle === 'propKey') {
-        return '#E9BD60'
-      }
-      else if (d.defTypeTitle === 'propVal') {
-        return '#C3B65B'
-      }
-      else if (d.defTypeTitle === 'configDef') {
-        return '#70AA6C'
-      }
-      else if (d.defTypeTitle === 'configObj') {
-        return '#32BCC3'
-      }
-      else if (d.defTypeTitle === 'typeData') {
-        return '#E44167'
-      }
-      else if (d.defTypeTitle === 'instanceData') {
-        return '#A79587'
-
+      if (d.defTypeTitle === "propType") {
+        return "#89A7B0";
+      } else if (d.defTypeTitle === "propKey") {
+        return "#E9BD60";
+      } else if (d.defTypeTitle === "propVal") {
+        return "#C3B65B";
+      } else if (d.defTypeTitle === "configDef") {
+        return "#70AA6C";
+      } else if (d.defTypeTitle === "configObj") {
+        return "#32BCC3";
+      } else if (d.defTypeTitle === "typeData") {
+        return "#E44167";
+      } else if (d.defTypeTitle === "instanceData") {
+        return "#A79587";
       }
     }
 
@@ -441,15 +465,10 @@ async function Graph(view) {
             .style("cursor", "default")
 
             .style("fill", styles.nodeLabel.fill)
-            .on("click",
-              (d) => {
-                event.preventDefault();
-              }
-            )
-            .on("contextmenu",
-              rightClicked
-
-            )
+            .on("click", (d) => {
+              event.preventDefault();
+            })
+            .on("contextmenu", rightClicked)
             .attr("dy", 4);
           return entered;
         },
@@ -464,21 +483,19 @@ async function Graph(view) {
           const linkLabel = enter
             .append("text")
             .text((link) => link.title)
-            .on("contextmenu",
-              rightClicked
-
-            )
+            .on("contextmenu", rightClicked);
           return linkLabel;
         },
-        update => { return update }
-
+        (update) => {
+          return update;
+        }
       )
       .attr("id", function (d) {
         return "linkLabel" + d.id;
       })
       .attr("class", "linkLabel")
       .style("color", "#fff")
-      .attr("dy", 0)
+      .attr("dy", 0);
 
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
