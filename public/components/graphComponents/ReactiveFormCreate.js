@@ -154,6 +154,7 @@ const createDropdownKeyValue = (
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
         let parentConfigDefExternalRels = configRels.filter((rel) => {
+            console.log(rel)
             return (
                 rel.source === State.clickedObj.parentId && rel.target !== State.clickedObj.parentId
             );
@@ -244,7 +245,7 @@ const createDropdownKeyValue = (
         let parentConfigDefExternalRels = configRels.filter((rel) => {
             return (
                 rel.defTypeTitle === "configObjExternalRel" &&
-                (rel.source === State.clickedObj.parentId)
+                (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
             );
         });
 
