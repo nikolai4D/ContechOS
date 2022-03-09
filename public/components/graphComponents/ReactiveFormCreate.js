@@ -178,7 +178,7 @@ const createDropdownKeyValue = (
         let parentConfigDefInternalRels = configRels.filter((rel) => {
             return (
                 rel.defTypeTitle === "configObjInternalRel" &&
-                (rel.source === State.clickedObj.parentId)
+                (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
             );
         });
 
@@ -200,7 +200,7 @@ const createDropdownKeyValue = (
         let parentConfigDefInternalRels = configRels.filter((rel) => {
             return (
                 rel.defTypeTitle === "typeDataInternalRel" &&
-                (rel.source === State.clickedObj.parentId)
+                (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
             );
         });
 
@@ -223,7 +223,7 @@ const createDropdownKeyValue = (
         let parentConfigDefExternalRels = configRels.filter((rel) => {
             return (
                 rel.defTypeTitle === "typeDataExternalRel" &&
-                (rel.source === State.clickedObj.parentId)
+                (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
             );
         });
 
