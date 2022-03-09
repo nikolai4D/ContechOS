@@ -156,7 +156,8 @@ const createDropdownKeyValue = (
         let parentConfigDefExternalRels = configRels.filter((rel) => {
             console.log(rel)
             return (
-                rel.source === State.clickedObj.parentId && rel.target !== State.clickedObj.parentId
+
+                (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
             );
         });
 
