@@ -1,20 +1,16 @@
 import * as d3 from "https://cdn.skypack.dev/d3@6";
-import ContextMenu from "./ContextMenu.js";
-import { FormCreate } from "./FormCreate.js";
 import styles from "./graphComponents/styles.js";
 import endArrow from "./graphComponents/endArrow.js";
 import startArrow from "./graphComponents/startArrow.js";
+import endArrowParent from "./graphComponents/endArrowParent.js";
+import startArrowParent from "./graphComponents/startArrowParent.js";
 import selfArrow from "./graphComponents/selfArrow.js";
-import dropDown from "./DropDownField.js";
 import { State } from "../store/State.js";
 import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
 import ActivateContextMenu from "./graphComponents/ActivateContextMenu.js";
 import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
-import getPropValForEveryPropKey from "./graphFunctions/getPropValForEveryPropKey.js";
-import addDeleteButton from "./graphFunctions/addDeleteButton.js";
-import getPropKeysFromParentsParentIdTypeData from "./graphFunctions/getPropKeysFromParentsParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 
@@ -147,6 +143,8 @@ async function Graph(view) {
 
   endArrow(g);
   startArrow(g);
+  endArrowParent(g);
+  startArrowParent(g);
   selfArrow(g);
 
   const clicked = (event, d) => {
@@ -331,6 +329,14 @@ async function Graph(view) {
 
   simulation.on("tick", () => {
     link
+      .style("stroke", d => {
+        if (d.title === 'has parent') { return styles.link.parent.stroke }
+        else { return styles.link.stroke }
+      })
+      .style("stroke-dasharray", d => {
+        if (d.title === 'has parent') { return styles.link.parent.strokeDash }
+        else { return 0 }
+      })
       .attr("x1", (d) => d.source.x)
       .attr("y1", (d) => d.source.y)
       .attr("x2", (d) => d.target.x)
@@ -351,7 +357,10 @@ async function Graph(view) {
 
     linkLabel
       .style("text-anchor", styles.linkLabel.textAnchor)
-      .style("fill", styles.linkLabel.fill)
+      .style("fill", d => {
+        if (d.title === 'has parent') { return styles.linkLabel.parent.fill }
+        else { return styles.linkLabel.fill }
+      })
       .style("font-size", styles.linkLabel.fontSize)
 
       .style("background-color", styles.linkLabel.backgroundColor)
@@ -395,18 +404,25 @@ async function Graph(view) {
 
             .attr("class", "linkSVG")
             .attr("marker-end", (d) => {
-              return d.source == d.target
-                ? "url(#self-arrow)"
-                : "url(#end-arrow)";
+              if (d.title === 'has parent') {
+                return d.source == d.target
+                  ? "url(#self-arrow-parent)"
+                  : "url(#end-arrow-parent)";
+              }
+              else {
+                return d.source == d.target
+                  ? "url(#self-arrow)"
+                  : "url(#end-arrow)";
+              }
             });
           return link_enter;
         },
-        (update) =>
-          update.attr("marker-end", (d) => {
-            return d.source == d.target
-              ? "url(#self-arrow)"
-              : "url(#end-arrow)";
-          })
+        (update) => update
+        //    update.attr("marker-end", (d) => {
+        //    return d.source == d.target
+        //    ? "url(#self-arrow)"
+        //  : "url(#end-arrow)";
+        // })
       )
       .join("path")
       .on("click", clicked)
@@ -483,6 +499,19 @@ async function Graph(view) {
           const linkLabel = enter
             .append("text")
             .text((link) => link.title)
+            // .on("click", clicked)
+            .style("fill", d => {
+              console.log(d)
+              if (d.title === 'has parent') {
+                return "red"
+              }
+              else {
+                return "#fff"
+              }
+            })
+
+            .on("click", clicked)
+
             .on("contextmenu", rightClicked);
           return linkLabel;
         },
@@ -494,7 +523,6 @@ async function Graph(view) {
         return "linkLabel" + d.id;
       })
       .attr("class", "linkLabel")
-      .style("color", "#fff")
       .attr("dy", 0);
 
     simulation.nodes(nodes).force("link").links(rels);

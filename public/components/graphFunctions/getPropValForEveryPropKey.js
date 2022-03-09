@@ -1,5 +1,4 @@
 import { State } from '../../store/State.js';
-
 import dropDown from '../DropDownField.js';
 
 export default function (getPropsForParentId, parentConfigObject) {

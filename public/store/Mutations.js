@@ -1,6 +1,5 @@
 class Mutations {
     async SET_STATE(view, records) {
-        console.log('hello')
         let data = await JSON.parse(sessionStorage.getItem(`${view}`));
         if (data == null) {
             if (!Array.isArray(records)) {
@@ -15,8 +14,6 @@ class Mutations {
     }
 
     async ADD_NODE_TO_STATE(view, records) {
-        console.log('hello2')
-
         let data = await JSON.parse(sessionStorage.getItem(`${view}`))
 
         if (await data == null) {

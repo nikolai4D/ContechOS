@@ -1,9 +1,5 @@
 import { State } from '../../store/State.js';
 import dropDown from '../DropDownField.js';
-
-import generatePropKeysFromParentIdTypeData from './generatePropKeysFromParentIdTypeData.js';
-import getPropKeysFromParentsParentIdTypeData from './getPropKeysFromParentsParentIdTypeData.js';
-
 export default function (d3) {
 
     d3.selectAll(".field_configDefInternalRel").on("change", async () => {

@@ -1,6 +1,5 @@
 import { State } from '../../store/State.js';
 import getFieldProperties from '../graphFunctions/getFieldProperties.js';
-import inputField from "../InputField.js";
 import dropDown from "../DropDownField.js";
 import { getDefTypeFromSessionStorage } from '../graphFunctions/getDefTypeFromSessionStorage.js';
 import getDefType from "../graphFunctions/getDefType.js";
