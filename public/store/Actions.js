@@ -2,7 +2,7 @@ import Mutations from "./Mutations.js";
 // import { stack } from "d3";
 
 class Actions {
-  constructor() {}
+  constructor() { }
 
   async CREATE(view, defType, attrs) {
     let defTypeTitle = defType.defTypeTitle;
@@ -101,6 +101,7 @@ class Actions {
 
   async GETALL(view) {
     try {
+      console.log(view)
       let getHeaders = {
         "Content-Type": "application/json",
         authorization: sessionStorage.getItem("accessToken"),
