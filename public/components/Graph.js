@@ -477,8 +477,8 @@ async function Graph(view) {
             .attr("class", "nodeLabel")
 
             .text(d => {
-              if (d.title.length > 10) {
-                return d.title.slice(0, 10) + "...";
+              if (d.title.length > 25) {
+                return d.title.slice(0, 25) + "...";
               }
               return d.title;
             })
