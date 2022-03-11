@@ -314,7 +314,6 @@ async function Graph(view) {
     .append("g")
     .selectAll("circle")
     .append("text")
-    .style("font-size", styles.nodeLabel.fontSize)
     .attr("class", "nodeLabel")
     .attr("dy", 4);
 
@@ -384,7 +383,8 @@ async function Graph(view) {
       }
     });
 
-    nodeLabel.attr("x", (data) => data.x).attr("y", (data) => data.y);
+    nodeLabel.attr("x", (data) => data.x).attr("y", (data) => data.y).style("font-size", styles.nodeLabel.fontSize)
+
   });
   async function render(view) {
     updateData(view);
@@ -476,7 +476,12 @@ async function Graph(view) {
             .append("text")
             .attr("class", "nodeLabel")
 
-            .text((node) => node.title)
+            .text(d => {
+              if (d.title.length > 10) {
+                return d.title.slice(0, 10) + "...";
+              }
+              return d.title;
+            })
             .style("text-anchor", styles.nodeLabel.textAnchor)
             .style("cursor", "default")
 
