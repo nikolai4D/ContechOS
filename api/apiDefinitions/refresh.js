@@ -3,6 +3,8 @@ const router = express.Router();
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const bodyParser = require("body-parser");
+const cookieParser = require("cookie-parser");
+
 const Record = require("./records/UserRecord.js");
 
 const routerType = "users";
@@ -11,12 +13,17 @@ const record = new Record(routerType);
 
 //Bodyparser
 router.use(bodyParser.json());
+//Cookiepaser
+router.use(cookieParser());
 
 //APIs
 router.get("/", async (req, res) => {
-  const cookies = req.cookies;
+  let cookies = req.cookies;
 
-  //   if (!cookies?.jwt) return res.sendStatus(401);
+  if (req.headers.cookiejwt) {
+    cookies.jwt = req.headers.cookiejwt;
+  }
+
   if (!cookies?.jwt) return res.status(401).json({ accessToken: false });
   const refreshToken = cookies.jwt;
   const foundUser = (await record.getAll()).find(

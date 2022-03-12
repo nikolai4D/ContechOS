@@ -225,6 +225,159 @@ class Record {
     return defTypes;
   }
 
+  async readByLinkToTarget(linkParentId, targetId) {
+    //declare constants
+    const thisDefType = this.defType;
+    const sources = [];
+
+    //get target
+    const target = JSON.parse(
+      fs.readFileSync(`../db/${this.defType}/${targetId}.json`, "utf8")
+    );
+    target.id = targetId;
+    target.type = thisDefType;
+
+    //get external and internal links
+
+    const dirExternalRel = `../db/${this.defType}ExternalRel/`;
+    const dirInternalRel = `../db/${this.defType}InternalRel/`;
+    const externalFiles = fs.readdirSync(dirExternalRel);
+    const internalFiles = fs.readdirSync(dirInternalRel);
+
+    externalFiles.forEach(function (file) {
+      let externalFile = JSON.parse(
+        fs.readFileSync(dirExternalRel + file, "utf8")
+      );
+
+      if (
+        externalFile.target === targetId &&
+        externalFile.parentId === linkParentId
+      ) {
+        const source = JSON.parse(
+          fs.readFileSync(
+            `../db/${thisDefType}/${externalFile.source}.json`,
+            "utf8"
+          )
+        );
+        source.id = externalFile.source;
+        source.type = thisDefType;
+        sources.push(source);
+      }
+    });
+
+    internalFiles.forEach(function (file) {
+      let internalFile = JSON.parse(
+        fs.readFileSync(dirInternalRel + file, "utf8")
+      );
+
+      if (
+        internalFile.target === targetId &&
+        internalFile.parentId === linkParentId
+      ) {
+        const source = JSON.parse(
+          fs.readFileSync(
+            `../db/${thisDefType}/${internalFile.source}.json`,
+            "utf8"
+          )
+        );
+        source.id = internalFile.source;
+        source.type = thisDefType;
+        sources.push(source);
+      }
+    });
+
+    const result = {
+      target: target,
+      sources: sources,
+    };
+
+    return result;
+  }
+  async readSourcesToTarget(targetId) {
+    //declare constants
+    const thisDefType = this.defType;
+    const links = [];
+
+    //get target
+    const target = JSON.parse(
+      fs.readFileSync(`../db/${this.defType}/${targetId}.json`, "utf8")
+    );
+    target.id = targetId;
+    target.type = thisDefType;
+
+    //get external and internal links
+
+    const dirExternalRel = `../db/${this.defType}ExternalRel/`;
+    const dirInternalRel = `../db/${this.defType}InternalRel/`;
+    const externalFiles = fs.readdirSync(dirExternalRel);
+    const internalFiles = fs.readdirSync(dirInternalRel);
+
+    externalFiles.forEach(function (file) {
+      let externalFile = JSON.parse(
+        fs.readFileSync(dirExternalRel + file, "utf8")
+      );
+
+      if (externalFile.target === targetId) {
+        let externalFileParentIdInLinks = links.find(
+          (obj) => obj.linkParentId === externalFile.parentId
+        );
+        if (!externalFileParentIdInLinks) {
+          links.push({ linkParentId: externalFile.parentId });
+          externalFileParentIdInLinks = links.find(
+            (obj) => obj.linkParentId === externalFile.parentId
+          );
+          externalFileParentIdInLinks.sources = [];
+        }
+
+        const source = JSON.parse(
+          fs.readFileSync(
+            `../db/${thisDefType}/${externalFile.source}.json`,
+            "utf8"
+          )
+        );
+        source.id = externalFile.source;
+        source.type = thisDefType;
+        externalFileParentIdInLinks.sources.push(source);
+      }
+    });
+
+    internalFiles.forEach(function (file) {
+      let internalFile = JSON.parse(
+        fs.readFileSync(dirInternalRel + file, "utf8")
+      );
+
+      if (internalFile.target === targetId) {
+        let internalFileParentIdInLinks = links.find(
+          (obj) => obj.linkParentId === internalFile.parentId
+        );
+        if (!internalFileParentIdInLinks) {
+          links.push({ linkParentId: internalFile.parentId });
+          internalFileParentIdInLinks = links.find(
+            (obj) => obj.linkParentId === internalFile.parentId
+          );
+          internalFileParentIdInLinks.sources = [];
+        }
+
+        const source = JSON.parse(
+          fs.readFileSync(
+            `../db/${thisDefType}/${internalFile.source}.json`,
+            "utf8"
+          )
+        );
+        source.id = internalFile.source;
+        source.type = thisDefType;
+        internalFileParentIdInLinks.sources.push(source);
+      }
+    });
+
+    const result = {
+      target: target,
+      links: links,
+    };
+
+    return result;
+  }
+
   async getAll() {
     const defTypes = [];
 

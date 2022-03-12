@@ -7,6 +7,8 @@ const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
 const reqParamExists = require("./apiFunctions/reqParamExists.js");
 const readById = require("./apiFunctions/readById.js");
 const readByParentId = require("./apiFunctions/readByParentId.js");
+const readByLinkToTarget = require("./apiFunctions/readByLinkToTarget.js");
+const readSourcesToTarget = require("./apiFunctions/readSourcesToTarget.js");
 const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
 const propKeysExists = require("./apiFunctions/propKeysExists.js");
 const propsExists = require("./apiFunctions/propsExists.js");
@@ -87,6 +89,36 @@ router.get("/", async (req, res) => {
   }
   //read included id
   await readById(routerType, req.query.id, res);
+});
+
+router.post("/linkToTarget", async (req, res) => {
+  const { linkParentId, targetId } = req.body;
+  const reqBody = { linkParentId, targetId };
+
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+  if (!(await idExist(routerType, targetId, res))) {
+    return res.statusCode;
+  }
+
+  return await readByLinkToTarget(routerType, linkParentId, targetId, res);
+});
+
+router.post("/sourcesToTarget", async (req, res) => {
+  const { targetId } = req.body;
+  const reqBody = { targetId };
+
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+  if (!(await idExist(routerType, targetId, res))) {
+    return res.statusCode;
+  }
+
+  return await readSourcesToTarget(routerType, targetId, res);
 });
 
 router.delete("/:id", async (req, res) => {
