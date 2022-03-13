@@ -48,6 +48,7 @@ router.post("/create", async (req, res) => {
 router.post("/createBulk", async (req, res) => {
   const { objects } = req.body;
   const reqBody = { objects };
+
   //check if keys/values exist in reqBody
   if (!(await reqBodyExists(reqBody, res))) {
     return res.statusCode;
