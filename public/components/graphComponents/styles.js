@@ -11,7 +11,7 @@ const styles = {
     nodeLabel: {
         textAnchor: "middle",
         fill: "rgba(0,0,0,.9)",
-        fontSize: "15px",
+        fontSize: "13px",
     },
     link: {
         length: 200,

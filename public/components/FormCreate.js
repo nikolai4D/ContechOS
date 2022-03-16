@@ -88,12 +88,10 @@ export function FormCreate() {
   return template;
 }
 
-const createInput = (displayTitle, fieldsArray, keyOfAttr, defType) => {
-  if (defType.defTypeTitle === "instanceData") {
-    fieldsArray.push(inputField(displayTitle, keyOfAttr, State.clickedObj.title, "disabled"));
-  } else {
-    fieldsArray.push(inputField(displayTitle, keyOfAttr));
-  }
+const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
+
+  fieldsArray.push(inputField(displayTitle, keyOfAttr));
+
 };
 
 const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
