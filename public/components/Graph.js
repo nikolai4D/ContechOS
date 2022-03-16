@@ -328,13 +328,19 @@ async function Graph(view) {
 
   simulation.on("tick", () => {
     link
-      .style("stroke", d => {
-        if (d.title === 'has parent') { return styles.link.parent.stroke }
-        else { return styles.link.stroke }
+      .style("stroke", (d) => {
+        if (d.title === "has parent") {
+          return styles.link.parent.stroke;
+        } else {
+          return styles.link.stroke;
+        }
       })
-      .style("stroke-dasharray", d => {
-        if (d.title === 'has parent') { return styles.link.parent.strokeDash }
-        else { return 0 }
+      .style("stroke-dasharray", (d) => {
+        if (d.title === "has parent") {
+          return styles.link.parent.strokeDash;
+        } else {
+          return 0;
+        }
       })
       .attr("x1", (d) => d.source.x)
       .attr("y1", (d) => d.source.y)
@@ -356,9 +362,12 @@ async function Graph(view) {
 
     linkLabel
       .style("text-anchor", styles.linkLabel.textAnchor)
-      .style("fill", d => {
-        if (d.title === 'has parent') { return styles.linkLabel.parent.fill }
-        else { return styles.linkLabel.fill }
+      .style("fill", (d) => {
+        if (d.title === "has parent") {
+          return styles.linkLabel.parent.fill;
+        } else {
+          return styles.linkLabel.fill;
+        }
       })
       .style("font-size", styles.linkLabel.fontSize)
 
@@ -383,8 +392,10 @@ async function Graph(view) {
       }
     });
 
-    nodeLabel.attr("x", (data) => data.x).attr("y", (data) => data.y).style("font-size", styles.nodeLabel.fontSize)
-
+    nodeLabel
+      .attr("x", (data) => data.x)
+      .attr("y", (data) => data.y)
+      .style("font-size", styles.nodeLabel.fontSize);
   });
   async function render(view) {
     updateData(view);
@@ -404,12 +415,11 @@ async function Graph(view) {
 
             .attr("class", "linkSVG")
             .attr("marker-end", (d) => {
-              if (d.title === 'has parent') {
+              if (d.title === "has parent") {
                 return d.source == d.target
                   ? "url(#self-arrow-parent)"
                   : "url(#end-arrow-parent)";
-              }
-              else {
+              } else {
                 return d.source == d.target
                   ? "url(#self-arrow)"
                   : "url(#end-arrow)";
@@ -476,7 +486,7 @@ async function Graph(view) {
             .append("text")
             .attr("class", "nodeLabel")
 
-            .text(d => {
+            .text((d) => {
               if (d.title.length > 25) {
                 return d.title.slice(0, 25) + "...";
               }
@@ -505,13 +515,11 @@ async function Graph(view) {
             .append("text")
             .text((link) => link.title)
             // .on("click", clicked)
-            .style("fill", d => {
-              console.log(d)
-              if (d.title === 'has parent') {
-                return "red"
-              }
-              else {
-                return "#fff"
+            .style("fill", (d) => {
+              if (d.title === "has parent") {
+                return "red";
+              } else {
+                return "#fff";
               }
             })
 

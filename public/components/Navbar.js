@@ -20,7 +20,7 @@ export default class Navbar {
             <a class="nav-link" href="#" data-link="/datas">Data</a>
           </li>
           <li class="nav-item">
-          <a class="nav-link" href="#" data-link="/apis">APIs</a>
+          <a class="nav-link" href="#" data-link="/apis">API</a>
           </li>
         </ul>
         <form class="d-flex">

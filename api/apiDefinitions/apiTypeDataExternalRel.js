@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const create = require("./apiFunctions/create.js");
+const createBulkRel = require("./apiFunctions/createBulkRel.js");
 const readAll = require("./apiFunctions/readAll.js");
 const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
 const reqParamExists = require("./apiFunctions/reqParamExists.js");
@@ -63,6 +64,19 @@ router.post("/create", async (req, res) => {
   }
   //create
   await create(routerType, reqBody, res);
+});
+
+router.post("/createBulkRel", async (req, res) => {
+  const { objects } = req.body;
+  const reqBody = { objects };
+
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //create
+  await createBulkRel(routerType, reqBody, res);
 });
 
 router.get("/", async (req, res) => {
