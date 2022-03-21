@@ -7,6 +7,8 @@ const styles = {
         fill: "#FFCCCC",
         strokeWidth: 0,
         borderColor: "white",
+        cursor: "pointer",
+
     },
     nodeLabel: {
         textAnchor: "middle",

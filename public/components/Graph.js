@@ -10,6 +10,8 @@ import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
 import ActivateContextMenu from "./graphComponents/ActivateContextMenu.js";
 import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
+import ActivateFormRead from "./graphComponents/ActivateFormRead.js";
+
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
@@ -108,7 +110,7 @@ async function Graph(view) {
       if (d.target.tagName === "svg") {
         State.clickedObj = d;
         ActivateContextMenu(d3);
-        State.clickedObjEvent = event;
+        State.clickedObjEvent = event
 
         d3.selectAll(".context_menu_item").on("click", (d) => {
           State.contextMenuItem = d;
@@ -148,7 +150,7 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
-    console.log(d);
+    console.log(event, d);
     if (document.getElementById("field_target")) {
       document.getElementById("field_target").classList.remove("is-invalid");
       document
@@ -234,6 +236,19 @@ async function Graph(view) {
       }
     } else {
       State.validDefTypeRels = [];
+      console.log('hello')
+      d.clientX = event.clientX;
+      d.clientY = event.clientY;
+      State.clickedObj = d;
+      State.clickedObj.defId = 1;
+
+      State.propKeys = [];
+
+      ActivateFormRead(d3);
+
+      d3.selectAll(".close-button").on("click", (e) => {
+        d3.selectAll(".FormMenuContainer").remove();
+      });
     }
   };
 
@@ -467,6 +482,8 @@ async function Graph(view) {
             .attr("class", "node")
             .attr("stroke", (d) => styles.node.borderColor)
             .attr("r", styles.node.radius)
+            .attr("cursor", styles.node.cursor)
+
             .call(drag(simulation))
             .on("click", clicked)
             .on("contextmenu", rightClicked);
