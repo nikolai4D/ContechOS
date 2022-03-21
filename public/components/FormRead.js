@@ -7,14 +7,12 @@ export function FormRead() {
     let definitions = JSON.parse(sessionStorage.getItem('definitions'))[0]
     let def = definitions.defs.find((obj) => obj.defId === defId);
 
-    console.log('object', State.clickedObj);
 
     let defType = def.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
     defType.defId = defId;
 
     let listWithAttributes = defType.attributes.map(attribute => {
         let anInput = '';
-        console.log(Object.keys(attribute)[0], 'hello')
         if (State.clickedObj[Object.keys(attribute)[0]].length === 0) {
             return `    <div class="form-text">+ ${[Object.keys(attribute)[0]]}</div>
             `
@@ -49,7 +47,6 @@ export function FormRead() {
             </div>
         </div>`})
 
-    console.log(listWithAttributes)
 
     const template = `
     <div class="formRead position-absolute">

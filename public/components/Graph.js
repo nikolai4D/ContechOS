@@ -150,7 +150,6 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
-    console.log(event, d);
     if (document.getElementById("field_target")) {
       document.getElementById("field_target").classList.remove("is-invalid");
       document
@@ -236,7 +235,6 @@ async function Graph(view) {
       }
     } else {
       State.validDefTypeRels = [];
-      console.log('hello')
       d.clientX = event.clientX;
       d.clientY = event.clientY;
       State.clickedObj = d;
