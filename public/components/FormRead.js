@@ -13,6 +13,7 @@ export function FormRead() {
 
     let listWithAttributes = defType.attributes.map(attribute => {
         let anInput = '';
+        let aLabel = '';
         if (State.clickedObj[Object.keys(attribute)[0]].length === 0) {
             return `    <div class="form-text">+ ${[Object.keys(attribute)[0]]}</div>
             `
@@ -28,24 +29,51 @@ export function FormRead() {
             else {
                 let datas = JSON.parse(sessionStorage.getItem('datas'))[0].nodes;
                 parent = datas.find(data => data.id === parentId)
-
             }
-            anInput = `<span class="d-inline-block" tabindex="0" data-bs-toggle="tooltip" title="${parent.title}">
-            <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${State.clickedObj[Object.keys(attribute)[0]]}">
-        </span>`
+            aLabel = 'parent'
+            anInput = `<input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${parent.title}">
+     `
         }
+        else if (Object.keys(attribute)[0] === 'props') {
+            aLabel = `${Object.keys(attribute)[0]}`
+            let props = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
+            let propKey = '';
+            let propVal = '';
+
+            anInput = `<div class="border border-1 rounded-2 p-2">` + State.clickedObj[Object.keys(attribute)[0]].map(element => {
+                propKey = props.find(prop => prop.id === Object.keys(element)[0])
+                propVal = props.find(prop => prop.id === Object.values(element)[0])
+                return `<label for="staticEmail"  class="form-text">${propKey.title}</label>
+                <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${propVal.title}">`
+            }).join("") + "</div>";
+        }
+
+        else if (Array.isArray(State.clickedObj[Object.keys(attribute)[0]])) {
+            aLabel = [Object.keys(attribute)[0]]
+            let propVal = '';
+
+            let props = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
+
+            anInput = State.clickedObj[Object.keys(attribute)[0]].map(element => {
+                propVal = props.find(prop => prop.id === element);
+                return `
+                    <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${propVal.title}">
+                `
+            }).join("")
+        }
+
         else {
+            aLabel = [Object.keys(attribute)[0]]
             anInput = `
             <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${State.clickedObj[Object.keys(attribute)[0]]}">
         `
         }
         return `
             <div>
-                <label for="staticEmail"  class="form-text">${[Object.keys(attribute)[0]]}</label>
+                <label for="staticEmail"  class="form-text">${aLabel}</label>
             <div>
             ${anInput}
-            </div>
-        </div>`})
+            </div> </div>`})
 
 
     const template = `
