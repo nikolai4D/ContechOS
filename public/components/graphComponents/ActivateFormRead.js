@@ -10,6 +10,6 @@ export default function (d3) {
         .attr("class", "FormMenuContainer")
         .html(FormRead(State.clickedObjEvent, State.contextMenuItem, State.clickedObj))
         .select(".formRead")
-        .style("top", State.clickedObj.clientY + "px")
+        .style("top", (State.clickedObj.clientY + 10) + "px")
         .style("left", State.clickedObj.clientX + "px");
 }

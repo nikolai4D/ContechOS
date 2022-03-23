@@ -1,12 +1,12 @@
 export default class Navbar {
-  cconstructor() {}
+  cconstructor() { }
 
   async getTemplate() {
     return `
     <div id="navbar">
     <nav class="navbar navbar-expand navbar-light bg-light">
     <div class="container-fluid">
-    
+  
       <a class="navbar-brand" href="#" data-link="/"> <i class="bi bi-server" style="margin-right:7px;"></i>contechOS</a>
       <div class="collapse navbar-collapse" id="navbarScroll">
         <ul class="navbar-nav me-auto navbar-nav-scroll" style="--bs-scroll-height: 100px;">
