@@ -10,6 +10,8 @@ import formCreateFunction from "./graphFunctions/formCreateFunction.js";
 import Actions from "../store/Actions.js";
 import ActivateContextMenu from "./graphComponents/ActivateContextMenu.js";
 import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
+import ActivateFormRead from "./graphComponents/ActivateFormRead.js";
+
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
@@ -108,7 +110,7 @@ async function Graph(view) {
       if (d.target.tagName === "svg") {
         State.clickedObj = d;
         ActivateContextMenu(d3);
-        State.clickedObjEvent = event;
+        State.clickedObjEvent = event
 
         d3.selectAll(".context_menu_item").on("click", (d) => {
           State.contextMenuItem = d;
@@ -148,7 +150,6 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
-    console.log(d);
     if (document.getElementById("field_target")) {
       document.getElementById("field_target").classList.remove("is-invalid");
       document
@@ -234,6 +235,18 @@ async function Graph(view) {
       }
     } else {
       State.validDefTypeRels = [];
+      d.clientX = event.clientX;
+      d.clientY = event.clientY;
+      State.clickedObj = d;
+      State.clickedObj.defId = 1;
+
+      State.propKeys = [];
+
+      ActivateFormRead(d3);
+
+      d3.selectAll(".close-button").on("click", (e) => {
+        d3.selectAll(".FormMenuContainer").remove();
+      });
     }
   };
 
@@ -328,13 +341,19 @@ async function Graph(view) {
 
   simulation.on("tick", () => {
     link
-      .style("stroke", d => {
-        if (d.title === 'has parent') { return styles.link.parent.stroke }
-        else { return styles.link.stroke }
+      .style("stroke", (d) => {
+        if (d.title === "has parent") {
+          return styles.link.parent.stroke;
+        } else {
+          return styles.link.stroke;
+        }
       })
-      .style("stroke-dasharray", d => {
-        if (d.title === 'has parent') { return styles.link.parent.strokeDash }
-        else { return 0 }
+      .style("stroke-dasharray", (d) => {
+        if (d.title === "has parent") {
+          return styles.link.parent.strokeDash;
+        } else {
+          return 0;
+        }
       })
       .attr("x1", (d) => d.source.x)
       .attr("y1", (d) => d.source.y)
@@ -356,9 +375,12 @@ async function Graph(view) {
 
     linkLabel
       .style("text-anchor", styles.linkLabel.textAnchor)
-      .style("fill", d => {
-        if (d.title === 'has parent') { return styles.linkLabel.parent.fill }
-        else { return styles.linkLabel.fill }
+      .style("fill", (d) => {
+        if (d.title === "has parent") {
+          return styles.linkLabel.parent.fill;
+        } else {
+          return styles.linkLabel.fill;
+        }
       })
       .style("font-size", styles.linkLabel.fontSize)
 
@@ -383,8 +405,10 @@ async function Graph(view) {
       }
     });
 
-    nodeLabel.attr("x", (data) => data.x).attr("y", (data) => data.y).style("font-size", styles.nodeLabel.fontSize)
-
+    nodeLabel
+      .attr("x", (data) => data.x)
+      .attr("y", (data) => data.y)
+      .style("font-size", styles.nodeLabel.fontSize);
   });
   async function render(view) {
     updateData(view);
@@ -404,12 +428,11 @@ async function Graph(view) {
 
             .attr("class", "linkSVG")
             .attr("marker-end", (d) => {
-              if (d.title === 'has parent') {
+              if (d.title === "has parent") {
                 return d.source == d.target
                   ? "url(#self-arrow-parent)"
                   : "url(#end-arrow-parent)";
-              }
-              else {
+              } else {
                 return d.source == d.target
                   ? "url(#self-arrow)"
                   : "url(#end-arrow)";
@@ -457,6 +480,8 @@ async function Graph(view) {
             .attr("class", "node")
             .attr("stroke", (d) => styles.node.borderColor)
             .attr("r", styles.node.radius)
+            .attr("cursor", styles.node.cursor)
+
             .call(drag(simulation))
             .on("click", clicked)
             .on("contextmenu", rightClicked);
@@ -476,7 +501,7 @@ async function Graph(view) {
             .append("text")
             .attr("class", "nodeLabel")
 
-            .text(d => {
+            .text((d) => {
               if (d.title.length > 25) {
                 return d.title.slice(0, 25) + "...";
               }
@@ -505,13 +530,11 @@ async function Graph(view) {
             .append("text")
             .text((link) => link.title)
             // .on("click", clicked)
-            .style("fill", d => {
-              console.log(d)
-              if (d.title === 'has parent') {
-                return "red"
-              }
-              else {
-                return "#fff"
+            .style("fill", (d) => {
+              if (d.title === "has parent") {
+                return "red";
+              } else {
+                return "#fff";
               }
             })
 

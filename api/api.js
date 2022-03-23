@@ -6,7 +6,20 @@ const verifyAccess = require("./middleware/verifyAccess.js");
 //----------InitDB----------//
 
 // Bodyparser
-api.use(bodyParser.json());
+// api.use(bodyParser.json());
+api.use(
+  bodyParser.json({
+    limit: "50mb",
+  })
+);
+
+api.use(
+  bodyParser.urlencoded({
+    limit: "50mb",
+    parameterLimit: 1000000,
+    extended: true,
+  })
+);
 
 //----------auth----------//
 api.use("/auth", require("./apiDefinitions/auth.js")); //auth

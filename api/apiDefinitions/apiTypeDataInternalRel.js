@@ -2,17 +2,15 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 const create = require("./apiFunctions/create.js");
+const createBulkRel = require("./apiFunctions/createBulkRel.js");
 const readAll = require("./apiFunctions/readAll.js");
 const reqQueryExists = require("./apiFunctions/reqQueryExists.js");
-const reqParamExists = require("./apiFunctions/reqParamExists.js");
 const readById = require("./apiFunctions/readById.js");
 const readByParentId = require("./apiFunctions/readByParentId.js");
 const reqBodyExists = require("./apiFunctions/reqBodyExists.js");
-const propKeysExists = require("./apiFunctions/propKeysExists.js");
 const propsExists = require("./apiFunctions/propsExists.js");
 const parentIdExist = require("./apiFunctions/parentIdExist.js");
 const isParentIdValid = require("./apiFunctions/isParentIdValid.js");
-const isTarget = require("./apiFunctions/isTarget.js");
 const isParent = require("./apiFunctions/isParent.js");
 const idExist = require("./apiFunctions/idExist.js");
 const isNotEqual = require("./apiFunctions/isNotEqual.js");
@@ -63,6 +61,19 @@ router.post("/create", async (req, res) => {
   }
   //create
   await create(routerType, reqBody, res);
+});
+
+router.post("/createBulkRel", async (req, res) => {
+  const { objects } = req.body;
+  const reqBody = { objects };
+
+  //check if keys/values exist in reqBody
+  if (!(await reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //create
+  await createBulkRel(routerType, reqBody, res);
 });
 
 router.get("/", async (req, res) => {

@@ -7,11 +7,13 @@ const styles = {
         fill: "#FFCCCC",
         strokeWidth: 0,
         borderColor: "white",
+        cursor: "pointer",
+
     },
     nodeLabel: {
         textAnchor: "middle",
         fill: "rgba(0,0,0,.9)",
-        fontSize: "15px",
+        fontSize: "13px",
     },
     link: {
         length: 200,

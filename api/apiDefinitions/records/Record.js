@@ -191,8 +191,28 @@ class Record {
     const defTypeFiles = fs.readdirSync(dir);
 
     defTypeFiles.forEach(function (file) {
-      let defTypeFile = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-      if (defTypeFile[propKey] === propVal) {
+      let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      if (defType[propKey] === propVal) {
+        delete defType.created;
+        delete defType.updated;
+        defType.id = file.slice(0, -5);
+        defTypes.push(defType);
+      }
+    });
+
+    return defTypes;
+  }
+
+  async getByTitle(title) {
+    const defTypes = [];
+
+    //defTypes
+    const dir = `../db/${this.defType}/`;
+    const defTypeFiles = fs.readdirSync(dir);
+
+    defTypeFiles.forEach(function (file) {
+      let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
+      if (defType.title === title) {
         delete defType.created;
         delete defType.updated;
         defType.id = file.slice(0, -5);
