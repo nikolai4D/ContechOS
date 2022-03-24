@@ -11,6 +11,7 @@ import Actions from "../../store/Actions.js";
 import ActivateContextMenu from "./graphComponents/ActivateContextMenu.js";
 import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
 import ActivateFormRead from "./graphComponents/ActivateFormRead.js";
+import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
@@ -244,9 +245,16 @@ async function Graph(view) {
 
       ActivateFormRead(d3);
 
+      d3.select("#penFormEdit").on("click", e => {
+        console.log("click!", e)
+        ActivateFormEdit(d3);
+
+      })
+
       d3.selectAll(".close-button").on("click", (e) => {
         d3.selectAll(".FormMenuContainer").remove();
       });
+
     }
   };
 
