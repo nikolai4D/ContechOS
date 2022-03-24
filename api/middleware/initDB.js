@@ -1,5 +1,5 @@
 const fs = require("fs");
-const Record = require("../apiDefinitions/records/UserRecord");
+const Record = require("../records/UserRecord");
 const userRecord = new Record("user");
 
 const initDB = (req, res, next) => {
