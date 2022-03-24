@@ -1,10 +1,10 @@
 export default class Login {
-  constructor() {
-    document.title = "Login";
-  }
+    constructor() {
+        document.title = "Login";
+    }
 
-  async getTemplate() {
-    return `
+    async getTemplate() {
+        return `
         <div class="h-100 row align-items-center">
             <div class="container">
                 <div class="row">
@@ -32,5 +32,5 @@ export default class Login {
         </div>
 
         `;
-  }
+    }
 }

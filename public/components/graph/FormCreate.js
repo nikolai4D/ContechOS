@@ -1,8 +1,8 @@
-import Actions from "../store/Actions.js";
+import Actions from "../../store/Actions.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
 import getDefType from "./graphFunctions/getDefType.js";
-import { State } from '../store/State.js';
+import { State } from '../../store/State.js';
 import getFieldProperties from './graphFunctions/getFieldProperties.js';
 import { getDefTypeFromSessionStorage } from './graphFunctions/getDefTypeFromSessionStorage.js';
 

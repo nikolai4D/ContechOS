@@ -1,5 +1,3 @@
-import styles from './styles.js';
-
 const selfArrow = (g) => {
     return g.append("svg:defs")
         .append("svg:marker")

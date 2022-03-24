@@ -1,5 +1,5 @@
-import { State } from '../../store/State.js';
-import { FormRead } from '../FormRead.js';
+import { State } from '../../../store/State.js';
+import { FormCreate } from '../FormCreate.js';
 
 export default function (d3) {
     d3.select(".contextMenuContainer").remove();
@@ -8,8 +8,8 @@ export default function (d3) {
     return d3.select("#root")
         .append("div")
         .attr("class", "FormMenuContainer")
-        .html(FormRead(State.clickedObjEvent, State.contextMenuItem, State.clickedObj))
-        .select(".formRead")
+        .html(FormCreate(State.clickedObjEvent, State.contextMenuItem, State.clickedObj))
+        .select(".formCreate")
         .style("top", (State.clickedObj.clientY + 10) + "px")
         .style("left", State.clickedObj.clientX + "px");
 }

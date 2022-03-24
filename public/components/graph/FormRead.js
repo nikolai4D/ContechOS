@@ -1,5 +1,5 @@
-import Actions from "../store/Actions.js";
-import { State } from '../store/State.js';
+import Actions from "../../store/Actions.js";
+import { State } from '../../store/State.js';
 
 
 export function FormRead() {
