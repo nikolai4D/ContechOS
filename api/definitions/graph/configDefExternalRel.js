@@ -1,9 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
-
 const helpers = require("../helpers/helpers.js");
-
 const routerType = "configDefExternalRel";
 const routerTypeSource = "configDef";
 const routerTypeTarget = routerTypeSource;

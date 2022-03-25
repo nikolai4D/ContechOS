@@ -2,29 +2,7 @@ const express = require("express");
 const router = express.Router();
 const bodyParser = require("body-parser");
 
-const {
-  create,
-  createBulk,
-  createBulkRel,
-  idExist,
-  ifIsSourceThenDeleteRels,
-  isNotEqual,
-  isParent,
-  isParentIdValid,
-  isTarget,
-  parentIdExist,
-  propKeysExist,
-  propsExists,
-  readAll,
-  readById,
-  readByLinkToTarget,
-  readByParentId,
-  readSourcesToTarget,
-  remove,
-  reqBodyExists,
-  reqParamExists,
-  reqQueryExists,
-} = require("../helpers/helpers.js");
+const helpers = require("../helpers/helpers.js");
 
 const routerType = "propType";
 
@@ -36,38 +14,38 @@ router.post("/create", async (req, res) => {
   const { title } = req.body;
   const reqBody = { title };
   //check if keys/values exist in reqBody
-  if (!(await reqBodyExists(reqBody, res))) {
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
     return res.statusCode;
   }
 
   //create
-  await create(routerType, reqBody, res);
+  await helpers.create(routerType, reqBody, res);
 });
 
 router.get("/", async (req, res) => {
   //check if request includes query param id
-  if (!(await reqQueryExists(req.query, "id"))) {
+  if (!(await helpers.reqQueryExists(req.query, "id"))) {
     //no id -> read all
-    return await readAll(routerType, res);
+    return await helpers.readAll(routerType, res);
   }
   //check if included id exists
-  if (!(await idExist(routerType, req.query.id, res))) {
+  if (!(await helpers.idExist(routerType, req.query.id, res))) {
     return res.statusCode;
   }
   //read included id
-  await readById(routerType, req.query.id, res);
+  await helpers.readById(routerType, req.query.id, res);
 });
 
 router.delete("/:id", async (req, res) => {
-  if (!(await idExist(routerType, req.params.id, res))) {
+  if (!(await helpers.idExist(routerType, req.params.id, res))) {
     return res.statusCode;
   }
 
-  if (!(await isParent(routerType, req.params.id, res))) {
+  if (!(await helpers.isParent(routerType, req.params.id, res))) {
     return res.statusCode;
   }
 
-  await remove(routerType, req.params.id, res);
+  await helpers.remove(routerType, req.params.id, res);
 });
 
 module.exports = router;

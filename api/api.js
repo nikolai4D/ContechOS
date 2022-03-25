@@ -78,7 +78,7 @@ api.use(
   require("./definitions/graph/configObjInternalRel.js")
 ); //configObjInternalRel
 api.use(
-  "/objectInteralRel",
+  "/objectInternalRel",
   require("./definitions/graph/configObjInternalRel.js")
 ); //configObjInternalRel
 api.use(
