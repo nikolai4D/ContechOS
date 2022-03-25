@@ -131,6 +131,7 @@ const createDropdownKeyValue = (
 
   let allKeyIdsByParent = [];
   let propsNodesRels = [];
+  console.log()
   if (defType.defTypeTitle === "configObjInternalRel") {
     let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
@@ -258,7 +259,7 @@ const createDropdownKeyValue = (
       valueOfAttribute.key.defTypeId
     ).defTypeTitle;
     allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`];
-
+    console.log(titleOfKeyAttribute, State.clickedObj)
     let allKeysByParent = propsNodesRels.filter((node) => {
       return allKeyIdsByParent.includes(node.id);
     });

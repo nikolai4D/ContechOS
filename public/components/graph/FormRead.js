@@ -3,6 +3,7 @@ import { State } from '../../store/State.js';
 
 
 export function FormRead() {
+    console.log(State.clickedObj)
     let { defId, defTypeTitle } = State.clickedObj
     let definitions = JSON.parse(sessionStorage.getItem('definitions'))[0]
     let def = definitions.defs.find((obj) => obj.defId === defId);
@@ -39,7 +40,6 @@ export function FormRead() {
             let props = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
             let propKey = '';
             let propVal = '';
-
             anInput = `<div class="border border-1 rounded-2 p-2">` + State.clickedObj[Object.keys(attribute)[0]].map(element => {
                 propKey = props.find(prop => prop.id === Object.keys(element)[0])
                 propVal = props.find(prop => prop.id === Object.values(element)[0])
