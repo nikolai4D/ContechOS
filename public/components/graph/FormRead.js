@@ -31,8 +31,12 @@ export function FormRead() {
                 let configs = JSON.parse(sessionStorage.getItem('configs'))[0].nodes;
                 parent = configs.find(config => config.id === parentId)
             }
-            else {
+            else if (parentId.substring(0, 1) === 't') {
                 let datas = JSON.parse(sessionStorage.getItem('datas'))[0].nodes;
+                parent = datas.find(data => data.id === parentId)
+            }
+            else {
+                let datas = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
                 parent = datas.find(data => data.id === parentId)
             }
             aLabel = `Parent`
