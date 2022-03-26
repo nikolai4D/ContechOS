@@ -62,13 +62,12 @@ export function FormEdit() {
 
     const template = `
   <div class="formCreate position-absolute">
-        <div><h5>+ ${defType.defTypeDisplayTitle.replace('Internal ', '').replace('External ', '')}</h5></div>
-        <div class="card">
+        <div class="card" tabindex="-1">
         <div style="display:flex;justify-content: right;/*! align-items: right; */padding-top: 0.5em;padding-right: 0.5em;">   
          <i id="penFormEditSave" class="bi bi-check-lg text-black opacity-25" style="font-size:1.75em; margin-top:-0.33em;"></i>    
          <button type="button" class="btn-close close-button" aria-label="Close"></button>
          </div>
-        <div class="card-body" style="padding: 0rem 1rem 1rem 1rem;">
+        <div class="card-body" style="padding: 0rem 1rem 1rem 1rem;  margin-top:-0.55em;">
            <form id="formCreate" >
              ${fieldsArray.join("")}
             </form>
@@ -272,7 +271,7 @@ const createDropdownKeyValue = (
         let allKeysByParent = propsNodesRels.filter((node) => {
             return allKeyIdsByParent.includes(node.id);
         });
-
+        dropDownHtmlString += `<div class="border border-1 rounded-2 p-2">Properties>`
         allKeysByParent.forEach((propKey) => {
             let filtered = propsNodesRels.filter(
                 (node) => node.parentId === propKey.id
@@ -286,7 +285,9 @@ const createDropdownKeyValue = (
                     propKey.id,
                 );
             }
-        });
+        })
+        dropDownHtmlString += `</div>`;
+
     } else if (State.clickedObj.defTypeTitle === "typeData") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
@@ -339,6 +340,8 @@ const createDropdownKeyValue = (
             return allKeyIdsByParent.includes(node.id);
         });
 
+        dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
+
         allKeysByParent.forEach((propKey) => {
             let filtered = propsNodesRels.filter(
                 (node) => node.parentId === propKey.id
@@ -363,6 +366,8 @@ const createDropdownKeyValue = (
                 );
             }
         });
+        dropDownHtmlString += `</div>`
+
     }
     else if (State.clickedObj.defTypeTitle === "instanceData") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;

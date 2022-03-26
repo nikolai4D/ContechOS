@@ -82,7 +82,6 @@ export function FormRead() {
 
     const template = `
     <div class="formRead position-absolute">
-        <div><h5></h5></div>
         <div class="card" tabindex="-1">
         <div style="display:flex;justify-content: right;/*! align-items: right; */padding-top: 0.5em;padding-right: 0.5em;">    <i id="penFormEdit" class="bi bi-pencil-fill text-black opacity-25" style="padding-right:0.3em;"></i>    <button type="button" class="btn-close close-button" aria-label="Close"></button>
         </div>
