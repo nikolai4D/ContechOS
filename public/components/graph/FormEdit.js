@@ -1,4 +1,3 @@
-import Actions from "../../store/Actions.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
 import getDefType from "./graphFunctions/getDefType.js";
@@ -71,7 +70,7 @@ export function FormEdit() {
             );
         } else if (fieldType === "externalNodeClick") {
             let htmlString = `<div style="display: flex; padding: 0.5em">
-    <label class="form-label" for="field_${keyOfAttribute}">${displayTitle}:</label>
+    <label class="form-label" for="field_${keyOfAttribute}">${displayTitle}</label>
     <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
 </div>`;
             fieldsArray.push(htmlString);

@@ -139,7 +139,8 @@
                   "defTypeId": 3,
                   "returnValue": "id"
                 },
-                "fieldTypeId": 4
+                "fieldTypeId": 4,
+                "displayTitle": "Properties"
               }
             },
             {
@@ -195,7 +196,8 @@
                   "defTypeId": 3,
                   "returnValue": "id"
                 },
-                "fieldTypeId": 4
+                "fieldTypeId": 4,
+                "displayTitle": "Properties"
               }
             }
           ],
@@ -232,7 +234,8 @@
                   "defTypeId": 3,
                   "returnValue": "id"
                 },
-                "fieldTypeId": 4
+                "fieldTypeId": 4,
+                "displayTitle": "Properties"
               }
             },
             {
@@ -375,7 +378,8 @@
                   "returnValue": "id"
                 },
                 "fieldTypeId": 4,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
               }
             },
 
@@ -449,7 +453,8 @@
                   "returnValue": "id"
                 },
                 "fieldTypeId": 4,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
               }
             },
 
@@ -523,7 +528,8 @@
                   "returnValue": "id"
                 },
                 "fieldTypeId": 4,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
               }
             },
             {
@@ -578,7 +584,8 @@
                   "returnValue": "id"
                 },
                 "fieldTypeId": 4,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
               }
             },
 
@@ -634,7 +641,8 @@
                   "returnValue": "id"
                 },
                 "fieldTypeId": 4,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
               }
             },
 
@@ -691,7 +699,8 @@
                 },
 
                 "fieldTypeId": 4,
-                "fieldProperties": [3]
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
               }
             },
             {

@@ -11,12 +11,16 @@ export function FormRead() {
 
     let defType = def.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
     defType.defId = defId;
+    const { fieldTypes, fieldProperties } = definitions.fields;
+    let defTypeAttributes = defType.attributes;
 
     let listWithAttributes = defType.attributes.map(attribute => {
         let anInput = '';
         let aLabel = '';
+        let displayTitle = (Object.values(attribute)[0].displayTitle) ? Object.values(attribute)[0].displayTitle : Object.keys(attribute)[0];
+
         if (State.clickedObj[Object.keys(attribute)[0]].length === 0) {
-            return `    <div class="form-text">+ ${[Object.keys(attribute)[0]]}</div>
+            return `    <div class="form-text">+ ${displayTitle}</div>
             `
         }
         else if (Object.keys(attribute)[0] === 'parentId') {
@@ -31,12 +35,12 @@ export function FormRead() {
                 let datas = JSON.parse(sessionStorage.getItem('datas'))[0].nodes;
                 parent = datas.find(data => data.id === parentId)
             }
-            aLabel = 'parent'
+            aLabel = `Parent`
             anInput = `<input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${parent.title}">
      `
         }
         else if (Object.keys(attribute)[0] === 'props') {
-            aLabel = `${Object.keys(attribute)[0]}`
+            aLabel = `${displayTitle}`
             let props = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
             let propKey = '';
             let propVal = '';
@@ -49,7 +53,7 @@ export function FormRead() {
         }
 
         else if (Array.isArray(State.clickedObj[Object.keys(attribute)[0]])) {
-            aLabel = [Object.keys(attribute)[0]]
+            aLabel = displayTitle
             let propVal = '';
 
             let props = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
@@ -63,7 +67,7 @@ export function FormRead() {
         }
 
         else {
-            aLabel = [Object.keys(attribute)[0]]
+            aLabel = displayTitle;
             anInput = `
             <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${State.clickedObj[Object.keys(attribute)[0]]}">
         `
