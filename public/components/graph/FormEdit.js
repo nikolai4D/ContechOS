@@ -81,8 +81,23 @@ export function FormEdit() {
 const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
     if (displayTitle === 'Parent') {
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
+        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0].nodes;
+        let propNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+        let parentObj;
         let parentId = State.clickedObj.parentId;
-        let parentObj = configNodes.find((node) => node.id === parentId);
+        let parentObjConfig = configNodes.find((node) => node.id === parentId);
+        let parentObjType = typeNodes.find((node) => node.id === parentId);
+        let parentObjProp = propNodes.find((node) => node.id === parentId);
+        if (parentObjConfig) {
+            parentObj = parentObjConfig
+        }
+        else if (parentObjType) {
+            parentObj = parentObjType
+        }
+        else if (parentObjProp) {
+            parentObj = parentObjProp;
+        }
+
         fieldsArray.push(inputField(displayTitle, keyOfAttr, parentObj.title, 'disabled'));
     }
     else {
@@ -92,19 +107,34 @@ const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
 };
 
 const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
+    let attr = null;
+    if (displayTitle === 'Parent') {
+        attr = "disabled"
+    }
     let allNodesByDefType = getDefTypeFromSessionStorage(defType);
+    let chosenPropKeys = State.clickedObj[keyOfAttribute]
+
+    allNodesByDefType = allNodesByDefType.map(node => {
+        if (node.id === chosenPropKeys) {
+            node.selected = true
+        }
+        return node
+    }
+    )
+
+
     let dropDownString = "";
     if (defType.defTypeTitle === "configObj") {
         dropDownString = dropDown(
             displayTitle,
             keyOfAttribute,
             allNodesByDefType,
-            null,
+            attr,
             `${keyOfAttribute}_typeData`,
             "_typeData"
         );
     } else {
-        dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType);
+        dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType, attr);
     }
     fieldsArray.push(dropDownString);
     fieldsArray.push(
@@ -261,7 +291,7 @@ const createDropdownKeyValue = (
 
     } else if (State.clickedObj.defTypeTitle === "configDef") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-
+        let props = State.clickedObj.props
         let titleOfKeyAttribute = getDefType(
             valueOfAttribute.key.defId,
             valueOfAttribute.key.defTypeId
@@ -271,12 +301,22 @@ const createDropdownKeyValue = (
         let allKeysByParent = propsNodesRels.filter((node) => {
             return allKeyIdsByParent.includes(node.id);
         });
-        dropDownHtmlString += `<div class="border border-1 rounded-2 p-2">Properties>`
+        dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
         allKeysByParent.forEach((propKey) => {
             let filtered = propsNodesRels.filter(
                 (node) => node.parentId === propKey.id
             );
             if (filtered.length > 0) {
+                filtered = filtered.map(node => {
+                    let selected = props.find(prop =>
+                        node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+                    )
+                    if (selected) {
+                        node.selected = true
+                    }
+                    return node
+                }
+                )
                 dropDownHtmlString += dropDown(
                     propKey.title,
                     propKey.title,
@@ -291,6 +331,7 @@ const createDropdownKeyValue = (
     } else if (State.clickedObj.defTypeTitle === "typeData") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
+        let props = State.clickedObj.props;
 
         let getParent = State.clickedObj.parentId;
 
@@ -300,12 +341,25 @@ const createDropdownKeyValue = (
         let allKeysByParent = propsNodesRels.filter((node) => {
             return instanceDataPropKeys.includes(node.id);
         });
+        dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
 
         allKeysByParent.forEach((propKey) => {
             let filtered = propsNodesRels.filter(
                 (node) => node.parentId === propKey.id
             );
+            filtered = filtered.map(node => {
+                let selected = props.find(prop =>
+                    node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+                )
+                if (selected) {
+                    node.selected = true
+                }
+                return node
+            }
+            )
             if (filtered.length > 0) {
+
+
                 dropDownHtmlString += dropDown(
                     propKey.title,
                     propKey.title,
@@ -315,6 +369,8 @@ const createDropdownKeyValue = (
                 );
             }
         });
+        dropDownHtmlString += `</div>`;
+
     }
     else if (State.clickedObj.defTypeTitle === "configObj") {
         // getting all props nodes
@@ -327,7 +383,6 @@ const createDropdownKeyValue = (
         let parentId = State.clickedObj.parentId;
 
         let parentObj = configNodes.find((node) => node.id === parentId);
-        console.log(parentObj)
         // getting title of key of attribute
         let titleOfKeyAttribute = getDefType(
             valueOfAttribute.key.defId,
@@ -372,15 +427,21 @@ const createDropdownKeyValue = (
     else if (State.clickedObj.defTypeTitle === "instanceData") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
+        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0].nodes;
 
-        let getParent = State.clickedObj.parentId;
+        let props = State.clickedObj.props
+        let parentId = State.clickedObj.parentId;
 
-        let getParentsParent = configNodes.filter((node) => node.id === getParent);
-        let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
+        let parentObj = typeNodes.find((node) => node.id === parentId);
+        let parentParentObj = configNodes.filter((node) => node.id === parentObj.parentId);
+
+        console.log(parentParentObj, parentObj)
+        let instanceDataPropKeys = parentParentObj[0].instanceDataPropKeys;
 
         let allKeysByParent = propsNodesRels.filter((node) => {
             return instanceDataPropKeys.includes(node.id);
         });
+        dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
 
         allKeysByParent.forEach((propKey) => {
             let filtered = propsNodesRels.filter(
@@ -406,6 +467,7 @@ const createDropdownKeyValue = (
                 );
             }
         });
+        dropDownHtmlString += `</div>`
     }
 
     fieldsArray.push(dropDownHtmlString);
