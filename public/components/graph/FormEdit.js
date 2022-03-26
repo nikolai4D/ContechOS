@@ -98,16 +98,10 @@ export function FormEdit() {
 
 const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
     if (displayTitle === 'Parent') {
-        // export default function inputField(title, key, value = "", attr = null) {
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
-
         let parentId = State.clickedObj.parentId;
-
         let parentObj = configNodes.find((node) => node.id === parentId);
-        console.log(parentObj)
-
         fieldsArray.push(inputField(displayTitle, keyOfAttr, parentObj.title, 'disabled'));
-
     }
     else {
 

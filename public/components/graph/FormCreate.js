@@ -62,10 +62,15 @@ export function FormCreate() {
         defType
       );
     } else if (fieldType === "externalNodeClick") {
-      let htmlString = `<div style="display: flex; padding: 0.5em">
-    <label class="form-label" for="field_${keyOfAttribute}">${displayTitle}:</label>
-    <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
-</div>`;
+
+      let htmlString =
+        `<div style="display: flex; padding: 0.5em">
+          <div>
+            <label class="form-text" for="field_${keyOfAttribute}">${displayTitle}:</label>
+            <input type="text" id="field_${keyOfAttribute}" class="form-control-plaintext  p-1 bg-light rounded" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
+          </div>
+        </div>
+    `;
       fieldsArray.push(htmlString);
     }
   }

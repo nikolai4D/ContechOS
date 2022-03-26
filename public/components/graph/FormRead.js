@@ -32,7 +32,7 @@ export function FormRead() {
                 parent = datas.find(data => data.id === parentId)
             }
             aLabel = 'parent'
-            anInput = `<input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${parent.title}">
+            anInput = `<input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${parent.title}">
      `
         }
         else if (Object.keys(attribute)[0] === 'props') {
@@ -43,8 +43,8 @@ export function FormRead() {
             anInput = `<div class="border border-1 rounded-2 p-2">` + State.clickedObj[Object.keys(attribute)[0]].map(element => {
                 propKey = props.find(prop => prop.id === Object.keys(element)[0])
                 propVal = props.find(prop => prop.id === Object.values(element)[0])
-                return `<label for="staticEmail"  class="form-text">${propKey.title}</label>
-                <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${propVal.title}">`
+                return `<label class="form-text">${propKey.title}</label>
+                <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded"  value="${propVal.title}">`
             }).join("") + "</div>";
         }
 
@@ -57,7 +57,7 @@ export function FormRead() {
             anInput = State.clickedObj[Object.keys(attribute)[0]].map(element => {
                 propVal = props.find(prop => prop.id === element);
                 return `
-                    <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${propVal.title}">
+                    <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${propVal.title}">
                 `
             }).join("")
         }
@@ -65,12 +65,12 @@ export function FormRead() {
         else {
             aLabel = [Object.keys(attribute)[0]]
             anInput = `
-            <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" id="staticEmail" value="${State.clickedObj[Object.keys(attribute)[0]]}">
+            <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${State.clickedObj[Object.keys(attribute)[0]]}">
         `
         }
         return `
             <div>
-                <label for="staticEmail"  class="form-text">${aLabel}</label>
+                <label class="form-text">${aLabel}</label>
             <div>
             ${anInput}
             </div> </div>`})

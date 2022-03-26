@@ -1,6 +1,9 @@
 export default function inputField(title, key, value = "", attr = null) {
-    return `<div style="display: flex; padding: 0.5em">
-        <label class="form-label" id="field_${key}" for="field_${key}">${title}:</label>
-        <input type="text" class="form-control" name="field_${key}" value="${value}" ${attr}><br>
-    </div>`;
+    return `<div>
+    <div>
+        <label class="form-text" id="field_${key}" for="field_${key}">${title}:</label>
+        <input type="text" class="form-control-plaintext  p-1 bg-light rounded" name="field_${key}" value="${value}" ${attr}>
+    </div>
+    </div>
+    `;
 };
