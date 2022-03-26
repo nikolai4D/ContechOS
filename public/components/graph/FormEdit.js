@@ -2,7 +2,6 @@ import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
 import getDefType from "./graphFunctions/getDefType.js";
 import { State } from '../../store/State.js';
-import getFieldProperties from './graphFunctions/getFieldProperties.js';
 import { getDefTypeFromSessionStorage } from './graphFunctions/getDefTypeFromSessionStorage.js';
 
 export function FormEdit() {
@@ -27,18 +26,6 @@ export function FormEdit() {
         let fieldType = fieldTypes.find((obj) => obj.fieldTypeId === fieldTypeId)
             .type;
 
-        let fieldPropertiesOfAttribute = getFieldProperties(
-            valueOfAttribute,
-            fieldProperties
-        );
-
-        // if (fieldPropertiesOfAttribute.some((obj) => obj.type === "hidden")) {
-        //     continue;
-        // }
-        // if (fieldPropertiesOfAttribute.some((obj) => obj.type === "dependant")) {
-        //     fieldsArray.push(`<div id='field_${keyOfAttribute}'></div>`);
-        //     // continue;
-        // }
         if (defId === 2) {
         }
 
@@ -58,10 +45,6 @@ export function FormEdit() {
                 displayTitle
             );
         } else if (fieldType === "dropDownKeyValue") {
-            console.log(fieldsArray,
-                valueOfAttribute,
-                State.clickedObj,
-                defType)
             createDropdownKeyValue(
                 fieldsArray,
                 valueOfAttribute,
@@ -110,7 +93,6 @@ const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
 
 const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
     let allNodesByDefType = getDefTypeFromSessionStorage(defType);
-
     let dropDownString = "";
     if (defType.defTypeTitle === "configObj") {
         dropDownString = dropDown(
@@ -132,6 +114,19 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
 
 const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
     let allNodesByDefType = getDefTypeFromSessionStorage(defType);
+
+    let chosenPropKeys = State.clickedObj[keyOfAttribute]
+
+    allNodesByDefType = allNodesByDefType.map(node => {
+        let selected = chosenPropKeys.find(prop => node.id === prop
+        )
+        if (selected) {
+            node.selected = true
+        }
+        return node
+    }
+    )
+
     let dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType, "multiple");
     fieldsArray.push(dropDownString);
 };
@@ -145,7 +140,6 @@ const createDropdownKeyValue = (
 
     let allKeyIdsByParent = [];
     let propsNodesRels = [];
-    console.log(State.clickedObj.defTypeTitle)
     if (defType.defTypeTitle === "configObjInternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
@@ -325,6 +319,9 @@ const createDropdownKeyValue = (
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
 
+        let props = State.clickedObj.props;
+
+
         let parentId = State.clickedObj.parentId;
 
         let parentObj = configNodes.find((node) => node.id === parentId);
@@ -334,7 +331,7 @@ const createDropdownKeyValue = (
             valueOfAttribute.key.defId,
             valueOfAttribute.key.defTypeId
         ).defTypeTitle;
-        console.log(titleOfKeyAttribute)
+
         allKeyIdsByParent = parentObj[`${titleOfKeyAttribute}s`];
 
         let allKeysByParent = propsNodesRels.filter((node) => {
@@ -345,6 +342,16 @@ const createDropdownKeyValue = (
             let filtered = propsNodesRels.filter(
                 (node) => node.parentId === propKey.id
             );
+            filtered = filtered.map(node => {
+                let selected = props.find(prop =>
+                    node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+                )
+                if (selected) {
+                    node.selected = true
+                }
+                return node
+            }
+            )
             if (filtered.length > 0) {
                 dropDownHtmlString += dropDown(
                     propKey.title,
@@ -373,6 +380,16 @@ const createDropdownKeyValue = (
             let filtered = propsNodesRels.filter(
                 (node) => node.parentId === propKey.id
             );
+            filtered = filtered.map(node => {
+                let selected = props.find(prop =>
+                    node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+                )
+                if (selected) {
+                    node.selected = true
+                }
+                return node
+            }
+            )
             if (filtered.length > 0) {
                 dropDownHtmlString += dropDown(
                     propKey.title,
