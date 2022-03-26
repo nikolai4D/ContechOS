@@ -10,6 +10,8 @@ const routerType = "instanceData";
 router.use(bodyParser.json());
 
 //APIs
+
+//CREATE
 router.post("/create", async (req, res) => {
   const { title, props, parentId } = req.body;
   const reqBody = { title, props, parentId };
@@ -31,6 +33,8 @@ router.post("/create", async (req, res) => {
   //create
   await helpers.create(routerType, reqBody, res);
 });
+
+//READ
 
 router.get("/", async (req, res) => {
   //check if request includes query param parentId
@@ -90,6 +94,37 @@ router.post("/sourcesToTarget", async (req, res) => {
 
   return await helpers.readSourcesToTarget(routerType, targetId, res);
 });
+
+//UPDATE
+
+router.put("/update", async (req, res) => {
+  const { title, props, parentId, id } = req.body;
+  const reqBody = { title, props, parentId, id };
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //check if parentId exists
+  if (!(await helpers.parentIdExist(routerType, parentId, res))) {
+    return res.statusCode;
+  }
+
+  //check if id exists
+  if (!(await helpers.idExist(routerType, id, res))) {
+    return res.statusCode;
+  }
+
+  //check if props exists
+  if (!(await helpers.propsExists(parentId, routerType, props, res))) {
+    return res.statusCode;
+  }
+
+  //update
+  await helpers.update(routerType, reqBody, res);
+});
+
+//DELETE
 
 router.delete("/:id", async (req, res) => {
   if (!(await helpers.idExist(routerType, req.params.id, res))) {

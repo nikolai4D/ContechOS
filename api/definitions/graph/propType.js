@@ -36,6 +36,27 @@ router.get("/", async (req, res) => {
   await helpers.readById(routerType, req.query.id, res);
 });
 
+//UPDATE
+
+router.put("/update", async (req, res) => {
+  const { title, id } = req.body;
+  const reqBody = { title, id };
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //check if id exists
+  if (!(await helpers.idExist(routerType, id, res))) {
+    return res.statusCode;
+  }
+
+  //update
+  await helpers.update(routerType, reqBody, res);
+});
+
+//DELETE
+
 router.delete("/:id", async (req, res) => {
   if (!(await helpers.idExist(routerType, req.params.id, res))) {
     return res.statusCode;

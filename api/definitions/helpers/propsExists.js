@@ -5,44 +5,46 @@ async function checkPropsAndPropKeys(
   propKeysTitle
 ) {
   const Record = require("../../records/Record.js");
+
+  if (routerType === "instanceData") {
+    const parentRouterTypeRecord = new Record("typeData");
+    let foundParentParentIdofProps = (
+      await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
+    ).parentId;
+    foundParentIdofProps = foundParentParentIdofProps;
+  }
   if (
-    routerType === "instanceData" ||
     routerType === "instanceDataExternalRel" ||
     routerType === "instanceDataInternalRel"
   ) {
-    if (routerType === "instanceData") {
-      const parentRouterTypeRecord = new Record("typeData");
-      let foundParentParentIdofProps = (
-        await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-      ).parentId;
-      foundParentIdofProps = foundParentParentIdofProps;
-    }
-    if (routerType === "instanceDataExternalRel") {
-      const parentRouterTypeRecord = new Record("typeDataExternalRel");
-      let foundParentParentIdofProps = (
-        await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-      ).parentId;
-      foundParentIdofProps = foundParentParentIdofProps;
-    }
-    if (routerType === "instanceDataInternalRel") {
-      const parentRouterTypeRecord = new Record("typeDataInternalRel");
-      let foundParentParentIdofProps = (
-        await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-      ).parentId;
-      foundParentIdofProps = foundParentParentIdofProps;
-    }
+    const parentRouterTypeRecord = new Record("typeDataExternalRel");
+    let foundParentParentIdofProps = (
+      await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
+    ).parentId;
+    foundParentIdofProps = foundParentParentIdofProps;
   }
 
-  const propsFound = foundParentIdofProps[propKeysTitle];
+  let propsFound = foundParentIdofProps[propKeysTitle];
 
-  if (!propsFound === foundPropKeys) {
-    res.status(400).send(`props doesn't match propKeys from configOjv`);
+  if (propsFound === undefined) {
+    propsFound = [];
+  }
+
+  //   console.log(foundParentIdofProps, "foundParentIdofProps");
+
+  //   console.log(propKeysTitle, "propKeysTitle");
+  //   console.log(propsFound, "propsFound");
+  //   console.log(foundPropKeys, "foundPropKeys");
+
+  if (propsFound.toString() === foundPropKeys.toString()) {
+    return true;
+  } else {
     return false;
   }
 }
 
 async function propsExists(parentId, routerType, props, res) {
-  const Record = require("../records/Record.js");
+  const Record = require("../../records/Record.js");
   const propKeyRecord = new Record("propKey");
   const propKeyArray = propKeyRecord.getAllId();
   const propValRecord = new Record("propVal");
@@ -54,11 +56,10 @@ async function propsExists(parentId, routerType, props, res) {
     return false;
   }
   let foundPropKeys = [];
-  props.forEach(async (obj) => {
-    let propsExists = false;
-    propsExists = false;
+
+  for (const obj of props) {
     if (!typeof obj === "object") {
-      res.status(400).send(`props content must be objects`);
+      res.status(400).send(`propVal must be object`);
       return false;
     }
     //propVal
@@ -75,6 +76,7 @@ async function propsExists(parentId, routerType, props, res) {
       res.status(400).send(`propKey ${propKey} doesn't match propVal.parentId`);
       return false;
     }
+
     foundPropKeys.push(propKey);
 
     //check if propKey exists
@@ -82,19 +84,20 @@ async function propsExists(parentId, routerType, props, res) {
       res.status(400).send(`propKey ${propKey} doesn't exist`);
       return false;
     }
-    propsExists = true;
-  });
+  }
 
-  //check if provided propKeys matches parent propKey specification
+  //If all propVals and propKeys exists ->  check if provided propKeys matches parent propKey specification
 
   //get parent object
   const parentOfProps = await routerTypeRecord.getParent(parentId);
-  let foundParentIdofProps = parentOfProps;
+  const foundParentIdofProps = await parentOfProps;
 
   //get parentParent object
 
+  let testedPropsEqualsPropKeys;
+
   if (routerType === "instanceData") {
-    checkPropsAndPropKeys(
+    testedPropsEqualsPropKeys = await checkPropsAndPropKeys(
       routerType,
       foundParentIdofProps,
       foundPropKeys,
@@ -105,7 +108,7 @@ async function propsExists(parentId, routerType, props, res) {
     routerType === "instanceDataExternalRel" ||
     routerType === "instanceDataInternalRel"
   ) {
-    checkPropsAndPropKeys(
+    testedPropsEqualsPropKeys = await checkPropsAndPropKeys(
       routerType,
       foundParentIdofProps,
       foundPropKeys,
@@ -113,7 +116,7 @@ async function propsExists(parentId, routerType, props, res) {
     );
   }
   if (routerType === "typeData") {
-    checkPropsAndPropKeys(
+    testedPropsEqualsPropKeys = await checkPropsAndPropKeys(
       routerType,
       foundParentIdofProps,
       foundPropKeys,
@@ -124,7 +127,7 @@ async function propsExists(parentId, routerType, props, res) {
     routerType === "typeDataExternalRel" ||
     routerType === "typeDataInternalRel"
   ) {
-    checkPropsAndPropKeys(
+    testedPropsEqualsPropKeys = await checkPropsAndPropKeys(
       routerType,
       foundParentIdofProps,
       foundPropKeys,
@@ -136,18 +139,18 @@ async function propsExists(parentId, routerType, props, res) {
     routerType === "configObjExternalRel" ||
     routerType === "configObjInternalRel"
   ) {
-    checkPropsAndPropKeys(
+    testedPropsEqualsPropKeys = await checkPropsAndPropKeys(
       routerType,
       foundParentIdofProps,
       foundPropKeys,
-      "props"
+      "propKeys"
     );
   }
 
-  if (propsExists) {
+  if (testedPropsEqualsPropKeys) {
     return true;
   } else {
-    res.status(400).send(`props doesn't exist`);
+    res.status(400).send(`props doesn't match propKeys`);
     return false;
   }
 }

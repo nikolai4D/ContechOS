@@ -10,13 +10,6 @@ class GraphRecords {
     const rels = [];
     let nodeTypes = [];
     let relTypes = [];
-    // let nodeType = "";
-    // let relType = "";
-
-    // if (this.nodeGroup === "configs") {
-    //   nodeType = "configDef";
-    //   relType = "configDefInternalRel";
-    // }
 
     if (this.nodeGroup === "configs") {
       nodeTypes = ["configDef", "configObj"];

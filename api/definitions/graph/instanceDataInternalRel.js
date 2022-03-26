@@ -77,6 +77,44 @@ router.get("/", async (req, res) => {
   await helpers.readById(routerType, req.query.id, res);
 });
 
+//UPDATE
+
+router.put("/update", async (req, res) => {
+  const { title, props, parentId, id } = req.body;
+  const reqBody = { title, props, parentId, id };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //check if props exists
+  if (!(await helpers.propsExists(parentId, routerType, props, res))) {
+    return res.statusCode;
+  }
+
+  //check if parentId exists
+  if (!(await helpers.parentIdExist(routerType, parentId, res))) {
+    return res.statusCode;
+  }
+
+  //check if valid parentId
+  if (
+    !(await helpers.isParentIdValid(routerType, parentId, source, target, res))
+  ) {
+    return res.statusCode;
+  }
+  //check if id exists
+  if (!(await helpers.idExist(routerType, id, res))) {
+    return res.statusCode;
+  }
+
+  //update
+  await helpers.update(routerType, reqBody, res);
+});
+
+//DELETE
+
 router.delete("/:id", async (req, res) => {
   if (!(await helpers.idExist(routerType, req.params.id, res))) {
     return res.statusCode;

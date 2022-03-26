@@ -42,6 +42,7 @@ class Record {
   //CREATE
 
   async create(reqBody) {
+    const thisDefType = this.defType;
     const {
       title,
       propKeys,
@@ -168,6 +169,7 @@ class Record {
       JSON.stringify(defType, null, 2)
     );
     defType.id = defTypeId;
+    defType.type = thisDefType;
 
     return defType;
   }
@@ -193,8 +195,8 @@ class Record {
     defTypeFiles.forEach(function (file) {
       let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
       if (defType[propKey] === propVal) {
-        delete defType.created;
-        delete defType.updated;
+        defType.created;
+        defType.updated;
         defType.id = file.slice(0, -5);
         defTypes.push(defType);
       }
@@ -213,8 +215,8 @@ class Record {
     defTypeFiles.forEach(function (file) {
       let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
       if (defType.title === title) {
-        delete defType.created;
-        delete defType.updated;
+        defType.created;
+        defType.updated;
         defType.id = file.slice(0, -5);
         defTypes.push(defType);
       }
@@ -234,8 +236,8 @@ class Record {
     defTypeFiles.forEach(function (file) {
       let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
       if (defType.parentId === parentId) {
-        delete defType.created;
-        delete defType.updated;
+        defType.created;
+        defType.updated;
         defType.id = file.slice(0, -5);
         defType.type = thisDefType;
         defTypes.push(defType);
@@ -408,8 +410,8 @@ class Record {
 
     defTypeFiles.forEach(function (file) {
       let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-      delete defType.created;
-      delete defType.updated;
+      defType.created;
+      defType.updated;
       defType.id = file.slice(0, -5);
       defType.type = thisDefType;
       defTypes.push(defType);
@@ -663,6 +665,129 @@ class Record {
   }
 
   //UPDATE
+
+  async update(reqBody) {
+    const thisDefType = this.defType;
+    const {
+      id,
+      title,
+      propKeys,
+      parentId,
+      props,
+      typeDataPropKeys,
+      instanceDataPropKeys,
+      typeDataRelPropKeys,
+      instanceDataRelPropKeys,
+    } = reqBody;
+
+    const oldFile = await this.getById(id);
+
+    let defTypeId = id;
+
+    const defType = {
+      created: oldFile.created,
+      updated: Date(),
+      title: title,
+    };
+    if (this.defType === "propType") {
+    }
+
+    if (this.defType === "propKey") {
+      defType.parentId = parentId;
+    }
+
+    if (this.defType === "propVal") {
+      defType.parentId = parentId;
+    }
+
+    if (this.defType === "configDef") {
+      defType.propKeys = propKeys;
+    }
+
+    if (this.defType === "configDefInternalRel") {
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.propKeys = propKeys;
+    }
+
+    if (this.defType === "configDefExternalRel") {
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.propKeys = propKeys;
+    }
+
+    if (this.defType === "configObj") {
+      defType.parentId = parentId;
+      defType.props = props;
+      defType.typeDataPropKeys = typeDataPropKeys;
+      defType.instanceDataPropKeys = instanceDataPropKeys;
+    }
+
+    if (this.defType === "configObjInternalRel") {
+      defType.parentId = parentId;
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.props = props;
+      defType.typeDataRelPropKeys = typeDataRelPropKeys;
+      defType.instanceDataRelPropKeys = instanceDataRelPropKeys;
+    }
+
+    if (this.defType === "configObjExternalRel") {
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.parentId = parentId;
+      defType.props = props;
+      defType.typeDataRelPropKeys = typeDataRelPropKeys;
+      defType.instanceDataRelPropKeys = instanceDataRelPropKeys;
+    }
+
+    if (this.defType === "typeData") {
+      defType.parentId = parentId;
+      defType.props = props;
+    }
+
+    if (this.defType === "typeDataInternalRel") {
+      defType.parentId = parentId;
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.props = props;
+    }
+
+    if (this.defType === "typeDataExternalRel") {
+      defType.parentId = parentId;
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.props = props;
+    }
+
+    if (this.defType === "instanceData") {
+      defType.parentId = parentId;
+      defType.props = props;
+    }
+
+    if (this.defType === "instanceDataInternalRel") {
+      defType.parentId = parentId;
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.props = props;
+    }
+
+    if (this.defType === "instanceDataExternalRel") {
+      defType.parentId = parentId;
+      defType.source = oldFile.source;
+      defType.target = oldFile.target;
+      defType.props = props;
+    }
+
+    fs.writeFileSync(
+      `../db/${this.defType}/${defTypeId}.json`,
+      JSON.stringify(defType, null, 2)
+    );
+    defType.id = defTypeId;
+    defType.type = thisDefType;
+
+    return defType;
+  }
 
   //DELETE
 
