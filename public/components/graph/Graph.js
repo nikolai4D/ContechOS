@@ -247,7 +247,6 @@ async function Graph(view) {
       ActivateFormRead(d3);
 
       d3.select("#penFormEdit").on("click", e => {
-        console.log("click!", e)
         ActivateFormEdit(d3);
         if (document.getElementById("field_target")) {
           document.getElementById("field_target").classList.remove("is-invalid");
@@ -333,7 +332,9 @@ async function Graph(view) {
             // contextMenuItemClick(d3);
           }
         }
-
+        d3.selectAll(".close-button").on("click", (e) => {
+          d3.selectAll(".FormMenuContainer").remove();
+        });
       })
 
       d3.selectAll(".close-button").on("click", (e) => {

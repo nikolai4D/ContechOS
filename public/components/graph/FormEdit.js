@@ -64,12 +64,13 @@ export function FormEdit() {
   <div class="formCreate position-absolute">
         <div><h5>+ ${defType.defTypeDisplayTitle.replace('Internal ', '').replace('External ', '')}</h5></div>
         <div class="card">
-        <div class="card-body">
+        <div style="display:flex;justify-content: right;/*! align-items: right; */padding-top: 0.5em;padding-right: 0.5em;">   
+         <i id="penFormEditSave" class="bi bi-check-lg text-black opacity-25" style="font-size:1.75em; margin-top:-0.33em;"></i>    
+         <button type="button" class="btn-close close-button" aria-label="Close"></button>
+         </div>
+        <div class="card-body" style="padding: 0rem 1rem 1rem 1rem;">
            <form id="formCreate" >
              ${fieldsArray.join("")}
-                <button type="submit" class="btn btn-primary formCreateSubmit" value="submit">Submit</button>
-                <button class="btn btn-danger close-button">Close</button>
-
             </form>
         </div>
         </div>
