@@ -33,7 +33,6 @@ export function FormEdit() {
             createInput(displayTitle, fieldsArray, keyOfAttribute, defType, State.clickedObj);
         } else if (fieldType === "dropDown") {
             const { defId, defTypeId } = valueOfAttribute;
-            console.log(defId, defTypeId)
             createDropdown(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId), displayTitle);
 
         } else if (fieldType === "dropDownMultiple") {
@@ -79,6 +78,7 @@ export function FormEdit() {
 }
 
 const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
+
     if (displayTitle === 'Parent') {
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
         let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0].nodes;
@@ -100,9 +100,13 @@ const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
 
         fieldsArray.push(inputField(displayTitle, keyOfAttr, parentObj.title, 'disabled'));
     }
-    else {
+    else if (displayTitle === "Source" || displayTitle === "Target") {
 
+        fieldsArray.push(inputField(displayTitle, keyOfAttr, State.clickedObj[keyOfAttr].title));
+    }
+    else {
         fieldsArray.push(inputField(displayTitle, keyOfAttr, State.clickedObj[keyOfAttr]));
+
     }
 };
 
@@ -435,7 +439,6 @@ const createDropdownKeyValue = (
         let parentObj = typeNodes.find((node) => node.id === parentId);
         let parentParentObj = configNodes.filter((node) => node.id === parentObj.parentId);
 
-        console.log(parentParentObj, parentObj)
         let instanceDataPropKeys = parentParentObj[0].instanceDataPropKeys;
 
         let allKeysByParent = propsNodesRels.filter((node) => {

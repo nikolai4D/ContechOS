@@ -6,10 +6,16 @@ export function FormRead() {
     console.log(State.clickedObj)
     let { defId, defTypeTitle } = State.clickedObj
     let definitions = JSON.parse(sessionStorage.getItem('definitions'))[0]
-    let def = definitions.defs.find((obj) => obj.defId === defId);
+    let defNode = definitions.defs.find((obj) => obj.def === "node");
+    let defRel = definitions.defs.find((obj) => obj.def === "rel");
 
+    let defTypeNode = defNode.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
+    let defTypeRel = defRel.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
 
-    let defType = def.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
+    let defType = defTypeNode ? defTypeNode : defTypeRel;
+    // let defType = def.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
+    let def = defType.abbr.slice(-1) === 'r' ? "rel" : "node"
+
     defType.defId = defId;
     const { fieldTypes, fieldProperties } = definitions.fields;
     let defTypeAttributes = defType.attributes;
@@ -28,20 +34,19 @@ export function FormRead() {
 
             let parent;
             if (parentId.substring(0, 1) === 'c') {
-                let configs = JSON.parse(sessionStorage.getItem('configs'))[0].nodes;
+                let configs = JSON.parse(sessionStorage.getItem('configs'))[0][`${def}s`];
                 parent = configs.find(config => config.id === parentId)
             }
             else if (parentId.substring(0, 1) === 't') {
-                let datas = JSON.parse(sessionStorage.getItem('datas'))[0].nodes;
+                let datas = JSON.parse(sessionStorage.getItem('datas'))[0][`${def}s`];
                 parent = datas.find(data => data.id === parentId)
             }
             else {
-                let datas = JSON.parse(sessionStorage.getItem('props'))[0].nodes;
+                let datas = JSON.parse(sessionStorage.getItem('props'))[0][`${def}s`];
                 parent = datas.find(data => data.id === parentId)
             }
             aLabel = `Parent`
-            anInput = `<input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${parent.title}">
-     `
+            anInput = `<input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${parent.title}">`
         }
         else if (Object.keys(attribute)[0] === 'props') {
             aLabel = `${displayTitle}`
@@ -69,7 +74,11 @@ export function FormRead() {
                 `
             }).join("")
         }
-
+        else if (displayTitle === "Source" || displayTitle === "Target") {
+            aLabel = displayTitle;
+            anInput = `
+                <input type="text" readonly class="form-control-plaintext  p-1 bg-light rounded" value="${State.clickedObj[Object.keys(attribute)[0]].title}">
+            `    }
         else {
             aLabel = displayTitle;
             anInput = `
