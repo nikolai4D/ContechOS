@@ -55,6 +55,47 @@ class Actions {
     }
   }
 
+  async UPDATE(view, defType, attrs) {
+    let defTypeTitle = defType.defTypeTitle;
+
+    try {
+      const record = await fetch(`/api/${defTypeTitle}/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        },
+        body: JSON.stringify(await attrs),
+      });
+      const recordJson = await record.json();
+      recordJson.defTypeTitle = defType.defTypeTitle;
+      delete recordJson.created;
+      delete recordJson.updated;
+      let type = "nodes";
+      if (defType.defTypeTitle.slice(-3) === "Rel") {
+        type = "rels";
+      }
+      const recordsInView = JSON.parse(sessionStorage.getItem(view))[0][type]
+      console.log(attrs, recordsInView)
+
+      let nodeRel = recordsInView.find((node) => node.id === attrs.id);
+
+      let index = recordsInView.indexOf(nodeRel);
+      console.log(index, nodeRel)
+
+      for (const prop in recordJson) {
+        recordsInView[index][prop] = recordJson[prop]
+      }
+      console.log(recordsInView[index]);
+
+
+      sessionStorage.setItem(view, JSON.stringify(recordsInView));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   async DELETE(view, defType, id) {
     try {
       let response = await fetch(`/api/${defType}/${id}`, {

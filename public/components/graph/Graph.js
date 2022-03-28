@@ -122,11 +122,11 @@ async function Graph(view) {
 
           State.propKeys = [];
 
-          d3.selectAll(".close-button").on("click", (e) => {
+          d3.selectAll(".form-close-button").on("click", (e) => {
             d3.selectAll(".FormMenuContainer").remove();
           });
           d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-            await formSaveEditFunction(
+            await formCreateFunction(
               view,
               d,
               "rel",
@@ -321,7 +321,7 @@ async function Graph(view) {
 
         State.propKeys = [];
         // contextMenuItemClick(d3)
-        d3.selectAll(".close-button").on("click", (e) => {
+        d3.selectAll(".form-close-button").on("click", (e) => {
           d3.selectAll(".FormMenuContainer").remove();
         });
         d3.selectAll(".formCreateSubmit").on("click", async (e) => {

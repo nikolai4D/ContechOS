@@ -362,11 +362,12 @@ const createDropdownKeyValue = (
 
         let getParent = State.clickedObj.parentId;
 
+
         let getParentsParent = configNodes.filter((node) => node.id === getParent);
-        let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
+        let typeDataPropKeys = getParentsParent[0].typeDataPropKeys;
 
         let allKeysByParent = propsNodesRels.filter((node) => {
-            return instanceDataPropKeys.includes(node.id);
+            return typeDataPropKeys.includes(node.id);
         });
         dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
 

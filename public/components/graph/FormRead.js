@@ -93,7 +93,7 @@ export function FormRead() {
     const template = `
     <div class="formRead position-absolute">
         <div class="card" tabindex="-1">
-        <div style="display:flex;justify-content: right;/*! align-items: right; */padding-top: 0.5em;padding-right: 0.5em;">    <i id="penFormEdit" class="bi bi-pencil-fill text-black opacity-25" style="padding-right:0.3em;"></i>    <button type="button" class="btn-close close-button" aria-label="Close"></button>
+        <div style="display:flex;justify-content: right;/*! align-items: right; */padding-top: 0.5em;padding-right: 0.5em;">    <i id="penFormEdit" class="bi bi-pencil-fill text-black opacity-25" style="padding-right:0.3em;"></i>    <button type="button" class="btn-close form-close-button" aria-label="Close"></button>
         </div>
         <div class="card-body" style="padding-top: 0em;">
            <form id="formRead" >

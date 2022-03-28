@@ -83,7 +83,7 @@ export function FormCreate() {
            <form id="formCreate" >
              ${fieldsArray.join("")}
                 <button type="submit" class="btn btn-primary formCreateSubmit" value="submit">Submit</button>
-                <button class="btn btn-danger close-button">Close</button>
+                <button class="btn btn-danger form-close-button">Close</button>
 
             </form>
         </div>
