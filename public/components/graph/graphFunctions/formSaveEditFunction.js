@@ -61,10 +61,7 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
 
     let fieldPropertiesOfAttribute = getFieldProperties(valueOfAttribute, fieldProperties)
 
-    if (keyOfAttribute === 'parentId') {
-      formDataObj['parentId'] = State.clickedObj.parentId;
 
-    }
 
     let formAttr = formData[`field_${keyOfAttribute}`];
 
@@ -72,33 +69,22 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
       attrValue = formAttr.getAttribute('data-id');
 
     }
+    else if (keyOfAttribute === 'parentId') {
+
+    }
 
     else if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
+      console.log(keyOfAttribute)
       attrValue = formAttr.value;
     }
+
     else if (fieldType === 'dropDownMultiple') {
       attrValue = await [...formAttr.selectedOptions].map(
         (option) => option.value
       )
     }
     else if (fieldType === 'dropDownKeyValue') {
-      if (State.validDefTypeRels !== null) {
-        if (State.validDefTypeRels[0] === 'configObjInternalRel' || State.validDefTypeRels[0] === 'configObjExternalRel' || defType.defTypeTitle === 'typeData' || State.validDefTypeRels[0] === 'typeDataInternalRel' || State.validDefTypeRels[0] === 'typeDataExternalRel' || State.validDefTypeRels[0] === 'instanceDataInternalRel' || State.validDefTypeRels[0] === 'instanceDataExternalRel') {
-
-          let props = propKeys.map(propKey => {
-            let theKey = propKey.id;
-            let theValue = formData[`field_${propKey.title}`].value;
-            return { [theKey]: theValue }
-          })
-          keyOfAttribute = "props"
-          attrValue = props
-        }
-
-
-      }
-
-
-      else if (defType.defTypeTitle === 'typeDataInternalRel' || defType.defTypeTitle === 'typeDataExternalRel') {
+      if (defType.defTypeTitle === 'typeDataInternalRel' || defType.defTypeTitle === 'typeDataExternalRel') {
 
 
         let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
@@ -133,14 +119,17 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
             return filtered
           }
         })
-        let properties = propKeyList.filter((propKey) => {
-          let propKeyId = propKey.id;
-          let propValue = formData[`field_${propKey.title}`].value;
-          return { [propKeyId]: propValue };
-        });
-        keyOfAttribute = "props"
+        let properties = [];
+        allKeysByParent.forEach((propKey) => {
+          if (formData[`field_${propKey.title}`]) {
+            let propKeyId = propKey.id;
+            let propValue = formData[`field_${propKey.title}`].value;
 
+            properties.push({ [propKeyId]: propValue });
+          }
+        });
         attrValue = properties;
+        keyOfAttribute = "props"
 
 
       }
@@ -169,12 +158,17 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
             return filtered
           }
         })
-        let properties = propKeyList.filter((propKey) => {
-          let propKeyId = propKey.id;
-          let propValue = formData[`field_${propKey.title}`].value;
-          return { [propKeyId]: propValue };
+        let properties = [];
+        allKeysByParent.forEach((propKey) => {
+          if (formData[`field_${propKey.title}`]) {
+            let propKeyId = propKey.id;
+            let propValue = formData[`field_${propKey.title}`].value;
+
+            properties.push({ [propKeyId]: propValue });
+          }
         });
-        attrValue = properties;
+        attrValue = properties
+
 
       }
 
@@ -214,15 +208,15 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
           }
         });
 
-        let properties = allKeysByParent.filter((propKey) => {
+        let properties = [];
+        allKeysByParent.forEach((propKey) => {
           if (formData[`field_${propKey.title}`]) {
+            let propKeyId = propKey.id;
+            let propValue = formData[`field_${propKey.title}`].value;
 
-            let theKey = propKey.id;
-
-            let theValue = formData[`field_${propKey.title}`].value;
-            return { [theKey]: theValue }
+            properties.push({ [propKeyId]: propValue });
           }
-        })
+        });
         keyOfAttribute = "props"
         attrValue = properties
 
@@ -311,10 +305,14 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
             return filtered
           }
         })
-        let properties = propKeyList.filter((propKey) => {
-          let propKeyId = propKey.id;
-          let propValue = formData[`field_${propKey.title}`].value;
-          return { [propKeyId]: propValue };
+        let properties = [];
+        allKeysByParent.forEach((propKey) => {
+          if (formData[`field_${propKey.title}`]) {
+            let propKeyId = propKey.id;
+            let propValue = formData[`field_${propKey.title}`].value;
+
+            properties.push({ [propKeyId]: propValue });
+          }
         });
         attrValue = properties;
 
@@ -352,8 +350,10 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
     defType = { defTypeTitle: State.validDefTypeRels[0] }
   }
 
-  formDataObj['id'] = State.clickedObj.id
   delete formDataObj['target']
+  delete formDataObj['source']
+  formDataObj['parentId'] = State.clickedObj.parentId;
+  formDataObj['id'] = State.clickedObj.id
 
   console.log(view, defType, await formDataObj)
   await Actions.UPDATE(view, defType, await formDataObj);

@@ -79,9 +79,10 @@ export function FormEdit() {
 const createInput = (displayTitle, fieldsArray, keyOfAttr, def) => {
 
     if (displayTitle === 'Parent') {
-        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0][`${def}s`];;
-        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0][`${def}s`];;
-        let propNodes = JSON.parse(sessionStorage.getItem(`props`))[0][`${def}s`];;
+        console.log(def)
+        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0][`${def}s`];
+        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0][`${def}s`];
+        let propNodes = JSON.parse(sessionStorage.getItem(`props`))[0][`${def}s`];
         let parentObj;
         let parentId = State.clickedObj.parentId;
         let parentObjConfig = configNodes.find((node) => node.id === parentId);

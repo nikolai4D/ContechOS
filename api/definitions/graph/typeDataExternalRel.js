@@ -111,12 +111,6 @@ router.put("/update", async (req, res) => {
     return res.statusCode;
   }
 
-  //check if valid parentId
-  if (
-    !(await helpers.isParentIdValid(routerType, parentId, source, target, res))
-  ) {
-    return res.statusCode;
-  }
 
   //check if id exists
   if (!(await helpers.idExist(routerType, id, res))) {

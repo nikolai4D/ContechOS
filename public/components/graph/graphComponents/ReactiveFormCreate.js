@@ -104,11 +104,7 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
     } else {
         dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType);
     }
-    // fieldsArray.push(dropDownString);
-    // fieldsArray.push(
 
-    //     `<div id="field_filteredProps_typeData" name="field_filteredProps_typeData"></div>`
-    // );
     document.getElementById(`field_${keyOfAttribute}`).innerHTML = dropDownString + `<div id="field_filteredProps_typeData" name="field_filteredProps_typeData"></div>`
 };
 
@@ -128,12 +124,7 @@ const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTit
     allPropKeysWithVals = [...new Set(allPropKeysWithVals)];
     validPropKeys = recordsInView.filter(prop => allPropKeysWithVals.includes(prop.id))
 
-
-
-
-
     let dropDownString = dropDown(displayTitle, keyOfAttribute, validPropKeys, "multiple");
-    // fieldsArray.push(dropDownString);
     document.getElementById(`field_${keyOfAttribute}`).innerHTML = dropDownString
 };
 
