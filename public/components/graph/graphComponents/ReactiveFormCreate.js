@@ -49,7 +49,7 @@ export function ReactiveFormCreate() {
                 fieldsArray,
                 keyOfAttribute,
                 getDefType(defId, defTypeId),
-                displayTitle
+                displayTitle, defId
 
             );
         } else if (fieldType === "dropDownKeyValue") {
@@ -112,9 +112,27 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
     document.getElementById(`field_${keyOfAttribute}`).innerHTML = dropDownString + `<div id="field_filteredProps_typeData" name="field_filteredProps_typeData"></div>`
 };
 
-const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
-    let allNodesByDefType = getDefTypeFromSessionStorage(defType);
-    let dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType, "multiple");
+const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle, defId) => {
+    let validPropKeys = getDefTypeFromSessionStorage(defType);
+
+    let type;
+    if (defId === 1) {
+        type = "nodes"
+    }
+    else {
+        type = "rels"
+    }
+    const recordsInView = JSON.parse(sessionStorage.getItem("props"))[0][type];
+    let allPropKeysWithVals = [];
+    recordsInView.forEach(prop => { if (prop.id.substring(0, 2) === 'pv') { allPropKeysWithVals.push(prop.parentId) } })
+    allPropKeysWithVals = [...new Set(allPropKeysWithVals)];
+    validPropKeys = recordsInView.filter(prop => allPropKeysWithVals.includes(prop.id))
+
+
+
+
+
+    let dropDownString = dropDown(displayTitle, keyOfAttribute, validPropKeys, "multiple");
     // fieldsArray.push(dropDownString);
     document.getElementById(`field_${keyOfAttribute}`).innerHTML = dropDownString
 };

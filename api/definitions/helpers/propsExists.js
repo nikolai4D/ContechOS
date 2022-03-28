@@ -10,7 +10,7 @@ async function checkPropsAndPropKeys(
     const parentRouterTypeRecord = new Record("typeData");
     let foundParentParentIdofProps = (
       await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-    ).parentId;
+    );
     foundParentIdofProps = foundParentParentIdofProps;
   }
   if (
@@ -20,7 +20,7 @@ async function checkPropsAndPropKeys(
     const parentRouterTypeRecord = new Record("typeDataExternalRel");
     let foundParentParentIdofProps = (
       await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-    ).parentId;
+    );
     foundParentIdofProps = foundParentParentIdofProps;
   }
 
