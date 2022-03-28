@@ -30,11 +30,12 @@ async function checkPropsAndPropKeys(
     propsFound = [];
   }
 
-  //   console.log(foundParentIdofProps, "foundParentIdofProps");
+  // console.log(foundParentIdofProps, "foundParentIdofProps");
 
-  //   console.log(propKeysTitle, "propKeysTitle");
-  //   console.log(propsFound, "propsFound");
-  //   console.log(foundPropKeys, "foundPropKeys");
+  // console.log(propKeysTitle, "propKeysTitle");
+  // console.log(propsFound, "propsFound");
+  // console.log(foundPropKeys, "foundPropKeys");
+  propsFound.sort(), foundPropKeys.sort();
 
   if (propsFound.toString() === foundPropKeys.toString()) {
     return true;

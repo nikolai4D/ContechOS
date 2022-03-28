@@ -43,7 +43,7 @@ export function FormEdit() {
                 fieldsArray,
                 keyOfAttribute,
                 getDefType(defId, defTypeId),
-                displayTitle
+                displayTitle, defId
             );
         } else if (fieldType === "dropDownKeyValue") {
             createDropdownKeyValue(
@@ -145,12 +145,31 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
     );
 };
 
-const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
-    let allNodesByDefType = getDefTypeFromSessionStorage(defType);
+const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle, defId) => {
+
+    let validPropKeys = getDefTypeFromSessionStorage(defType);
+    let type;
+    if (defId === 1) {
+        type = "nodes"
+    }
+    else {
+        type = "rels"
+    }
+    // Check if propKey has propVals. If not -> don't include in dropdown
+
+    const recordsInView = JSON.parse(sessionStorage.getItem("props"))[0][type];
+    let allPropKeysWithVals = [];
+    recordsInView.forEach(prop => { if (prop.id.substring(0, 2) === 'pv') { allPropKeysWithVals.push(prop.parentId) } })
+    allPropKeysWithVals = [...new Set(allPropKeysWithVals)];
+    validPropKeys = recordsInView.filter(prop => allPropKeysWithVals.includes(prop.id))
+
+
+
+
 
     let chosenPropKeys = State.clickedObj[keyOfAttribute]
 
-    allNodesByDefType = allNodesByDefType.map(node => {
+    validPropKeys = validPropKeys.map(node => {
         let selected = chosenPropKeys.find(prop => node.id === prop
         )
         if (selected) {
@@ -160,7 +179,7 @@ const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTit
     }
     )
 
-    let dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType, "multiple");
+    let dropDownString = dropDown(displayTitle, keyOfAttribute, validPropKeys, "multiple");
     fieldsArray.push(dropDownString);
 };
 
