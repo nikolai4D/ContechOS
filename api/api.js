@@ -22,117 +22,120 @@ api.use(
 );
 
 //----------auth----------//
-api.use("/auth", require("./apiDefinitions/auth.js")); //auth
-api.use("/register", require("./apiDefinitions/register.js")); //auth
-api.use("/verify", require("./apiDefinitions/verify.js")); //verify
-api.use("/refresh", require("./apiDefinitions/refresh.js")); //refresh
-api.use("/logout", require("./apiDefinitions/logout.js")); //logout
+api.use("/auth", require("./definitions/auth/auth.js")); //auth
+api.use("/register", require("./definitions/auth/register.js")); //auth
+api.use("/verify", require("./definitions/auth/verify.js")); //verify
+api.use("/refresh", require("./definitions/auth/refresh.js")); //refresh
+api.use("/logout", require("./definitions/auth/logout.js")); //logout
 
 //PROTECTED APIs//
 api.use(verifyAccess);
 
 //----------definitions----------//
-api.use("/definitions", require("./apiDefinitions/apiDefinitions.js")); //definitions
+api.use("/definitions", require("./definitions/definitions.js")); //definitions
 
 //----------users----------//
-api.use("/user", require("./apiDefinitions/user.js")); //user
-api.use("/roles", require("./apiDefinitions/roles.js")); //roles
-api.use("/assets", require("./apiDefinitions/assets.js")); //assets
+api.use("/user", require("./definitions/users/user.js")); //user
+api.use("/roles", require("./definitions/users/roles.js")); //roles
+
+//----------assets----------//
+api.use("/assets", require("./definitions/assets/assets.js")); //assets
 
 //----------props----------//
-api.use("/propType", require("./apiDefinitions/apiPropType.js")); //propType
-api.use("/propertyType", require("./apiDefinitions/apiPropType.js")); //propType
-api.use("/propKey", require("./apiDefinitions/apiPropKey.js")); //propKey
-api.use("/propertyKey", require("./apiDefinitions/apiPropKey.js")); //propKey
-api.use("/propVal", require("./apiDefinitions/apiPropVal.js")); //propVal
-api.use("/propertyValue", require("./apiDefinitions/apiPropVal.js")); //propVal
-
-//props >>> gets propTypes and propKeys as nodes and rels
-api.use("/props", require("./apiDefinitions/graphProps.js"));
+api.use("/propType", require("./definitions/graph/propType.js")); //propType
+api.use("/propertyType", require("./definitions/graph/propType.js")); //propType
+api.use("/propKey", require("./definitions/graph/propKey.js")); //propKey
+api.use("/propertyKey", require("./definitions/graph/propKey.js")); //propKey
+api.use("/propVal", require("./definitions/graph/propVal.js")); //propVal
+api.use("/propertyValue", require("./definitions/graph/propVal.js")); //propVal
 
 //----------config----------//
-//api.use("/configDef", require("./apiDefinitions/apiConfigDef.js")); //configDef
+//api.use("/configDef", require("./definitions/apiConfigDef.js")); //configDef
 
-api.use("/configDef", require("./apiDefinitions/apiConfigDef.js")); //configDef
-api.use("/definition", require("./apiDefinitions/apiConfigDef.js")); //configDef with displayname
+api.use("/configDef", require("./definitions/graph/configDef.js")); //configDef
+api.use("/definition", require("./definitions/graph/configDef.js")); //configDef with displayname
 
 api.use(
   "/configDefInternalRel",
-  require("./apiDefinitions/apiConfigDefInternalRel.js")
+  require("./definitions/graph/configDefInternalRel.js")
 ); //configDefInternalRel
 api.use(
   "/definitionInternalRel",
-  require("./apiDefinitions/apiConfigDefInternalRel.js")
+  require("./definitions/graph/configDefInternalRel.js")
 ); //configDefInternalRel
 api.use(
   "/configDefExternalRel",
-  require("./apiDefinitions/apiConfigDefExternalRel.js")
+  require("./definitions/graph/configDefExternalRel.js")
 ); //configDefExternalRel
 api.use(
   "/definitionExternalRel",
-  require("./apiDefinitions/apiConfigDefExternalRel.js")
+  require("./definitions/graph/configDefExternalRel.js")
 ); //configDefExternalRel
-api.use("/configObj", require("./apiDefinitions/apiConfigObj.js")); //configObj
-api.use("/object", require("./apiDefinitions/apiConfigObj.js")); //configObj
+api.use("/configObj", require("./definitions/graph/configObj.js")); //configObj
+api.use("/object", require("./definitions/graph/configObj.js")); //configObj
 api.use(
   "/configObjInternalRel",
-  require("./apiDefinitions/apiConfigObjInternalRel.js")
+  require("./definitions/graph/configObjInternalRel.js")
 ); //configObjInternalRel
 api.use(
-  "/objectInteralRel",
-  require("./apiDefinitions/apiConfigObjInternalRel.js")
+  "/objectInternalRel",
+  require("./definitions/graph/configObjInternalRel.js")
 ); //configObjInternalRel
 api.use(
   "/configObjExternalRel",
-  require("./apiDefinitions/apiConfigObjExternalRel.js")
+  require("./definitions/graph/configObjExternalRel.js")
 ); //configObjExternalRel
 api.use(
   "/objectExternalRel",
-  require("./apiDefinitions/apiConfigObjExternalRel.js")
+  require("./definitions/graph/configObjExternalRel.js")
 ); //configObjExternalRel
 
-//configs >>> gets config and configRel as nodes and rels
-api.use("/configs", require("./apiDefinitions/graphConfigs.js"));
-
 //----------data----------//
-api.use("/typeData", require("./apiDefinitions/apiTypeData.js")); //typeData
-api.use("/type", require("./apiDefinitions/apiTypeData.js")); //typeData
+api.use("/typeData", require("./definitions/graph/typeData.js")); //typeData
+api.use("/type", require("./definitions/graph/typeData.js")); //typeData
 api.use(
   "/typeDataInternalRel",
-  require("./apiDefinitions/apiTypeDataInternalRel.js")
+  require("./definitions/graph/typeDataInternalRel.js")
 ); //typeDataInternalRel
 api.use(
   "/typeInternalRel",
-  require("./apiDefinitions/apiTypeDataInternalRel.js")
+  require("./definitions/graph/typeDataInternalRel.js")
 ); //typeDataInternalRel
 api.use(
   "/typeDataExternalRel",
-  require("./apiDefinitions/apiTypeDataExternalRel.js")
+  require("./definitions/graph/typeDataExternalRel.js")
 ); //typeDataExternalRel
 api.use(
   "/typeExternalRel",
-  require("./apiDefinitions/apiTypeDataExternalRel.js")
+  require("./definitions/graph/typeDataExternalRel.js")
 ); //typeDataExternalRel
-api.use("/instanceData", require("./apiDefinitions/apiInstanceData.js")); //instanceData
-api.use("/instance", require("./apiDefinitions/apiInstanceData.js")); //instanceData
+api.use("/instanceData", require("./definitions/graph/instanceData.js")); //instanceData
+api.use("/instance", require("./definitions/graph/instanceData.js")); //instanceData
 api.use(
   "/instanceDataInternalRel",
-  require("./apiDefinitions/apiInstanceDataInternalRel.js")
+  require("./definitions/graph/instanceDataInternalRel.js")
 ); //instanceDataInternalRel
 api.use(
   "/instanceInternalRel",
-  require("./apiDefinitions/apiInstanceDataInternalRel.js")
+  require("./definitions/graph/instanceDataInternalRel.js")
 ); //instanceDataInternalRel
 api.use(
   "/instanceDataExternalRel",
-  require("./apiDefinitions/apiInstanceDataExternalRel.js")
+  require("./definitions/graph/instanceDataExternalRel.js")
 ); //instanceDataExternalRel
 api.use(
   "/instanceExternalRel",
-  require("./apiDefinitions/apiInstanceDataExternalRel.js")
+  require("./definitions/graph/instanceDataExternalRel.js")
 ); //instanceDataExternalRel
 
+//----------views----------//
+//props >>> gets propTypes and propKeys as nodes and rels
+api.use("/props", require("./definitions/graphView/graphProps.js"));
+
+//configs >>> gets config and configRel as nodes and rels
+api.use("/configs", require("./definitions/graphView/graphConfigs.js"));
+
 //datas >>> gets data and dataRel as nodes and rels
-api.use("/datas", require("./apiDefinitions/graphDatas.js"));
+api.use("/datas", require("./definitions/graphView/graphDatas.js"));
 
 module.exports = api;
