@@ -9,7 +9,7 @@ export default function (d3) {
         .append("div")
         .attr("class", "FormMenuContainer")
         .html(FormEdit(State.clickedObjEvent, State.contextMenuItem, State.clickedObj))
-        .select(".formCreate")
+        .select(".formEdit")
         .style("top", (State.clickedObj.clientY + 10) + "px")
         .style("left", State.clickedObj.clientX + "px");
 }

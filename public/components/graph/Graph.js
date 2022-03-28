@@ -7,6 +7,8 @@ import startArrowParent from "./graphComponents/ActivateStartArrowParent.js";
 import selfArrow from "./graphComponents/ActivateSelfArrow.js";
 import { State } from "../../store/State.js";
 import formCreateFunction from "./graphFunctions/formCreateFunction.js";
+import formSaveEditFunction from "./graphFunctions/formSaveEditFunction.js";
+
 import Actions from "../../store/Actions.js";
 import ActivateContextMenu from "./graphComponents/ActivateContextMenu.js";
 import ActivateFormMenu from "./graphComponents/ActivateFormMenu.js";
@@ -124,7 +126,7 @@ async function Graph(view) {
             d3.selectAll(".FormMenuContainer").remove();
           });
           d3.selectAll(".formCreateSubmit").on("click", async (e) => {
-            await formCreateFunction(
+            await formSaveEditFunction(
               view,
               d,
               "rel",
@@ -249,14 +251,29 @@ async function Graph(view) {
       d3.select("#penFormEdit").on("click", e => {
         ActivateFormEdit(d3);
 
-        d3.selectAll(".close-button").on("click", (e) => {
+        d3.selectAll(".form-save-edit-button").on("click", async (e) => {
+          console.log('click!x')
+          await formSaveEditFunction(
+            view,
+            State.contextMenuItem,
+            "rel",
+            State.clickedObj,
+            State.propKeys
+          );
+          // await updateData(view);
+          // await render(view);
+        });
+
+        d3.selectAll(".form-close-button").on("click", (e) => {
           d3.selectAll(".FormMenuContainer").remove();
         });
       })
 
-      d3.selectAll(".close-button").on("click", (e) => {
+      d3.selectAll(".form-close-button").on("click", (e) => {
         d3.selectAll(".FormMenuContainer").remove();
       });
+
+
 
     }
   };

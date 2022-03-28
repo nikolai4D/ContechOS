@@ -59,14 +59,14 @@ export function FormEdit() {
     }
 
     const template = `
-  <div class="formCreate position-absolute">
+  <div class="formEdit position-absolute">
         <div class="card" tabindex="-1">
         <div style="display:flex;justify-content: right;/*! align-items: right; */padding-top: 0.5em;padding-right: 0.5em;">   
-         <i id="penFormEditSave" class="bi bi-check-lg text-black opacity-25" style="font-size:1.75em; margin-top:-0.33em;"></i>    
-         <button type="button" class="btn-close close-button" aria-label="Close"></button>
+         <i id="penFormEditSave" class="bi bi-check-lg text-black opacity-25 form-save-edit-button" style="font-size:1.75em; margin-top:-0.33em;"></i>    
+         <button type="button" class="btn-close form-close-button" aria-label="Close"></button>
          </div>
         <div class="card-body" style="padding: 0rem 1rem 1rem 1rem;  margin-top:-0.55em;">
-           <form id="formCreate" >
+           <form id="formEdit" >
              ${fieldsArray.join("")}
             </form>
         </div>
@@ -454,12 +454,12 @@ const createDropdownKeyValue = (
     else if (State.clickedObj.defTypeTitle === "instanceData") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
-        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0].nodes;
+        let datasNodes = JSON.parse(sessionStorage.getItem(`datas`))[0].nodes;
 
         let props = State.clickedObj.props
         let parentId = State.clickedObj.parentId;
 
-        let parentObj = typeNodes.find((node) => node.id === parentId);
+        let parentObj = datasNodes.find((node) => node.id === parentId);
         let parentParentObj = configNodes.filter((node) => node.id === parentObj.parentId);
 
         let instanceDataPropKeys = parentParentObj[0].instanceDataPropKeys;
