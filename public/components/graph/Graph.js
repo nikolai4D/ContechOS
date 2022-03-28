@@ -18,7 +18,6 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
-import { ReactiveFormEdit } from "./graphComponents/ReactiveFormEdit.js";
 
 async function Graph(view) {
   State.view = view;
@@ -252,16 +251,17 @@ async function Graph(view) {
         ActivateFormEdit(d3);
 
         d3.selectAll(".form-save-edit-button").on("click", async (e) => {
-          console.log('click!x')
           await formSaveEditFunction(
             view,
-            State.contextMenuItem,
+            null,
             "rel",
             State.clickedObj,
             State.propKeys
           );
-          // await updateData(view);
-          // await render(view);
+          await updateData(view);
+          await render(view);
+          d3.select(".FormMenuContainer").remove();
+
         });
 
         d3.selectAll(".form-close-button").on("click", (e) => {
@@ -469,11 +469,7 @@ async function Graph(view) {
           return link_enter;
         },
         (update) => update
-        //    update.attr("marker-end", (d) => {
-        //    return d.source == d.target
-        //    ? "url(#self-arrow)"
-        //  : "url(#end-arrow)";
-        // })
+
       )
       .join("path")
       .on("click", clicked)
@@ -546,7 +542,11 @@ async function Graph(view) {
             .attr("dy", 4);
           return entered;
         },
-        (update) => update
+        (update) => {
+          const updated = update
+            .text(node => node.title)
+          return updated;
+        }
       );
 
     linkLabel = g

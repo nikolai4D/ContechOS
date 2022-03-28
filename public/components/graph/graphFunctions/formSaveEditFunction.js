@@ -3,6 +3,7 @@ import getDefType from "./getDefType.js";
 import getFieldProperties from './getFieldProperties.js';
 import { State } from '../../../store/State.js';
 let definitions = "";
+import { select } from "https://cdn.skypack.dev/d3@6";
 
 const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
   event.preventDefault();
@@ -20,27 +21,11 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
   let defTypeRel = defRel.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
 
   let defType = defTypeNode ? defTypeNode : defTypeRel;
-  let def = defType.abbr.slice(-1) === 'r' ? "rel" : "node"
 
-
-  // const defId = parseInt(d.target.attributes.getNamedItem("data-defid").value);
-  // const defTypeId = parseInt(
-  //   d.target.attributes.getNamedItem("data-deftypeid").value
-  // );
-  // let defType = getDefType(defId, defTypeId);
   const { fieldTypes, fieldProperties } = definitions.fields;
 
   let defTypeAttributes = defType.attributes;
   let formDataObj = {};
-
-
-
-
-  // const { fieldTypes, fieldProperties } = definitions.fields;
-  // let defTypeAttributes = defType.attributes;
-
-
-
 
   if (defId === 1) {
     State.validDefTypeRels = null
@@ -357,7 +342,6 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
 
   console.log(view, defType, await formDataObj)
   await Actions.UPDATE(view, defType, await formDataObj);
-  // select(".FormMenuContainer").remove();
 };
 
 export default formSaveEditFunction;

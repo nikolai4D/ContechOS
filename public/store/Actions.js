@@ -75,21 +75,18 @@ class Actions {
       if (defType.defTypeTitle.slice(-3) === "Rel") {
         type = "rels";
       }
-      const recordsInView = JSON.parse(sessionStorage.getItem(view))[0][type]
-      console.log(attrs, recordsInView)
 
-      let nodeRel = recordsInView.find((node) => node.id === attrs.id);
-
-      let index = recordsInView.indexOf(nodeRel);
-      console.log(index, nodeRel)
-
+      const recordsInView = JSON.parse(sessionStorage.getItem(view))[0]
+      const typesInView = recordsInView[type]
+      // Find node/rel in session storage, get index to then replace content of object
+      let nodeRel = typesInView.find((node) => node.id === attrs.id);
+      let index = typesInView.indexOf(nodeRel);
       for (const prop in recordJson) {
-        recordsInView[index][prop] = recordJson[prop]
+        typesInView[index][prop] = recordJson[prop]
       }
-      console.log(recordsInView[index]);
-
-
-      sessionStorage.setItem(view, JSON.stringify(recordsInView));
+      recordsInView[type] = typesInView
+      console.log([recordsInView], 'toSessionStorage')
+      sessionStorage.setItem(view, JSON.stringify([recordsInView]));
     } catch (err) {
       console.log(err);
     }
