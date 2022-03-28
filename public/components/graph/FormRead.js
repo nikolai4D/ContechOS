@@ -13,12 +13,9 @@ export function FormRead() {
     let defTypeRel = defRel.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
 
     let defType = defTypeNode ? defTypeNode : defTypeRel;
-    // let defType = def.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
     let def = defType.abbr.slice(-1) === 'r' ? "rel" : "node"
 
     defType.defId = defId;
-    const { fieldTypes, fieldProperties } = definitions.fields;
-    let defTypeAttributes = defType.attributes;
 
     let listWithAttributes = defType.attributes.map(attribute => {
         let anInput = '';

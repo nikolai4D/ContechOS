@@ -7,13 +7,18 @@ import { getDefTypeFromSessionStorage } from './graphFunctions/getDefTypeFromSes
 export function FormEdit() {
     let fieldsArray = [];
 
-    let { defId, defTypeTitle } = State.clickedObj
     let definitions = JSON.parse(sessionStorage.getItem('definitions'))[0]
-    let def = definitions.defs.find((obj) => obj.defId === defId);
 
+    let { defId, defTypeTitle } = State.clickedObj
 
-    let defType = def.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
-    defType.defId = defId;
+    let defNode = definitions.defs.find((obj) => obj.def === "node");
+    let defRel = definitions.defs.find((obj) => obj.def === "rel");
+
+    let defTypeNode = defNode.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
+    let defTypeRel = defRel.defTypes.find((obj) => obj.defTypeTitle === defTypeTitle);
+
+    let defType = defTypeNode ? defTypeNode : defTypeRel;
+    let def = defType.abbr.slice(-1) === 'r' ? "rel" : "node"
 
     const { fieldTypes, fieldProperties } = definitions.fields;
     let defTypeAttributes = defType.attributes;
@@ -26,11 +31,8 @@ export function FormEdit() {
         let fieldType = fieldTypes.find((obj) => obj.fieldTypeId === fieldTypeId)
             .type;
 
-        if (defId === 2) {
-        }
-
         if (fieldType === "input") {
-            createInput(displayTitle, fieldsArray, keyOfAttribute, defType, State.clickedObj);
+            createInput(displayTitle, fieldsArray, keyOfAttribute, def);
         } else if (fieldType === "dropDown") {
             const { defId, defTypeId } = valueOfAttribute;
             createDropdown(fieldsArray, keyOfAttribute, getDefType(defId, defTypeId), displayTitle);
@@ -51,11 +53,8 @@ export function FormEdit() {
                 defType
             );
         } else if (fieldType === "externalNodeClick") {
-            let htmlString = `<div style="display: flex; padding: 0.5em">
-    <label class="form-label" for="field_${keyOfAttribute}">${displayTitle}</label>
-    <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
-</div>`;
-            fieldsArray.push(htmlString);
+            console.log(displayTitle, fieldsArray, keyOfAttribute, defType, State.clickedObj)
+            createInput(displayTitle, fieldsArray, keyOfAttribute);
         }
     }
 
@@ -77,12 +76,12 @@ export function FormEdit() {
     return template;
 }
 
-const createInput = (displayTitle, fieldsArray, keyOfAttr) => {
+const createInput = (displayTitle, fieldsArray, keyOfAttr, def) => {
 
     if (displayTitle === 'Parent') {
-        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
-        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0].nodes;
-        let propNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0][`${def}s`];;
+        let typeNodes = JSON.parse(sessionStorage.getItem(`datas`))[0][`${def}s`];;
+        let propNodes = JSON.parse(sessionStorage.getItem(`props`))[0][`${def}s`];;
         let parentObj;
         let parentId = State.clickedObj.parentId;
         let parentObjConfig = configNodes.find((node) => node.id === parentId);
@@ -175,43 +174,103 @@ const createDropdownKeyValue = (
     let allKeyIdsByParent = [];
     let propsNodesRels = [];
     if (defType.defTypeTitle === "configObjInternalRel") {
-        let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+        propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+        let props = State.clickedObj.props;
+        let parentId = State.clickedObj.parentId;
 
-        let parentConfigDefInternalRels = configRels.filter((rel) => {
-            return (
-                rel.source === State.clickedObj.parentId && rel.target === State.clickedObj.parentId
-            );
+        let parentObj = configNodes.find((node) => node.id === parentId);
+
+        // getting title of key of attribute
+        let titleOfKeyAttribute = getDefType(
+            valueOfAttribute.key.defId,
+            valueOfAttribute.key.defTypeId
+        ).defTypeTitle;
+
+        allKeyIdsByParent = parentObj[`${titleOfKeyAttribute}s`];
+
+        let allKeysByParent = propsNodesRels.filter((node) => {
+            return allKeyIdsByParent.includes(node.id);
         });
 
-        let dropDownString = dropDown(
-            "configDefInternalRel",
-            "configDefInternalRel",
-            parentConfigDefInternalRels
-        );
-        fieldsArray.push(dropDownString);
-        fieldsArray.push(
-            `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        );
+        dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
+
+        allKeysByParent.forEach((propKey) => {
+            let filtered = propsNodesRels.filter(
+                (node) => node.parentId === propKey.id
+            );
+            filtered = filtered.map(node => {
+                let selected = props.find(prop =>
+                    node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+                )
+                if (selected) {
+                    node.selected = true
+                }
+                return node
+            }
+            )
+            if (filtered.length > 0) {
+                dropDownHtmlString += dropDown(
+                    propKey.title,
+                    propKey.title,
+                    filtered,
+                    null,
+                    propKey.id,
+                );
+            }
+        });
+        dropDownHtmlString += `</div>`
     } else if (defType.defTypeTitle === "configObjExternalRel") {
-        let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
-        let parentConfigDefExternalRels = configRels.filter((rel) => {
-            return (
-                rel.source === State.clickedObj.parentId && rel.target !== State.clickedObj.parentId
-            );
+        propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+        let props = State.clickedObj.props;
+        let parentId = State.clickedObj.parentId;
+
+        let parentObj = configNodes.find((node) => node.id === parentId);
+
+        // getting title of key of attribute
+        let titleOfKeyAttribute = getDefType(
+            valueOfAttribute.key.defId,
+            valueOfAttribute.key.defTypeId
+        ).defTypeTitle;
+
+        allKeyIdsByParent = parentObj[`${titleOfKeyAttribute}s`];
+
+        let allKeysByParent = propsNodesRels.filter((node) => {
+            return allKeyIdsByParent.includes(node.id);
         });
 
-        let dropDownString = dropDown(
-            "configDefExternalRel",
-            "configDefExternalRel",
-            parentConfigDefExternalRels
-        );
-        fieldsArray.push(dropDownString);
-        fieldsArray.push(
-            `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        );
+        dropDownHtmlString += `<label class="form-text">Properties</label><div class="border border-1 rounded-2 p-2">`
 
-    } else if (defType.defTypeTitle === "typeDataInternalRel") {
+        allKeysByParent.forEach((propKey) => {
+            let filtered = propsNodesRels.filter(
+                (node) => node.parentId === propKey.id
+            );
+            filtered = filtered.map(node => {
+                let selected = props.find(prop =>
+                    node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+                )
+                if (selected) {
+                    node.selected = true
+                }
+                return node
+            }
+            )
+            if (filtered.length > 0) {
+                dropDownHtmlString += dropDown(
+                    propKey.title,
+                    propKey.title,
+                    filtered,
+                    null,
+                    propKey.id,
+                );
+            }
+        });
+        dropDownHtmlString += `</div>`
+
+    }
+    else if (defType.defTypeTitle === "typeDataInternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
         let parentConfigDefInternalRels = configRels.filter((rel) => {
@@ -222,16 +281,17 @@ const createDropdownKeyValue = (
             );
         });
 
-
-        let dropDownString = dropDown(
-            "configObjInternalRel",
-            "configObjInternalRel",
-            parentConfigDefInternalRels
-        );
-        fieldsArray.push(dropDownString);
-        fieldsArray.push(
-            `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        );
+        if (parentConfigDefInternalRels.length > 0) {
+            let dropDownString = dropDown(
+                "configObjInternalRel",
+                "configObjInternalRel",
+                parentConfigDefInternalRels
+            );
+            fieldsArray.push(dropDownString);
+            fieldsArray.push(
+                `<div id="field_filteredProps" name="field_filteredProps"></div>`
+            );
+        }
     } else if (defType.defTypeTitle === "instanceDataInternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
 
@@ -242,16 +302,18 @@ const createDropdownKeyValue = (
                     rel.target === State.clickedObj.parentId)
             );
         });
+        if (parentConfigDefInternalRels.length > 0) {
 
-        let dropDownString = dropDown(
-            "typeDataInternalRel",
-            "typeDataInternalRel",
-            parentConfigDefInternalRels
-        );
-        fieldsArray.push(dropDownString);
-        fieldsArray.push(
-            `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        );
+            let dropDownString = dropDown(
+                "typeDataInternalRel",
+                "typeDataInternalRel",
+                parentConfigDefInternalRels
+            );
+            fieldsArray.push(dropDownString);
+            fieldsArray.push(
+                `<div id="field_filteredProps" name="field_filteredProps"></div>`
+            );
+        }
     } else if (defType.defTypeTitle === "instanceDataExternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
 
@@ -262,16 +324,17 @@ const createDropdownKeyValue = (
                     rel.target === State.clickedObj.parentId)
             );
         });
-
-        let dropDownString = dropDown(
-            "typeDataExternalRel",
-            "typeDataExternalRel",
-            parentConfigDefExternalRels
-        );
-        fieldsArray.push(dropDownString);
-        fieldsArray.push(
-            `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        );
+        if (parentConfigDefExternalRels.length > 0) {
+            let dropDownString = dropDown(
+                "typeDataExternalRel",
+                "typeDataExternalRel",
+                parentConfigDefExternalRels
+            );
+            fieldsArray.push(dropDownString);
+            fieldsArray.push(
+                `<div id="field_filteredProps" name="field_filteredProps"></div>`
+            );
+        }
     } else if (defType.defTypeTitle === "typeDataExternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
@@ -283,16 +346,18 @@ const createDropdownKeyValue = (
             );
         });
 
-        let dropDownString = dropDown(
-            "configObjExternalRel",
-            "configObjExternalRel",
-            parentConfigDefExternalRels
-        );
-        fieldsArray.push(dropDownString);
-        fieldsArray.push(
-            `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        );
+        if (parentConfigDefExternalRels.length > 0) {
 
+            let dropDownString = dropDown(
+                "configObjExternalRel",
+                "configObjExternalRel",
+                parentConfigDefExternalRels
+            );
+            fieldsArray.push(dropDownString);
+            fieldsArray.push(
+                `<div id="field_filteredProps" name="field_filteredProps"></div>`
+            );
+        }
     } else if (State.clickedObj.defTypeTitle === "configDef") {
         propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let props = State.clickedObj.props
