@@ -1,7 +1,7 @@
-import Actions from "../../store/Actions.js";
+import Actions from "../../../store/Actions.js";
 import getDefType from "./getDefType.js";
 import getFieldProperties from './getFieldProperties.js';
-import { State } from '../../store/State.js';
+import { State } from '../../../store/State.js';
 
 import { select } from "https://cdn.skypack.dev/d3@6";
 let definitions = "";

@@ -1,4 +1,4 @@
-import { State } from '../../store/State.js';
+import { State } from '../../../store/State.js';
 import dropDown from '../DropDownField.js';
 export default function (d3) {
 
@@ -17,7 +17,7 @@ export default function (d3) {
 
             let propKeyObj = getPropsForParentId.find(node => { return node.id === propKey })
             if (filtered.length > 0) {
-                propKeys.push({ "title": propKeyObj.title, "id": propKey })
+                State.propKeys.push({ "title": propKeyObj.title, "id": propKey })
                 dropDownHtmlString += dropDown(propKeyObj.title, propKeyObj.title, filtered, null, propKey.id);
             }
         })

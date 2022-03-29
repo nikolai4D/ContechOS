@@ -1,8 +1,8 @@
-import Actions from "../store/Actions.js";
+import Actions from "../../store/Actions.js";
 import dropDown from "./DropDownField.js";
 import inputField from "./InputField.js";
 import getDefType from "./graphFunctions/getDefType.js";
-import { State } from '../store/State.js';
+import { State } from '../../store/State.js';
 import getFieldProperties from './graphFunctions/getFieldProperties.js';
 import { getDefTypeFromSessionStorage } from './graphFunctions/getDefTypeFromSessionStorage.js';
 
@@ -52,7 +52,8 @@ export function FormCreate() {
         fieldsArray,
         keyOfAttribute,
         getDefType(defId, defTypeId),
-        displayTitle
+        displayTitle,
+        defId
       );
     } else if (fieldType === "dropDownKeyValue") {
       createDropdownKeyValue(
@@ -62,10 +63,15 @@ export function FormCreate() {
         defType
       );
     } else if (fieldType === "externalNodeClick") {
-      let htmlString = `<div style="display: flex; padding: 0.5em">
-    <label class="form-label" for="field_${keyOfAttribute}">${displayTitle}:</label>
-    <input type="text" id="field_${keyOfAttribute}" class="form-control" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
-</div>`;
+
+      let htmlString =
+        `<div style="display: flex; padding: 0.5em">
+          <div>
+            <label class="form-text" for="field_${keyOfAttribute}">${displayTitle}:</label>
+            <input type="text" id="field_${keyOfAttribute}" class="form-control-plaintext  p-1 bg-light rounded" name="field_${keyOfAttribute}" disabled value="Click target node"><br>
+          </div>
+        </div>
+    `;
       fieldsArray.push(htmlString);
     }
   }
@@ -78,7 +84,7 @@ export function FormCreate() {
            <form id="formCreate" >
              ${fieldsArray.join("")}
                 <button type="submit" class="btn btn-primary formCreateSubmit" value="submit">Submit</button>
-                <button class="btn btn-danger close-button">Close</button>
+                <button class="btn btn-danger form-close-button">Close</button>
 
             </form>
         </div>
@@ -116,9 +122,26 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
   );
 };
 
-const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
-  let allNodesByDefType = getDefTypeFromSessionStorage(defType);
-  let dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType, "multiple");
+const createDropdownMultiple = (fieldsArray, keyOfAttribute, defType, displayTitle, defId) => {
+  let validPropKeys = getDefTypeFromSessionStorage(defType);
+  let type;
+  if (defId === 1) {
+    type = "nodes"
+  }
+  else {
+    type = "rels"
+  }
+  // Check if propKey has propVals. If not -> don't include in dropdown
+
+  const recordsInView = JSON.parse(sessionStorage.getItem("props"))[0][type];
+  let allPropKeysWithVals = [];
+  recordsInView.forEach(prop => { if (prop.id.substring(0, 2) === 'pv') { allPropKeysWithVals.push(prop.parentId) } })
+  allPropKeysWithVals = [...new Set(allPropKeysWithVals)];
+  validPropKeys = recordsInView.filter(prop => allPropKeysWithVals.includes(prop.id))
+
+
+
+  let dropDownString = dropDown(displayTitle, keyOfAttribute, validPropKeys, "multiple");
   fieldsArray.push(dropDownString);
 };
 
@@ -257,8 +280,9 @@ const createDropdownKeyValue = (
       valueOfAttribute.key.defId,
       valueOfAttribute.key.defTypeId
     ).defTypeTitle;
-    allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`];
 
+    allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`];
+    console.log(titleOfKeyAttribute, State.clickedObj)
     let allKeysByParent = propsNodesRels.filter((node) => {
       return allKeyIdsByParent.includes(node.id);
     });

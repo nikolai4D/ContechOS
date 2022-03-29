@@ -1,5 +1,5 @@
-import { State } from '../../store/State.js';
-import Actions from '../../store/Actions.js';
+import { State } from '../../../store/State.js';
+import Actions from '../../../store/Actions.js';
 
 export default function (d3) {
     document.getElementById("delete-item").classList.add("list-group-item", "list-group-item-action", "text-danger")

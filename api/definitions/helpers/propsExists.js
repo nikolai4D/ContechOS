@@ -10,17 +10,26 @@ async function checkPropsAndPropKeys(
     const parentRouterTypeRecord = new Record("typeData");
     let foundParentParentIdofProps = (
       await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-    ).parentId;
+    );
     foundParentIdofProps = foundParentParentIdofProps;
   }
   if (
-    routerType === "instanceDataExternalRel" ||
     routerType === "instanceDataInternalRel"
+  ) {
+    const parentRouterTypeRecord = new Record("typeDataInternalRel");
+    let foundParentParentIdofProps = (
+      await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
+    );
+    foundParentIdofProps = foundParentParentIdofProps;
+  }
+
+  if (
+    routerType === "instanceDataExternalRel"
   ) {
     const parentRouterTypeRecord = new Record("typeDataExternalRel");
     let foundParentParentIdofProps = (
       await parentRouterTypeRecord.getParent(foundParentIdofProps.parentId)
-    ).parentId;
+    );
     foundParentIdofProps = foundParentParentIdofProps;
   }
 
@@ -30,11 +39,12 @@ async function checkPropsAndPropKeys(
     propsFound = [];
   }
 
-  //   console.log(foundParentIdofProps, "foundParentIdofProps");
+  // console.log(foundParentIdofProps, "foundParentIdofProps");
 
-  //   console.log(propKeysTitle, "propKeysTitle");
-  //   console.log(propsFound, "propsFound");
-  //   console.log(foundPropKeys, "foundPropKeys");
+  // console.log(propKeysTitle, "propKeysTitle");
+  // console.log(propsFound, "propsFound");
+  // console.log(foundPropKeys, "foundPropKeys");
+  propsFound.sort(), foundPropKeys.sort();
 
   if (propsFound.toString() === foundPropKeys.toString()) {
     return true;
