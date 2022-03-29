@@ -1,4 +1,4 @@
-import Graph from "../components/Graph.js";
+import Graph from "../components/graph/Graph.js";
 import Actions from "../store/Actions.js";
 
 export default class Datas {

@@ -1,0 +1,744 @@
+{
+  "fields": {
+    "fieldTypes": [
+      {
+        "fieldTypeId": 1,
+        "type": "input",
+        "comments": "When parentId, the value should be the clicked object. When source, the value should be itself."
+      },
+      { "fieldTypeId": 2, "type": "dropDown" },
+      { "fieldTypeId": 3, "type": "dropDownMultiple" },
+      { "fieldTypeId": 4, "type": "dropDownKeyValue" },
+      { "fieldTypeId": 5, "type": "boolean" },
+      {
+        "fieldTypeId": 6,
+        "type": "externalNodeClick",
+        "comments": "When target, then value should not be same as source."
+      },
+      {
+        "fieldTypeId": 7,
+        "fieldProperties": [1, 2],
+        "type": "internalNodeClick",
+        "comments": "When parentId, inherit id from inital clicked node."
+      }
+    ],
+    "fieldProperties": [
+      { "fieldPropertyId": 1, "type": "locked" },
+      { "fieldPropertyId": 2, "type": "hidden" },
+      { "fieldPropertyId": 3, "type": "dependant" }
+    ]
+  },
+  "defs": [
+    {
+      "defId": 1,
+      "def": "node",
+      "defTitle": "nodeType",
+      "defTypes": [
+        {
+          "defTypeId": 1,
+          "defTypeTitle": "propType",
+          "defTypeDisplayTitle": "Property Type",
+          "abbr": "pt",
+          "attributes": [
+            {
+              "title": { "fieldTypeId": 1, "displayTitle": "Title" }
+            }
+          ],
+          "contextMenu": [{ "defId": 1, "defTypeId": 2 }]
+        },
+        {
+          "defTypeId": 2,
+          "defTypeTitle": "propKey",
+          "defTypeDisplayTitle": "Property Key",
+          "abbr": "pk",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 1,
+                "returnValue": "id",
+                "fieldTypeId": 7,
+                "fieldProperties": [1, 2],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": [{ "defId": 1, "defTypeId": 3 }]
+        },
+        {
+          "defTypeId": 3,
+          "defTypeTitle": "propVal",
+          "defTypeDisplayTitle": "Property Value",
+          "abbr": "pv",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 7,
+                "fieldProperties": [1, 2],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 4,
+          "defTypeTitle": "configDef",
+          "defTypeDisplayTitle": "Definition",
+          "abbr": "cd",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "propKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Object Properties"
+              }
+            }
+          ],
+          "contextMenu": [
+            { "defId": 1, "defTypeId": 5 },
+            { "defId": 2, "defTypeId": 1 },
+            { "defId": 2, "defTypeId": 2 }
+          ]
+        },
+        {
+          "defTypeId": 5,
+          "defTypeTitle": "configObj",
+          "defTypeDisplayTitle": "Object",
+          "abbr": "co",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [1, 2],
+                "displayTitle": "Parent"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id",
+                  "dependantOn": "parentId"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "displayTitle": "Properties"
+              }
+            },
+            {
+              "typeDataPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Type Properties"
+              }
+            },
+            {
+              "instanceDataPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Instance Properties"
+              }
+            }
+          ],
+          "contextMenu": [
+            { "defId": 2, "defTypeId": 3 },
+            { "defId": 2, "defTypeId": 4 }
+          ]
+        },
+        {
+          "defTypeId": 6,
+          "defTypeTitle": "typeData",
+          "defTypeDisplayTitle": "Type",
+          "abbr": "td",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 2,
+                "displayTitle": "Parent"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "displayTitle": "Properties"
+              }
+            }
+          ],
+          "contextMenu": [
+            { "defId": 1, "defTypeId": 7 },
+            { "defId": 2, "defTypeId": 5 },
+            { "defId": 2, "defTypeId": 6 }
+          ]
+        },
+        {
+          "defTypeId": 7,
+          "defTypeTitle": "instanceData",
+          "defTypeDisplayTitle": "Instance",
+          "abbr": "id",
+          "attributes": [
+            {
+              "title": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "title",
+                "fieldTypeId": 1,
+                "displayTitle": "Title"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "displayTitle": "Properties"
+              }
+            },
+            {
+              "parentId": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": [
+            { "defId": 2, "defTypeId": 7 },
+            { "defId": 2, "defTypeId": 8 }
+          ]
+        }
+      ]
+    },
+    {
+      "defId": 2,
+      "def": "rel",
+      "defTitle": "relType",
+      "defTypes": [
+        {
+          "defTypeId": 1,
+          "defTypeTitle": "configDefInternalRel",
+          "defTypeDisplayTitle": "Definition Internal Link",
+          "abbr": "cdir",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "propKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "fieldProperties": [3],
+                "displayTitle": "Object Properties"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 2,
+          "defTypeTitle": "configDefExternalRel",
+          "defTypeDisplayTitle": "Definition External Link",
+          "abbr": "cder",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "propKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "fieldProperties": [3],
+                "displayTitle": "Object Properties"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 3,
+          "defTypeTitle": "configObjInternalRel",
+          "defTypeDisplayTitle": "Object Internal Link",
+          "abbr": "coir",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
+              }
+            },
+
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 1,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
+              }
+            },
+            {
+              "typeDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Type Link Properties"
+              }
+            },
+            {
+              "instanceDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Instance Link Properties"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 4,
+          "defTypeTitle": "configObjExternalRel",
+          "defTypeDisplayTitle": "Object External Link",
+          "abbr": "coer",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
+              }
+            },
+
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
+              }
+            },
+            {
+              "typeDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Type Link Properties"
+              }
+            },
+            {
+              "instanceDataRelPropKeys": {
+                "defId": 1,
+                "defTypeId": 2,
+                "returnValue": "id",
+                "fieldTypeId": 3,
+                "displayTitle": "Instance Link Properties"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 5,
+          "defTypeTitle": "typeDataExternalRel",
+          "defTypeDisplayTitle": "Type External Link",
+          "abbr": "tder",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 4,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 6,
+          "defTypeTitle": "typeDataInternalRel",
+          "defTypeDisplayTitle": "Type Internal Link",
+          "abbr": "tdir",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
+              }
+            },
+
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 3,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 7,
+          "defTypeTitle": "instanceDataInternalRel",
+          "defTypeDisplayTitle": "Instance Internal Link",
+          "abbr": "idir",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+                "fieldTypeId": 4,
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
+              }
+            },
+
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 6,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": []
+        },
+        {
+          "defTypeId": 8,
+          "defTypeTitle": "instanceDataExternalRel",
+          "defTypeDisplayTitle": "Instance External Link",
+          "abbr": "ider",
+          "attributes": [
+            { "title": { "fieldTypeId": 1, "displayTitle": "Title" } },
+            {
+              "source": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
+                "displayTitle": "Source"
+              }
+            },
+            {
+              "target": {
+                "defId": 1,
+                "defTypeId": 7,
+                "returnValue": "id",
+                "fieldTypeId": 6,
+                "displayTitle": "Target"
+              }
+            },
+            {
+              "props": {
+                "key": {
+                  "defId": 1,
+                  "defTypeId": 2,
+                  "returnValue": "id"
+                },
+                "value": {
+                  "defId": 1,
+                  "defTypeId": 3,
+                  "returnValue": "id"
+                },
+
+                "fieldTypeId": 4,
+                "fieldProperties": [3],
+                "displayTitle": "Properties"
+              }
+            },
+            {
+              "parentId": {
+                "defId": 2,
+                "defTypeId": 5,
+                "returnValue": "id",
+                "fieldTypeId": 1,
+                "fieldProperties": [2, 3],
+                "displayTitle": "Parent"
+              }
+            }
+          ],
+          "contextMenu": []
+        }
+      ]
+    },
+    {
+      "defId": 3,
+      "def": "group",
+      "defTitle": "group",
+      "defTypes": [
+        {
+          "defId": 1,
+          "defTypeTitle": "configs",
+          "contextMenu": [{ "defId": 1, "defTypeId": 4 }]
+        },
+        {
+          "defId": 2,
+          "defTypeTitle": "datas",
+          "contextMenu": [{ "defId": 1, "defTypeId": 6 }]
+        },
+        {
+          "defId": 3,
+          "defTypeTitle": "props",
+          "contextMenu": [{ "defId": 1, "defTypeId": 1 }]
+        }
+      ]
+    }
+  ]
+}

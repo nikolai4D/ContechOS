@@ -55,6 +55,44 @@ class Actions {
     }
   }
 
+  async UPDATE(view, defType, attrs) {
+    let defTypeTitle = defType.defTypeTitle;
+
+    try {
+      const record = await fetch(`/api/${defTypeTitle}/update`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        },
+        body: JSON.stringify(await attrs),
+      });
+      const recordJson = await record.json();
+      recordJson.defTypeTitle = defType.defTypeTitle;
+      delete recordJson.created;
+      delete recordJson.updated;
+      let type = "nodes";
+      if (defType.defTypeTitle.slice(-3) === "Rel") {
+        type = "rels";
+      }
+
+      const recordsInView = JSON.parse(sessionStorage.getItem(view))[0]
+      const typesInView = recordsInView[type]
+      // Find node/rel in session storage, get index to then replace content of object
+      let nodeRel = typesInView.find((node) => node.id === attrs.id);
+      let index = typesInView.indexOf(nodeRel);
+      for (const prop in recordJson) {
+        typesInView[index][prop] = recordJson[prop]
+      }
+      recordsInView[type] = typesInView
+      console.log([recordsInView], 'toSessionStorage')
+      sessionStorage.setItem(view, JSON.stringify([recordsInView]));
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+
   async DELETE(view, defType, id) {
     try {
       let response = await fetch(`/api/${defType}/${id}`, {
