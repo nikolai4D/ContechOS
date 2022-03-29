@@ -24,7 +24,7 @@ router.post("/create", async (req, res) => {
   }
 
   //create
-  await create(routerType, reqBody, res);
+  await helpers.create(routerType, reqBody, res);
 });
 
 router.get("/", async (req, res) => {
