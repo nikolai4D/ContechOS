@@ -2,9 +2,9 @@
 
 Javascript and JSON based Graph Database
 
-0. First make sure you have installed these on your computer:
-- Node.js (https://nodejs.org/en/download/)  
-- Git (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)
+0. First make sure you have installed these on your computer:  
+a. Node.js (https://nodejs.org/en/download/)  
+b. Git (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git)  
 
 1. Create a new folder on your computer. 
 
