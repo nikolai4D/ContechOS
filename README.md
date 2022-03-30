@@ -17,3 +17,5 @@ Javascript and JSON based Graph Database
 
 5. Run the database on your local computer. In the terminal write: 
   **"npm run dev"**
+
+6. Go to a browser and enter **localhost:3000** and login with credentials user: **"admin"**, password: **"admin"**
