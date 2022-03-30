@@ -26,7 +26,7 @@ e. Press Enter.
 5. Install node packages by writing in the <ins>terminal/cmd</ins>: 
   **"npm install"**
 
-6. Go back to the database folder (i.e. in Windows: "/Users/username/newfolder/ContechOS.) and change file ".env.example" to ".env"
+6. Go back to the database folder (i.e. in Windows: "/Users/username/newfolder/ContechOS.) and change file **".env.example"** to **".env"**
 
 7. Run the database on your local computer by writing in the <ins>terminal/cmd</ins>: 
   **"npm run dev"**
