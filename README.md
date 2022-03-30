@@ -7,7 +7,7 @@ Javascript and JSON based Graph Database
 1. Create a new folder on your computer. 
 
 2. Open the folder in a terminal/cmd  
-Mac -> Right click on the folder and press **"new terminal in folder"**  
+Mac: Right click on the folder and press **"new terminal in folder"**  
 Windows:  
 a. Click the Windows Start menu and type "cmd".  
 b. Click the Command Prompt icon to open it.  
