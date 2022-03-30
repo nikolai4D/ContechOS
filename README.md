@@ -13,7 +13,7 @@ Javascript and JSON based Graph Database
 3. Install node packages. In the terminal write: 
   **"npm install"**
 
-4. In the folder for all files for the database. Find and change file ".env.example" to ".env"
+4. In the folder for all files for the database. Find and change file **".env.example"** to **".env"**
 
 5. Run the database on your local computer. In the terminal write: 
   **"npm run dev"**
