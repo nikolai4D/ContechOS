@@ -2,20 +2,18 @@
 
 Javascript and JSON based Graph Database
 
-(First make sure you have installed **Node.js**, **npm** and **git** on your computer)
+(First make sure you have installed **Node.js** (https://nodejs.org/en/download/), and **git** (https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) on your computer)
 
 1. Create a new folder on your computer. 
 
 2. Open the folder in a terminal/cmd  
 Mac -> Right click on the folder and press **"new terminal in folder"**  
-  
 Windows:  
-
-   a. Click the Windows Start menu and type "cmd".  
-   b. Click the Command Prompt icon to open it.  
-   c. Type "cd" followed by a space.  
-   d. Type the address of the folder after the space (i.e. "/Users/username/newfolder.")  
-   e. Press Enter.  
+a. Click the Windows Start menu and type "cmd".  
+b. Click the Command Prompt icon to open it.  
+c. Type "cd" followed by a space.  
+d. Type the address of the folder after the space (i.e. "/Users/username/newfolder.")  
+e. Press Enter.  
   
 3. Clone this repository by writing in the terminal/cmd:
 **"git clone https://github.com/nikolai4D/ContechOS.git"**
