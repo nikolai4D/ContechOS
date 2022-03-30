@@ -159,6 +159,7 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
 
 
       else if (defType.defTypeTitle === 'typeData') {
+        console.log('in typeData!')
 
         let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
@@ -167,10 +168,10 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
         let getParent = State.clickedObj.parentId;
 
         let getParentsParent = configNodes.filter((node) => node.id === getParent);
-        let instanceDataPropKeys = getParentsParent[0].instanceDataPropKeys;
+        let typeDataPropKeys = getParentsParent[0].typeDataPropKeys;
 
         let allKeysByParent = propsNodesRels.filter((node) => {
-          return instanceDataPropKeys.includes(node.id);
+          return typeDataPropKeys.includes(node.id);
         });
 
 
@@ -305,6 +306,7 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
 
 
       else {
+
 
         let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
