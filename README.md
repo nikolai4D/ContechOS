@@ -9,10 +9,10 @@ Javascript and JSON based Graph Database
 2. Open the folder in a terminal/cmd  
 Mac: Right click on the folder and press **"new terminal in folder"**  
 Windows:  
-a. Click the Windows Start menu and type "cmd".  
+a. Click the Windows Start menu and type **"cmd"**.  
 b. Click the Command Prompt icon to open it.  
-c. Type "cd" followed by a space.  
-d. Type the address of the folder after the space (i.e. "/Users/username/newfolder.")  
+c. Type **"cd"** followed by a space.  
+d. Type the address of the folder after the space (i.e. **"/Users/username/newfolder."**)  
 e. Press Enter.  
   
 3. Clone this repository by writing in the terminal/cmd:
