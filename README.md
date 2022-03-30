@@ -2,7 +2,7 @@
 
 Javascript and JSON based Graph Database
 
-(First make sure you have installed Node.js, npm and git on your computer)
+(First make sure you have installed **Node.js**, **npm** and **git** on your computer)
 
 1. Clone this repository. In a terminal write: 
 **"git clone https://github.com/nikolai4D/ContechOS.git"**
