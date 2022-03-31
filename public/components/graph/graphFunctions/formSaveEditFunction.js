@@ -263,7 +263,7 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
 
       }
 
-      else if (defType.defTypeTitle === 'configObjExternalRel') {
+      else if (defType.defTypeTitle === 'configObjInternalRel' || defType.defTypeTitle === 'configObjExternalRel') {
 
 
         let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
