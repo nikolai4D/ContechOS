@@ -59,7 +59,6 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
     }
 
     else if (fieldType === 'input' || fieldType === 'dropDown' || fieldType === 'externalNodeClick') {
-      console.log(keyOfAttribute)
       attrValue = formAttr.value;
     }
 
@@ -159,7 +158,6 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
 
 
       else if (defType.defTypeTitle === 'typeData') {
-        console.log('in typeData!')
 
         let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
@@ -261,11 +259,65 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
             properties.push({ [propKeyId]: propValue });
           }
         });
-        console.log(properties)
         attrValue = properties;
 
       }
 
+      else if (defType.defTypeTitle === 'configObjExternalRel') {
+
+
+        let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+        let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
+
+        let props = State.clickedObj.props;
+
+
+        let parentId = State.clickedObj.parentId;
+
+        let parentObj = configNodes.find((node) => node.id === parentId);
+        // getting title of key of attribute
+        let titleOfKeyAttribute = getDefType(
+          valueOfAttribute.key.defId,
+          valueOfAttribute.key.defTypeId
+        ).defTypeTitle;
+
+        let allKeyIdsByParent = parentObj[`${titleOfKeyAttribute}s`];
+
+        let allKeysByParent = propsNodesRels.filter((node) => {
+          return allKeyIdsByParent.includes(node.id);
+        });
+
+
+        allKeysByParent.forEach((propKey) => {
+          let filtered = propsNodesRels.filter(
+            (node) => node.parentId === propKey.id
+          );
+          filtered = filtered.filter(node => {
+            let selected = props.find(prop =>
+              node.id === Object.values(prop)[0] && node.parentId === Object.keys(prop)[0]
+            )
+            if (selected) {
+              node.selected = true
+            }
+            return node
+          }
+          )
+          if (filtered.length > 0) {
+            return filtered
+          }
+        });
+        let properties = [];
+        allKeysByParent.forEach((propKey) => {
+          if (formData[`field_${propKey.title}`]) {
+            let propKeyId = propKey.id;
+            let propValue = formData[`field_${propKey.title}`].value;
+
+            properties.push({ [propKeyId]: propValue });
+          }
+        });
+        attrValue = properties;
+
+      }
 
       else if (defType.defTypeTitle === 'instanceDataExternalRel' || defType.defTypeTitle === 'instanceDataInternalRel') {
 
@@ -311,8 +363,6 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
         let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
         let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
         let allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`]
-        console.log(titleOfKeyAttribute, allKeyIdsByParent)
-
         let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
         let propKeyList = allKeysByParent.filter(propKey => {
@@ -342,7 +392,6 @@ const formSaveEditFunction = async (view, d, type, clickedObj, propKeys) => {
   formDataObj['parentId'] = State.clickedObj.parentId;
   formDataObj['id'] = State.clickedObj.id
 
-  console.log(view, defType, await formDataObj)
   await Actions.UPDATE(view, defType, await formDataObj);
 };
 
