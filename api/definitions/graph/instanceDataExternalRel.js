@@ -53,6 +53,28 @@ router.post("/create", async (req, res) => {
   await helpers.create(routerType, reqBody, res);
 });
 
+router.post("/readRelBySourceAndTarget", async (req, res) => {
+  const { sourceId, targetId } = req.body;
+  const reqBody = { sourceId, targetId };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //check if sourceId exists
+  if (!(await helpers.idExist(routerTypeSource, sourceId, res))) {
+    return res.statusCode;
+  }
+  //check if targetId exists
+  if (!(await helpers.idExist(routerTypeTarget, targetId, res))) {
+    return res.statusCode;
+  }
+
+  //read
+  await helpers.readRelBySourceAndTarget(routerType, reqBody, res);
+});
+
 router.get("/", async (req, res) => {
   //check if request includes query param parentId
   if (await helpers.reqQueryExists(req.query, "parentId")) {
@@ -97,7 +119,6 @@ router.put("/update", async (req, res) => {
   if (!(await helpers.parentIdExist(routerType, parentId, res))) {
     return res.statusCode;
   }
-
 
   //check if id exists
   if (!(await helpers.idExist(routerType, id, res))) {
