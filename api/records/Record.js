@@ -259,6 +259,7 @@ class Record {
       let readFile = JSON.parse(fs.readFileSync(dirRel + file, "utf8"));
 
       if (readFile.target === targetId && readFile.source === sourceId) {
+        readFile.id = file.slice(0, -5);
         rels.push(readFile);
       }
     });
