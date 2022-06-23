@@ -56,8 +56,9 @@ class Record {
       instanceDataRelPropKeys,
     } = reqBody;
 
-    const idAbbr = apiDefsAll.find((obj) => obj.defTypeTitle === this.defType)
-      .abbr;
+    const idAbbr = apiDefsAll.find(
+      (obj) => obj.defTypeTitle === this.defType
+    ).abbr;
 
     let defTypeId = `${idAbbr}_${uuidv4()}`;
 
@@ -245,6 +246,25 @@ class Record {
     });
 
     return defTypes;
+  }
+
+  async readRelBySourceAndTarget(sourceId, targetId) {
+    const rels = [];
+    //get links
+
+    const dirRel = `../db/${this.defType}/`;
+    const files = fs.readdirSync(dirRel);
+
+    files.forEach(function (file) {
+      let readFile = JSON.parse(fs.readFileSync(dirRel + file, "utf8"));
+
+      if (readFile.target === targetId && readFile.source === sourceId) {
+        readFile.id = file.slice(0, -5);
+        rels.push(readFile);
+      }
+    });
+
+    return rels;
   }
 
   async readByLinkToTarget(linkParentId, targetId) {

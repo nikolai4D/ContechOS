@@ -20,6 +20,7 @@ const reqBodyExists = require("./reqBodyExists.js");
 const reqParamExists = require("./reqParamExists.js");
 const reqQueryExists = require("./reqQueryExists.js");
 const update = require("./update.js");
+const readRelBySourceAndTarget = require("./readRelBySourceAndTarget.js");
 
 const helpers = {
   create,
@@ -44,6 +45,7 @@ const helpers = {
   reqParamExists,
   reqQueryExists,
   update,
+  readRelBySourceAndTarget,
 };
 
 module.exports = helpers;
