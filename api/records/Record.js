@@ -173,8 +173,6 @@ class Record {
     );
     defType.id = defTypeId;
     defType.type = thisDefType;
-    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
-    console.log(defType, "deftype")
 
     return defType;
   }
