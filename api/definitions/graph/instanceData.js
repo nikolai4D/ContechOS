@@ -34,7 +34,7 @@ router.post("/create", async (req, res) => {
   await helpers.create(routerType, reqBody, res);
 });
 
-//READo
+//READ
 
 router.get("/", async (req, res) => {
   //check if request includes query param parentId
