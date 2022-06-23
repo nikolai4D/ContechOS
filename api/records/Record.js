@@ -165,12 +165,16 @@ class Record {
       defType.props = props;
     }
 
+    console.log(`../db/${this.defType}/${defTypeId}.json`)
+
     fs.writeFileSync(
       `../db/${this.defType}/${defTypeId}.json`,
       JSON.stringify(defType, null, 2)
     );
     defType.id = defTypeId;
     defType.type = thisDefType;
+    console.log("@@@@@@@@@@@@@@@@@@@@@@@@@@@@")
+    console.log(defType, "deftype")
 
     return defType;
   }

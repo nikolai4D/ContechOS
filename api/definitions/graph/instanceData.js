@@ -34,7 +34,7 @@ router.post("/create", async (req, res) => {
   await helpers.create(routerType, reqBody, res);
 });
 
-//READ
+//READo
 
 router.get("/", async (req, res) => {
   //check if request includes query param parentId
@@ -127,6 +127,8 @@ router.put("/update", async (req, res) => {
 //DELETE
 
 router.delete("/:id", async (req, res) => {
+
+  console.log("instance data deletion route used for id " + req.params.id)
   if (!(await helpers.idExist(routerType, req.params.id, res))) {
     return res.statusCode;
   }
