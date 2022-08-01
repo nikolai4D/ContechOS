@@ -3,7 +3,7 @@ async function create(routerType, reqBody, res) {
   //Record instance
   const record = new Record(routerType);
   try {
-    let result = localCreate(record, reqBody)
+    let result = await localCreate(record, reqBody)
     return res.status(200).json(result);
   } catch (error) {
     return res.status(500).json({ error });
