@@ -4,6 +4,7 @@ const router = express.Router();
 const bodyParser = require("body-parser");
 const multer = require("multer");
 const upload = multer({ storage: multer.memoryStorage() })
+let routerType = "assets";
 
 const fs = require("fs");
 
@@ -12,9 +13,31 @@ router.use(bodyParser.json());
 
 //APIs
 
-router.get("/", async (req, res) => {
+router.delete("/:id", async (req, res) => {
+  let id = req.params.id
+  const dir = `../db/${routerType}/`;
+  const file = id + ".json";
+  fs.unlinkSync(dir + file);
 
-  console.log("")
+  return res.status(200).json({ message: `removed: ${id}` })
+
+});
+
+
+
+
+router.post("/getByName", async (req, res) => {
+
+  let fileName = req.body.name;
+  console.log(fileName, "name")
+
+
+
+  let content = fs.readFileSync(`../db/${routerType}/${fileName}.json`, "utf8");
+
+  var decodedImage = new Buffer(content, 'base64');
+
+  return res.status(200).json(decodedImage)
 
 });
 
@@ -22,7 +45,9 @@ router.get("/", async (req, res) => {
 //APIs
 router.post("/", upload.single('asset'), async (req, res) => {
 
-  let routerType = "assets";
+
+  let image = req.file.buffer.toString('base64')
+
   let fileName = req.body.name ?? `file_${(new Date().toJSON())}`;
 
 
@@ -30,7 +55,7 @@ router.post("/", upload.single('asset'), async (req, res) => {
 
   fs.writeFileSync(
     `../db/${routerType}/${fileName}.json`,
-    JSON.stringify(req.file)
+    JSON.stringify(image)
   );
 
   try {

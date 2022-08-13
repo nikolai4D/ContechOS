@@ -1,4 +1,4 @@
-const { create } = require("./create.js");
+const create = require("./create.js");
 const createBulk = require("./createBulk.js");
 const createBulkRel = require("./createBulkRel.js");
 const idExist = require("./idExist.js");

@@ -127,8 +127,6 @@ router.put("/update", async (req, res) => {
 //DELETE
 
 router.delete("/:id", async (req, res) => {
-
-  console.log("instance data deletion route used for id " + req.params.id)
   if (!(await helpers.idExist(routerType, req.params.id, res))) {
     return res.statusCode;
   }
