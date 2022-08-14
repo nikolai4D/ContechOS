@@ -29,13 +29,12 @@ router.delete("/:id", async (req, res) => {
 router.post("/getByName", async (req, res) => {
 
   let fileName = req.body.name;
-  console.log(fileName, "name")
 
+  let contentJSON = fs.readFileSync(`../db/${routerType}/${fileName}.json`, "utf8");
 
+  let content = JSON.parse(contentJSON).content;
 
-  let content = fs.readFileSync(`../db/${routerType}/${fileName}.json`, "utf8");
-
-  var decodedImage = new Buffer(content, 'base64');
+  let decodedImage = new Buffer(content, 'base64');
 
   return res.status(200).json(decodedImage)
 
@@ -45,8 +44,7 @@ router.post("/getByName", async (req, res) => {
 //APIs
 router.post("/", upload.single('asset'), async (req, res) => {
 
-
-  let image = req.file.buffer.toString('base64')
+  let image = { content: req.file.buffer.toString('base64') }
 
   let fileName = req.body.name ?? `file_${(new Date().toJSON())}`;
 
