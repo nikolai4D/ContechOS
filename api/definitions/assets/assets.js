@@ -13,13 +13,13 @@ router.use(bodyParser.json());
 
 //APIs
 
-router.delete("/:id", async (req, res) => {
-  let id = req.params.id
+router.delete("/:name", async (req, res) => {
+  let name = req.params.name
   const dir = `../db/${routerType}/`;
-  const file = id + ".json";
+  const file = name + ".json";
   fs.unlinkSync(dir + file);
 
-  return res.status(200).json({ message: `removed: ${id}` })
+  return res.status(200).json({ message: `removed: ${name}` })
 
 });
 
