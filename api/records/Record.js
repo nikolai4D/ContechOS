@@ -165,7 +165,6 @@ class Record {
       defType.props = props;
     }
 
-    console.log(`../db/${this.defType}/${defTypeId}.json`)
 
     fs.writeFileSync(
       `../db/${this.defType}/${defTypeId}.json`,
