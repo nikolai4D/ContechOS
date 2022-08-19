@@ -24,6 +24,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.CI_TOKEN }}
-          repository: nikolai4D/ContechOS
+          repository: nikolai4D/ContechOs-Deploy2
           event-type: push-build
           client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
