@@ -3,6 +3,7 @@ import navigateTo from "./helpers/navigateTo.js";
 import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
+import Actions from "./store/Actions.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -87,4 +88,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleToken(sessionStorage.getItem("accessToken"));
   }
 });
+
+async function testCypher() {
+  await Actions.CYPHER("Match (m: movie)-(:DirectedBy)-> (d:Director {name: 'tarantino'} return m")
+}
+
+testCypher().then(r => console.log("something happened"))
+
 window.addEventListener("popstate", router);

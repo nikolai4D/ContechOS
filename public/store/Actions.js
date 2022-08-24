@@ -1,8 +1,27 @@
 import Mutations from "./Mutations.js";
-// import { stack } from "d3";
 
 class Actions {
   constructor() { }
+
+  async CYPHER(query) {
+
+    let response
+    try {
+      response = await fetch(`/api/cypher`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+          authorization: sessionStorage.getItem("accessToken"),
+        },
+        body: query,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+
+    const data = await response.json()
+    console.log(JSON.stringify(data, null, 2))
+  }
 
   async CREATE(view, defType, attrs) {
     let defTypeTitle = defType.defTypeTitle;

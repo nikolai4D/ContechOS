@@ -138,4 +138,6 @@ api.use("/configs", require("./definitions/graphView/graphConfigs.js"));
 //datas >>> gets data and dataRel as nodes and rels
 api.use("/datas", require("./definitions/graphView/graphDatas.js"));
 
+api.use("/cypher", require("./cypher/router.js"))
+
 module.exports = api;
