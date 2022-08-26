@@ -1,0 +1,88 @@
+--------------- Ontology (pretty sure that's how it's called) ------------------
+Node = {
+    id,
+    title,
+    parentRelationShip (->I like this one because with one property you access it, and it s up to contech os to resolve it. Not sure how hard is it to implement though)
+    childrenRelationShips (-> same as above)
+    sameLevelRelationships ()
+    customProperties (An array. we don't use them but there would go the user defined props of the node, like a password for a user node, that would be a direct prop of the node and not related to it)
+}
+
+Relationship = {
+    id,
+    title,
+    parentRelationShip
+    childrenRelationShips
+    source
+    target
+}
+
+--------------- Considerations -----------------------
+Having the parent, children and same level relationships properties allow to explore the graph without knowing the ids or the existence of these relationships.
+Getting all the nodes linked to a origin
+
+--------------- Examples ---------------------------
+
+Request to get one specific node:
+{
+    nodes(id: $td_gghjgglugqggbl)
+}
+
+    response:
+        { nodes: [
+            {node object}
+        ]}
+
+Request to get all nodes:
+{
+    nodes
+}
+    response:
+            { nodes: [
+                {node object},
+                {node object},
+                {node object},
+                {node object}
+                ...
+            ]}
+
+Request to get parentNode id:
+{
+    nodes:(id: $td_jhbhjhbjh) {
+        parentRel {
+            target(sourceID: td_jhbhjhbjh) {
+                id
+            }
+        }
+    }
+}
+
+    Response:
+    { nodes: [
+        { parentRel : {
+                target: {
+                    id: fr_jhbhjvlvlvulvghv
+                }
+            }
+        }
+    ]}
+
+Request to get all the profiles linked to one project:
+{
+    projectnode: nodes(id: $profile_id) {
+        profileToProjects: sameLevelRelations(parentId: $profileRelationParentId) {
+            source
+        }
+    }
+}
+
+    Response:
+    { nodes: [
+            { projectnode: {
+                profileToProjectRelation: [
+                    {profileObject},
+                    {profileObject},
+                    {profileObject}
+                ]}
+            }
+        ]}

@@ -89,10 +89,12 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-async function testCypher() {
-  await Actions.CYPHER("Match (m: movie)-(:DirectedBy)-> (d:Director {name: 'tarantino'} return m")
-}
+// async function testCypher() {
+//   await Actions.CYPHER("Match (m: movie)-(:DirectedBy)-> (d:Director {name: 'tarantino'} return m")
+// }
+//
+// testCypher().then(r => console.log("something happened"))
 
-testCypher().then(r => console.log("something happened"))
+Actions.GRAPHQL('{me:hello}').then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
 
 window.addEventListener("popstate", router);

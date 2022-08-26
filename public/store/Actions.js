@@ -3,17 +3,19 @@ import Mutations from "./Mutations.js";
 class Actions {
   constructor() { }
 
-  async CYPHER(query) {
+  async GRAPHQL(query) {
 
     let response
     try {
-      response = await fetch(`/api/cypher`, {
+      response = await fetch(`/api/graphql`, {
         method: "POST",
         headers: {
-          "Content-Type": "text/plain",
+          "Content-Type": "application/json",
           authorization: sessionStorage.getItem("accessToken"),
         },
-        body: query,
+        body:
+        '{"query": "query ' + query + '"}'
+
       });
     } catch (err) {
       console.log(err);
