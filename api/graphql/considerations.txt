@@ -6,6 +6,7 @@ Node = {
     childrenRelationShips (-> same as above)
     sameLevelRelationships ()
     customProperties (An array. we don't use them but there would go the user defined props of the node, like a password for a user node, that would be a direct prop of the node and not related to it)
+    (layer)
 }
 
 Relationship = {
@@ -15,11 +16,28 @@ Relationship = {
     childrenRelationShips
     source
     target
+    (layer)
 }
 
 --------------- Considerations -----------------------
-Having the parent, children and same level relationships properties allow to explore the graph without knowing the ids or the existence of these relationships.
-Getting all the nodes linked to a origin
+A Layer node --> I am not sure about this one as it doesn't really have any specific data,
+It might be a good entry point for requests.
+It might also be useful to init database from request --> would be nice if you could copy any contechOS just by querying layer(depth: [0,1] for example.
+It would look like that:
+Layer = {
+    parent,
+    child,
+    node,
+    relation
+}
+
+Having the parent, children and same level relationships properties allow to explore the graph without any knowldege of the db structure.
+
+From what I know id are semi-randomly generated (meaningful prefix followed by random key),
+and if I manually recreate a db with the same structure ids will differs from the original, leading to the need of updating .env and possibly other things.
+If we make our requests are based on the relation title instead we avoid all that, we can clone databases, they all have their own ids and we don't care.
+Sharing ids across databases would not be a good idea either: you would have conflict for example when importing foreign into your db.
+Meaningful relationship title would be as simple as isProfileToProject for example. Formulating this way also clarify whose the target and whose the source.
 
 --------------- Examples ---------------------------
 
