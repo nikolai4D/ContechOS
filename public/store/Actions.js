@@ -3,7 +3,7 @@ import Mutations from "./Mutations.js";
 class Actions {
   constructor() { }
 
-  async GRAPHQL(query) {
+  async GRAPHQL_QUERY(query) {
 
     let response
     try {

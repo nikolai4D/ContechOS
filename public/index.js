@@ -95,6 +95,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 //
 // testCypher().then(r => console.log("something happened"))
 
-Actions.GRAPHQL('{me:hello}').then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
+Actions.GRAPHQL_QUERY('{me:hello}').then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
 
 window.addEventListener("popstate", router);
