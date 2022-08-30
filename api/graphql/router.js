@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema,GraphQLObjectType, GraphQLString } = require('graphql');
+const { GraphQLSchema,GraphQLObjectType, GraphQLString, GraphQLInt } = require('graphql');
 const {GraphQLInputObjectType} = require("graphql/type");
 
 //This is purposely not a json tree.
@@ -62,10 +62,20 @@ let schema = new GraphQLSchema({
                         return `world + ${args.pseudo}`;
                     },
                 },
-                goodbye: {
+                projectProfiles: {
                     type: GraphQLString,
-                    resolve() {
-                        return `bye world`;
+                    args: {
+                        projectName: {
+                            type: GraphQLInt,
+                            description: "the profiles related to a project"
+                        }
+                    },
+                    resolve(root, args) {
+                        console.log("args: " + JSON.stringify(args))
+                        const project = myArrayFullOfStuff.projects.find(el => el.name === args.name)
+                        const projectProfiles = myArrayFullOfStuff.profiles.filter(el => el.project = project.name)
+                        console.log("project profiles: " + projectProfiles)
+                        return project;
                     },
                 },
             },
