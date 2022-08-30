@@ -29,7 +29,7 @@ const myArrayFullOfStuff =
     }
 
 
-const profileType = new GraphQLObjectType({
+const Profile = new GraphQLObjectType({
     name: "Profile",
     fields: {
         name: {type:GraphQLString},
@@ -37,7 +37,7 @@ const profileType = new GraphQLObjectType({
     }
 })
 
-const ProfileInputType = new  GraphQLInputObjectType({
+const ProfileInput = new  GraphQLInputObjectType({
     name: "ProfileInput",
     fields: {
         name: {type:GraphQLString},
@@ -74,18 +74,21 @@ let schema = new GraphQLSchema({
             name: "RootMutationType",
             fields: {
                 create: {
-                    type: profileType,
+                    type: Profile,
                     args: {
-                        profile: {type: ProfileInputType}
+                        profile: {
+                            type: ProfileInput,
+                            description: "the input for profile"
+                        }
                     },
-                    resolve(args){
-                        myArrayFullOfStuff.push(args.profile)
+                    resolve(root, args){
+                        myArrayFullOfStuff.profiles.push(args.profile)
                         console.log("Array full of stuff: " + JSON.stringify(myArrayFullOfStuff))
                     }
                 }
             }
         }),
-        types: [profileType]
+        types: [Profile, ProfileInput]
     }
 )
 
