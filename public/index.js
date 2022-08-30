@@ -89,12 +89,41 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-// async function testCypher() {
-//   await Actions.CYPHER("Match (m: movie)-(:DirectedBy)-> (d:Director {name: 'tarantino'} return m")
-// }
-//
-// testCypher().then(r => console.log("something happened"))
+const req1 = JSON.stringify({
+  query: `query RootQueryType($pseudo: String){
+    hello(pseudo:$pseudo)
+  }`, variables: {
+    pseudo:'pablo'
+  }
+})
 
-Actions.GRAPHQL_QUERY('{me:hello}').then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
+//req example to get api info.
+const req2 = JSON.stringify({
+  query: `query RootQueryType{
+  __schema {
+    queryType {
+      name
+    }
+  }
+}`
+})
+
+const profile4 = {
+  name:"D",
+  project:"project4"
+}
+
+//req example to create an object.
+const req3 = JSON.stringify({
+  query: `mutation RootMutationType($profile:ProfileInput){
+  create(profile:$profile){
+  name
+  }
+}`, variables: {
+      profile:'5'
+    }
+})
+
+Actions.GRAPHQL_QUERY(req3).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
 
 window.addEventListener("popstate", router);

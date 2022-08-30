@@ -13,8 +13,7 @@ class Actions {
           "Content-Type": "application/json",
           authorization: sessionStorage.getItem("accessToken"),
         },
-        body:
-        '{"query": "query ' + query + '"}'
+        body: query
 
       });
     } catch (err) {
