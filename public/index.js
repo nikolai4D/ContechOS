@@ -124,6 +124,89 @@ const req3 = JSON.stringify({
     }
 })
 
-Actions.GRAPHQL_QUERY(req3).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
+//The server side graphql take care of filtering the fields we want in the response (here only the name).
+const req5 = JSON.stringify({
+  query: `query RootQueryType($projectName: String){
+    projectProfiles(projectName:$projectName){
+    name
+    }
+  }`, variables: {
+    projectName:"project3"
+  }
+})
+
+//The server side graphql take care of filtering the fields we want in the response (here only the name).
+//The simplifiedDB have purposely some circular relations, it doesn't cause any problems as graphql doesn't fetch all the result and then filter.
+//This request use GraphQLTypes serverside, allowing to dynamically fetch the next node, even if they belong to a flat array.
+// Instead it just fetch the demanded fields.
+const req6 = JSON.stringify({
+  query: `query RootQueryType($id: String){
+    node(id:$id){
+      title,
+      relations{
+        id
+        source {
+          title
+          }
+        target {
+          title
+          }
+        }
+    }
+  }`, variables: {
+    id:"n_1"
+  }
+})
+
+const req7 = JSON.stringify({
+  query: `query RootQueryType($id: String){
+    node(id:$id){
+      title,
+      relations{
+        id
+        source {
+          title
+          }
+        target {
+          title
+          }
+        }
+    }
+  }`, variables: {
+    id:"n_1",
+    condition:true
+  }
+})
+
+
+// Chain queries
+// From my current knowledge there is no way to feed the result of the first query to the second.
+const req8 = JSON.stringify({
+  query: `query RootQueryType($id: String){
+    node1: node(id:$id){
+      title
+    },
+    node2: node(id:$id){
+      title
+    }
+  }`, variables: {
+    id:"n_1"
+  }
+})
+
+const req9 = JSON.stringify({
+  query: `query RooterQueryType($id: String){
+  contechNode(id:$id){
+      title
+      parentNode {
+        id
+      }
+    }
+  }`, variables: {
+    id:"n_i_1"
+  }
+})
+
+Actions.GRAPHQL_QUERY(req9).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
 
 window.addEventListener("popstate", router);

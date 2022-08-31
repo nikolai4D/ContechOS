@@ -2,7 +2,9 @@ const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema,GraphQLObjectType, GraphQLString, GraphQLInt } = require('graphql');
-const {GraphQLInputObjectType} = require("graphql/type");
+const {GraphQLInputObjectType, GraphQLList} = require("graphql/type");
+const {Node, Relation, ContechNode, ContechRelation} = require("./customGraphQLTypes");
+const {queryNodeResolver, queryContechNodeResolver, queryParentNodeResolver} = require("./resolvers");
 
 //This is purposely not a json tree.
 const myArrayFullOfStuff =
@@ -24,10 +26,13 @@ const myArrayFullOfStuff =
             {
                 name: "C",
                 project: "project3"
+            },
+            {
+                name: "C2",
+                project: "project3"
             }
         ]
     }
-
 
 const Profile = new GraphQLObjectType({
     name: "Profile",
@@ -44,6 +49,10 @@ const ProfileInput = new  GraphQLInputObjectType({
         project: {type:GraphQLString},
     }
 })
+
+// Downside with the above implementation -> it s db model opinionated (hope I am using this word right)
+// Below is an attempt at an agnostic implementation
+
 
 let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
@@ -63,21 +72,47 @@ let schema = new GraphQLSchema({
                     },
                 },
                 projectProfiles: {
-                    type: GraphQLString,
+                    type: new GraphQLList(Profile),
                     args: {
                         projectName: {
-                            type: GraphQLInt,
+                            type: GraphQLString,
                             description: "the profiles related to a project"
                         }
                     },
                     resolve(root, args) {
                         console.log("args: " + JSON.stringify(args))
-                        const project = myArrayFullOfStuff.projects.find(el => el.name === args.name)
-                        const projectProfiles = myArrayFullOfStuff.profiles.filter(el => el.project = project.name)
-                        console.log("project profiles: " + projectProfiles)
-                        return project;
+                        const project = myArrayFullOfStuff.projects.find(el => el === args.projectName)
+                        console.log("project: " + project)
+                        console.log("myArray: " + JSON.stringify(myArrayFullOfStuff))
+                        const projectProfiles = myArrayFullOfStuff.profiles.filter(el => el.project === project)
+                        console.log("project profiles: " + JSON.stringify(projectProfiles))
+                        return projectProfiles;
                     },
                 },
+                node: {
+                    type: new GraphQLList(Node),
+                    args: {
+                        id: {
+                            type: GraphQLString,
+                            description: "the unique identifier of the node.Starts with an n."
+                        },
+                    },
+                    resolve(root, args) {
+                        return queryNodeResolver(args)
+                    }
+                },
+                contechNode: {
+                    type: new GraphQLList(ContechNode),
+                    args: {
+                        id: {
+                            type: GraphQLString,
+                            description: "the unique identifier of the node.Starts with an n."
+                        },
+                    },
+                    resolve(root, args) {
+                        return queryContechNodeResolver(args)
+                    }
+                }
             },
         }),
         mutation: new GraphQLObjectType({
@@ -98,7 +133,7 @@ let schema = new GraphQLSchema({
                 }
             }
         }),
-        types: [Profile, ProfileInput]
+        types: [Profile, ProfileInput, Relation, Node, ContechNode, ContechRelation]
     }
 )
 

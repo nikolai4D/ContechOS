@@ -20,6 +20,9 @@ Relationship = {
 }
 
 --------------- Considerations -----------------------
+GraphQl mention gzip, very good at compressing json. it oculd be a way to optimize big requests.
+I don't think it's handled by graphql tho, we would have to add the compression system manually.
+
 A Layer node --> I am not sure about this one as it doesn't really have any specific data,
 It might be a good entry point for requests.
 It might also be useful to init database from request --> would be nice if you could copy any contechOS just by querying layer(depth: [0,1] for example.
@@ -38,6 +41,8 @@ and if I manually recreate a db with the same structure ids will differs from th
 If we make our requests are based on the relation title instead we avoid all that, we can clone databases, they all have their own ids and we don't care.
 Sharing ids across databases would not be a good idea either: you would have conflict for example when importing foreign into your db.
 Meaningful relationship title would be as simple as isProfileToProject for example. Formulating this way also clarify whose the target and whose the source.
+
+The way data is stored, nodes objects are ignorants of relations tying them. I expected to be the same for parent relation but no, the node directly holds its parentId.
 
 --------------- Examples ---------------------------
 
