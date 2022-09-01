@@ -33,14 +33,14 @@ const slightlyMoreComplexDB = {
             target: "n_t_1"
         },
         {
-            id: "r_t_2",
+            id: "r_t_3",
             title: "property_to_profile",
             parentRel: null,
             source: "n_t_4",
             target: "n_t_2"
         },
         {
-            id: "r_t_2",
+            id: "r_t_4",
             title: "property_to_phase",
             parentRel: null,
             source: "n_t_4",
@@ -103,42 +103,42 @@ const slightlyMoreComplexDB = {
         {
             id: "r_i_1",
             title: "prof1_to_proj1",
-            parentRel: "r_t_1",
+            parentId: "r_t_1",
             source: "n_i_3",
             target: "n_i_1"
         },
         {
             id: "r_i_2",
             title: "prof2_to_proj1",
-            parentRel: "r_t_1",
+            parentId: "r_t_1",
             source: "n_i_4",
             target: "n_i_1"
         },
         {
             id: "r_i_3",
             title: "phas1_to_proj1",
-            parentRel: "r_t_2",
+            parentId: "r_t_2",
             source: "n_i_5",
             target: "n_i_1"
         },
         {
             id: "r_i_4",
             title: "prop1_to_prof1",
-            parentRel: "r_t_3",
+            parentId: "r_t_3",
             source: "n_i_7",
             target: "n_i_3"
         },
         {
             id: "r_i_5",
             title: "prop1_to_pha1",
-            parentRel: "r_t_4",
+            parentId: "r_t_4",
             source: "n_i_7",
             target: "n_i_5"
         },
         {
             id: "r_i_6",
             title: "prop2_to_prof1",
-            parentRel: "r_t_3",
+            parentId: "r_t_3",
             source: "n_i_8",
             target: "n_i_3"
         },

@@ -1,0 +1,76 @@
+Things that are missing in the graphQL npm package, maybe in graphql, maybe by design:
+(I am no graphQL expert I might be missing existing features)
+
+
+1. In the query a way to send parameters to subfield.
+    Currently we can do
+        node (nodeInput:$nodeInput) {
+            title
+        }
+    But we cannot do
+        node {
+            parentNode (nodeInput:$nodeInput)
+        }
+    This would allow, with a very simple and generic backend setup, very complex front end request.
+
+2. A way to use the result of a query in a chained query
+    Currently we cannot do
+        node (title:$title){
+            parentNode {
+                $myParentNodeId: parentId
+            }
+        },
+        node (id:$myParentId) {
+            title
+        }
+    I guess a motivation for that is that the chained queries are executed in parallel. (mutations are not)
+
+3. In query conditions:
+    Currently the filtering is made by the resolver, which I have written. GraphQL have directives, 2 are already implemented in the npm package:
+        ... node(myBoolean) {
+            title @includes(if: myBoolean)
+            id &skip(if: myBoolean)
+        } ...
+        variables: {
+            myBoolean: true
+        }
+    As shown, this condition value is determined prior to query resolution, it cannot dynamically evaluate and was not useful to any of my usecases.
+    I could have used the following:
+        node {
+            relations {
+                id @includes(if: parentId === "r_t_1")
+            }
+        }
+    It fill quite the same spot as the point 1., but this one doesn't rely on an external resolver and is more explicit.
+    As it comes after resolution it s probably
+
+--------- With the above points implemented, looking for the Aulan1 related properties would look something like: ---------
+
+    ...
+    profToProj: relation (title:"prof_to_proj"){
+            id
+    },
+    phasToProj: relation (title:"phas_to_proj"){
+            id
+        },
+    propertyParentId: node(title:"property) {
+        id
+    }
+    project: node (title:$title){
+        relations (parentId: [$profToproj, $phasToProj]{
+            sourceNode() {
+                relations {
+                    sourceNode (parentId: $propertyParentId){
+                        title,
+                        id
+                    }
+                }
+            }
+        }
+    } ...
+    variables: {
+        title: "Aulan1",
+
+    }
+
+

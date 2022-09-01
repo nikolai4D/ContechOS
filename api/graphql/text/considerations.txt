@@ -1,5 +1,5 @@
 --------------- Ontology (pretty sure that's how it's called) ------------------
-Node = {
+Graphql_types = {
     id,
     title,
     parentRelationShip (->I like this one because with one property you access it, and it s up to contech os to resolve it. Not sure how hard is it to implement though)
@@ -44,6 +44,7 @@ Meaningful relationship title would be as simple as isProfileToProject for examp
 
 The way data is stored, nodes objects are ignorants of relations tying them. I expected to be the same for parent relation but no, the node directly holds its parentId.
 
+Ideally, when redacting the query client side, we would set paramaters to subfields too. I haven't seen in any implementation and my attempts failed.
 --------------- Examples ---------------------------
 
 Request to get one specific node:

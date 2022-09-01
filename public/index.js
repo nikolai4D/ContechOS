@@ -89,124 +89,78 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-const req1 = JSON.stringify({
-  query: `query RootQueryType($pseudo: String){
-    hello(pseudo:$pseudo)
-  }`, variables: {
-    pseudo:'pablo'
-  }
-})
+//To get the properties related to a project via a profile or a phase, assuming we only now the title of the project
 
-//req example to get api info.
-const req2 = JSON.stringify({
-  query: `query RootQueryType{
-  __schema {
-    queryType {
-      name
-    }
-  }
-}`
-})
-
-const profile4 = {
-  name:"D",
-  project:"project4"
-}
-
-//req example to create an object.
-const req3 = JSON.stringify({
-  query: `mutation RootMutationType($profile:ProfileInput){
-  create(profile:$profile){
-  name
-  }
-}`, variables: {
-      profile:profile4
-    }
-})
-
-//The server side graphql take care of filtering the fields we want in the response (here only the name).
-const req5 = JSON.stringify({
-  query: `query RootQueryType($projectName: String){
-    projectProfiles(projectName:$projectName){
-    name
-    }
-  }`, variables: {
-    projectName:"project3"
-  }
-})
-
-//The server side graphql take care of filtering the fields we want in the response (here only the name).
-//The simplifiedDB have purposely some circular relations, it doesn't cause any problems as graphql doesn't fetch all the result and then filter.
-//This request use GraphQLTypes serverside, allowing to dynamically fetch the next node, even if they belong to a flat array.
-// Instead it just fetch the demanded fields.
-const req6 = JSON.stringify({
-  query: `query RootQueryType($id: String){
-    node(id:$id){
-      title,
-      relations{
+const firstQuery= JSON.stringify( {
+    query: `query RooterQueryType($nodeInput:NodeInput){
+    node(nodeInput:$nodeInput){
         id
-        source {
-          title
-          }
-        target {
-          title
+        parentNode {
+          relations {
+            title,
+            id
           }
         }
-    }
-  }`, variables: {
-    id:"n_1"
-  }
-})
-
-const req7 = JSON.stringify({
-  query: `query RootQueryType($id: String){
-    node(id:$id){
-      title,
-      relations{
-        id
-        source {
-          title
-          }
-        target {
-          title
-          }
-        }
-    }
-  }`, variables: {
-    id:"n_1",
-    condition:true
-  }
-})
-
-
-// Chain queries
-// From my current knowledge there is no way to feed the result of the first query to the second.
-const req8 = JSON.stringify({
-  query: `query RootQueryType($id: String){
-    node1: node(id:$id){
-      title
-    },
-    node2: node(id:$id){
-      title
-    }
-  }`, variables: {
-    id:"n_1"
-  }
-})
-
-const req9 = JSON.stringify({
-  query: `query RooterQueryType($id: String){
-  contechNode(id:$id){
-      title
-      parentNode {
-        id
       }
-    }
+    }`, variables: {
+        nodeInput: {
+          title: "Aulan1"
+        }
+      }
+    })
+
+// From the request above we infer the ids of the project and the parent relations profileToProject and phaseToProject
+//  We use these data in the second request.
+
+// Get all the phases and profiles related to node
+const secondQuery = JSON.stringify({
+  query: `query RooterQueryType($relationInput1:RelationInput, $relationInput2:RelationInput){
+  projects: relation(relationInput:$relationInput1){
+      sourceNode {
+        relations {
+          sourceNode {
+            title
+            id
+            parentId
+          }
+        }
+      }
+    },
+  phases: relation(relationInput:$relationInput2){
+      sourceNode {
+        relations {
+          sourceNode {
+            title
+            id
+            parentId
+          }
+        }
+      }
+    },
   }`, variables: {
-    id:"n_i_1"
+    relationInput1: {
+      parentId:"r_t_1",
+      target:"n_i_1"
+    },
+    relationInput2: {
+      parentId:"r_t_2",
+      target:"n_i_1"
+    }
   }
 })
 
-Actions.GRAPHQL_QUERY(req9).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
+// Here the db is simple, we end up with all the sources of the relations of the related phases and profiles, we can then extract the properties from the json in the client.
+// If there was really too much other kinds of relations linked to profiles and phases we could have narrowed the search by splitting the second query into two more targeted ones.
+
+// What can be improved in the current implementation:
+//    - Add additional filtering (is source/target/parentID to node?) -> require to look one level deeper, doable.
+//    - Add mutations, I have done some, it works, I do not have it working with current db.
+//    - Plug it to the real data.
+//    - Allow for multiple values of a same property to be validated (id: [1,2,3,4]).
+//
+//    - In the node GraphType, divide the relations field in two: relNodeIsTargetTo and relNodeIsSourceTo.
+//    - find a way to communicate args between resolvers.
+
+Actions.GRAPHQL_QUERY(secondQuery).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
 
 window.addEventListener("popstate", router);
