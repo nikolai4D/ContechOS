@@ -161,6 +161,6 @@ const secondQuery = JSON.stringify({
 //    - In the node GraphType, divide the relations field in two: relNodeIsTargetTo and relNodeIsSourceTo.
 //    - find a way to communicate args between resolvers.
 
-Actions.GRAPHQL_QUERY(secondQuery).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
+Actions.GRAPHQL_QUERY(firstQuery).then(r => console.log("graphQL response:" + JSON.stringify(r, null, 2)))
 
 window.addEventListener("popstate", router);
