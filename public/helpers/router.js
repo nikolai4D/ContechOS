@@ -39,9 +39,6 @@ export default async function router() {
   document.querySelector("#nav").innerHTML = "";
   document.querySelector("#app").innerHTML = "";
 
-  if(await view.getTemplate() instanceof SVGElement) {
-    console.log("It's an SVG element");
-  }
   if(view.setupToolBar !== undefined){
     document.querySelector("#toolBar").innerHTML = "";
     view.setupToolBar();
