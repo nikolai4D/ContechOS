@@ -6,6 +6,7 @@ const {GraphQLList} = require("graphql/type");
 const {Node, NodeInput, Relation, RelationInput} = require("./graphql_types");
 const {queryNodesResolver} = require("./resolvers/node_resolvers");
 const {queryRelationsResolver} = require("./resolvers/relation_resolvers");
+const Record = require("../records/Record");
 
 let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
@@ -16,7 +17,10 @@ let schema = new GraphQLSchema({
                     args: {
                         nodeInput: { type: NodeInput }
                     },
-                    resolve(root, args) {
+                    async resolve (root, args){
+                        const record = new Record("typeData")
+                        let node = await (record.getByTitle("VS"))
+                        console.log("node: " + JSON.stringify((node)))
                         return queryNodesResolver(args.nodeInput)
                     }
                 },

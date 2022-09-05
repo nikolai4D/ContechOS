@@ -78,3 +78,64 @@ const req10 = JSON.stringify({
         nodeInput: {title:"Aulan1"}
     }
 })
+
+
+//To get the properties related to a project via a profile or a phase, assuming we only now the title of the project
+
+const firstQuery= JSON.stringify( {
+    query: `query RooterQueryType($nodeInput:NodeInput){
+    node(nodeInput:$nodeInput){
+        id
+        parentNode {
+          relations {
+            title,
+            id
+          }
+        }
+      }
+    }`, variables: {
+        nodeInput: {
+            title: "Aulan1"
+        }
+    }
+})
+
+// From the request above we infer the ids of the project and the parent relations profileToProject and phaseToProject
+//  We use these data in the second request.
+
+// Get all the phases and profiles related to node
+const secondQuery = JSON.stringify({
+    query: `query RooterQueryType($relationInput1:RelationInput, $relationInput2:RelationInput){
+  projects: relation(relationInput:$relationInput1){
+      sourceNode {
+        relations {
+          sourceNode {
+            title
+            id
+            parentId
+          }
+        }
+      }
+    },
+  phases: relation(relationInput:$relationInput2){
+      sourceNode {
+        relations {
+          sourceNode {
+            title
+            id
+            parentId
+          }
+        }
+      }
+    },
+  }`, variables: {
+        relationInput1: {
+            parentId:"r_t_1",
+            target:"n_i_1"
+        },
+        relationInput2: {
+            parentId:"r_t_2",
+            target:"n_i_1"
+        }
+    }
+})

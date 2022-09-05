@@ -6,6 +6,7 @@ const corsOptions = require("./config/corsOptions");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
+const {Accessor} = require("./DBaccess/Accessor");
 const PORT = process.env.PORT;
 const app = express();
 
@@ -41,5 +42,10 @@ app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
+async function d() {
+  const node = await new Accessor().getItems({layer: 2, limit: 5})
+  console.log("node: " + JSON.stringify(node))
+}
+d()
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));
