@@ -39,14 +39,24 @@ export default async function router() {
   document.querySelector("#nav").innerHTML = "";
   document.querySelector("#app").innerHTML = "";
 
+  if(await view.getTemplate() instanceof SVGElement) {
+    console.log("It's an SVG element");
+  }
+  if(view.setupToolBar !== undefined){
+    document.querySelector("#toolBar").innerHTML = "";
+    view.setupToolBar();
+  }
+  else{
+    document.querySelector("#toolBar").innerHTML = "";
+  }
   //No nav
   if (match.route.path === "/login" || match.route.path === "/register") {
     document.querySelector("#app").innerHTML = await view.getTemplate();
-  } else if (match.route.path === "/" || match.route.path === "/apis") {
+  } else if (await view.getTemplate() instanceof SVGElement) {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
-    document.querySelector("#app").innerHTML = await view.getTemplate();
+    document.querySelector("#app").appendChild( await view.getTemplate());
   } else {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
-    document.querySelector("#app").appendChild(await view.getTemplate());
+    document.querySelector("#app").innerHTML = await view.getTemplate();
   }
 }
