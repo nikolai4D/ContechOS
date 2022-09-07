@@ -66,8 +66,8 @@ class Accessor{
         } = params
 
         // As in the files sourceId and targetId are named "source" and "target", we make the conversion here rather than propagate the inconsistency further.
-        const target = params['targetId']
-        const source = params['sourceId']
+        params['target'] = params['targetId']
+        params['source'] = params['sourceId']
 
         //If id is defined we directly go to the correct defType.
         if (id !== undefined) {
@@ -85,12 +85,12 @@ class Accessor{
             const pCoo =  getCoordsFromId(parentId)
             coords.push([pCoo[0] + 1, pCoo[1]])
         }
-        else if (target !== undefined){
-            const layer = getLayerFromId(target)
+        else if (params.target !== undefined){
+            const layer = getLayerFromId(params.target)
             coords.push([layer, 0], [layer, 1])
         }
-        else if (source !== undefined){
-            const layer = getLayerFromId(source)
+        else if (params.source !== undefined){
+            const layer = getLayerFromId(params.source)
             coords.push([layer, 0], [layer, 1])
         }
         else if ([0,1,2,3].includes(layer)){
@@ -115,7 +115,7 @@ class Accessor{
         defTypes.push(...coords.map(coord => { return getDefTypeFromCoords(coord) }))
 
         const filterFunction = (item) => {
-            for (let prop of ["target", "source", "parentId", "title"]) {
+            for (let prop of ["target", "source", "parentId", "title", "created", "updated"]) {
                 if(params[prop] !== undefined) {
                     if (!item.hasOwnProperty(prop) || params[prop] !== item[prop]) return false
                 }
@@ -125,9 +125,9 @@ class Accessor{
 
         const requestedItems = getBulk(defTypes, limit, from, filterFunction)
 
-        console.log("coords: " + JSON.stringify(coords))
-        console.log("defTypes: " + JSON.stringify(defTypes))
-        console.log("items length: " + requestedItems.length)
+        // console.log("coords: " + JSON.stringify(coords))
+        // console.log("defTypes: " + JSON.stringify(defTypes))
+        // console.log("items length: " + requestedItems.length)
         // console.log("items: " + JSON.stringify(requestedItems, null, 2))
 
         return requestedItems

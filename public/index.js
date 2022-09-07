@@ -91,23 +91,20 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 const firstQuery= JSON.stringify( {
-  query: `query RooterQueryType($nodeInput:NodeInput, $nodeInput2: NodeInput){
-    node(nodeInput:$nodeInput){
+  query: `query RooterQueryType($projInp:NodeInput){
+    node(nodeInput:$projInp){
         id
         title
-        created
-        updated
-        childrenNodes (nodeInput:$nodeInput2){
-          id
+        parentNode {
+          title
+        }
+        childrenNodes {
           title
         }
       }
     }`, variables: {
-    nodeInput: {
-      title: "Project"
-    },
-    nodeInput2: {
-      title:"Intec1"
+    projInp: {
+      title: "Intec1"
     }
   }
 })
