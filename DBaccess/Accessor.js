@@ -1,5 +1,4 @@
-const Record = require("../api/records/Record")
-const {FileManager, getItemById, getBulk} = require("./FileManager");
+const {getItemById, getBulk} = require("./FileManager");
 
 const lexi = {
     itemKinds: ["node", "relation", "property"],
@@ -30,8 +29,8 @@ function QueryParams(
     this.id = id
     this.defType = defType
     this.parentId = parentId
-    this.sourceId = sourceId
-    this.targetId = targetId
+    this.source = sourceId
+    this.target = targetId
     this.layer = layer
     this.sortOfItem = sortOfItem
     this.title = title
@@ -51,27 +50,26 @@ class Accessor{
      */
     async getItems(params) {
 
-        const items = []
         let coords = [] // [layer, rel]
         const defTypes = []
-        const possibleItems = lexi.itemKinds
-        const relationsTypes = lexi.relationTypes
         const layers =  lexi.layers
 
-        const {
+        const { // TODO Validation of this params
             id,
             typeDef: defType,
             parentId,
-            sourceId,
-            targetId,
             layer,
             sortOfItem,
-            title,
+            title, // Says it's not used, but it is.
             from,
             limit
         } = params
 
-        //If id is defined things are simple
+        // As in the files sourceId and targetId are named "source" and "target", we make the conversion here rather than propagate the inconsistency further.
+        const target = params['targetId']
+        const source = params['sourceId']
+
+        //If id is defined we directly go to the correct defType.
         if (id !== undefined) {
             const coords = getCoordsFromId(id)
             const dfType = getDefTypeFromCoords(coords)
@@ -79,6 +77,7 @@ class Accessor{
             return [await getItemById(id, dfType)]
         }
 
+        //Otherwise we narrow the defType to look in as much as we can, based on the params at our disposal.
         if (defType !== undefined && isTypeDefNameValid(defType)) {
             defTypes.push(defType)
         }
@@ -86,12 +85,12 @@ class Accessor{
             const pCoo =  getCoordsFromId(parentId)
             coords.push([pCoo[0] + 1, pCoo[1]])
         }
-        else if (targetId !== undefined){
-            const layer = getLayerFromId(targetId)
+        else if (target !== undefined){
+            const layer = getLayerFromId(target)
             coords.push([layer, 0], [layer, 1])
         }
-        else if (sourceId !== undefined){
-            const layer = getLayerFromId(sourceId)
+        else if (source !== undefined){
+            const layer = getLayerFromId(source)
             coords.push([layer, 0], [layer, 1])
         }
         else if ([0,1,2,3].includes(layer)){
@@ -110,15 +109,13 @@ class Accessor{
             if(sortIndex === -1) {
                 console.log("sort of item unknown, valid values are: " + sortOfItem)
             }
-
-            console.log("sortIndex: " + sortIndex)
             coords = coords.filter(coo => (sortIndex === 0 && coo[1] === null) || sortIndex === 1 && [0,1].includes(coo[1]))
         }
 
         defTypes.push(...coords.map(coord => { return getDefTypeFromCoords(coord) }))
 
         const filterFunction = (item) => {
-            for (let prop of ["targetId", "sourceId", "parentId", "title"]) {
+            for (let prop of ["target", "source", "parentId", "title"]) {
                 if(params[prop] !== undefined) {
                     if (!item.hasOwnProperty(prop) || params[prop] !== item[prop]) return false
                 }
@@ -131,7 +128,9 @@ class Accessor{
         console.log("coords: " + JSON.stringify(coords))
         console.log("defTypes: " + JSON.stringify(defTypes))
         console.log("items length: " + requestedItems.length)
-        console.log("items: " + JSON.stringify(requestedItems, null, 2))
+        // console.log("items: " + JSON.stringify(requestedItems, null, 2))
+
+        return requestedItems
     }
 
     mutate(){

@@ -90,5 +90,32 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+const firstQuery= JSON.stringify( {
+  query: `query RooterQueryType($nodeInput:NodeInput, $nodeInput2: NodeInput){
+    node(nodeInput:$nodeInput){
+        id
+        title
+        created
+        updated
+        childrenNodes (nodeInput:$nodeInput2){
+          id
+          title
+        }
+      }
+    }`, variables: {
+    nodeInput: {
+      title: "Project"
+    },
+    nodeInput2: {
+      title:"Intec1"
+    }
+  }
+})
+
+async function d() {
+  const data = await Actions.GRAPHQL_QUERY(firstQuery)
+  console.log("data: " + JSON.stringify(data, null, 2))
+}
+d()
 
 window.addEventListener("popstate", router);

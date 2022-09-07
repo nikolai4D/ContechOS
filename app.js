@@ -42,10 +42,10 @@ app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-async function d() {
-  const node = await new Accessor().getItems({layer: 2, limit: 5})
-  console.log("node: " + JSON.stringify(node))
-}
-d()
+// async function d() {
+//   const node = await new Accessor().getItems({sourceId:"co_d99c026d-dd78-4474-af01-7b5cd08e572e", limit: 5})
+//   console.log("node: " + JSON.stringify(node))
+// }
+// d()
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

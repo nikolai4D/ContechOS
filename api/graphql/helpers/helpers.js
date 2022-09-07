@@ -1,4 +1,5 @@
 const slightlyMoreComplexDB = require("../slightlyMoreComplexDB");
+const {Accessor} = require("../../../DBaccess/Accessor");
 
 function getItemById(id){
     const repertory = getRepertoryNameFromId(id)
@@ -29,21 +30,17 @@ const typesOfItems = ["all","node","relation"]
  * @param typeOfItems Narrow the base array by selecting a specific sort of items. Accepted terms: "all" (default), "node", "relation".
  */
 function getItemsMatchingParams(params, typeOfItems = "all"){
-    let array = (params.hasOwnProperty("id"))? [getItemById(params.id)] : getAllNodes()
+    let array = (params.hasOwnProperty("id"))? new Accessor().getItems({id: params.id}): getAllNodes()
 
     if(params.hasOwnProperty("id")) array = [getItemById(params.id)]
     else if( typeOfItems === typesOfItems[0]) array = getAllItems()
     else if( typeOfItems === typesOfItems[1]) array = getAllNodes()
     else if( typeOfItems === typesOfItems[2]) array = getAllRelations()
 
-    //console.log("array: " + JSON.stringify(array))
-
     for (let key in params){
         if (key === "id") continue
 
-        //console.log("key: " + key + ",value: " + params[key])
         array = filterByParam(array, key, params[key])
-        //console.log("array: " + JSON.stringify(array))
     }
     return array
 }

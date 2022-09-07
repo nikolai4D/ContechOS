@@ -19,9 +19,7 @@ class Actions {
     } catch (err) {
       console.log(err);
     }
-
-    const data = await response.json()
-    console.log(JSON.stringify(data, null, 2))
+    return await response.json()
   }
 
   async CREATE(view, defType, attrs) {

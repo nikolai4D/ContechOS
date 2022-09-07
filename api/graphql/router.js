@@ -2,11 +2,9 @@ const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema,GraphQLObjectType} = require('graphql');
-const {GraphQLList} = require("graphql/type");
-const {Node, NodeInput, Relation, RelationInput} = require("./graphql_types");
-const {queryNodesResolver} = require("./resolvers/node_resolvers");
-const {queryRelationsResolver} = require("./resolvers/relation_resolvers");
-const Record = require("../records/Record");
+const {GraphQLList} = require("graphql/type")
+const {Node, NodeInput, Relation, RelationInput} = require("./graphql_types")
+const {queryRelationsResolver, queryNodesResolver} = require("./resolvers");
 
 let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
@@ -18,10 +16,7 @@ let schema = new GraphQLSchema({
                         nodeInput: { type: NodeInput }
                     },
                     async resolve (root, args){
-                        const record = new Record("typeData")
-                        let node = await (record.getByTitle("VS"))
-                        console.log("node: " + JSON.stringify((node)))
-                        return queryNodesResolver(args.nodeInput)
+                        return await queryNodesResolver(args.nodeInput)
                     }
                 },
                 relation: {
@@ -29,8 +24,8 @@ let schema = new GraphQLSchema({
                     args: {
                         relationInput: { type: RelationInput }
                     },
-                    resolve(root, args) {
-                        return queryRelationsResolver(args.relationInput)
+                    async resolve(root, args) {
+                        return await queryRelationsResolver(args.relationInput)
                     }
                 },
             },
