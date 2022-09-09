@@ -1,7 +1,7 @@
 const {Voc} = require("../Voc")
 const {getLayerFromId, getDefTypeFromCoords}  = require("../helpers/id_parsers")
 const {doesItemExist} = require("../helpers/checkers")
-const readItems = require("./read");
+const { readItems } = require("./read");
 const { v4} = require('uuid');
 const {createFile} = require("../FileManager")
 
@@ -11,13 +11,13 @@ function itemCreationParams(
     parentId,
     sourceId,
     targetId,
-    sortOfItem
+    kindOfItem
 ){
     this.title = title
     this.parentId = parentId
     this.sourceId = sourceId
     this.targetId = targetId
-    this.itemKind = sortOfItem
+    this.kindOfItem = kindOfItem
 }
 
 /**
@@ -35,7 +35,7 @@ async function createItem(params) {
             updated: new Date()
         }
 
-        if (![Voc.itemKinds[0], Voc.itemKinds[1]].includes(params.itemKind)) {
+        if (![Voc.kindsOfItems[0], Voc.kindsOfItems[1]].includes(params.kindOfItem)) {
             throw("Creation interrupted: item kind not valid.")
         }
 
@@ -64,7 +64,7 @@ async function createItem(params) {
         console.log("coords: " + JSON.stringify(coords))
 
         // If it is a relation
-        if (params.itemKind === 1) {
+        if (params.kindOfItem === 1) {
             if (!params.hasOwnProperty("sourceId") || !params.hasOwnProperty("targetId")) {
                 throw("Creation interrupted: targetId or sourceId missing.")
             } else {
@@ -95,7 +95,7 @@ async function createItem(params) {
 
         // TODO check and add properties to the item
 
-        if (params.itemKind === 1) {
+        if (params.kindOfItem === 1) {
             formattedParams.source = params.sourceId
             formattedParams.target = params.targetId
         }

@@ -3,8 +3,9 @@ const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema,GraphQLObjectType} = require('graphql');
 const {GraphQLList} = require("graphql/type")
-const {Node, NodeInput, Relation, RelationInput} = require("./graphql_types")
+const {Node, QueryNodeInput, Relation, QueryRelationInput, CreateNodeInput} = require("./graphql_types")
 const {queryRelationsResolver, queryNodesResolver} = require("./resolvers");
+const {access} = require("../../database/access");
 
 let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
@@ -13,7 +14,7 @@ let schema = new GraphQLSchema({
                 node: {
                     type: new GraphQLList(Node),
                     args: {
-                        nodeInput: { type: NodeInput }
+                        nodeInput: { type: QueryNodeInput }
                     },
                     async resolve (root, args){
                         return await queryNodesResolver(args.nodeInput)
@@ -22,7 +23,7 @@ let schema = new GraphQLSchema({
                 relation: {
                     type: new GraphQLList(Relation),
                     args: {
-                        relationInput: { type: RelationInput }
+                        relationInput: { type: QueryRelationInput }
                     },
                     async resolve(root, args) {
                         return await queryRelationsResolver(args.relationInput)
@@ -30,25 +31,26 @@ let schema = new GraphQLSchema({
                 },
             },
         }),
-        // mutation: new GraphQLObjectType({
-        //     name: "RootMutationType",
-        //     fields: {
-        //         create: {
-        //             type: Profile,
-        //             args: {
-        //                 profile: {
-        //                     type: ProfileInput,
-        //                     description: "the input for profile"
-        //                 }
-        //             },
-        //             resolve(root, args){
-        //                 myArrayFullOfStuff.profiles.push(args.profile)
-        //                 console.log("Array full of stuff: " + JSON.stringify(myArrayFullOfStuff))
-        //             }
-        //         }
-        //     }
-        // }),
-        types: [Node, NodeInput, Relation]
+        mutation: new GraphQLObjectType({
+            name: "RootMutationType",
+            fields: {
+                createNode: {
+                    type: Node,
+                    args: {
+                        node: {
+                            type: CreateNodeInput,
+                            description: "the input for profile"
+                        }
+                    },
+                    async resolve(root, args){
+                        const params = {...args.node, kindOfItem: "node"}
+                        return await access.createItem(params)
+                    }
+                }
+            }
+        }),
+
+        types: [Node, QueryNodeInput, CreateNodeInput, QueryRelationInput]
     }
 )
 

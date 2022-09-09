@@ -100,6 +100,16 @@ const firstQuery= JSON.stringify( {
           title
         }
         relations {
+          title
+        }
+        relations {
+          sourceId
+          targetId
+        }
+        childrenNodes {
+          title
+        }
+      }
           sourceId
           targetId
         }
@@ -114,8 +124,23 @@ const firstQuery= JSON.stringify( {
   }
 })
 
+const createQuery= JSON.stringify( {
+  query: `mutation whatever($node:CreateNodeInput){
+    createNode(node:$node){
+        id
+        title
+        definitionType
+        }
+    }`, variables: {
+    node: {
+      title: "fridayAfternoonAfterTheRain",
+      parentId: "cd_befb06f8-2011-4d33-bdf9-1294d7b29395"
+    }
+  }
+})
+
 async function d() {
-  const data = await Actions.GRAPHQL_QUERY(firstQuery)
+  const data = await Actions.GRAPHQL(createQuery)
   console.log("data: " + JSON.stringify(data, null, 2))
 }
 d()

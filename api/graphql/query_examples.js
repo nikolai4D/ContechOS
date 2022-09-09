@@ -63,6 +63,16 @@ const req9 = JSON.stringify({
   node(title:$title,parentId:$parentId){
       title
     }
+          title
+        }
+        relations {
+          sourceId
+          targetId
+        }
+        childrenNodes {
+          title
+        }
+      }
   }`, variables: {
         title:"Aulan1"
     }

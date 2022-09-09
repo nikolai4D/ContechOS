@@ -18,7 +18,7 @@ const Relation = new GraphQLObjectType({
         sourceNode: {
             type: Node,
             args: {
-                nodeInput: { type: NodeInput }
+                nodeInput: { type: QueryNodeInput }
             },
             resolve: async (root, args) => {
                 console.log("resolving relation source node")
@@ -28,7 +28,7 @@ const Relation = new GraphQLObjectType({
         targetNode: {
             type: Node,
             args: {
-                nodeInput: { type: NodeInput }
+                nodeInput: { type: QueryNodeInput }
             },
             resolve: async (root, args) => {
                 console.log("resolving target node")
@@ -38,7 +38,7 @@ const Relation = new GraphQLObjectType({
         parentNode: {
             type: Relation,
             args: {
-                relationInput: { type: RelationInput }
+                relationInput: { type: QueryRelationInput }
             },
             resolve: async (root, args) => {
                 console.log("resolving relation parent node")
@@ -48,8 +48,8 @@ const Relation = new GraphQLObjectType({
     })
 })
 
-const RelationInput = new GraphQLInputObjectType({
-    name: "RelationInput",
+const QueryRelationInput = new GraphQLInputObjectType({
+    name: "QueryRelationInput",
     fields: {
         id: { type: GraphQLString },
         title: { type: GraphQLString },
@@ -75,7 +75,7 @@ const Node = new GraphQLObjectType({
         parentNode: {
             type: Node,
             args: {
-                nodeInput: { type: NodeInput }
+                nodeInput: { type: QueryNodeInput }
             },
             resolve: async (root, args) => {
                 return (await queryNodesResolver(args.nodeInput, {id:root.parentId}))[0]
@@ -84,7 +84,7 @@ const Node = new GraphQLObjectType({
         childrenNodes: {
             type: new GraphQLList(Node),
             args: {
-                nodeInput: { type: NodeInput }
+                nodeInput: { type: QueryNodeInput }
             },
             resolve: async (root, args) => {
                 return (await queryNodesResolver(args.nodeInput, {parentId: root.id}))
@@ -93,7 +93,7 @@ const Node = new GraphQLObjectType({
         relations: {
             type: new GraphQLList(Relation),
             args: {
-                relationInput: { type: RelationInput }
+                relationInput: { type: QueryRelationInput }
             },
             resolve: async (root, args) => {
                 console.log("RESOLVING RELATIONS, rootid: " + root.id)
@@ -104,8 +104,8 @@ const Node = new GraphQLObjectType({
     })
 })
 
-const NodeInput = new GraphQLInputObjectType({
-    name: "NodeInput",
+const QueryNodeInput = new GraphQLInputObjectType({
+    name: "QueryNodeInput",
     fields: {
         id: { type: GraphQLString },
         title: { type: GraphQLString },
@@ -115,4 +115,14 @@ const NodeInput = new GraphQLInputObjectType({
     }
 })
 
-module.exports = {Node, NodeInput, Relation, RelationInput}
+const CreateNodeInput = new GraphQLInputObjectType({
+    name: "CreateNodeInput",
+    fields: {
+        id: { type: GraphQLString },
+        title: { type: GraphQLString },
+        parentId: { type: GraphQLString },
+        // TODO Props!
+    }
+})
+
+module.exports = {Node, QueryNodeInput, CreateNodeInput, Relation, QueryRelationInput}

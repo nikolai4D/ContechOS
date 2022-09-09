@@ -1,5 +1,5 @@
 const Voc = {
-    itemKinds: ["node", "relation", "property"],
+    kindsOfItems: ["node", "relation", "property"],
     layers: [
         ["configDef", "cd"],
         ["configObj", "co"],
