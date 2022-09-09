@@ -7,6 +7,7 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
 const {Accessor} = require("./DBaccess/Accessor");
+const {createItem} = require("./DBaccess/crud/create");
 const PORT = process.env.PORT;
 const app = express();
 
@@ -47,5 +48,13 @@ app.get("/*", (req, res) => {
 //   console.log("node: " + JSON.stringify(node))
 // }
 // d()
+
+async function create(){
+  await createItem({
+    parentId: "cd_06f1c232-4e8d-4078-802a-6f8fcfdd8725",
+    title:"youpidoo",
+    itemKind: "node"})
+}
+create()
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));
