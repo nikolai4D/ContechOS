@@ -1,7 +1,7 @@
 const {Voc} = require("../Voc");
 
 function getDefTypeFromCoords(coords){
-    console.log("getDefTypeFromCoords coords: " + coords)
+    console.log("getDefTypeFromCoords coords: " + JSON.stringify(coords))
     let defType = Voc.layers[coords[0]][0]
     if(coords[1] !== null && coords[1] !== undefined) defType += Voc.relationTypes[coords[1]][0]
     return  defType
@@ -10,7 +10,7 @@ function getDefTypeFromCoords(coords){
 function getLayerFromId(id){
     try {
         const prefix = getPrefixFromString(id)
-        findLayerIndexByPrefix(prefix)
+        return findLayerIndexByPrefix(prefix)
     }catch(e){
         return e
     }

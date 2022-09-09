@@ -1,3 +1,6 @@
+const {getItems} = require("./crud/read");
+const {createItem} = require("./crud/create");
+
 function QueryParams(
     id,
     defType,
@@ -22,11 +25,10 @@ function QueryParams(
     this.limit = limit
 }
 
-class Accessor{
-    constructor(){
-
-    }
+const access = {
+    getItems,
+    createItem,
 
 }
 
-module.exports = { Accessor }
+module.exports = { access }

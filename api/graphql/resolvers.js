@@ -1,4 +1,4 @@
-const {Accessor} = require("../../DBaccess/Accessor");
+const {Accessor} = require("../../DBaccess/access");
 
 async function queryNodesResolver(params={}, enforcedParams) {
     params.sortOfItem = "node"

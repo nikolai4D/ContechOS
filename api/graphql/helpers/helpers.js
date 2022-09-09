@@ -1,5 +1,5 @@
 const slightlyMoreComplexDB = require("../slightlyMoreComplexDB");
-const {Accessor} = require("../../../DBaccess/Accessor");
+const {Accessor} = require("../../../DBaccess/access");
 
 function getItemById(id){
     const repertory = getRepertoryNameFromId(id)

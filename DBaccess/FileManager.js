@@ -42,7 +42,7 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
             const item = JSON.parse(fs.readFileSync(dir + file, "utf8"));
             if(filterFunction !== null && !filterFunction(item)) continue
             let id = file.slice(0, -5);
-            items.push({id, ...item})
+            items.push({id, defType, ...item})
 
             if(items.length >= limit) return items
         }
@@ -51,12 +51,15 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
 }
 
 function createFile(defType, id, item){
-
+    console.log("item to create: " + JSON.stringify(item))
+    console.log("id to create: " + id + ", defType: " + defType)
     fs.writeFileSync(
         `../db/${defType}/${id}.json`,
         JSON.stringify(item, null, 2)
     );
+    console.log("created: " + JSON.stringify({ id, defType, ...item }))
+    return { id, defType, ...item }
 }
 
 
-module.exports = { getItemById, getBulk }
+module.exports = { getItemById, getBulk, createFile }

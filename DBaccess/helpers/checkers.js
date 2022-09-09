@@ -30,16 +30,15 @@ function doesItemExist(id){
 
 }
 
-async function doesDefTypeNameExist(defType){
-    Voc.layers.map(layer => {
+function doesDefTypeNameExist(defType){
+    for(let layer of Voc.layers) {
+        console.log("layer[0]: " + layer[0])
         if( defType === layer[0]) return true
-        else if (defType.substring(0, layer[0].length) === layer[0]){
 
-            Voc.relationTypes.map(relType => {
-                if (defType === relType[0]) return true
-            })
+        for(let relType of Voc.relationTypes){
+            if (defType === layer[0] + relType[0]) return true
         }
-    })
+    }
 
     return false
 }

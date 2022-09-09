@@ -3,6 +3,7 @@ const {getLayerFromId, getDefTypeFromCoords}  = require("../helpers/idParsers")
 const {doesItemExist} = require("../helpers/checkers")
 const readItems = require("./read");
 const { v4} = require('uuid');
+const {createFile} = require("../FileManager")
 
 function itemCreationParams(
     title,
@@ -27,7 +28,7 @@ function itemCreationParams(
 async function createItem(params) {
     try {
 
-        let coords = [undefined, null]
+        let coords = []
 
         const formattedParams = {
             created: new Date(),
@@ -53,29 +54,27 @@ async function createItem(params) {
 
             const parentLayerIndex = getLayerFromId(params.parentId)
             if (parentLayerIndex === 3) {
-                console.log("Creation interrupted:: cannot create a child of an instance.")
-                return
+                throw("Creation interrupted:: cannot create a child of an instance.")
             } else {
                 coords[0] = parentLayerIndex + 1
                 formattedParams.parentId = params.parentId
             }
         }
 
+        console.log("coords: " + JSON.stringify(coords))
+
         // If it is a relation
         if (params.itemKind === 1) {
             if (!params.hasOwnProperty("sourceId") || !params.hasOwnProperty("targetId")) {
-                console.log("Creation interrupted: targetId or sourceId missing.")
-                return
+                throw("Creation interrupted: targetId or sourceId missing.")
             } else {
                 const sources = readItems(params.sourceId)
                 if (sources.length === 0) {
-                    console.log("Creation interrupted: source could not be find.")
-                    return
+                    throw("Creation interrupted: source could not be find.")
                 }
                 const targets = readItems(params.targetId)
                 if (targets.length === 0) {
-                    console.log("Creation interrupted: target could not be find.")
-                    return
+                    throw("Creation interrupted: target could not be find.")
                 }
 
                 coords[1] = (targets[0].parentId === sources[0].parentId) ? 0 : 1
@@ -84,10 +83,11 @@ async function createItem(params) {
             }
         }
 
+        console.log("coords: " + JSON.stringify(coords))
         defType = getDefTypeFromCoords(coords)
 
         let prefix = Voc.layers[coords[0]][1]
-        if (coords[1] !== null) prefix += Voc.relationTypes[coords[1]]
+        if (coords[1] !== undefined ) prefix += Voc.relationTypes[coords[1]]
 
         let id = prefix + "_" + v4()
 
@@ -102,11 +102,10 @@ async function createItem(params) {
 
         console.log("defType: " + defType)
         console.log("id: " + id)
-        console.log("prefjfix: " + (coords[1] === null) ? "" : Voc.relationTypes(coords[1])[1])
         console.log("formattedParams: " + JSON.stringify(formattedParams, null, 2))
         //Here goes the fileManager Function
 
-        // fileManager.CreateItem(id, defType, formattedParams)
+        return await createFile(defType, id, formattedParams)
 
     } catch(e){
         return e

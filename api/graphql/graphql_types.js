@@ -1,7 +1,7 @@
 const {GraphQLObjectType, GraphQLString} = require("graphql/index");
 const {GraphQLInputObjectType, GraphQLList} = require("graphql/type");
 const {queryNodesResolver, queryRelationsResolver} = require("./resolvers");
-const {Accessor} = require("../../DBaccess/Accessor");
+const {Accessor} = require("../../DBaccess/access");
 
 // Could not break this file into smaller ones for circular dependency reasons.
 

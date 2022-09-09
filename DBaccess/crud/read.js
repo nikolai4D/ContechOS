@@ -34,7 +34,7 @@ async function getItems(params) {
         }
 
         //Otherwise we narrow the defType to look in as much as we can, based on the params at our disposal.
-        if (defType !== undefined && await doesDefTypeNameExist(defType)) {
+        if (defType !== undefined && doesDefTypeNameExist(defType)) {
             defTypes.push(defType)
         } else if (parentId !== undefined) {
             const pCoo = getCoordsFromId(parentId)
@@ -91,4 +91,4 @@ async function getItems(params) {
     }
 }
 
-module.exports = getItems
+module.exports = {getItems}
