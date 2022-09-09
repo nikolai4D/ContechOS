@@ -1,9 +1,6 @@
 const {GraphQLObjectType, GraphQLString} = require("graphql/index");
 const {GraphQLInputObjectType, GraphQLList} = require("graphql/type");
 const {queryNodesResolver, queryRelationsResolver} = require("./resolvers");
-const {Accessor} = require("../../DBaccess/access");
-
-// Could not break this file into smaller ones for circular dependency reasons.
 
 const Relation = new GraphQLObjectType({
     name: "Relation",
@@ -11,8 +8,13 @@ const Relation = new GraphQLObjectType({
         id: { type: GraphQLString},
         title: { type: GraphQLString},
         parentId: { type: GraphQLString},
-        sourceId: { type: GraphQLString},
-        targetId: { type: GraphQLString},
+        sourceId: {
+            type: GraphQLString,
+            resolve: (root) => {return root.source}},
+        targetId: {
+            type: GraphQLString,
+            resolve: (root) => {return root.target}
+            },
         sourceNode: {
             type: Node,
             args: {
@@ -52,7 +54,7 @@ const RelationInput = new GraphQLInputObjectType({
         id: { type: GraphQLString },
         title: { type: GraphQLString },
         parentId: { type: GraphQLString },
-        sourceId: {type: GraphQLString},
+        sourceId: { type: GraphQLString },
         targetId: {type: GraphQLString},
         created: { type: GraphQLString},
         updated: { type: GraphQLString},
@@ -63,6 +65,9 @@ const Node = new GraphQLObjectType({
     name: "Node",
     fields: ()=>({
         id: {type: GraphQLString},
+        definitionType: {
+            type: GraphQLString,
+            resolve: (root)=> {return root.defType}},
         title: {type: GraphQLString},
         parentId: {type: GraphQLString},
         created: {type: GraphQLString},

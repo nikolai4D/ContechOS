@@ -95,8 +95,13 @@ const firstQuery= JSON.stringify( {
     node(nodeInput:$projInp){
         id
         title
+        definitionType
         parentNode {
           title
+        }
+        relations {
+          sourceId
+          targetId
         }
         childrenNodes {
           title

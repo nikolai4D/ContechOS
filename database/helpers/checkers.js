@@ -4,7 +4,7 @@
  * @returns {Promise<boolean>}
  */
 const {Voc} = require("../Voc");
-const {getCoordsFromId, getDefTypeFromCoords} = require("./idParsers");
+const {getCoordsFromId, getDefTypeFromCoords} = require("./id_parsers");
 const {getItemById} = require("../FileManager");
 
 

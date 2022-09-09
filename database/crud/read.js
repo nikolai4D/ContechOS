@@ -1,4 +1,4 @@
-const {getCoordsFromId, getDefTypeFromCoords, getLayerFromId} = require("../helpers/idParsers");
+const {getCoordsFromId, getDefTypeFromCoords, getLayerFromId} = require("../helpers/id_parsers");
 const {getItemById, getBulk} = require("../FileManager");
 const {Voc} = require("../Voc");
 const {doesDefTypeNameExist} = require("../helpers/checkers");

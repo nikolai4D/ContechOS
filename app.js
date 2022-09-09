@@ -6,7 +6,7 @@ const corsOptions = require("./config/corsOptions");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
-const {access} = require("./DBaccess/access");
+const {access} = require("./database/access");
 const PORT = process.env.PORT;
 const app = express();
 
@@ -48,13 +48,13 @@ app.get("/*", (req, res) => {
 // }
 // d()
 
- async function create(){
-  await access.createItem({
-    parentId: "cd_06f1c232-4e8d-4078-802a-6f8fcfdd8725",
-    title:"youpida",
-    itemKind: "node"})
-}
-create()
+//  async function create(){
+//   await access.createItem({
+//     parentId: "cd_06f1c232-4e8d-4078-802a-6f8fcfdd8725",
+//     title:"youpida",
+//     itemKind: "node"})
+// }
+// create()
 
 // async function read(){
 //     console.log(await access.getItems({title: "youpidoo"}))

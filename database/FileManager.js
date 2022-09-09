@@ -51,13 +51,11 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
 }
 
 function createFile(defType, id, item){
-    console.log("item to create: " + JSON.stringify(item))
-    console.log("id to create: " + id + ", defType: " + defType)
     fs.writeFileSync(
         `../db/${defType}/${id}.json`,
         JSON.stringify(item, null, 2)
     );
-    console.log("created: " + JSON.stringify({ id, defType, ...item }))
+    console.log("created: " + JSON.stringify({ id, defType, ...item }, null,2))
     return { id, defType, ...item }
 }
 

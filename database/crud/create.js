@@ -1,5 +1,5 @@
 const {Voc} = require("../Voc")
-const {getLayerFromId, getDefTypeFromCoords}  = require("../helpers/idParsers")
+const {getLayerFromId, getDefTypeFromCoords}  = require("../helpers/id_parsers")
 const {doesItemExist} = require("../helpers/checkers")
 const readItems = require("./read");
 const { v4} = require('uuid');
