@@ -2,8 +2,15 @@
 const fs = require("fs");
 
 function getItemById(id, defType){
-    const item = JSON.parse(fs.readFileSync(`../db/${defType}/${id}.json`, "utf8"));
-    return {id, ...item};
+    let json
+    try {
+        json = fs.readFileSync(`../db/${defType}/${id}.json`, "utf8")
+    } catch(e){
+        throw(e)
+    }
+
+    const item = JSON.parse(json);
+    return {id, defType, ...item};
 }
 
 /**
@@ -40,8 +47,15 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
             if(items.length >= limit) return items
         }
     }
-
     return items
+}
+
+function createFile(defType, id, item){
+
+    fs.writeFileSync(
+        `../db/${defType}/${id}.json`,
+        JSON.stringify(item, null, 2)
+    );
 }
 
 

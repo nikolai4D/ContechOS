@@ -8,6 +8,8 @@ const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
 const {Accessor} = require("./DBaccess/Accessor");
 const {createItem} = require("./DBaccess/crud/create");
+const {getItemById} = require("./DBaccess/FileManager");
+const {doesItemExist} = require("./DBaccess/helpers/checkers");
 const PORT = process.env.PORT;
 const app = express();
 
@@ -49,12 +51,14 @@ app.get("/*", (req, res) => {
 // }
 // d()
 
-async function create(){
-  await createItem({
-    parentId: "cd_06f1c232-4e8d-4078-802a-6f8fcfdd8725",
-    title:"youpidoo",
-    itemKind: "node"})
-}
-create()
+// async function create(){
+//   await createItem({
+//     parentId: "cd_06f1c232-4e8d-4078-802a-6f8fcfdd8725",
+//     title:"youpidoo",
+//     itemKind: "node"})
+// }
+// create()
+
+console.log(doesItemExist("cor_hgjgygyylug"))
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

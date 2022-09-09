@@ -26,6 +26,7 @@ class Accessor{
     constructor(){
 
     }
+
 }
 
 module.exports = { Accessor }
