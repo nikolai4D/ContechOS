@@ -3,7 +3,7 @@ const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema,GraphQLObjectType} = require('graphql');
 const {GraphQLList} = require("graphql/type")
-const {Node, QueryNodeInput, Relation, QueryRelationInput, CreateNodeInput} = require("./graphql_types")
+const {Node, QueryNodeInput, Relation, QueryRelationInput, CreateNodeInput, CreateRelationInput} = require("./graphql_types")
 const {queryRelationsResolver, queryNodesResolver} = require("./resolvers");
 const {access} = require("../../database/access");
 
@@ -38,19 +38,29 @@ let schema = new GraphQLSchema({
                     type: Node,
                     args: {
                         node: {
-                            type: CreateNodeInput,
-                            description: "the input for profile"
+                            type: CreateNodeInput
                         }
                     },
                     async resolve(root, args){
                         const params = {...args.node, kindOfItem: "node"}
                         return await access.createItem(params)
                     }
+                },
+                createRelation: {
+                    type: Relation,
+                    args: {
+                        relation: {
+                            type: CreateRelationInput
+                        }
+                    },
+                    async resolve(root, args){
+                        const params = {...args.relation, kindOfItem: "relation"}
+                        return await access.createItem(params)
+                    }
                 }
             }
         }),
-
-        types: [Node, QueryNodeInput, CreateNodeInput, QueryRelationInput]
+        types: [Node, QueryNodeInput, CreateNodeInput, Relation, QueryRelationInput, CreateRelationInput]
     }
 )
 

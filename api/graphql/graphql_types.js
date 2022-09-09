@@ -7,6 +7,9 @@ const Relation = new GraphQLObjectType({
     fields: ()=>({
         id: { type: GraphQLString},
         title: { type: GraphQLString},
+        definitionType: {
+            type: GraphQLString,
+            resolve: (root)=> {return root.defType}},
         parentId: { type: GraphQLString},
         sourceId: {
             type: GraphQLString,
@@ -58,6 +61,17 @@ const QueryRelationInput = new GraphQLInputObjectType({
         targetId: {type: GraphQLString},
         created: { type: GraphQLString},
         updated: { type: GraphQLString},
+    }
+})
+
+const CreateRelationInput = new GraphQLInputObjectType({
+    name: "CreateRelationInput",
+    fields: {
+        id: { type: GraphQLString },
+        title: { type: GraphQLString },
+        parentId: { type: GraphQLString },
+        sourceId: { type: GraphQLString },
+        targetId: {type: GraphQLString}
     }
 })
 
@@ -125,4 +139,4 @@ const CreateNodeInput = new GraphQLInputObjectType({
     }
 })
 
-module.exports = {Node, QueryNodeInput, CreateNodeInput, Relation, QueryRelationInput}
+module.exports = {Node, QueryNodeInput, CreateNodeInput, Relation, QueryRelationInput, CreateRelationInput}

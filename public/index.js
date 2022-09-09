@@ -125,16 +125,18 @@ const firstQuery= JSON.stringify( {
 })
 
 const createQuery= JSON.stringify( {
-  query: `mutation whatever($node:CreateNodeInput){
-    createNode(node:$node){
+  query: `mutation whatever($relation:CreateRelationInput){
+    createRelation(relation:$relation){
         id
         title
         definitionType
         }
     }`, variables: {
-    node: {
-      title: "fridayAfternoonAfterTheRain",
-      parentId: "cd_befb06f8-2011-4d33-bdf9-1294d7b29395"
+    relation: {
+      title: "BillyBop",
+      parentId: "cder_03d2e7e7-172c-461c-b29d-0859a514cdad-cd_befb06f8-2011-4d33-bdf9-1294d7b29395-cd_dabaf3ed-389a-433f-93d1-3b71d9133d23",
+      targetId: "co_a3604711-737c-4d31-91f4-065f49d1b59d",
+      sourceId: "co_302ec051-8167-4d40-826c-fd855e507869"
     }
   }
 })

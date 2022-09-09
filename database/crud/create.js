@@ -28,6 +28,7 @@ function itemCreationParams(
 async function createItem(params) {
     try {
 
+        console.log("params: " + JSON.stringify(params))
         let coords = []
 
         const formattedParams = {
@@ -64,18 +65,21 @@ async function createItem(params) {
         console.log("coords: " + JSON.stringify(coords))
 
         // If it is a relation
-        if (params.kindOfItem === 1) {
+        if (params.kindOfItem === Voc.kindsOfItems[1]) {
             if (!params.hasOwnProperty("sourceId") || !params.hasOwnProperty("targetId")) {
                 throw("Creation interrupted: targetId or sourceId missing.")
             } else {
-                const sources = readItems(params.sourceId)
+                const sources = doesItemExist(params.sourceId)
                 if (sources.length === 0) {
                     throw("Creation interrupted: source could not be find.")
                 }
-                const targets = readItems(params.targetId)
+                const targets = doesItemExist(params.targetId)
                 if (targets.length === 0) {
                     throw("Creation interrupted: target could not be find.")
                 }
+
+                // Todo Make sure target and source are from the same layer
+                // Todo make sure target and source parentId are rights if rel not from def.
 
                 coords[1] = (targets[0].parentId === sources[0].parentId) ? 0 : 1
                 formattedParams.sourceId = params.sourceId
