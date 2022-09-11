@@ -249,7 +249,8 @@ class Record {
     return defTypes;
   }
 
-  async readRelBySourceAndTarget(sourceId, targetId) {
+  async readRelBySourceAndTarget(source, target) {
+    console.log(source, target, this.defType, "HELLO");
     const rels = [];
     //get links
 
@@ -259,7 +260,7 @@ class Record {
     files.forEach(function (file) {
       let readFile = JSON.parse(fs.readFileSync(dirRel + file, "utf8"));
 
-      if (readFile.target === targetId && readFile.source === sourceId) {
+      if (readFile.target === target && readFile.source === source) {
         readFile.id = file.slice(0, -5);
         rels.push(readFile);
       }
