@@ -1,5 +1,5 @@
 export default class Navbar {
-  cconstructor() { }
+  cconstructor() {}
 
   async getTemplate() {
     return `
@@ -7,20 +7,23 @@ export default class Navbar {
     <nav class="navbar navbar-expand navbar-light bg-light">
     <div class="container-fluid">
   
-      <a class="navbar-brand" href="#" data-link="/"> <i class="bi bi-server" style="margin-right:7px;"></i>contechOS</a>
+      <a class="navbar-brand" href="#" data-link="/"> <i class="bi bi-server" style="margin-right:5px;"></i>contechOS</a>
       <div class="collapse navbar-collapse" id="navbarScroll">
         <ul class="navbar-nav me-auto navbar-nav-scroll" style="--bs-scroll-height: 100px;">
           <li class="nav-item">
             <a class="nav-link" href="#" data-link="/props">Props</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" data-link="/configs">Config</a>
+          <a class="nav-link" href="#">|</a>
+        </li>
+          <li class="nav-item">
+            <a class="nav-link" href="#" data-link="/configs">Def/Object</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#" data-link="/datas">Data</a>
-          </li>
+          <a class="nav-link" href="#"><</a>
+        </li>
           <li class="nav-item">
-          <a class="nav-link" href="#" data-link="/apis">API</a>
+            <a class="nav-link" href="#" data-link="/datas">Type/Data</a>
           </li>
         </ul>
         <form class="d-flex">
