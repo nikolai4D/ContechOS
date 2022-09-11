@@ -14,49 +14,55 @@ router.use(bodyParser.json());
 //APIs
 
 router.delete("/:name", async (req, res) => {
-  let name = req.params.name
-  const dir = `../db/${routerType}/`;
-  const file = name + ".json";
-  fs.unlinkSync(dir + file);
+  let fileName = req.params.name
 
-  return res.status(200).json({ message: `removed: ${name}` })
+  try {
+    const dir = `../db/${routerType}/`;
+    const file = fileName + ".json";
+    fs.unlinkSync(dir + file);
 
+    return res.status(200).json({ message: `removed: ${fileName}` })
+  } catch (e) {
+
+    console.log("error: " + e)
+    return res.status(400).json({ message: `Not able to delete '${fileName}'` })
+
+  }
 });
 
 
-
-
 router.post("/getByName", async (req, res) => {
-
   let fileName = req.body.name;
 
-  let contentJSON = fs.readFileSync(`../db/${routerType}/${fileName}.json`, "utf8");
+  try {
 
-  let content = JSON.parse(contentJSON).content;
+    let contentJSON = fs.readFileSync(`../db/${routerType}/${fileName}.json`, "utf8");
+    let content = JSON.parse(contentJSON).content;
+    let decodedImage = new Buffer(content, 'base64');
 
-  let decodedImage = new Buffer(content, 'base64');
+    return res.status(200).json(decodedImage)
+  } catch (e) {
 
-  return res.status(200).json(decodedImage)
-
+    console.log("error: " + e)
+    return res.status(400).json({ message: `Not able to get '${fileName}'` })
+  }
 });
 
 
 //APIs
 router.post("/", upload.single('asset'), async (req, res) => {
 
-  let image = { content: req.file.buffer.toString('base64') }
-
   let fileName = req.body.name ?? `file_${(new Date().toJSON())}`;
 
-
-  //create
-
-  fs.writeFileSync(
-    `../db/${routerType}/${fileName}.json`,
-    JSON.stringify(image)
-  );
-
   try {
+
+    //create
+    let image = { content: req.file.buffer.toString('base64') }
+
+    fs.writeFileSync(
+      `../db/${routerType}/${fileName}.json`,
+      JSON.stringify(image)
+    );
 
     console.log("file: " + JSON.stringify(req.file))
     return res.status(200)
@@ -64,11 +70,8 @@ router.post("/", upload.single('asset'), async (req, res) => {
   } catch (e) {
 
     console.log("error: " + e)
-    return res.status(500)
-
+    return res.status(400).json({ message: `Not able to create '${fileName}'` })
   }
-
-
 });
 
 
