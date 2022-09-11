@@ -65,7 +65,7 @@ router.post("/", upload.single('asset'), async (req, res) => {
     );
 
     console.log("file: " + JSON.stringify(req.file))
-    return res.status(200)
+    return res.status(200).json({ message: `Created asset file: '${fileName}'` })
 
   } catch (e) {
 
