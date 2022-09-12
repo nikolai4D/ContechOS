@@ -36,31 +36,3 @@ export default class Navbar {
         `;
   }
 }
-
-// <li class="nav-item">
-// <a class="nav-link" href="#" data-link="/props">Props</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#">|</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#" data-link="/configs">Def</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#"><</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#" data-link="/datas">Object</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#"><</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#" data-link="/configs">Type</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#"><</a>
-// </li>
-// <li class="nav-item">
-// <a class="nav-link" href="#" data-link="/datas">Data</a>
-// </li>
