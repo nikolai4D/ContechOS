@@ -5,7 +5,8 @@ export default class Props {
         document.title = "Props";
         this.returnRenderFunc = getDataAsGraph;
         this.view = "props";
+        //this.ViewHasRenderControl = true;
     }
-    async getTemplate() { return this.returnRenderFunc("props") }
+    async getTemplate() { return await this.returnRenderFunc("props") }
     async setupToolBar() { return setupToolBar("props") }
 }
