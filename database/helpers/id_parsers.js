@@ -8,9 +8,10 @@ function getDefTypeFromCoords(coords){
 }
 
 function getDefTypeFromId(id){
-    console.log("getDefTypeFromId: " + id)
     let coords = getCoordsFromId(id)
-    return getDefTypeFromCoords(coords)
+    let defType = getDefTypeFromCoords(coords)
+    console.log("getDefTypeFromId: " + id + ", defType: " + defType)
+    return defType
 }
 
 function getLayerFromId(id){

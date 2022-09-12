@@ -134,9 +134,9 @@ const createQuery= JSON.stringify( {
     }`, variables: {
     relation: {
       title: "BillyBop",
-      parentId: "cder_03d2e7e7-172c-461c-b29d-0859a514cdad-cd_befb06f8-2011-4d33-bdf9-1294d7b29395-cd_dabaf3ed-389a-433f-93d1-3b71d9133d23",
-      targetId: "co_a3604711-737c-4d31-91f4-065f49d1b59d",
-      sourceId: "co_302ec051-8167-4d40-826c-fd855e507869"
+      parentId: "coer_35943ac8-73c7-42c6-aa0f-49a067654628-co_728bf5d2-82bd-41d8-91cc-4cc92806b43b-co_a3604711-737c-4d31-91f4-065f49d1b59d",
+      targetId: "td_d65b9e56-fa5e-4d36-833d-823d139537d0",
+      sourceId: "td_27a3fba9-9859-4c4d-9ba7-e0ab3cbbdd14"
     }
   }
 })
