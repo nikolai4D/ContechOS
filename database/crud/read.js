@@ -56,8 +56,8 @@ async function getItems(params) {
         }
 
         if (sortOfItem !== undefined) {
-            console.log("itemskinds: " + Voc.kindsOfItems)
-            const sortIndex = Voc.kindsOfItems.findIndex(el => el === sortOfItem)
+            console.log("itemskinds: " + Voc.kindsOfItem)
+            const sortIndex = Voc.kindsOfItem.findIndex(el => el === sortOfItem)
             if (sortIndex === -1) {
                 console.log("sort of item unknown, valid values are: " + sortOfItem)
             }

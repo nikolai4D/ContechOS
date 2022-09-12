@@ -79,7 +79,7 @@ const Node = new GraphQLObjectType({
     name: "Node",
     fields: ()=>({
         id: {type: GraphQLString},
-        definitionType: {
+        defTypeTitle: {
             type: GraphQLString,
             resolve: (root)=> {return root.defType}},
         title: {type: GraphQLString},

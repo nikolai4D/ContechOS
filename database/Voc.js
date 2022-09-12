@@ -1,5 +1,9 @@
 const Voc = {
-    kindsOfItems: ["node", "relation", "property"],
+    kindsOfItem: [
+        "node",
+        "relation",
+        "property"
+    ],
     layers: [
         ["configDef", "cd"],
         ["configObj", "co"],
@@ -9,6 +13,11 @@ const Voc = {
     relationTypes: [
         [ "ExternalRel", "er"],
         ["InternalRel", "ir"]
+    ],
+    propertyTypes: [
+        ["propType", "pt"],
+        ["propKey", "pk"],
+        ["propValue", "pv"]
     ]
 }
 

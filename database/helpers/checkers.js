@@ -7,9 +7,9 @@ const {Voc} = require("../Voc");
 const {getCoordsFromId, getDefTypeFromCoords} = require("./id_parsers");
 const {getItemById} = require("../FileManager");
 
-
 function doesItemExist(id){
     let coords
+
     try {
         coords = getCoordsFromId(id)
     } catch (e) {
@@ -27,7 +27,15 @@ function doesItemExist(id){
     } catch(e){
         return false
     }
+}
 
+function isItemInRepository(id, defType){
+    try {
+        const items = [getItemById(id, defType)]
+        return items.length === 1
+    } catch(e){
+        return false
+    }
 }
 
 function doesDefTypeNameExist(defType){
@@ -41,6 +49,52 @@ function doesDefTypeNameExist(defType){
     }
 
     return false
+}
+
+function arePropsValid(params){
+    if(params.hasOwnProperty("propKeys")){
+        ArePropKeysValid(params.key)
+    }
+
+    if(params.hasOwnProperty("props")){
+        ArePropValuesValid(params.props)
+    }
+
+    for (let key in params.key){
+        if(["propKeys", "typeDataPropKeys", "instanceDataPropKeys, typeDataRelPropKey, instanceDataRelPropKey"].includes(key)){
+            if(!ArePropKeysValid(params[key])) throw ( key  + " are invalids.")
+        }
+        else if(key === "props"){
+            if(!ArePropValuesValid(params[key])) throw ( key + " values are invalid.")
+        }
+    }
+
+    return true
+}
+
+function ArePropKeysValid(propsArray){
+
+}
+
+function ArePropValuesValid(propsArray){
+    let currentPropKey = ""
+
+    for (let obj in propsArray){
+        for (let propPair in obj) {
+            if (propPair.keys[0] !== currentPropKey){
+                console.log("previous propKey checked: " + currentPropKey + ". New propKey checked: " + propPair.keys[0])
+                currentPropKey = propPair.key[0]
+
+                if(!doesItemExist(currentPropKey))throw "Property Key " + currentPropKey + " was not found."
+                else if (!doesItemExist(propPair[currentPropKey])) throw "Property values " + propPair[currentPropKey] + " was not found."
+            }
+        }
+    }
+    return true
+}
+
+function areParamsCoherent(){
+    // ToDo
 }
 
 module.exports = { doesItemExist, doesDefTypeNameExist }

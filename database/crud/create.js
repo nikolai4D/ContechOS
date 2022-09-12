@@ -36,7 +36,7 @@ async function createItem(params) {
             updated: new Date()
         }
 
-        if (![Voc.kindsOfItems[0], Voc.kindsOfItems[1]].includes(params.kindOfItem)) {
+        if (![Voc.kindsOfItem[0], Voc.kindsOfItem[1]].includes(params.kindOfItem)) {
             throw("Creation interrupted: kind of item not valid.")
         }
 
@@ -64,7 +64,7 @@ async function createItem(params) {
         console.log("coords: " + JSON.stringify(coords))
 
         // If it is a relation
-        if (params.kindOfItem === Voc.kindsOfItems[1]) {
+        if (params.kindOfItem === Voc.kindsOfItem[1]) {
             if (!params.hasOwnProperty("sourceId") || !params.hasOwnProperty("targetId")) {
                 throw("Creation interrupted: targetId or sourceId missing.")
             } else {
@@ -95,9 +95,10 @@ async function createItem(params) {
                 let isInternal = params.sourceId === params.targetId
                 coords[1] = isInternal? 1 : 0
                 prefix += Voc.relationTypes[coords[1]][1]
-                suffix = "_" + params.sourceId + "_" + params.targetId
+                suffix = "-" + params.sourceId + "-" + params.targetId
             }
         }
+
 
         let defType = getDefTypeFromCoords(coords)
         let id = prefix + "_" + v4() + suffix
