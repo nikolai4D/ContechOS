@@ -1,9 +1,10 @@
 const {Voc} = require("../Voc")
-const {getLayerFromId, getDefTypeFromCoords}  = require("../helpers/id_parsers")
+const {getLayerFromId, getDefTypeFromCoords, getDefTypeFromId}  = require("../helpers/id_parsers")
 const {doesItemExist} = require("../helpers/checkers")
 const { readItems } = require("./read");
 const { v4} = require('uuid');
-const {createFile} = require("../FileManager")
+const {createFile, getItemById} = require("../FileManager")
+const {access} = require("../access");
 
 function itemCreationParams(
     title,
@@ -37,7 +38,7 @@ async function createItem(params) {
         }
 
         if (![Voc.kindsOfItems[0], Voc.kindsOfItems[1]].includes(params.kindOfItem)) {
-            throw("Creation interrupted: item kind not valid.")
+            throw("Creation interrupted: kind of item not valid.")
         }
 
         let defType
@@ -69,17 +70,26 @@ async function createItem(params) {
             if (!params.hasOwnProperty("sourceId") || !params.hasOwnProperty("targetId")) {
                 throw("Creation interrupted: targetId or sourceId missing.")
             } else {
-                const sources = doesItemExist(params.sourceId)
-                if (sources.length === 0) {
-                    throw("Creation interrupted: source could not be find.")
-                }
-                const targets = doesItemExist(params.targetId)
-                if (targets.length === 0) {
-                    throw("Creation interrupted: target could not be find.")
-                }
 
-                // Todo Make sure target and source are from the same layer
-                // Todo make sure target and source parentId are rights if rel not from def.
+                // Make sure source and target exist
+                let sources = getItemById({id : params.sourceId, defType: getDefTypeFromId(params.sourceId)})
+                let targets = getItemById({id : params.targetId, defType: getDefTypeFromId(params.targetId)})
+                if(sources.length !== 1 || targets.length !== 1) throw("Something went wrong when trying to identify source or target.")
+
+                let source, target = [sources[0], targets[0]]
+
+                if(params.hasOwnProperty("parentId")){
+                    let relParentId,sourceParentId, targetParentId = [params.parentId, source.parentId, target.parentId]
+                    let parentRel = getItemById(relParentId, getDefTypeFromId(relParentId))
+                    if(parentRel.source !== sourceParentId || parentRel.target !== targetParentId) {
+                        throw("creation interrupted: relation, source and target do not have valid parents.")
+                    }
+                }
+                else {
+                    if(getLayerFromId(params.sourceId) !== 0 || getLayerFromId(params.targetId) !== 0){
+                        throw("creation interrupted: no parentId provided, source and target defType should be configDef.")
+                    }
+                }
 
                 coords[1] = (targets[0].parentId === sources[0].parentId) ? 0 : 1
                 formattedParams.sourceId = params.sourceId
@@ -95,11 +105,12 @@ async function createItem(params) {
 
         let id = prefix + "_" + v4()
 
-        // TODO make sure params are also consistent between together (no targetId provided for node creation for example) -> do we want to do that?
+        // TODO make sure params are also consistent together (no targetId provided for node creation for example) -> do we want to do that?
 
         // TODO check and add properties to the item
 
         if (params.kindOfItem === 1) {
+            id += "_" + params.sourceId + "_" + params.targetId
             formattedParams.source = params.sourceId
             formattedParams.target = params.targetId
         }

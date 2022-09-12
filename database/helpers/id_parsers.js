@@ -7,6 +7,12 @@ function getDefTypeFromCoords(coords){
     return  defType
 }
 
+function getDefTypeFromId(id){
+    console.log("getDefTypeFromId: " + id)
+    let coords = getCoordsFromId(id)
+    return getDefTypeFromCoords(coords)
+}
+
 function getLayerFromId(id){
     try {
         const prefix = getPrefixFromString(id)
@@ -14,7 +20,6 @@ function getLayerFromId(id){
     }catch(e){
         return e
     }
-
 }
 
 function getCoordsFromId(id){
@@ -49,4 +54,4 @@ function getRelationIndexFromPrefix(prefix){
     else throw("relation index from prefix could not be determined, prefix: " + prefix)
 }
 
-module.exports = {getDefTypeFromCoords, getLayerFromId, getCoordsFromId}
+module.exports = {getDefTypeFromCoords, getLayerFromId, getCoordsFromId, getDefTypeFromId}
