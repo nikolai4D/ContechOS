@@ -43,7 +43,7 @@ function doesDefTypeNameExist(defType){
         console.log("layer[0]: " + layer[0])
         if( defType === layer[0]) return true
 
-        for(let relType of Voc.relationTypes){
+        for(let relType of Voc.subTypes){
             if (defType === layer[0] + relType[0]) return true
         }
     }

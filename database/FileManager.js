@@ -1,6 +1,14 @@
 //Record is a cool name indeed, but already taken.
 const fs = require("fs");
 
+function doesFileExist(id, defType){
+    try {
+        return fs.existsSync(`../db/${defType}/${id}.json`)
+    } catch(e){
+        throw(e)
+    }
+}
+
 function getItemById(id, defType){
     let json
     try {
@@ -60,4 +68,4 @@ function createFile(defType, id, item){
 }
 
 
-module.exports = { getItemById, getBulk, createFile }
+module.exports = { getItemById, getBulk, createFile, doesFileExist }

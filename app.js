@@ -7,6 +7,8 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
 const {access} = require("./database/access");
+const {IdData} = require("./database/helpers/idData");
+const {getItemById, doesFileExist} = require("./database/FileManager");
 const PORT = process.env.PORT;
 const app = express();
 
@@ -61,6 +63,11 @@ app.get("/*", (req, res) => {
 // }
 // read()
 
+console.log("node: " + JSON.stringify(doesFileExist("id_71f22ff0-ce47-4374-9b6d-7c3f3ab219da", "instanceData")))
 // console.log(doesDefTypeNameExist("typeDataExternalRel"))
+let data = new IdData("id_71f22ff0-ce47-4374-9b6d-7c3f3ab219da")
+console.log("data: " + JSON.stringify(data), null, 2)
+console.log("parentId: " + JSON.stringify(data.parentId(), null, 2))
+
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

@@ -94,7 +94,7 @@ async function createItem(params) {
                 formattedParams.target = params.targetId
                 let isInternal = params.sourceId === params.targetId
                 coords[1] = isInternal? 1 : 0
-                prefix += Voc.relationTypes[coords[1]][1]
+                prefix += Voc.subTypes[coords[1]][1]
                 suffix = "-" + params.sourceId + "-" + params.targetId
             }
         }
