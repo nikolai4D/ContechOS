@@ -3,6 +3,7 @@ import Actions from "../store/Actions.js";
 
 function sortFunc(a,b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0)}
 function propFixedSortFunc(propName) { return (a,b) => sortFunc(a,b,propName) }
+function propFixedSortReversedFunc(propName) { return (a,b) => sortFunc(a,b,propName)*-1 }
  
 function generateDataTable(tableData, idName, sortFunc) {
     var max = Object.keys(tableData[0]).length
@@ -16,7 +17,7 @@ function generateDataTable(tableData, idName, sortFunc) {
     var sortedObjectList = Object.values(tableData).sort(sortFunc);
     let headerNodes = []
     const tableIdHeaderNode = createHtmlElementWithData("th", {"scope": "col", "id":idName+"id"})
-    tableIdHeaderNode.innerHTML = "Id"
+    tableIdHeaderNode.innerHTML = "id"
     headerNodes.push(tableIdHeaderNode)
     const tableHeaderRowNode = createHtmlElementWithData("tr")
     tableHeaderRowNode.appendChild(tableIdHeaderNode)
@@ -34,17 +35,16 @@ function generateDataTable(tableData, idName, sortFunc) {
     
     sortedObjectList.forEach((dataObject, index, array) => {
       let dataRowNode = createHtmlElementWithData("tr")
-      let dataTdIdNode = createHtmlElementWithData("td")
-      dataTdIdNode.innerHTML = dataObject["id"]
-      dataRowNode.appendChild(dataTdIdNode)
-      for (let el in dataObject) {
-        if(el === 'id'){
-          continue;
-        }
+      //let dataTdIdNode = createHtmlElementWithData("td")
+      //dataTdIdNode.innerHTML = dataObject["id"]
+      //dataRowNode.appendChild(dataTdIdNode)
+      for(let headNode of headerNodes){
         let dataTdNode = createHtmlElementWithData("td")
-        dataTdNode.innerHTML = dataObject[el]
+        dataTdNode.innerHTML = dataObject[headNode.innerHTML]
+        if(dataTdNode.innerHTML === "undefined"){
+          dataTdNode.innerHTML = ""
+        }
         dataRowNode.appendChild(dataTdNode)
-        
       }
       tableRootNode.appendChild(dataRowNode)
     }); 
@@ -64,30 +64,45 @@ export async function renderDataAsGraph(viewName){
 
 export async function renderDataAsTable(viewName, 
     nodesTableSortFunc = (a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0),
-    relsTableSortFunc = (a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0)) {
+    relsTableSortFunc = (a,b) => (a.title > b.title) ? 1 : ((b.title > a.title) ? -1 : 0),
+    clickedHeader = "",
+    wasReversedSorted = false) {
   let nodes,
   rels = [];
   let graphJsonData = await JSON.parse(sessionStorage.getItem(viewName));
   nodes = graphJsonData[0].nodes;
   rels = graphJsonData[0].rels;
 
-  var {dataTable,headerRow} = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
-  for(let thNode of headerRow){
-    thNode.addEventListener("click", async () => {
-      await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc)
-    });
-  }
   const nodeTableDiv = createHtmlElementWithData('div',{"id": "nodeTableDivName"})
-  nodeTableDiv.appendChild(dataTable)
+  {
+    let {dataTable,headerRow} = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
+    for(let thNode of headerRow){
+      thNode.addEventListener("click", async () => {
+        console.log(clickedHeader === thNode.innerHTML)
+        if(clickedHeader === thNode.innerHTML && wasReversedSorted === false){
+          await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true)
+        }else{
+          await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false)
+        }
+      });
+    }
+    nodeTableDiv.appendChild(dataTable)
+  }
 
-  var {dataTable,headerRow} = await generateDataTable(rels, "rels", relsTableSortFunc)
-  for(let thNode of headerRow){
-    thNode.addEventListener("click", async () => {
-      await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
-    });
-  } 
   const relTableDiv = createHtmlElementWithData('div',{"id": "relTableDivName"})
-  relTableDiv.appendChild(dataTable)
+  {
+    let {dataTable,headerRow} = await generateDataTable(rels, "rels", relsTableSortFunc)
+    for(let thNode of headerRow){ // await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
+      thNode.addEventListener("click", async () => {
+        if(clickedHeader === thNode.innerHTML && wasReversedSorted === false){
+          await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortReversedFunc(thNode.innerHTML), thNode.innerHTML, true)
+        }else{
+          await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML), thNode.innerHTML, false)
+        }
+      });
+    } 
+    relTableDiv.appendChild(dataTable)
+  }
 
   document.querySelector("#app").innerHTML = ""
   const containerDiv = createHtmlElementWithData('div',{"id": "nodeTableContainerDiv"})
