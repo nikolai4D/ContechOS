@@ -1,5 +1,5 @@
 export default class Navbar {
-  cconstructor() {}
+  constructor() { }
 
   async getTemplate() {
     return `
