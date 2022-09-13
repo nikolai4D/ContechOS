@@ -90,46 +90,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-// const firstQuery= JSON.stringify( {
-//   query: `query RooterQueryType($projInp:NodeInput){
-//     node(nodeInput:$projInp){
-//         id
-//         title
-//         definitionType
-//         parentNode {
-//           title
-//         }
-//         relations {
-//           title
-//         }
-//         relations {
-//           sourceId
-//           targetId
-//         }
-//         childrenNodes {
-//           title
-//         }
-//       }
-//           sourceId
-//           targetId
-//         }
-//         childrenNodes {
-//           title
-//         }
-//       }
-//     }`, variables: {
-//     projInp: {
-//       title: "Intec1"
-//     }
-//   }
-// })
+const firstQuery= JSON.stringify( {
+  query: `query RooterQueryType($projInp:QueryNodeInput){
+    node(nodeInput:$projInp){
+        id
+        title
+        defTypeTitle
+      }
+    }`, variables: {
+    projInp: {
+      title: "Intec1"
+    }
+  }
+})
+
 //
 // const createQuery= JSON.stringify( {
 //   query: `mutation whatever($relation:CreateRelationInput){
 //     createRelation(relation:$relation){
 //         id
 //         title
-//         definitionType
+//         defTypeTitle
 //         }
 //     }`, variables: {
 //     relation: {
@@ -141,10 +122,10 @@ document.addEventListener("DOMContentLoaded", async () => {
 //   }
 // })
 //
-// async function d() {
-//   const data = await Actions.GRAPHQL(createQuery)
-//   console.log("data: " + JSON.stringify(data, null, 2))
-// }
-// d()
+async function d() {
+  const data = await Actions.GRAPHQL(firstQuery)
+  console.log("data: " + JSON.stringify(data, null, 2))
+}
+d()
 
 window.addEventListener("popstate", router);

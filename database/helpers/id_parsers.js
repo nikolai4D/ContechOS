@@ -2,8 +2,9 @@ const {Voc} = require("../Voc");
 
 function getDefTypeFromCoords(coords){
     console.log("getDefTypeFromCoords coords: " + JSON.stringify(coords))
-    let defType = Voc.layers[coords[0]][0]
-    if(coords[1] !== null && coords[1] !== undefined) defType += Voc.subTypes[coords[1]][0]
+    let defType = Voc.layers[coords[0]].toString
+    //if(coords[1] !== null && coords[1] !== undefined) defType += Voc.relationTypes[coords[1]]
+    if (coords[1] === 0 ) defType += Voc.relationTypes
     return  defType
 }
 

@@ -1,8 +1,8 @@
-import {IdData} from "./idData";
-import {Voc} from "../Voc";
-import V4 from "uuid/dist/esm-node/v4";
+const {IdData} = require("./idData")
+const {Voc} = require("../Voc");
+const { v4} = require('uuid');
 
-function relationData(sourceId, targetId, parentId = null){
+function RelationCreationData(sourceId, targetId, parentId = null){
         this.sourceIdData = new IdData(sourceId),
         this.targetIdData= new IdData(targetId)
 
@@ -17,7 +17,7 @@ function relationData(sourceId, targetId, parentId = null){
         this.defType = getDefType(this.layer, this.relationType)
 
         this.id = getId(this.layer, this.relationType, this.sourceIdData, this.targetIdData)
-        this.params = ()=> getParams(this.id, this.defType, this.sourceIdData.id, this.targetIdData.id, this.parentIdData.id)
+        this.formattedParams = ()=> getFormattedParams(this.sourceIdData.id, this.targetIdData.id, this.parentIdData.id)
 }
 
 function areSourceAndTargetOnTheSameLevel(source, target){
@@ -54,8 +54,11 @@ function getId(layer, relationType, source, target){
         return layer.abbr + relationType.abbr + "_" + V4() + "-" + source.id + "-" + target.id
 }
 
-function getParams(id, defType, sourceId, targetId, parentId) {
+function getFormattedParams(sourceId, targetId, parentId) {
         const params = {source: sourceId, target: targetId,}
         if(parentId !== null) params.parentId = parentId
-        return { id, defType, params }
+        return params
 }
+
+
+module.exports = { RelationCreationData }
