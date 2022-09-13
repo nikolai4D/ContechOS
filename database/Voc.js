@@ -1,5 +1,3 @@
-const {getLayerFromId, getDefTypeFromId} = require("./helpers/id_parsers");
-
 function Word(
     inString,
     abbr
@@ -32,8 +30,9 @@ const Voc = {
         none: new Word("", ""),
         pType: new Word("Type", "t"),
         pKey: new Word("Key", "k"),
-        pValue: new Word("Value", "v")
+        pValue: new Word("Val", "v")
     }
+
 }
 
 module.exports = { Voc }

@@ -23,6 +23,7 @@ function IdData(id){
         return this.loadedItem
     }
     this.parentId = ()=> getParentId(this.layerIndex, this.item())
+    this.childrenDefType = ()=> getChildrenDefType(this.layerIndex, this.relationType, this.propertyType)
     this.targetId = ()=> getTargetId(this.kindOfItem, this.item())
     this.sourceId = ()=> getSourceId(this.kindOfItem, this.item())
 }
@@ -45,8 +46,8 @@ function getKindOfItemFromAbbr(abbr){
 
 function getLayerIndexFromAbbr(abbr){
     if(abbr.charAt(0) === "c"){
-        if(abbr.charAt(0) === "d") return 0
-        else if (abbr.charAt(0) === "o") return 1
+        if(abbr.charAt(1) === "d") return 0
+        else if (abbr.charAt(1) === "o") return 1
     }
     else if(abbr.charAt(0) === "t") return 2
     else if(abbr.charAt(0) === "i") return 3
@@ -74,6 +75,13 @@ function getParentId(layerIndex, item){
     if([0, 4].includes(layerIndex)) return null
     else if (item.hasOwnProperty("parentId")) return item.parentId
     else throw "parentId is missing."
+}
+
+function getChildrenDefType(layerIndex, relationType, propertyType){
+    if(layerIndex === 3) throw "instance data cannot have children."
+    let childLayerIndex = ([0,1,2].includes(layerIndex))? layerIndex + 1 : layerIndex
+    let defType = Voc.layers[childLayerIndex].inString + relationType.inString + propertyType.inString
+    return defType
 }
 
 function getTargetId(koi, item){

@@ -27,15 +27,15 @@ function getItemById(id, defType){
  * @param limit
  * @param from
  * @param filterFunction must return a boolean indicating if the item should be added to the request or not.
+ * @param filterParams
  * @returns {*[]}
  */
-function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
+function getBulk( defTypes, limit = 50, from = 0, filterFunction = null, filterParams) {
+    console.log("filterParams: " + JSON.stringify(filterParams))
     const items = []
     for (let defType of defTypes) {
         const dir = `../db/${defType}/`
         let files = fs.readdirSync(dir)
-
-        console.log("files length: " + files.length + ", from: " + from)
 
         if(files.length <= from) {
             from -= files.length
@@ -48,7 +48,7 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
 
         for (let file of files) {
             const item = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-            if(filterFunction !== null && !filterFunction(item)) continue
+            if(filterFunction !== null && !filterFunction(item, filterParams)) continue
             let id = file.slice(0, -5);
             items.push({id, defType, ...item})
 
