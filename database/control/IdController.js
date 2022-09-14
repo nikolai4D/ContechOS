@@ -1,5 +1,6 @@
 const {Voc} = require("../Voc");
-const {doesFileExist, getItemById} = require("../FileManager");
+const {doesFileExist, getItemById, getBulk} = require("../FileManager");
+const {filterItems} = require("../helpers/filterItems");
 
 /**
  * Infer data from id
@@ -18,6 +19,7 @@ function IdController(id, shouldExists = true){
     this.defType = this.layer.inString + this.relationType.inString + this.propertyType.inString
     this.exists = doesItemExistsInDb(this.id, this.defType, shouldExists)
 
+
     this.loadedItem = null
     this.item = ()=> { //This way we don't fetch item before it s necessary, and we fetch it only once.
         if(this.loadedItem === null) this.loadedItem = getItemById(this.id, this.defType)
@@ -32,9 +34,13 @@ function IdController(id, shouldExists = true){
     this.instanceDataPropKey = ()=> getInstanceDataPropKeys()
 
     this.childrenDefType = ()=> getChildrenDefType(this.layerIndex, this.relationType, this.propertyType)
+    this.children = ()=> getChildren(this.id, this.childrenDefType)
+
     this.targetId = ()=> getTargetId(this.kindOfItem, this.item())
     this.sourceId = ()=> getSourceId(this.kindOfItem, this.item())
 
+    this.relsItIsTargetOf= ()=> getRelsThisIsTargetOf(this.id)
+    this.relsItIsSourceOf= ()=> getRelsThisIsSourceOf(this.id)
 }
 
 function getAbbrFromId(string){
@@ -135,10 +141,29 @@ function getInstanceDataPropKeys(layerIndex, item){
 }
 
 function getChildrenDefType(layerIndex, relationType, propertyType){
+
     if(layerIndex === 3) throw "instance data cannot have children."
+    if(layerIndex === 4 && propertyType.inString === "Val") {
+        console.log("being there")
+        throw new Error("property value cannot have children.")
+    }
     let childLayerIndex = ([0,1,2].includes(layerIndex))? layerIndex + 1 : layerIndex
     let defType = Voc.layers[childLayerIndex].inString + relationType.inString + propertyType.inString
+
     return defType
+}
+
+function getChildren(id, childrenDefType){
+    const children = getBulk([childrenDefType()],-1, 0, filterItems, {parentId: id})
+    return children
+}
+
+function getRelsThisIsTargetOf(id, defType){
+    return getBulk([defType + Voc.relationTypes.exRel.inString], - 1, 0, filterItems, {target: id})
+}
+
+function getRelsThisIsSourceOf(id, defType){
+    return getBulk([defType + Voc.relationTypes.inRel.inString], - 1, 0, filterItems, {target: id})
 }
 
 function getTargetId(koi, item){

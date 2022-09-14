@@ -1,6 +1,6 @@
 const {getItemById, getBulk} = require("../FileManager");
 const {IdData} = require("../control/IdController");
-const {BulkFetchData} = require("../helpers/BulkFetchData");
+const {BulkFetchData} = require("../control/BulkFetchController");
 
 async function getItems(params) {
 

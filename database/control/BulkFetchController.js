@@ -1,7 +1,8 @@
-const {IdData} = require("../control/IdController");
+const {IdData} = require("./IdController");
 const {Voc} = require("../Voc");
+const {filterItems} = require("../helpers/filterItems");
 
-function BulkFetchData(params
+function BulkFetchController(params
 ){
     this.defType = params.defType ?? null
     this.parentId = params.parentId ?? null
@@ -21,7 +22,7 @@ function BulkFetchData(params
         parentId: this.parentId,
         title: this.title,
     }
-    this.filterFunction = (item, params) => filterFunction(item, params)
+    this.filterFunction = (item, params) => filterItems(item, params)
 }
 
 function doesDefTypeExist(defType){
@@ -88,12 +89,6 @@ function getPotentialDefTypes(defType, parentId, kindOfItem){
         return defTypes
 }
 
-const filterFunction = (item, params) => {
-    for(let key in params){
-        if (params[key] !== null && (!item.hasOwnProperty(key) || params[key] !== item[key])) return false
 
-    }
-    return true
-}
 
-module.exports = {BulkFetchData, doesDefTypeExist}
+module.exports = {BulkFetchData: BulkFetchController, doesDefTypeExist}

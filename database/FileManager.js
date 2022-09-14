@@ -1,5 +1,5 @@
 //Record is a cool name indeed, but already taken.
-const fs = require("fs");
+const fs = require("fs")
 
 function doesFileExist(id, defType){
     try {
@@ -52,7 +52,7 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null, filterP
             let id = file.slice(0, -5);
             items.push({id, defType, ...item})
 
-            if(items.length >= limit) return items
+            if( limit > 0 && items.length >= limit) return items
         }
     }
     return items
@@ -67,5 +67,9 @@ function createFile(defType, id, item){
     return { id, defType, ...item }
 }
 
+async function deleteFile(path){
+    return fs.promises.unlink(path)
+}
 
-module.exports = { getItemById, getBulk, createFile, doesFileExist }
+
+module.exports = { getItemById, getBulk, createFile, doesFileExist, deleteFile }
