@@ -21,7 +21,7 @@ function generateDataTable(tableData, idName, sortFunc) {
     headerNodes.push(tableIdHeaderNode)
     const tableHeaderRowNode = createHtmlElementWithData("tr")
     tableHeaderRowNode.appendChild(tableIdHeaderNode)
-    const tableRootNode = createHtmlElementWithData("table")
+    const tableRootNode = createHtmlElementWithData("table", {"class": "table"})
     tableRootNode.appendChild(tableHeaderRowNode)
     for (let header in largestObj){
       if(header === "id"){
