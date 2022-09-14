@@ -4,9 +4,10 @@ const {doesFileExist, getItemById} = require("../FileManager");
 /**
  * Infer data from id
  * @param id
+ * @param shouldExists
  * @constructor
  */
-function IdData(id){
+function IdController(id, shouldExists = true){
     this.id = id
     this.abbr = getAbbrFromId(this.id)
     this.kindOfItem = getKindOfItemFromAbbr(this.abbr)
@@ -15,17 +16,25 @@ function IdData(id){
     this.relationType = getRelationTypeFromAbbr(this.abbr)
     this.propertyType = getPropertyTypeFromAbbr(this.abbr, this.kindOfItem)
     this.defType = this.layer.inString + this.relationType.inString + this.propertyType.inString
-    this.exists = doesFileExist(this.id, this.defType)
+    this.exists = doesItemExistsInDb(this.id, this.defType, shouldExists)
 
     this.loadedItem = null
     this.item = ()=> { //This way we don't fetch item before it s necessary, and we fetch it only once.
         if(this.loadedItem === null) this.loadedItem = getItemById(this.id, this.defType)
         return this.loadedItem
     }
+
     this.parentId = ()=> getParentId(this.layerIndex, this.item())
+
+    this.props = ()=> getProps(this.layerIndex, this.item)
+    this.propKeys = ()=> getPropKeys(this.layerIndex, this.item)
+    this.typeDataPropKeys = ()=> getTypeDataPropKeys()
+    this.instanceDataPropKey = ()=> getInstanceDataPropKeys()
+
     this.childrenDefType = ()=> getChildrenDefType(this.layerIndex, this.relationType, this.propertyType)
     this.targetId = ()=> getTargetId(this.kindOfItem, this.item())
     this.sourceId = ()=> getSourceId(this.kindOfItem, this.item())
+
 }
 
 function getAbbrFromId(string){
@@ -40,7 +49,6 @@ function getKindOfItemFromAbbr(abbr){
     else if (abbr.length === 4) koi =  Voc.kindsOfItem[1]
     else if (abbr.length === 2) koi =  Voc.kindsOfItem[0]
     else throw "kind of item could not be identified, id is invalid."
-    console.log("kind of item: " + JSON.stringify(koi))
     return koi
 }
 
@@ -64,17 +72,66 @@ function getRelationTypeFromAbbr(abbr){
 
 function getPropertyTypeFromAbbr(abbr, koi){
     if(koi !== Voc.kindsOfItem[2]) return Voc.propertyTypes.none
-    for(let type of Voc.propertyTypes){
-        console.log("type: " + JSON.stringify(type))
-        if (type.abbr === abbr.charAt(1)) return Voctype
+    for(let type in Voc.propertyTypes){
+        if (Voc.propertyTypes[type].abbr === abbr.charAt(1)) return Voc.propertyTypes[type]
     }
     throw("property type could not be inferred. Id is invalid.")
 }
 
-function getParentId(layerIndex, item){
-    if([0, 4].includes(layerIndex)) return null
+/**
+ * Assert existence of the file in the db.
+ * By default, it will throw an error if the file is not found.
+ * If shouldExists is set to false, the non-existence of the file will instead return false.
+ * @param id
+ * @param defType
+ * @param shouldExists
+ * @returns {boolean}
+ */
+function doesItemExistsInDb(id, defType, shouldExists){
+    if(!shouldExists)return false
+    return doesFileExist(this.id, this.defType)
+}
+
+function getParentId(layerIndex, item, propertyType){
+    if(layerIndex === 0 || (layerIndex == 4 && propertyType.inString === "Type")) return null
     else if (item.hasOwnProperty("parentId")) return item.parentId
     else throw "parentId is missing."
+}
+
+function getProps(layerIndex, item){
+    if([0,4].includes(layerIndex)){
+        if(item.hasOwnProperty("props")) throw "Invalid state: props found as field on an incorrect layer. Item: " + JSON.stringify(item, null,2)
+        else return null
+    }
+    else if (item.hasOwnProperty("props")) return item.props
+    else throw "invalid state: propKeys field is missing."
+}
+
+function getPropKeys(layerIndex, item){
+    if([1,2,3,4].includes(layerIndex)){
+        if(item.hasOwnProperty("propKeys")) throw "Invalid state: propKeys found as field of a non configDef item. Item: " + JSON.stringify(item, null,2)
+        else return null
+    }
+    else if (item.hasOwnProperty("propKeys")) return item.propKeys
+    else throw "invalid state: propKeys field is missing."
+}
+
+function getTypeDataPropKeys(layerIndex, item){
+    if(layerIndex != 1){
+        if(item.hasOwnProperty("propKeys")) throw "Invalid state: typeDataPropKeys found as field of a non configObj item. Item: " + JSON.stringify(item, null,2)
+        else return null
+    }
+    else if (item.hasOwnProperty("typeDataPropKeys")) return item.typeDataPropKeys
+    else throw "invalid state: propKeys field is missing."
+}
+
+function getInstanceDataPropKeys(layerIndex, item){
+    if(layerIndex != 1){
+        if(item.hasOwnProperty("propKeys")) throw "Invalid state: instanceDataPropKeys found as field of a non typeDef item. Item: " + JSON.stringify(item, null,2)
+        else return null
+    }
+    else if (item.hasOwnProperty("instanceDataPropKeys")) return item.instanceDataPropKeys
+    else throw "invalid state: propKeys field is missing."
 }
 
 function getChildrenDefType(layerIndex, relationType, propertyType){
@@ -96,4 +153,4 @@ function getSourceId(koi, item){
     else throw "source is missing in item."
 }
 
-module.exports = {IdData}
+module.exports = {IdController}

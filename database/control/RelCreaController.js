@@ -1,23 +1,27 @@
-const {IdData} = require("./idData")
+const {IdController} = require("./IdController")
 const {Voc} = require("../Voc");
 const { v4} = require('uuid');
 
-function RelationCreationData(sourceId, targetId, parentId = null){
-        this.sourceIdData = new IdData(sourceId),
-        this.targetIdData= new IdData(targetId)
+function RelCreaController(params){
+
+        this.sourceIdData = new IdController(params.sourceId)
+        this.targetIdData= new IdController(params.targetId)
+
 
         areSourceAndTargetOnTheSameLevel(this.sourceIdData, this.targetIdData)
 
-        this.parentIdData = getParentId(parentId)
+        this.parentIdData = getParentId(params.parentId, this.sourceIdData)
+
         this.layer = this.sourceIdData.layer
 
-        areSourceAndTargetOfValidTypes(this.targetIdData, this.sourceIdData, this.parentIdData)
+        areSourceAndTargetOfValidTypes(this.targetIdData, this.sourceIdData, this.parentIdData, this.sourceIdData.layerIndex)
 
         this.relationType = getRelationType(this.sourceIdData, this.targetIdData)
         this.defType = getDefType(this.layer, this.relationType)
 
         this.id = getId(this.layer, this.relationType, this.sourceIdData, this.targetIdData)
-        this.formattedParams = ()=> getFormattedParams(this.sourceIdData.id, this.targetIdData.id, this.parentIdData.id)
+
+        this.formattedParams = getFormattedParams(this.sourceIdData.id, this.targetIdData.id, this.parentIdData)
 }
 
 function areSourceAndTargetOnTheSameLevel(source, target){
@@ -26,10 +30,11 @@ function areSourceAndTargetOnTheSameLevel(source, target){
 }
 
 function getParentId(parentId, source){
-        if(parentId === null && source.layerIndex === 0) return null
-        let parData = new IdData(parentId)
+        if((parentId === null || parentId === undefined) && source.layerIndex === 0)  return null
+
+        let parData = new IdController(parentId)
         if(parData.layerIndex !== source.layerIndex + 1) throw "Relation parentId is not directly above the source layer."
-        return new IdData(parentId)
+        return parData
 }
 
 function areSourceAndTargetOfValidTypes(target, source, parent, layerIndex){
@@ -42,7 +47,7 @@ function areSourceAndTargetOfValidTypes(target, source, parent, layerIndex){
 }
 
 function getRelationType(source, target){
-        if(source.parentId() === target.parentId()) return Voc.relationTypes.inRel
+        if(source.id() === target.id()) return Voc.relationTypes.inRel
         else return Voc.relationTypes.exRel
 }
 
@@ -51,14 +56,14 @@ function getDefType(layer, relationType){
 }
 
 function getId(layer, relationType, source, target){
-        return layer.abbr + relationType.abbr + "_" + V4() + "-" + source.id + "-" + target.id
+        return layer.abbr + relationType.abbr + "_" + v4() + "-" + source.id + "-" + target.id
 }
 
-function getFormattedParams(sourceId, targetId, parentId) {
+function getFormattedParams(sourceId, targetId, parent) {
         const params = {source: sourceId, target: targetId,}
-        if(parentId !== null) params.parentId = parentId
+        if(parent !== null) params.parentId = parent.id
         return params
 }
 
 
-module.exports = { RelationCreationData }
+module.exports = { RelCreaController }

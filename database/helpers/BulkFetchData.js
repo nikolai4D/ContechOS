@@ -1,4 +1,4 @@
-const {IdData} = require("./idData");
+const {IdData} = require("../control/IdController");
 const {Voc} = require("../Voc");
 
 function BulkFetchData(params
