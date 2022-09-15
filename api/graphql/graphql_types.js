@@ -1,6 +1,7 @@
 const {GraphQLObjectType, GraphQLString} = require("graphql/index");
 const {GraphQLInputObjectType, GraphQLList} = require("graphql/type");
 const {queryNodesResolver, queryRelationsResolver} = require("./resolvers");
+const {GraphQLEnumType, GraphQLNonNull, GraphQLID} = require("graphql");
 
 const Relation = new GraphQLObjectType({
     name: "Relation",
@@ -64,17 +65,6 @@ const QueryRelationInput = new GraphQLInputObjectType({
     }
 })
 
-const CreateRelationInput = new GraphQLInputObjectType({
-    name: "CreateRelationInput",
-    fields: {
-        id: { type: GraphQLString },
-        title: { type: GraphQLString },
-        parentId: { type: GraphQLString },
-        sourceId: { type: GraphQLString },
-        targetId: {type: GraphQLString}
-    }
-})
-
 const Node = new GraphQLObjectType({
     name: "Node",
     fields: ()=>({
@@ -129,14 +119,75 @@ const QueryNodeInput = new GraphQLInputObjectType({
     }
 })
 
-const CreateNodeInput = new GraphQLInputObjectType({
-    name: "CreateNodeInput",
-    fields: {
-        id: { type: GraphQLString },
-        title: { type: GraphQLString },
-        parentId: { type: GraphQLString },
-        // TODO Props!
+const KindOfItem = new GraphQLEnumType({
+    name: "KindOfItem",
+    values: {
+        node:{value:"node"},
+        relation:{value:"relation"},
+        property:{value:"relation"}
     }
 })
 
-module.exports = {Node, QueryNodeInput, CreateNodeInput, Relation, QueryRelationInput, CreateRelationInput}
+const DefType = new GraphQLEnumType({
+    name: "DefType",
+    values: {
+        "configDef":{value:"configDef"},
+        "configObj":{value: "configDef"},
+    }
+})
+
+const CreateInput = new GraphQLInputObjectType({
+    name: "CreateInput",
+    fields: {
+        kindOfItem: { type: new GraphQLNonNull(KindOfItem)},
+        title:  { type: new GraphQLNonNull(GraphQLString)},
+        parentId: { type: GraphQLID},
+        targetId: { type: GraphQLID},
+        sourceId: { type: GraphQLID},
+        props: {
+            type: new GraphQLList(GraphQLString),
+            description: `a stringified JSON like '{"pk_whateverpropkeyid":"pv_thepropvalueid"}'`
+        },
+        propKeys: { type: new GraphQLList(GraphQLString) },
+        typeDataPropKeys: { type: new GraphQLList(GraphQLString) },
+        instanceDataPropKeys: { type: new GraphQLList(GraphQLString) },
+    }
+})
+
+const UpdateInput = new GraphQLInputObjectType({
+    name: "UpdateInput",
+    fields: {
+        id: { type: new GraphQLNonNull(GraphQLID)},
+        title:  { type: new GraphQLNonNull(GraphQLString)},
+        props: {
+            type: new GraphQLList(GraphQLString),
+            description: `a stringified JSON like '{"pk_whateverpropkeyid":"pv_thepropvalueid"}'`
+        },
+        propKeys: { type: new GraphQLList(GraphQLString) },
+        typeDataPropKeys: { type: new GraphQLList(GraphQLString) },
+        instanceDataPropKeys: { type: new GraphQLList(GraphQLString) },
+    }
+})
+
+const MutationItem = new GraphQLObjectType({
+    name: "MutationItem",
+    fields: {
+        created: { type: GraphQLString },
+        updated: { type: GraphQLString },
+        id: { type: GraphQLID },
+        title:  { type: new GraphQLNonNull(GraphQLString)},
+        definitionType: { type: GraphQLID },
+        parentId: { type: GraphQLID},
+        targetId: { type: GraphQLID},
+        sourceId: { type: GraphQLID},
+        props: {
+            type: new GraphQLList(GraphQLString),
+            description: `a stringified JSON like '{"pk_whateverpropkeyid":"pv_thepropvalueid"}'`
+        },
+        propKeys: { type: new GraphQLList(GraphQLString) },
+        typeDataPropKeys: { type: new GraphQLList(GraphQLString) },
+        instanceDataPropKeys: { type: new GraphQLList(GraphQLString) },
+    }
+})
+
+module.exports = { Node, QueryNodeInput,Relation, QueryRelationInput, CreateInput, UpdateInput, MutationItem }

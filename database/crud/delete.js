@@ -14,9 +14,6 @@ async function deleteItem(params) {
             deletionPromises.push(deleteFile(filesToDelete[file]))
         }
 
-
-        console.log("being there")
-
         await Promise.all(deletionPromises)
 
         return delCon.idsToDelete

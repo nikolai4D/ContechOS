@@ -53,10 +53,10 @@ app.get("/*", (req, res) => {
 // }
 // d()
 
-async function d() {
-  console.log("Creation: " + JSON.stringify(await deleteItem({ id: "pv_96956c4d-d41e-4b7e-90c9-5e2a8661d33d"})))
-}
-d()
+// async function d() {
+//   console.log("Creation: " + JSON.stringify(await deleteItem({ id: "pv_96956c4d-d41e-4b7e-90c9-5e2a8661d33d"})))
+// }
+// d()
 
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

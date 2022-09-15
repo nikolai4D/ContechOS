@@ -89,41 +89,38 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-
-const firstQuery= JSON.stringify( {
-  query: `query RooterQueryType($projInp:QueryNodeInput){
-    node(nodeInput:$projInp){
+//
+// const firstQuery= JSON.stringify( {
+//   query: `query RooterQueryType($projInp:QueryNodeInput){
+//     node(nodeInput:$projInp){
+//         id
+//         title
+//         defTypeTitle
+//       }
+//     }`, variables: {
+//     projInp: {
+//       title: "Intec1"
+//     }
+//   }
+// })
+const createQuery= JSON.stringify( {
+  query: `mutation whatever($item:CreateInput){
+    create(item:$item){
         id
         title
-        defTypeTitle
-      }
+        }
     }`, variables: {
-    projInp: {
-      title: "Intec1"
+    item: {
+      kindOfItem: "node",
+      title: "BillyBop",
     }
   }
 })
 
-//
-// const createQuery= JSON.stringify( {
-//   query: `mutation whatever($relation:CreateRelationInput){
-//     createRelation(relation:$relation){
-//         id
-//         title
-//         defTypeTitle
-//         }
-//     }`, variables: {
-//     relation: {
-//       title: "BillyBop",
-//       parentId: "coer_35943ac8-73c7-42c6-aa0f-49a067654628-co_728bf5d2-82bd-41d8-91cc-4cc92806b43b-co_a3604711-737c-4d31-91f4-065f49d1b59d",
-//       targetId: "td_d65b9e56-fa5e-4d36-833d-823d139537d0",
-//       sourceId: "td_27a3fba9-9859-4c4d-9ba7-e0ab3cbbdd14"
-//     }
-//   }
-// })
-//
+
+
 async function d() {
-  const data = await Actions.GRAPHQL(firstQuery)
+  const data = await Actions.GRAPHQL(createQuery)
   console.log("data: " + JSON.stringify(data, null, 2))
 }
 d()
