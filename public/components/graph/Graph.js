@@ -493,6 +493,8 @@ async function Graph(view) {
       }
     }
 
+
+
     node = g
       .selectAll("circle")
       .data(nodes, (d) => d["id"])
@@ -507,8 +509,10 @@ async function Graph(view) {
             .attr("cursor", styles.node.cursor)
 
             .call(drag(simulation))
+
             .on("click", clicked)
-            .on("contextmenu", rightClicked);
+            .on("contextmenu", rightClicked)
+
           return entered;
         },
         (update) => {
@@ -584,7 +588,11 @@ async function Graph(view) {
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
   }
+
+
   await render(view);
+
+
   return svg.node();
 }
 export default Graph;
