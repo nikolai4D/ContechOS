@@ -103,24 +103,46 @@ document.addEventListener("DOMContentLoaded", async () => {
 //     }
 //   }
 // })
-const createQuery= JSON.stringify( {
-  query: `mutation whatever($item:CreateInput){
-    create(item:$item){
-        id
-        title
+
+const fetchQuery= JSON.stringify( {
+  query: `query RooterQueryType($itemInput:QueryInput){
+    items(itemInput:$itemInput){
+        configObj {
+          id
+          title
+          defType
         }
+        typeData {
+          id
+          title
+          defType
+        }
+      }
     }`, variables: {
-    item: {
-      kindOfItem: "node",
-      title: "BillyBop",
+    itemInput: {
+      title: "Intec1"
     }
   }
 })
 
+// const createQuery= JSON.stringify( {
+//   query: `mutation whatever($item:CreateInput){
+//     create(item:$item){
+//         id
+//         title
+//         }
+//     }`, variables: {
+//     item: {
+//       kindOfItem: "node",
+//       title: "BillyBop",
+//     }
+//   }
+// })
+
 
 
 async function d() {
-  const data = await Actions.GRAPHQL(createQuery)
+  const data = await Actions.GRAPHQL(fetchQuery)
   console.log("data: " + JSON.stringify(data, null, 2))
 }
 d()

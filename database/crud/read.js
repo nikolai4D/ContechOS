@@ -8,7 +8,6 @@ async function getItems(params) {
 
         let requestedItems
 
-
         if (params.id !== undefined) {
             const idData = new IdData(params.id)
             requestedItems = [await getItemById(idData.id, idData.defType)]
@@ -23,6 +22,7 @@ async function getItems(params) {
         // console.log("items length: " + requestedItems.length)
         // console.log("items: " + JSON.stringify(requestedItems, null, 2))
 
+        console.log("reqItems: " + JSON.stringify(requestedItems, null,2))
         return requestedItems
 
     } catch(e){

@@ -3,8 +3,8 @@ const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema,GraphQLObjectType, GraphQLString} = require('graphql');
 const {GraphQLList} = require("graphql/type")
-const {Node, QueryNodeInput, Relation, QueryRelationInput, MutationItem, CreateInput} = require("./graphql_types")
-const {queryRelationsResolver, queryNodesResolver} = require("./resolvers");
+const {Items, Node, Relation, Property, MutationItem, CreateInput, QueryInput, ItemsByDefinitionType} = require("./graphql_types")
+const {itemsResolver} = require("./resolvers");
 const {deleteItem} = require("../../database/crud/delete");
 const {createItem} = require("../../database/crud/create");
 
@@ -12,31 +12,14 @@ let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
             name: 'RootQueryType',
             fields: {
-                node: {
-                    type: new GraphQLList(Node),
+                items: {
+                    type: ItemsByDefinitionType,
                     args: {
-                        nodeInput: { type: QueryNodeInput }
+                        itemInput: { type: QueryInput }
                     },
                     async resolve (root, args){
-                        return await queryNodesResolver(args.nodeInput)
-                    }
-                },
-                relation: {
-                    type: new GraphQLList(Relation),
-                    args: {
-                        relationInput: { type: QueryRelationInput }
-                    },
-                    async resolve(root, args) {
-                        return await queryRelationsResolver(args.relationInput)
-                    }
-                },
-                properties: {
-                    type: new GraphQLList(Relation),
-                    args: {
-                        relationInput: { type: QueryRelationInput }
-                    },
-                    async resolve(root, args) {
-                        return await queryRelationsResolver(args.relationInput)
+                        console.log("hello")
+                        return await itemsResolver(args.itemInput)
                     }
                 },
             },
@@ -56,21 +39,21 @@ let schema = new GraphQLSchema({
                 },
                 delete: {
                     type: new GraphQLList( GraphQLString),
-                    args: { id: GraphQLString },
+                    args: { id: {type: GraphQLString} },
                     async resolve(root, args){
                         return await deleteItem(args.id)
                     }
                 },
                 update: {
                     type: MutationItem,
-                    args: { id: GraphQLString },
+                    args: { id: {type: GraphQLString} },
                     async resolve(root, args){
                         return await updateItem(args.id)
                     }
                 },
             }
         }),
-        types: [Node, Relation, CreateInput, MutationItem]
+        types: [Node, Relation, Property, Items, QueryInput, CreateInput, MutationItem]
     }
 )
 
