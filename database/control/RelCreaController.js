@@ -16,7 +16,7 @@ function RelCreaController(params){
 
         areSourceAndTargetOfValidTypes(this.targetIdData, this.sourceIdData, this.parentIdData, this.sourceIdData.layerIndex)
 
-        this.relationType = getRelationType(this.sourceIdData, this.targetIdData)
+        this.relationType = getRelationType(this.sourceIdData, this.targetIdData, this.parentIdData)
         this.defType = getDefType(this.layer, this.relationType)
 
         this.id = getId(this.layer, this.relationType, this.sourceIdData, this.targetIdData)
@@ -46,7 +46,8 @@ function areSourceAndTargetOfValidTypes(target, source, parent, layerIndex){
         else if(parent.sourceId() !== source.parentId()) throw "Source parentId does not match parent sourceId"
 }
 
-function getRelationType(source, target){
+function getRelationType(source, target, parent){
+        if(parent !== null) return parent.relationType
         if(source.id() === target.id()) return Voc.relationTypes.inRel
         else return Voc.relationTypes.exRel
 }
