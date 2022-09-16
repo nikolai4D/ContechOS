@@ -42,13 +42,14 @@ async function itemsResolver(params = {}, enforcedParams={}) {
     return answer
 }
 
-async function graphResolver(params = {}, enforcedParams={}, isUniqueOrNull) {
+async function graphResolver(params = {}, enforcedParams={}, isUniqueOrNull= false) {
     for (let key in enforcedParams) {
         if (params[key] !== undefined) console.log(key + " cannot be overwritten in the current context.")
         params[key] = enforcedParams[key]
     }
 
     const items = await getItems(params)
+    console.log("receiveditems: " + JSON.stringify(items, null, 2))
     if(isUniqueOrNull) {
         if (items.length ===  1) return items[0]
         else if (items.length === 0) return null

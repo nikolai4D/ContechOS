@@ -160,26 +160,27 @@ const Property = new GraphQLObjectType({
 })
 
 //Sounded good but forces to query for each individual
-const ItemsByDefinitionType = new GraphQLObjectType ({
-    name: "ItemsByDefinitionType",
-    fields: {
-        configDef: {type: new GraphQLList(Node)},
-        configDefExternalRel: {type: new GraphQLList(Relation)},
-        configDefInternalRel: {type: new GraphQLList(Relation)},
-        configObj: {type: new GraphQLList(Node)},
-        configObjExternalRel: {type: new GraphQLList(Relation)},
-        configObjInternalRel: {type: new GraphQLList(Relation)},
-        typeData: {type: new GraphQLList(Node)},
-        typeDataExternalRel: {type: new GraphQLList(Relation)},
-        typeDataInternalRel: {type: new GraphQLList(Relation)},
-        instanceData: {type: new GraphQLList(Node)},
-        instanceDataExternalRel: {type: new GraphQLList(Relation)},
-        instanceDataInternalRel: {type: new GraphQLList(Relation)},
-        PropType: {type: new GraphQLList(Property)},
-        PropKey: {type: new GraphQLList(Property)},
-        PropVal: {type: new GraphQLList(Property)}
-    }
-})
+// const ItemsByDefinitionType = new GraphQLObjectType ({
+//     name: "ItemsByDefinitionType",
+//     fields: {
+//         configDef: {type: new GraphQLList(Node)},
+//         configDefExternalRel: {type: new GraphQLList(Relation)},
+//         configDefInternalRel: {type: new GraphQLList(Relation)},
+//         configObj: {type: new GraphQLList(Node)},
+//         configObjExternalRel: {type: new GraphQLList(Relation)},
+//         configObjInternalRel: {type: new GraphQLList(Relation)},
+//         typeData: {type: new GraphQLList(Node)},
+//         typeDataExternalRel: {type: new GraphQLList(Relation)},
+//         typeDataInternalRel: {type: new GraphQLList(Relation)},
+//         instanceData: {type: new GraphQLList(Node)},
+//         instanceDataExternalRel: {type: new GraphQLList(Relation)},
+//         instanceDataInternalRel: {type: new GraphQLList(Relation)},
+//         PropType: {type: new GraphQLList(Property)},
+//         PropKey: {type: new GraphQLList(Property)},
+//         PropVal: {type: new GraphQLList(Property)}
+//     }
+// })
+
 
 const QueryInput = new GraphQLInputObjectType({
     name: "QueryInput",
@@ -251,4 +252,4 @@ const MutationItem = new GraphQLObjectType({
     }
 })
 
-module.exports = { ItemsByDefinitionType, Node, Relation, Property, QueryInput, CreateInput, UpdateInput, MutationItem }
+module.exports = { Node, Relation, Property, QueryInput, CreateInput, UpdateInput, MutationItem }
