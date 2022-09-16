@@ -14,7 +14,7 @@ function PropCreaController(params){
 function getParent(params){
     if(!params.hasOwnProperty("parentId")) return null
     const parent = new IdController(params.parentId)
-    if (parent.layerIndex != 4) throw "parent of property should belong to the layer prop (layerIndex 5)."
+    if (parent.layerIndex != 4) throw new Error("parent of property should belong to the layer prop (layerIndex 5).")
     return parent
 }
 
@@ -22,8 +22,8 @@ function getPropertyType(parent){
     if(parent === null) return Voc.propertyTypes.pType
     else if (parent.propertyType.inString === "Type") return Voc.propertyTypes.pKey
     else if (parent.propertyType.inString === "Key") return Voc.propertyTypes.pValue
-    else if (parent.propertyType.inString === "Type") throw "Parent property cannot be of property type 'value'. Parentid: " + parent.id
-    else throw "Property creation invalid: could not determine property type. parentId: " + parent.id
+    else if (parent.propertyType.inString === "Type") throw new Error("Parent property cannot be of property type 'value'. Parentid: " + parent.id)
+    else throw new Error("Property creation invalid: could not determine property type. parentId: " + parent.id)
 }
 
 function getFormattedParams(parent){

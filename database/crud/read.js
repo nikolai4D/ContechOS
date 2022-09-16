@@ -26,7 +26,9 @@ async function getItems(params) {
         return requestedItems
 
     } catch(e){
-        return ("error: " + e)
+        return ({
+            status: "cancelled",
+            error: "Reading cancelled due to:\n" + e.message})
     }
 }
 

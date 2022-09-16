@@ -31,19 +31,19 @@ function doesDefTypeExist(defType){
             if(layerIndex == 4){
                 let defTypeEnd = defType.substring(Voc.layers[layerIndex].inString.length, defType.length)
                 if(Object.values(Voc.propertyTypes).find(el => el.inString === defTypeEnd))return true
-                else throw "property type of the provided deftype is invalid. Deftype: " + defType
+                else throw new Error("property type of the provided deftype is invalid. Deftype: " + defType)
             }
             else {
                 if (Voc.layers[layerIndex].inString.length === defType.length) return true
                 else {
                     let defTypeEnd = defType.substring(Voc.layers[layerIndex].inString.length, defType.length)
                     if(Object.values(Voc.relationTypes).find(el => el.inString === defTypeEnd))return true
-                    else throw "relation type of the provided deftype is invalid. Deftype: " +defType
+                    else throw new Error("relation type of the provided deftype is invalid. Deftype: " + defType)
                 }
             }
         }
     }
-    throw "layer of the defType is invalid, defType: " + defType
+    throw new Error("layer of the defType is invalid, defType: " + defType)
 }
 
 function getPotentialDefTypes(defType, parentId, kindOfItem){
@@ -71,7 +71,7 @@ function getPotentialDefTypes(defType, parentId, kindOfItem){
                 Voc.layers[4].inString + Voc.propertyTypes.pKey.inString,
 
             )
-            else throw "invalid kind of item: " + kindOfItem
+            else throw new Error("invalid kind of item: " + kindOfItem)
         }
         else { //Set all directories to be looked in.
             for (let i = 0; i<4; i++) {

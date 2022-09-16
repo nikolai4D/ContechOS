@@ -4,7 +4,7 @@ const {deleteFile} = require("../FileManager");
 async function deleteItem(params) {
 
     try {
-        if (!params.hasOwnProperty("id")) throw "deletion interrupted: no id was provided in the parameters."
+        if (!params.hasOwnProperty("id")) throw new Error("deletion interrupted: no id was provided in the parameters.")
 
         const delCon = new DeleteController(params.id)
         const filesToDelete = delCon.filesToDelete
@@ -18,7 +18,9 @@ async function deleteItem(params) {
 
         return delCon.idsToDelete
     } catch(e){
-        return e.message
+        return {
+            status: "cancelled",
+            error: "Deletion cancelled due to:\n" + e.message}
     }
 }
 

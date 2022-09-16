@@ -36,18 +36,18 @@ async function createItem(params) {
             updated: new Date()
         }
 
-        if (!params.hasOwnProperty("title")) throw "Creation interrupted: a title was not provided"
-        else if (params.title === "" || params.title === null || params.title === undefined) throw "Creation interrupted: title invalid."
+        if (!params.hasOwnProperty("title")) throw new Error("Creation interrupted: a title was not provided")
+        else if (params.title === "" || params.title === null || params.title === undefined) throw new Error("Creation interrupted: title invalid.")
         else formattedParams.title = params.title
 
         let controller
         if(!params.hasOwnProperty("kindOfItem")) {
-            throw "creation interrupted: kindOfItem was not provided in params. params: " + JSON.stringify(params, null, 2)
+            throw new Error("creation interrupted: kindOfItem was not provided in params. params: " + JSON.stringify(params, null, 2))
         }
         else if(params.kindOfItem === "node") controller = new NodeCreaController(params)
         else if(params.kindOfItem === "relation") controller = new RelCreaController(params)
         else if(params.kindOfItem === "property") controller = new PropCreaController(params)
-        else throw "Creation interrupted: kindOfItem was invalid. kind of item: " + params.kindOfItem
+        else throw new Error("Creation interrupted: kindOfItem was invalid. kind of item: " + params.kindOfItem)
 
         const fParams = controller.formattedParams
         id = controller.id
@@ -71,7 +71,9 @@ async function createItem(params) {
         return await createFile(defType, id, formattedParams)
 
     } catch(e){
-        return e
+        return {
+            status: "cancelled",
+            error: "Creation cancelled due to:\n" + e.message}
     }
 }
 

@@ -33,16 +33,16 @@ function getParentId(parentId, source){
         if((parentId === null || parentId === undefined) && source.layerIndex === 0)  return null
 
         let parData = new IdController(parentId)
-        if(parData.layerIndex !== source.layerIndex + 1) throw "Relation parentId is not directly above the source layer."
+        if(parData.layerIndex !== source.layerIndex + 1) throw new Error("Relation parentId is not directly above the source layer.")
         return parData
 }
 
 function areSourceAndTargetOfValidTypes(target, source, parent, layerIndex){
         if(layerIndex === 0) {
-                if(target.kindOfItem !== "node") throw "target must be a node."
-                else if(source.kindOfItem !== "node") throw "source must be a node."
+                if(target.kindOfItem !== "node") throw new Error("target must be a node.")
+                else if(source.kindOfItem !== "node") throw new Error("source must be a node.")
         }
-        else if(parent.targetId() !== target.parentId()) throw "Target parentId does not match parent targetId"
+        else if(parent.targetId() !== target.parentId()) throw new Error("Target parentId does not match parent targetId")
         else if(parent.sourceId() !== source.parentId()) throw "Source parentId does not match parent sourceId"
 }
 

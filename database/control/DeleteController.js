@@ -23,7 +23,7 @@ function doesItemHaveChildren(idCon){
 function isItemTarget(idCon){
     if(idCon.kindOfItem !== "node") return false
     const rels = idCon.relsItIsTargetOf(idCon)
-    if (rels.length > 0) throw "Cannot delete an item if it is a target of relation. Relations: " + JSON.stringify(rels, null,2)
+    if (rels.length > 0) throw new Error("Cannot delete an item if it is a target of relation. Relations: " + JSON.stringify(rels, null,2))
     else return false
 }
 

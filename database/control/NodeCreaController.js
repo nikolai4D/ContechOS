@@ -16,7 +16,7 @@ function getParentIdData(parentId){
     if(parentId === null || parentId === undefined) return null
     let parentData = new IdController(parentId)
 
-    if(parentData.kindOfItem !== "node") throw("Node creation interrupted: parent must be a node")
+    if(parentData.kindOfItem !== "node") throw new Error("Node creation interrupted: parent must be a node")
     else return parentData
 }
 

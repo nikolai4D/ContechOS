@@ -101,43 +101,43 @@ function doesItemExistsInDb(id, defType, shouldExists){
 function getParentId(layerIndex, item, propertyType){
     if(layerIndex === 0 || (layerIndex == 4 && propertyType.inString === "Type")) return null
     else if (item.hasOwnProperty("parentId")) return item.parentId
-    else throw "parentId is missing."
+    else throw new Error("parentId is missing.")
 }
 
 function getProps(layerIndex, item){
     if([0,4].includes(layerIndex)){
-        if(item.hasOwnProperty("props")) throw "Invalid state: props found as field on an incorrect layer. Item: " + JSON.stringify(item, null,2)
+        if(item.hasOwnProperty("props")) throw new Error("Invalid state: props found as field on an incorrect layer. Item: " + JSON.stringify(item, null,2))
         else return null
     }
     else if (item.hasOwnProperty("props")) return item.props
-    else throw "invalid state: propKeys field is missing."
+    else throw new Error("invalid state: propKeys field is missing.")
 }
 
 function getPropKeys(layerIndex, item){
     if([1,2,3,4].includes(layerIndex)){
-        if(item.hasOwnProperty("propKeys")) throw "Invalid state: propKeys found as field of a non configDef item. Item: " + JSON.stringify(item, null,2)
+        if(item.hasOwnProperty("propKeys")) throw new Error("Invalid state: propKeys found as field of a non configDef item. Item: " + JSON.stringify(item, null,2))
         else return null
     }
     else if (item.hasOwnProperty("propKeys")) return item.propKeys
-    else throw "invalid state: propKeys field is missing."
+    else throw new Error("invalid state: propKeys field is missing.")
 }
 
 function getTypeDataPropKeys(layerIndex, item){
     if(layerIndex != 1){
-        if(item.hasOwnProperty("propKeys")) throw "Invalid state: typeDataPropKeys found as field of a non configObj item. Item: " + JSON.stringify(item, null,2)
+        if(item.hasOwnProperty("propKeys")) throw new Error("Invalid state: typeDataPropKeys found as field of a non configObj item. Item: " + JSON.stringify(item, null,2))
         else return null
     }
     else if (item.hasOwnProperty("typeDataPropKeys")) return item.typeDataPropKeys
-    else throw "invalid state: propKeys field is missing."
+    else throw new Error("invalid state: propKeys field is missing.")
 }
 
 function getInstanceDataPropKeys(layerIndex, item){
     if(layerIndex != 1){
-        if(item.hasOwnProperty("propKeys")) throw "Invalid state: instanceDataPropKeys found as field of a non typeDef item. Item: " + JSON.stringify(item, null,2)
+        if(item.hasOwnProperty("propKeys")) throw new Error("Invalid state: instanceDataPropKeys found as field of a non typeDef item. Item: " + JSON.stringify(item, null,2))
         else return null
     }
     else if (item.hasOwnProperty("instanceDataPropKeys")) return item.instanceDataPropKeys
-    else throw "invalid state: propKeys field is missing."
+    else throw new Error("invalid state: propKeys field is missing.")
 }
 
 function getChildrenDefType(layerIndex, relationType, propertyType){
@@ -169,13 +169,13 @@ function getRelsThisIsSourceOf(id, defType){
 function getTargetId(koi, item){
     if(koi !== "relation") return null
     else if (item.hasOwnProperty("target")) return item.target
-    else throw "target is missing in item."
+    else throw new Error("target is missing in item.")
 }
 
 function getSourceId(koi, item){
     if(koi !== "relation") return null
     else if (item.hasOwnProperty("source")) return item.source
-    else throw "source is missing in item."
+    else throw new Error("source is missing in item.")
 }
 
 module.exports = {IdController}
