@@ -1,19 +1,11 @@
-import Graph from "../components/graph/Graph.js"
-import Actions from "../store/Actions.js";
-import Filter from "../components/filter/Filter.js";
+import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
 
 export default class Configs {
-
     constructor() {
         document.title = "Config";
+        this.returnRenderFunc = getDataAsGraph;
+        this.view = "configs";
     }
-
-    async getTemplate() {
-        const view = "configs"
-        await Actions.GETALL(view)
-        Filter(view);
-
-        return Graph(view)
-    }
+    async getTemplate() { return [await this.returnRenderFunc("configs"), await Filter("configs")] }
+    async setupToolBar() { return setupToolBar("configs") }
 }
-
