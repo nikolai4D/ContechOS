@@ -4,6 +4,7 @@ import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
 import Actions from "./store/Actions.js";
+import functionRouter from "./helpers/functionRouter.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -36,6 +37,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const code = registerForm.code.value;
       register(email, pwd, code);
     }
+
+
+    else if (e.target.matches("[data-function]")) {
+      e.preventDefault();
+      await functionRouter(e.target.getAttribute("data-function"), e)
+    }
+
 
     if (e.target.getAttribute("data-view") == "/register") {
       console.log("Register View");
@@ -90,59 +98,59 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-const firstQuery= JSON.stringify( {
-  query: `query RooterQueryType($projInp:NodeInput){
-    node(nodeInput:$projInp){
+const firstQuery = JSON.stringify({
+  query: `query RooterQueryType($input:QueryInput){
+    properties(itemInput:$input){
         id
         title
-        definitionType
-        parentNode {
-          title
-        }
-        relations {
-          title
-        }
-        relations {
-          sourceId
-          targetId
-        }
-        childrenNodes {
-          title
-        }
-      }
-          sourceId
-          targetId
-        }
-        childrenNodes {
-          title
-        }
+        defType
       }
     }`, variables: {
-    projInp: {
-      title: "Intec1"
+    input: {
     }
   }
 })
 
-const createQuery= JSON.stringify( {
-  query: `mutation whatever($relation:CreateRelationInput){
-    createRelation(relation:$relation){
-        id
-        title
-        definitionType
-        }
-    }`, variables: {
-    relation: {
-      title: "BillyBop",
-      parentId: "coer_35943ac8-73c7-42c6-aa0f-49a067654628-co_728bf5d2-82bd-41d8-91cc-4cc92806b43b-co_a3604711-737c-4d31-91f4-065f49d1b59d",
-      targetId: "td_d65b9e56-fa5e-4d36-833d-823d139537d0",
-      sourceId: "td_27a3fba9-9859-4c4d-9ba7-e0ab3cbbdd14"
-    }
-  }
-})
+//
+// const fetchQuery= JSON.stringify( {
+//   query: `query RooterQueryType($itemInput:QueryInput){
+//     items(itemInput:$itemInput){
+//         configObj {
+//           id
+//           title
+//           defType
+//         }
+//         typeData {
+//           id
+//           title
+//           defType
+//         }
+//       }
+//     }`, variables: {
+//     itemInput: {
+//       title: "Intec1"
+//     }
+//   }
+// })
+
+// const createQuery= JSON.stringify( {
+//   query: `mutation whatever($item:CreateInput){
+//     create(item:$item){
+//         id
+//         title
+//         }
+//     }`, variables: {
+//     item: {
+//       kindOfItem: "node",
+//       title: "BillyBop",
+//     }
+//   }
+// })
+
+
 
 async function d() {
-  const data = await Actions.GRAPHQL(createQuery)
+  const data = await Actions.GRAPHQL(firstQuery)
   console.log("data: " + JSON.stringify(data, null, 2))
 }
 d()
