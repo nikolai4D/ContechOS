@@ -1,33 +1,34 @@
-async function Filter(view) {
+async function Filter() {
 
 
-    let nodes,
-        rels = [];
+  let nodes,
+    rels = [];
 
-    let view = window.location.pathname.substring(1)
+  let view = window.location.pathname.substring(1)
 
-    let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
-    let nodeHtmlString = ``
+  let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
+  let nodeHtmlString = ``
 
-    nodes = graphJsonData[0].nodes;
+  nodes = graphJsonData[0].nodes;
 
-    nodes.forEach(node =>
-        nodeHtmlString += `<input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" checked="">
+  nodes.forEach(node => {
+    nodeHtmlString += `<input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" checked>
 <label class="form-check-label" for="checkbox_${node.id}">
           ${node.title}
         </label>
         <br/>`
-    )
+  }
+  )
 
-    const htmlString = `<h2>${view}</h2>
-<div class="accordion" id="accordionPanelsStayOpenExample">
+  const htmlString = `
+<div class="accordion w-25 position-absolute" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="false" aria-controls="panelsStayOpen-collapseOne">
         Filter
       </button>
     </h2>
-    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show" aria-labelledby="panelsStayOpen-headingOne">
+    <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse" aria-labelledby="panelsStayOpen-headingOne">
       <div class="accordion-body">
       ${nodeHtmlString}
       </div>
@@ -37,10 +38,10 @@ async function Filter(view) {
             `
 
 
-    let filterDOM = document.createElement("div");
-    filterDOM.className = "filter-container"
-    filterDOM.innerHTML = htmlString;
-    document.getElementById("app").appendChild(filterDOM)
+  let filterDOM = document.createElement("div");
+  filterDOM.className = "filter-container"
+  filterDOM.innerHTML = htmlString;
+  document.getElementById("app").appendChild(filterDOM)
 
 
 }

@@ -2,41 +2,43 @@ import Graph from "../graph/Graph.js"
 
 async function checkFilter(event) {
 
-    let nodes,
-        rels = [];
+    console.log("clicked", event)
 
-    let view = window.location.pathname.substring(1)
+    // let nodes,
+    //     rels = [];
 
-    let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}_full`));
-    let graphJsonDataGraph = await JSON.parse(sessionStorage.getItem(`${view}`));
+    // let view = window.location.pathname.substring(1)
 
-    nodes = graphJsonData[0].nodes;
-    let nodeId = event.target.id.split("checkbox_")[1]
-    let checkedNode = nodes.find(node => node.id === nodeId);
-    let isChecked = event.target.checked
-    if (isChecked) {
-        console.log("hello")
-    }
-    else {
-        let nodesGraph = graphJsonData[0].nodes;
-        let relsGraph = graphJsonData[0].rels;
+    // let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
+    // // let graphJsonDataGraph = await JSON.parse(sessionStorage.getItem(`${view}`));
 
-        graphJsonData[0].nodes = nodesGraph.filter(node => node.id !== nodeId)
-        graphJsonData[0].rels = relsGraph.filter(rel => rel.source !== nodeId || rel.target !== nodeId)
+    // nodes = graphJsonData[0].nodes;
+    // let nodeId = event.target.id.split("checkbox_")[1]
+    // let checkedNode = nodes.find(node => node.id === nodeId);
+    // let isChecked = event.target.checked
+    // if (isChecked) {
+    //     console.log("hello")
+    // }
+    // else {
+    //     let nodesGraph = graphJsonData[0].nodes;
+    //     let relsGraph = graphJsonData[0].rels;
 
-        sessionStorage.setItem(`${view}`, JSON.stringify(graphJsonData));
-        console.log(`REMOVED ${nodeId}`)
+    //     graphJsonData[0].nodes = nodesGraph.filter(node => node.id !== nodeId)
+    //     graphJsonData[0].rels = relsGraph.filter(rel => rel.source !== nodeId || rel.target !== nodeId)
 
-        await document.getElementsByTagName("svg")[0].remove();
-        await document.getElementById("app").append(await Graph(view))
-    }
+    //     sessionStorage.setItem(`${view}`, JSON.stringify(graphJsonData));
+    //     console.log(`REMOVED ${nodeId}`)
 
-
-    rels = graphJsonData[0].rels;
-
+    //     await document.getElementsByTagName("svg")[0].remove();
+    //     await document.getElementById("app").append(await Graph(view))
+    // }
 
 
-    console.log(view, event.target.checked, checkedNode)
+    // rels = graphJsonData[0].rels;
+
+
+
+    // console.log(view, event.target.checked, checkedNode)
 
 
 
