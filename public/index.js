@@ -98,11 +98,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
-<<<<<<< HEAD
 const firstQuery = JSON.stringify({
-=======
-const firstQuery= JSON.stringify( {
->>>>>>> 4b3b69b8111df68003b65a18cf42bf47f9405739
   query: `query RooterQueryType($input:QueryInput){
     properties(itemInput:$input){
         id

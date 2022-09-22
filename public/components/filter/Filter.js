@@ -43,9 +43,7 @@ async function Filter() {
   let filterDOM = document.createElement("div");
   filterDOM.className = "filter-container"
   filterDOM.innerHTML = htmlString;
-  document.getElementById("app").appendChild(filterDOM)
-
-
+  return filterDOM;
 }
 
 export default Filter;

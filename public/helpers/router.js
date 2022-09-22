@@ -51,9 +51,14 @@ export default async function router() {
   //No nav
   if (match.route.path === "/login" || match.route.path === "/register") {
     document.querySelector("#app").innerHTML = viewResult;
+  } else if (Array.isArray(viewResult)) {
+    document.querySelector("#nav").innerHTML = await nav.getTemplate();
+    for (const node of viewResult) {
+      document.querySelector("#app").appendChild(node);
+    }
   } else if (viewResult instanceof SVGElement) {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
-    document.querySelector("#app").appendChild( viewResult);
+    document.querySelector("#app").appendChild(viewResult);
   } else {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").innerHTML = viewResult;
