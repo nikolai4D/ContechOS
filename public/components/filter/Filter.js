@@ -14,14 +14,9 @@ async function Filter() {
   nodes.forEach(node => {
     nodeHtmlString += `
     
-    <div class="form-check">
-
     <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" checked>
-<label class="form-check-label" for="checkbox_${node.id}">
-          ${node.title}
-        </label>
-        <br/>
-  </div>
+    <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label>
+    <br/>
 
 `
   }

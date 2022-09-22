@@ -40,7 +40,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     else if (e.target.matches("[data-function]")) {
-      e.preventDefault();
+      // e.preventDefault();
       await functionRouter(e.target.getAttribute("data-function"), e)
     }
 
