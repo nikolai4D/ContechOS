@@ -39,14 +39,23 @@ export default async function router() {
   document.querySelector("#nav").innerHTML = "";
   document.querySelector("#app").innerHTML = "";
 
+  if(view.setupToolBar !== undefined){
+    document.querySelector("#toolBar").innerHTML = "";
+    view.setupToolBar();
+  }
+  else{
+    document.querySelector("#toolBar").innerHTML = "";
+  }
+
+  const viewResult = await view.getTemplate();
   //No nav
   if (match.route.path === "/login" || match.route.path === "/register") {
-    document.querySelector("#app").innerHTML = await view.getTemplate();
-  } else if (match.route.path === "/" || match.route.path === "/apis") {
+    document.querySelector("#app").innerHTML = viewResult;
+  } else if (viewResult instanceof SVGElement) {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
-    document.querySelector("#app").innerHTML = await view.getTemplate();
+    document.querySelector("#app").appendChild( viewResult);
   } else {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
-    document.querySelector("#app").appendChild(await view.getTemplate());
+    document.querySelector("#app").innerHTML = viewResult;
   }
 }
