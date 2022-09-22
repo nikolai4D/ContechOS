@@ -12,11 +12,18 @@ async function Filter() {
   nodes = graphJsonData[0].nodes;
 
   nodes.forEach(node => {
-    nodeHtmlString += `<input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" checked>
+    nodeHtmlString += `
+    
+    <div class="form-check">
+
+    <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" checked>
 <label class="form-check-label" for="checkbox_${node.id}">
           ${node.title}
         </label>
-        <br/>`
+        <br/>
+  </div>
+
+`
   }
   )
 
@@ -34,7 +41,7 @@ async function Filter() {
       </div>
     </div>
     </div>
-</div>
+</div>  
             `
 
 
