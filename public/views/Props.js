@@ -1,4 +1,4 @@
-import { getDataAsGraph, setupToolBar} from "../helpers/dataRendererHelper.js";
+import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
 
 export default class Props {
     constructor() {

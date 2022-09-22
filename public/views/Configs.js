@@ -1,11 +1,11 @@
-import { getDataAsGraph, setupToolBar} from "../helpers/dataRendererHelper.js";
+import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
 
 export default class Configs {
-  constructor() {
-    document.title = "Config";
-    this.returnRenderFunc = getDataAsGraph;
-    this.view = "configs";
-  }
-  async getTemplate() { return this.returnRenderFunc("configs") }
-  async setupToolBar() { return setupToolBar("configs") }
+    constructor() {
+        document.title = "Config";
+        this.returnRenderFunc = getDataAsGraph;
+        this.view = "configs";
+    }
+    async getTemplate() { return this.returnRenderFunc("configs") }
+    async setupToolBar() { return setupToolBar("configs") }
 }
