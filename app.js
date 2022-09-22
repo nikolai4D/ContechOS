@@ -6,7 +6,10 @@ const corsOptions = require("./config/corsOptions");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
-const {access} = require("./database/access");
+const {doesDefTypeExist} = require("./database/control/BulkFetchController");
+const {getItems} = require("./database/crud/read");
+const {createItem} = require("./database/crud/create");
+const {deleteItem} = require("./database/crud/delete");
 const PORT = process.env.PORT;
 const app = express();
 
@@ -43,24 +46,17 @@ app.get("/*", (req, res) => {
 });
 
 // async function d() {
-//   const node = await new Accessor().getItems({sourceId:"co_d99c026d-dd78-4474-af01-7b5cd08e572e", limit: 5})
-//   console.log("node: " + JSON.stringify(node))
+//   console.log("Creation: " + JSON.stringify(await createItem({
+//     kindOfItem: "property",
+//     parentId: "pk_9f0f44e6-ef22-4384-927d-5e94b538c410",
+//     title: "maPropVal"})))
 // }
 // d()
 
-//  async function create(){
-//   await access.createItem({
-//     parentId: "cd_06f1c232-4e8d-4078-802a-6f8fcfdd8725",
-//     title:"youpida",
-//     itemKind: "node"})
+// async function d() {
+//   console.log("Creation: " + JSON.stringify(await deleteItem({ id: "pv_96956c4d-d41e-4b7e-90c9-5e2a8661d33d"})))
 // }
-// create()
+// d()
 
-// async function read(){
-//     console.log(await access.getItems({title: "youpidoo"}))
-// }
-// read()
-
-// console.log(doesDefTypeNameExist("typeDataExternalRel"))
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

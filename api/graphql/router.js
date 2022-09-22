@@ -1,32 +1,42 @@
 const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema,GraphQLObjectType} = require('graphql');
+const { GraphQLSchema,GraphQLObjectType, GraphQLString} = require('graphql');
 const {GraphQLList} = require("graphql/type")
-const {Node, QueryNodeInput, Relation, QueryRelationInput, CreateNodeInput, CreateRelationInput} = require("./graphql_types")
-const {queryRelationsResolver, queryNodesResolver} = require("./resolvers");
-const {access} = require("../../database/access");
+const {Node, Relation, Property, MutationItem, CreateInput, QueryInput} = require("./graphql_types")
+const {graphResolver} = require("./resolvers");
+const {deleteItem} = require("../../database/crud/delete");
+const {createItem} = require("../../database/crud/create");
 
 let schema = new GraphQLSchema({
         query: new GraphQLObjectType({
             name: 'RootQueryType',
             fields: {
-                node: {
+                nodes: {
                     type: new GraphQLList(Node),
                     args: {
-                        nodeInput: { type: QueryNodeInput }
+                        itemInput: { type: QueryInput }
                     },
                     async resolve (root, args){
-                        return await queryNodesResolver(args.nodeInput)
+                        return await graphResolver(args.itemInput, {kindOfItem: "node"})
                     }
                 },
-                relation: {
+                relations: {
                     type: new GraphQLList(Relation),
                     args: {
-                        relationInput: { type: QueryRelationInput }
+                        itemInput: { type: QueryInput }
                     },
-                    async resolve(root, args) {
-                        return await queryRelationsResolver(args.relationInput)
+                    async resolve (root, args){
+                        return await graphResolver(args.itemInput, {kindOfItem: "relation"})
+                    }
+                },
+                properties: {
+                    type: new GraphQLList(Property),
+                    args: {
+                        itemInput: { type: QueryInput }
+                    },
+                    async resolve (root, args){
+                        return await graphResolver(args.itemInput, {kindOfItem: "property"})
                     }
                 },
             },
@@ -34,33 +44,33 @@ let schema = new GraphQLSchema({
         mutation: new GraphQLObjectType({
             name: "RootMutationType",
             fields: {
-                createNode: {
-                    type: Node,
+                create: {
+                    type: MutationItem,
                     args: {
-                        node: {
-                            type: CreateNodeInput
-                        }
+                        item: { type: CreateInput }
                     },
                     async resolve(root, args){
-                        const params = {...args.node, kindOfItem: "node"}
-                        return await access.createItem(params)
+                        console.log("graphQL create request received.")
+                        return await createItem(args.item)
                     }
                 },
-                createRelation: {
-                    type: Relation,
-                    args: {
-                        relation: {
-                            type: CreateRelationInput
-                        }
-                    },
+                delete: {
+                    type: new GraphQLList( GraphQLString),
+                    args: { id: {type: GraphQLString} },
                     async resolve(root, args){
-                        const params = {...args.relation, kindOfItem: "relation"}
-                        return await access.createItem(params)
+                        return await deleteItem(args.id)
                     }
-                }
+                },
+                update: {
+                    type: MutationItem,
+                    args: { id: {type: GraphQLString} },
+                    async resolve(root, args){
+                        return await updateItem(args.id)
+                    }
+                },
             }
         }),
-        types: [Node, QueryNodeInput, CreateNodeInput, Relation, QueryRelationInput, CreateRelationInput]
+        types: [Node, Relation, Property, QueryInput, CreateInput, MutationItem]
     }
 )
 

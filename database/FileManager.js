@@ -1,5 +1,13 @@
 //Record is a cool name indeed, but already taken.
-const fs = require("fs");
+const fs = require("fs")
+
+function doesFileExist(id, defType){
+    try {
+        return fs.existsSync(`../db/${defType}/${id}.json`)
+    } catch(e){
+        throw(e)
+    }
+}
 
 function getItemById(id, defType){
     let json
@@ -19,15 +27,15 @@ function getItemById(id, defType){
  * @param limit
  * @param from
  * @param filterFunction must return a boolean indicating if the item should be added to the request or not.
+ * @param filterParams
  * @returns {*[]}
  */
-function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
+function getBulk( defTypes, limit = 50, from = 0, filterFunction = null, filterParams) {
+    console.log("filterParams: " + JSON.stringify(filterParams))
     const items = []
     for (let defType of defTypes) {
         const dir = `../db/${defType}/`
         let files = fs.readdirSync(dir)
-
-        console.log("files length: " + files.length + ", from: " + from)
 
         if(files.length <= from) {
             from -= files.length
@@ -40,11 +48,11 @@ function getBulk( defTypes, limit = 50, from = 0, filterFunction = null) {
 
         for (let file of files) {
             const item = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-            if(filterFunction !== null && !filterFunction(item)) continue
+            if(filterFunction !== null && !filterFunction(item, filterParams)) continue
             let id = file.slice(0, -5);
             items.push({id, defType, ...item})
 
-            if(items.length >= limit) return items
+            if( limit > 0 && items.length >= limit) return items
         }
     }
     return items
@@ -59,5 +67,9 @@ function createFile(defType, id, item){
     return { id, defType, ...item }
 }
 
+async function deleteFile(path){
+    return fs.promises.unlink(path)
+}
 
-module.exports = { getItemById, getBulk, createFile }
+
+module.exports = { getItemById, getBulk, createFile, doesFileExist, deleteFile }
