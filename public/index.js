@@ -4,7 +4,7 @@ import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
 import Actions from "./store/Actions.js";
-import {dbStore, findInMimic} from "./store/db_store/dbStore.js";
+// import {dbStore, findInMimic} from "./store/db_store/dbStore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -104,27 +104,27 @@ const firstQuery= JSON.stringify( {
   }
 })
 
-//
-// const fetchQuery= JSON.stringify( {
-//   query: `query RooterQueryType($itemInput:QueryInput){
-//     items(itemInput:$itemInput){
-//         configObj {
-//           id
-//           title
-//           defType
-//         }
-//         typeData {
-//           id
-//           title
-//           defType
-//         }
-//       }
-//     }`, variables: {
-//     itemInput: {
-//       title: "Intec1"
-//     }
-//   }
-// })
+
+const fetchQuery= JSON.stringify( {
+  query: `query RooterQueryType($itemInput:QueryInput){
+    items(itemInput:$itemInput){
+        configObj {
+          id
+          title
+          defType
+        }
+        typeData {
+          id
+          title
+          defType
+        }
+      }
+    }`, variables: {
+    itemInput: {
+      title: "Intec1"
+    }
+  }
+})
 
 // const createQuery= JSON.stringify( {
 //   query: `mutation whatever($item:CreateInput){

@@ -41,6 +41,9 @@ export const dbStore = {
     },
     getChildren(parentId) {
 
+    },
+    getItem(id) {
+        
     }
 }
 
