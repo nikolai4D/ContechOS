@@ -1,4 +1,4 @@
-import {dbStore} from "./dbStore";
+import {State} from "../State";
 
 function Checked(id, data, children, relatedNodes, relations){
     this.id = id
@@ -8,13 +8,16 @@ function Checked(id, data, children, relatedNodes, relations){
     this.relations = relations
 }
 
+
 export async function filter(frontData = [[],[],[],[]]) {
+    const store = State.store
+
     const checkedNodesToReturn = []
     const availableNodesToReturn = []
     const relationsToReturn = []
 
     // General idea:
-    let availableNodes = await dbStore.getItemsInRepo("configDef")
+    let availableNodes = await store.getDefinitionNodes("configDef")
     availableNodesToReturn.push(availableNodes)
 
     // -> get the layer 1 available nodes (all the children of checked nodes on layer 1)
@@ -60,9 +63,10 @@ async function narrowCheckedNodes(frontLayer, availableNodes) {
     for (let itemGroup in frontLayer) {
         for (let node in itemGroup.items) {
             if (availableNodes.includes(node)) {
-                const children = await dbStore.getChildren(node.id)
-                const {relNodes, rels} = await dbStore.getRelatedNodesAndRels(node.id)
-                const data = await dbStore.getItem(node.id)
+                const children = await State.store.getChildren(node.id)
+                const rels = await State.store.getRelatedRels(node.id)
+                const relNodes = getOtherNodesId(rels, node.id)
+                const data = await State.store.getItem(node.id)
                 narCheckedNodes.push(new Checked(node.id, children, relNodes, rels))
                 checkedData.push(data)
             }
@@ -74,7 +78,7 @@ async function narrowCheckedNodes(frontLayer, availableNodes) {
 /**
  * filter the nodes children (lB) and give the relations (lA)
  * @param checkedNodes
- * @returns {Promise<(T[]|*[])[]>}
+ * @returns {Promise<{childAvNodes: *[], rels: *[]}>}
  */
 async function narrowChildren(checkedNodes) {
     const relsToReturn = []
@@ -84,11 +88,11 @@ async function narrowChildren(checkedNodes) {
         const remainingChildren = node.children
         for (let relNode in node.relNodes) {
             if (checkedNodes.includes(el => el.id === relNode.id)) { // If the related node is also checked
-                const rel = node.relations.find(rel => rel.target === relNodeId)
+                const rel = node.relations.find(rel => rel.target === relNode.id)
                 if(rel) relsToReturn.push(rel)
 
                 for (let child in remainingChildren) {
-                    const {childRelsNodes, childRels} = await dbStore.getRelatedNodesAndRels(child.id)
+                    const childRelsNodes = await State.store.getRelatedRels(child.id)
                     if ((!childRelsNodes.includes(child => relNode.children.includes(child)))) {
                         remainingChildren.splice(remainingChildren.indexOf(child), 1, null) // replace item with null
                     }
@@ -101,4 +105,8 @@ async function narrowChildren(checkedNodes) {
     }
 
     return [filteredChildren, relsToReturn]
+}
+
+function getOtherNodesId(rels, nodeId){
+    return rels.map(rel => rel.source === nodeId ? rel.target : rel.source)
 }
