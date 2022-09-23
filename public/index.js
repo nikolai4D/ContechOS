@@ -3,8 +3,6 @@ import navigateTo from "./helpers/navigateTo.js";
 import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
-import Actions from "./store/Actions.js";
-// import {dbStore, findInMimic} from "./store/db_store/dbStore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -89,5 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleToken(sessionStorage.getItem("accessToken"));
   }
 });
+
 
 window.addEventListener("popstate", router);
