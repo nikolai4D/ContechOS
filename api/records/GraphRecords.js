@@ -37,6 +37,7 @@ class GraphRecords {
     }
 
     //Nodes
+
     nodeTypes.forEach((nodeType) => {
       const dirNodes = `../db/${nodeType}/`;
       const nodeFiles = fs.readdirSync(dirNodes);
@@ -60,7 +61,7 @@ class GraphRecords {
     });
 
     //Rels
-    if (this.nodeGroup !== "props") {
+    if (this.nodeGroup != "props") {
       relTypes.forEach((relType) => {
         const dirRels = `../db/${relType}/`;
         const relFiles = fs.readdirSync(dirRels);
