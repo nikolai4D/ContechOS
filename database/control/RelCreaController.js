@@ -33,7 +33,7 @@ function getParentId(parentId, source){
         if((parentId === null || parentId === undefined) && source.layerIndex === 0)  return null
 
         let parData = new IdController(parentId)
-        if(parData.layerIndex !== source.layerIndex + 1) throw new Error("Relation parentId is not directly above the source layer.")
+        if(parData.layerIndex !== source.layerIndex + 1) throw new Error("Cy_Rel parentId is not directly above the source layer.")
         return parData
 }
 

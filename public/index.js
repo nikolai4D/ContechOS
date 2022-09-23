@@ -4,6 +4,7 @@ import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
 import Actions from "./store/Actions.js";
+import {dbStore, findInMimic} from "./store/db_store/dbStore.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -140,6 +141,7 @@ const firstQuery= JSON.stringify( {
 // })
 
 
+findInMimic("cder_iuiu", dbStore.mimic)
 
 async function d() {
   const data = await Actions.GRAPHQL(firstQuery)
