@@ -141,12 +141,12 @@ const fetchQuery= JSON.stringify( {
 // })
 
 
-findInMimic("cder_iuiu", dbStore.mimic)
-
-async function d() {
-  const data = await Actions.GRAPHQL(firstQuery)
-  console.log("data: " + JSON.stringify(data, null, 2))
-}
-d()
+// findInMimic("cder_iuiu", dbStore.mimic)
+//
+// async function d() {
+//   const data = await Actions.GRAPHQL(firstQuery)
+//   console.log("data: " + JSON.stringify(data, null, 2))
+// }
+// d()
 
 window.addEventListener("popstate", router);

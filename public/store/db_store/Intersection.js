@@ -14,7 +14,7 @@ export async function filter(frontData = [[],[],[],[]]) {
     const relationsToReturn = []
 
     // General idea:
-    let availableNodes = await dbStore.getRepoContent("configDef")
+    let availableNodes = await dbStore.getItemsInRepo("configDef")
     availableNodesToReturn.push(availableNodes)
 
     // -> get the layer 1 available nodes (all the children of checked nodes on layer 1)

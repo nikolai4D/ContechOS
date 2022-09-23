@@ -32,7 +32,7 @@ export const dbStore = {
     ],
 
 
-    async getRepoContent(repo) {
+    async getItemsInRepo(repo) {
         return undefined;
     },
 
