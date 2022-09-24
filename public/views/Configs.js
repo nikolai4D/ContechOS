@@ -6,6 +6,6 @@ export default class Configs {
         this.returnRenderFunc = getDataAsGraph;
         this.view = "configs";
     }
-    async getTemplate() { return this.returnRenderFunc("configs") }
+    async getTemplate() { return [await this.returnRenderFunc("configs"), await Filter("configs")] }
     async setupToolBar() { return setupToolBar("configs") }
 }
