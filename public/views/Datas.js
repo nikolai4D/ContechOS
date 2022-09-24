@@ -1,5 +1,5 @@
 import Graph from "../components/graph/Graph.js";
-import Filter from "../components/filter/Filter.js";
+import FilterBox from "../components/filter/FilterBox.js";
 
 import Actions from "../store/Actions.js";
 import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
@@ -10,6 +10,6 @@ export default class Datas {
     this.returnRenderFunc = getDataAsGraph;
     this.view = "datas";
   }
-  async getTemplate() { return [await this.returnRenderFunc("datas"), await Filter("datas")] }
+  async getTemplate() { return await this.returnRenderFunc("datas") }
   async setupToolBar() { return setupToolBar("datas") }
 }
