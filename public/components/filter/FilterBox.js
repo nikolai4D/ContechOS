@@ -1,16 +1,7 @@
-async function Filter() {
+async function FilterBox(allNodes, checkedNodes) {
 
-
-  let nodes,
-    rels = [];
-
-  let view = window.location.pathname.substring(1)
-
-  let graphJsonData = await JSON.parse(sessionStorage.getItem(`${view}`));
+  let nodes = allNodes;
   let nodeHtmlString = ``
-
-  nodes = graphJsonData[0].nodes;
-
   nodes.forEach(node => {
     nodeHtmlString += `
     
@@ -46,4 +37,4 @@ async function Filter() {
   return filterDOM;
 }
 
-export default Filter;
+export default FilterBox;

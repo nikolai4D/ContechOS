@@ -6,6 +6,7 @@ import Configs from "../views/Configs.js";
 import Props from "../views/Props.js";
 import Login from "../views/Login.js";
 import Register from "../views/Register.js";
+import Filter from "../views/Filter.js";
 
 export default async function router() {
   const routes = [
@@ -16,6 +17,7 @@ export default async function router() {
     { path: "/datas", view: Datas },
     { path: "/configs", view: Configs },
     { path: "/props", view: Props },
+    { path: "/filter", view: Filter },
   ];
 
   const potentialMatches = routes.map((route) => {
