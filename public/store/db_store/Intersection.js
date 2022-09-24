@@ -78,7 +78,7 @@ async function narrowCheckedNodes(frontLayer, availableNodes) {
 /**
  * filter the nodes children (lB) and give the relations (lA)
  * @param checkedNodes
- * @returns {Promise<{childAvNodes: *[], rels: *[]}>}
+ * @returns {Promise<*[][]>}
  */
 async function narrowChildren(checkedNodes) {
     const relsToReturn = []
