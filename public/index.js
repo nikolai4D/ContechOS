@@ -3,8 +3,11 @@ import navigateTo from "./helpers/navigateTo.js";
 import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
+<<<<<<< HEAD
 import Actions from "./store/Actions.js";
 import functionRouter from "./helpers/functionRouter.js";
+=======
+>>>>>>> 9e19db7e8a2f0e3253874b3f131824c5e1df2277
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -98,6 +101,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+<<<<<<< HEAD
 const firstQuery = JSON.stringify({
   query: `query RooterQueryType($input:QueryInput){
     properties(itemInput:$input){
@@ -155,4 +159,6 @@ async function d() {
 }
 d()
 
+=======
+>>>>>>> 9e19db7e8a2f0e3253874b3f131824c5e1df2277
 window.addEventListener("popstate", router);

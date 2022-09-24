@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 require("dotenv").config();
 
 class UserRecord {
-  constructor() {}
+  constructor() { }
 
   async create(reqBody) {
     const { email, hashedPwd, createAdmin } = reqBody;
