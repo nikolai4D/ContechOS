@@ -11,7 +11,7 @@ export default class Filter {
         this.returnRenderFunc = getDataAsGraph;
         this.view = "props";
         this.ViewHasRenderControl = true;
-        sessionStorage.setItem("checkedBoxes",[[],[],[],[]])
+        // sessionStorage.setItem("checkedBoxes",[[],[],[],[]])
         /*
         [ // Array of layers, ordered by index
     [ //Definition layer

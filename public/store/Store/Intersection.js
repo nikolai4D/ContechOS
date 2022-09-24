@@ -12,13 +12,16 @@ function Checked(id, data, children, relatedNodes, relations){
 export async function Intersection(frontData = [[],[],[],[]]) {
     const store = State.store
 
-    const nodesForTheGodOfNodes = []
     const checkedNodesToReturn = []
     const availableNodesToReturn = []
     const relationsToReturn = []
 
     // General idea:
     let availableNodes = await store.getDefinitionNodes("configDef")
+    const boxNodes = availableNodes.map( el => {
+        return {id: el.id, title: el.title, children: [], checked: frontData[0].includes(el.id)}
+    })
+
     availableNodesToReturn.push(availableNodes)
 
     // -> get the layer 1 available nodes (all the children of checked nodes on layer 1)
@@ -26,8 +29,11 @@ export async function Intersection(frontData = [[],[],[],[]]) {
     checkedNodesToReturn.push(checkToReturn)
     const {avNodes, rels} = await narrowChildren(checkedNodes)
     availableNodes = avNodes
+    for(let avNode in availableNodes){
+        findParentInBoxNodes(boxNodes, avNode.parentId, 0).children.push(avNode)
+    }
+
     availableNodesToReturn.push(...avNodes)
-    nodesForTheGodOfNodes.push(avNodes)
     relationsToReturn.push(rels)
 
 
@@ -111,4 +117,26 @@ async function narrowChildren(checkedNodes) {
 
 function getOtherNodesId(rels, nodeId){
     return rels.map(rel => rel.source === nodeId ? rel.target : rel.source)
+}
+
+function findParentInBoxNodes(boxNodes, parentId, parentLayer){
+    for(let node in boxNodes){
+        if(node.id === parentId){
+            return node
+        }
+        else if(parentLayer > 0){
+            for(let children in node.children){
+                if(children.id === parentId){
+                    return children
+                }
+                else if(parentLayer >1 ){
+                    for(let children in node.children){
+                        if(children.id === parentId){
+                            return children
+                        }
+                    }
+                }
+            }
+        }
+    }
 }

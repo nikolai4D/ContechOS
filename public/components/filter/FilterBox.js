@@ -74,14 +74,14 @@ function itemRow(node){
     if (node.hasOwnProperty("children") && node.children.length !== 0){
       console.log("nodeId:" + node.id)
       childrenFrame = `
-          <div class="accordion-body">
+          <ul>
           `
       for(let child of node.children){
           console.log("childId:" + child.id)
             childrenFrame += itemRow(child)
       }
 
-      childrenFrame += `</div>`
+      childrenFrame += `</ul>`
     }
 
      let mainRow = `
