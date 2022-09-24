@@ -1,7 +1,7 @@
-import {Store} from "./db_store/dbStore";
+import {Store} from "./Store/dbStore.js";
 
 export const State = {
     test: "test",
     clickedObj: null,
-    store: new Store(),
+    store: new Store()
 };

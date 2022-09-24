@@ -3,6 +3,7 @@ import FilterBox from "../components/filter/FilterBox.js";
 
 import Actions from "../store/Actions.js";
 import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import {Intersection} from "../store/Store/Intersection.js";
 
 export default class Filter {
     constructor() {
@@ -40,13 +41,17 @@ export default class Filter {
 ]
         */
     }
+
     async getTemplate() { 
         const intersectedData = await this.IntersectionMock(sessionStorage.getItem("checkedBoxes"));
+        // const intersectedData = await Intersection(sessionStorage.getItem("checkedBoxes"));
+
         sessionStorage.setItem("props", JSON.stringify([{nodes: intersectedData[0] , rels: intersectedData[2] }]));
         const mainAppNodes = await this.returnRenderFunc("props")
         const filterBoxNodes = await FilterBox(intersectedData[0], intersectedData[1])
         return [mainAppNodes, filterBoxNodes] 
     }
+
     async setupToolBar() { return setupToolBar("props") }
     async IntersectionMock(checkedNodes){ 
         await Actions.GETALL("props");
@@ -61,5 +66,4 @@ export default class Filter {
         // available nodes are all the nodes displayed in the menu box. And checkedNodes are the same as in the graph.
         return [nodes, [nodes[0]], rels];
     }
-
 }

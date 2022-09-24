@@ -1,4 +1,4 @@
-import {State} from "../State";
+import {State} from "../State.js";
 
 function Checked(id, data, children, relatedNodes, relations){
     this.id = id
@@ -9,9 +9,10 @@ function Checked(id, data, children, relatedNodes, relations){
 }
 
 
-export async function filter(frontData = [[],[],[],[]]) {
+export async function Intersection(frontData = [[],[],[],[]]) {
     const store = State.store
 
+    const nodesForTheGodOfNodes = []
     const checkedNodesToReturn = []
     const availableNodesToReturn = []
     const relationsToReturn = []
@@ -25,7 +26,8 @@ export async function filter(frontData = [[],[],[],[]]) {
     checkedNodesToReturn.push(checkToReturn)
     const {avNodes, rels} = await narrowChildren(checkedNodes)
     availableNodes = avNodes
-    availableNodesToReturn.push(avNodes)
+    availableNodesToReturn.push(...avNodes)
+    nodesForTheGodOfNodes.push(avNodes)
     relationsToReturn.push(rels)
 
 
@@ -98,8 +100,8 @@ async function narrowChildren(checkedNodes) {
                     }
                 }
             }
-            filteredChildren.push(...remainingChildren.filter(child => child !== null))
-
+            let filtChildren = remainingChildren.filter(el => el !== null)
+            filteredChildren.push({parentId: filtChildren})
 
         }
     }
