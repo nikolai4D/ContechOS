@@ -1,8 +1,26 @@
 import Mutations from "./Mutations.js";
-// import { stack } from "d3";
 
 class Actions {
   constructor() { }
+
+  async GRAPHQL(query) {
+
+    let response
+    try {
+      response = await fetch(`/api/graphql`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        },
+        body: query
+
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    return await response.json()
+  }
 
   async CREATE(view, defType, attrs) {
     let defTypeTitle = defType.defTypeTitle;

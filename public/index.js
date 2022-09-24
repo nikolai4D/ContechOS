@@ -87,4 +87,6 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleToken(sessionStorage.getItem("accessToken"));
   }
 });
+
+
 window.addEventListener("popstate", router);
