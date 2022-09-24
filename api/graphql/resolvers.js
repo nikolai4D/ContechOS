@@ -1,6 +1,6 @@
-const {getItems} = require("../../database/crud/read");
+const { getItems } = require("./dbAccessLayer/crud/read");
 
-const definitionTypes= [
+const definitionTypes = [
     "configDef",
     "configDefExternalRel",
     "configDefInternalRel",
@@ -18,7 +18,7 @@ const definitionTypes= [
     "PropVal"
 ]
 
-async function itemsResolver(params = {}, enforcedParams={}) {
+async function itemsResolver(params = {}, enforcedParams = {}) {
     for (let key in enforcedParams) {
         if (params[key] !== undefined) console.log(key + " cannot be overwritten in the current context.")
         params[key] = enforcedParams[key]
@@ -26,34 +26,29 @@ async function itemsResolver(params = {}, enforcedParams={}) {
 
     const items = await getItems(params)
 
-    console.log("items from itemResolver: " + JSON.stringify(items, null, 2))
 
     let answer = {}
     for (let defType of definitionTypes) {
-        console.log("deftype: " + defType)
         answer[defType] = []
     }
-    for(let item of items){
-        console.log("item: " + JSON.stringify(item))
+    for (let item of items) {
         answer[item.defType].push(item)
     }
 
-    console.log("answer: " + JSON.stringify(answer, null, 2))
     return answer
 }
 
-async function graphResolver(params = {}, enforcedParams={}, isUniqueOrNull= false) {
+async function graphResolver(params = {}, enforcedParams = {}, isUniqueOrNull = false) {
     for (let key in enforcedParams) {
         if (params[key] !== undefined) console.log(key + " cannot be overwritten in the current context.")
         params[key] = enforcedParams[key]
     }
 
     const items = await getItems(params)
-    console.log("receiveditems: " + JSON.stringify(items, null, 2))
-    if(isUniqueOrNull) {
-        if (items.length ===  1) return items[0]
+    if (isUniqueOrNull) {
+        if (items.length === 1) return items[0]
         else if (items.length === 0) return null
-        else if (items.length <1 ) return {error: "multiple corresponding items were found when only one was expected."}
+        else if (items.length < 1) return { error: "multiple corresponding items were found when only one was expected." }
     }
 
     return items

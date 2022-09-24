@@ -3,7 +3,6 @@ import navigateTo from "./helpers/navigateTo.js";
 import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
-import Actions from "./store/Actions.js";
 import functionRouter from "./helpers/functionRouter.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
@@ -97,62 +96,5 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-
-const firstQuery = JSON.stringify({
-  query: `query RooterQueryType($input:QueryInput){
-    properties(itemInput:$input){
-        id
-        title
-        defType
-      }
-    }`, variables: {
-    input: {
-    }
-  }
-})
-
-//
-// const fetchQuery= JSON.stringify( {
-//   query: `query RooterQueryType($itemInput:QueryInput){
-//     items(itemInput:$itemInput){
-//         configObj {
-//           id
-//           title
-//           defType
-//         }
-//         typeData {
-//           id
-//           title
-//           defType
-//         }
-//       }
-//     }`, variables: {
-//     itemInput: {
-//       title: "Intec1"
-//     }
-//   }
-// })
-
-// const createQuery= JSON.stringify( {
-//   query: `mutation whatever($item:CreateInput){
-//     create(item:$item){
-//         id
-//         title
-//         }
-//     }`, variables: {
-//     item: {
-//       kindOfItem: "node",
-//       title: "BillyBop",
-//     }
-//   }
-// })
-
-
-
-async function d() {
-  const data = await Actions.GRAPHQL(firstQuery)
-  console.log("data: " + JSON.stringify(data, null, 2))
-}
-d()
 
 window.addEventListener("popstate", router);
