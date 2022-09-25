@@ -1,6 +1,6 @@
 import {State} from "../../store/State.js";
 
-async function FilterBox(allNodes, checkedNodes) {
+async function FilterBox() {
 
   let nodes = [{
     id: "patate",

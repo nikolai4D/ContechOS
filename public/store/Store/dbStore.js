@@ -177,6 +177,8 @@ export async function queryRelations(nodeId) {
         }
     })
     const data = await graphQLQuery(query)
+    console.log("sourceRels: " + JSON.stringify(data.data.sourceRels, null, 2))
+    console.log("targetRels: " + JSON.stringify(data.data.targetRels, null, 2))
     return [...data.data.sourceRels, ...data.data.targetRels]
 }
 

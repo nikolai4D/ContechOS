@@ -10,9 +10,12 @@ async function checkFilter(event) {
     else console.log("tagname: " + event.target.tagName)
     input.toggleAttribute("checked")
 
-    tree.getNodeById(input.id.substring(9)).visible = input.checked
-    if(!input.checked) State.selectedNodes.push(input.id.substring(9))
-    else State.selectedNodes.splice(State.selectedNodes.indexOf(input.id.substring(9)), 1)
+    const treeNode = tree.getNodeById(input.id.substring(9))
+    treeNode.visible? treeNode.hideLineage() : treeNode.visible = true
+
+    //console.log("visibleNodes: " + JSON.stringify(tree.visibleNodes, null, 2))
+    // if(!input.checked) State.selectedNodes.push(input.id.substring(9))
+    // else State.selectedNodes.splice(State.selectedNodes.indexOf(input.id.substring(9)), 1)
 
     await tree.shake()
 
