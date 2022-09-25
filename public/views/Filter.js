@@ -16,6 +16,7 @@ export default class Filter {
     async getTemplate() {
         const tree = State.treeOfNodes
         await tree.ensureInit()
+
         sessionStorage.setItem("props", JSON.stringify([{nodes: tree.visibleNodesData , rels: tree.visibleRelations }]));
 
         const mainAppNodes = await this.returnRenderFunc("props")

@@ -86,7 +86,7 @@ TreeNode.prototype.setRels = async function () {
     const relations = await queryRelations(this.id)
     //console.log("relations: " + JSON.stringify(relations, null, 2))
     relations.map( rel => {
-        this.rels.push(rel)
+        if(this.rels.find(el => el.id === rel.id) === undefined) this.rels.push(rel)
         if(State.relations.find(el => el.id === rel.id) === undefined) State.relations.push(rel)
     } )
 }
@@ -118,7 +118,7 @@ TreeNode.prototype.extraFetch = async function (tree,force = false) {
 Tree.prototype.shake = async function () {
 
     this.setVisibleNodesData()
-    this.relsToDisplay = []
+    this.visibleRelations = []
     let nodesOnThisLayer = this.tree
     let nodesOnNextLayer = []
     this.relsToDisplay = []
@@ -129,19 +129,19 @@ Tree.prototype.shake = async function () {
 
                 await node.extraFetch(this)
                 await node.setChildrenVisibility(this.visibleNodesData)
-                console.log("rels: " + JSON.stringify(node.rels, null, 2))
                 const relevantRels = []
                 node.rels.map(rel => {
                     if(rel.sourceId !== node.id && this.visibleNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
                 })
-                this.relsToDisplay.push(...relevantRels)
+                this.visibleRelations.push(...relevantRels)
                 nodesOnNextLayer.push(...node.children)
             }
         }
         nodesOnThisLayer = nodesOnNextLayer
         nodesOnNextLayer = []
     }
-    console.log("relsToDisplay: " + JSON.stringify(this.relsToDisplay, null, 2))
+    console.log("visibleRelations: " + JSON.stringify(this.visibleRelations, null, 2))
+    console.log("visibleNodesData: " + JSON.stringify(this.visibleNodesData, null, 2))
 }
 
 TreeNode.prototype.overview = function(){

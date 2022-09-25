@@ -14,11 +14,10 @@ async function getItems(params) {
         }
         else {
             let bfData = new validateBulkFetch(params)
-            //console.log("filterParams: " + JSON.stringify(bfData.filterParams, null, 2))
-
             requestedItems = getBulk(bfData.defTypes, bfData.limit, bfData.from, bfData.filterFunction, bfData.filterParams)
         }
 
+        console.log("requestedItems: " + JSON.stringify(requestedItems, null, 2))
         return requestedItems
 
     } catch (e) {
