@@ -17,7 +17,13 @@ export default class Filter {
         const tree = State.treeOfNodes
         await tree.ensureInit()
 
-        sessionStorage.setItem("props", JSON.stringify([{nodes: tree.visibleNodesData , rels: tree.visibleRelations }]));
+        tree.visibleRelations.map(rel => {
+            rel.source = rel.sourceId
+            rel.target = rel.targetId
+            return rel
+        })
+
+        sessionStorage.setItem("props", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
 
         const mainAppNodes = await this.returnRenderFunc("props")
         const filterBoxNodes = await FilterBox()

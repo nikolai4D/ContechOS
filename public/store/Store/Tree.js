@@ -4,7 +4,7 @@ import {queryDefinitions, queryNodeChildren, queryRelations} from "./dbStore.js"
 export function Tree() {
     this.tree = null
     this.visibleRelations = []
-    this.visibleNodesData = []
+    this.selectedNodesData = []
 }
 
 Tree.prototype.ensureInit = async function () {
@@ -13,12 +13,13 @@ Tree.prototype.ensureInit = async function () {
     this.tree = this.fructify(defNodes, 0)}
 }
 
-function TreeNode(id, title, layer, children, visible, data){
+function TreeNode(id, title, layer, children, selected, data){
     this.id = id
     this.title = title
     this.layer = layer
     this.children = children
-    this.visible = visible
+    this.selected = selected
+    this.hidden = false
     this.extraFetched = false
     this.data = data
     this.rels = []
@@ -43,32 +44,32 @@ Tree.prototype.getNodeById = function(id){
     throw new Error("No node found with id: " + id)
 }
 
-TreeNode.prototype.getVisibleInLineage = function(){
+TreeNode.prototype.getSelectedInLineage = function(){
     const data = []
-    if(this.visible === true) {
+    if(this.selected === true) {
         data.push(this.data)
         for (let child of this.children) {
-            data.push(...child.getVisibleInLineage())
+            data.push(...child.getSelectedInLineage())
         }
     }
     return data
 }
 
-Tree.prototype.setVisibleNodesData = function(){
+Tree.prototype.setSelectedNodesData = function(){
     const data = []
     if(this.tree === null) return data
     for(let node of this.tree){
-        data.push(...node.getVisibleInLineage())
+        data.push(...node.getSelectedInLineage())
     }
-    this.visibleNodesData = data
+    this.selectedNodesData = data
     return data
 }
 
-TreeNode.prototype.hideLineage = function(){
-    if(this.visible === true) {
-        this.visible = false
+TreeNode.prototype.deselectLineage = function(){
+    if(this.selected === true) {
+        this.selected = false
         for (let child of this.children) {
-            child.hideLineage()
+            child.deselectLineage()
         }
     }
 }
@@ -76,7 +77,7 @@ TreeNode.prototype.hideLineage = function(){
 Tree.prototype.fructify = function(dbNodes, layer){
     const treeNodes = []
     for(let node of dbNodes){
-        treeNodes.push(new TreeNode(node.id, node.title, layer,[], this.visibleNodesData.includes(el => el.id === node.id), node))
+        treeNodes.push(new TreeNode(node.id, node.title, layer,[], false, node))
     }
     return treeNodes
 }
@@ -84,25 +85,29 @@ Tree.prototype.fructify = function(dbNodes, layer){
 
 TreeNode.prototype.setRels = async function () {
     const relations = await queryRelations(this.id)
-    //console.log("relations: " + JSON.stringify(relations, null, 2))
     relations.map( rel => {
         if(this.rels.find(el => el.id === rel.id) === undefined) this.rels.push(rel)
         if(State.relations.find(el => el.id === rel.id) === undefined) State.relations.push(rel)
     } )
 }
 
-TreeNode.prototype.setChildrenVisibility = async function (visibleNodes) {
+TreeNode.prototype.setChildrenVisibility = async function (tree) {
+    const visibleNodes = tree.selectedNodesData
     await this.extraFetch()
     const visibleRels = this.rels.filter(rel =>
-        (rel.sourceId !== this.id && visibleNodes.includes(el => el.id === rel.sourceId)) ||
-        (rel.targetId !== this.id && visibleNodes.includes(el => el.id === rel.targetId))
+        (rel.sourceId !== this.id && visibleNodes.find(el => el.id === rel.sourceId) !== undefined) ||
+        (rel.targetId !== this.id && visibleNodes.find(el => el.id === rel.targetId) !== undefined)
     )
 
     const visRelsIds = visibleRels.map(rel => rel.id)
-    for (let  visibleRel of visRelsIds) {
-        for (let child of this.children) {
-            for (let childRel of child.rels) {
-                if (visRelsIds.includes(childRel.parentId)) child.visible = true
+    console.log("visRelsIds: " + JSON.stringify(visRelsIds, null, 2))
+    for (let visibleRel of visRelsIds) {
+        for(let child of this.children) {
+            await child.extraFetch(tree)
+            if (child.rels.find(rel => rel.parentId === visibleRel) === undefined) {
+                console.log("child hidden: " + child.title)
+                child.hidden = true
+                child.selected = false
             }
         }
     }
@@ -115,23 +120,36 @@ TreeNode.prototype.extraFetch = async function (tree,force = false) {
     await this.setRels()
 }
 
-Tree.prototype.shake = async function () {
+TreeNode.prototype.unHideAll = function(){
+    this.hidden = false
+    for(let child of this.children){
+        child.unHideAll()
+    }
+}
 
-    this.setVisibleNodesData()
+Tree.prototype.unHideAll = function(){
+for(let node of this.tree){
+        node.unHideAll()
+    }
+}
+
+Tree.prototype.shake = async function () {
+    this.unHideAll()
+    this.setSelectedNodesData()
     this.visibleRelations = []
     let nodesOnThisLayer = this.tree
     let nodesOnNextLayer = []
-    this.relsToDisplay = []
+
 
     for(let i=0; i<3;i++) {
         for (let node of nodesOnThisLayer) {
-            if (node.visible) {
+            if (node.selected) {
 
                 await node.extraFetch(this)
-                await node.setChildrenVisibility(this.visibleNodesData)
+                await node.setChildrenVisibility(this)
                 const relevantRels = []
                 node.rels.map(rel => {
-                    if(rel.sourceId !== node.id && this.visibleNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
+                    if(rel.sourceId !== node.id && this.selectedNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
                 })
                 this.visibleRelations.push(...relevantRels)
                 nodesOnNextLayer.push(...node.children)
@@ -140,15 +158,13 @@ Tree.prototype.shake = async function () {
         nodesOnThisLayer = nodesOnNextLayer
         nodesOnNextLayer = []
     }
-    console.log("visibleRelations: " + JSON.stringify(this.visibleRelations, null, 2))
-    console.log("visibleNodesData: " + JSON.stringify(this.visibleNodesData, null, 2))
 }
 
 TreeNode.prototype.overview = function(){
     return {
         id: this.id,
         title: this.title,
-        visible: this.visible,
+        selected: this.selected,
         children: this.children.map(child => child.overview())
     }
 }

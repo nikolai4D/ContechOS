@@ -2,45 +2,7 @@ import {State} from "../../store/State.js";
 
 async function FilterBox() {
 
-  let nodes = [{
-    id: "patate",
-    title: "Patate",
-    children: [{
-        id: "patate1",
-        title: "Patate1",
-        children: [{
-            id: "patate11",
-            title: "Patate11",
-            children: []
-        },
-        {
-            id: "patate12",
-            title: "Patate12",
-            children: [ {
-                id: "patate121",
-                title: "Patate121"
-            }]
-        }]
-    }]
-  },
-  {
-    id: "patate2",
-    title: "Patate2",
-    children: [{
-        id: "patate21",
-        title: "Patate21",
-        children: [{
-            id: "patate211",
-            title: "Patate211",
-            children: [{
-                id: "patate2111",
-                title: "Patate2111",
-            }]
-        }]
-    }]
-  }]
-
-    nodes = State.treeOfNodes.tree
+  let nodes = State.treeOfNodes.tree
 
   let nodeHtmlString = ``
   nodes.forEach(node => {
@@ -73,9 +35,11 @@ async function FilterBox() {
 }
 
 function itemRow(node){
+    if(node.hidden) return ""
+
   let childrenFrame = `<br/>`
 
-    if (node.visible === true && node.hasOwnProperty("children") && node.children.length !== 0){
+    if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
           <ul>
           `
@@ -87,7 +51,7 @@ function itemRow(node){
     }
 
      let mainRow = `
-          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" ${ node.visible? "checked": ""}>
+          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" ${ node.selected? "checked": ""}>
           <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label>
           
           ${ childrenFrame }

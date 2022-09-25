@@ -11,7 +11,7 @@ async function checkFilter(event) {
     input.toggleAttribute("checked")
 
     const treeNode = tree.getNodeById(input.id.substring(9))
-    treeNode.visible? treeNode.hideLineage() : treeNode.visible = true
+    treeNode.selected? treeNode.deselectLineage() : treeNode.selected = true
 
     //console.log("visibleNodes: " + JSON.stringify(tree.visibleNodes, null, 2))
     // if(!input.checked) State.selectedNodes.push(input.id.substring(9))
