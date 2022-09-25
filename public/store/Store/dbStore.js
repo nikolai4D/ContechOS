@@ -122,7 +122,7 @@ export async function queryDefinitions() {
     return nodes
 }
 
-async function queryNodeChildren(parentId) {
+export async function queryNodeChildren(parentId) {
     const query= JSON.stringify( {
         query: `query RooterQueryType($input:QueryInput){
         nodes(itemInput:$input){
@@ -140,13 +140,14 @@ async function queryNodeChildren(parentId) {
         }
     })
 
-    return (await graphQLQuery(query))
+    return (await graphQLQuery(query)).data.nodes
 }
 
-async function queryRelations(nodeId) {
+export async function queryRelations(nodeId) {
+    console.log("nodeId: " + nodeId)
     const query= JSON.stringify( {
         query: `query RooterQueryType($inputSource:QueryInput, $inputTarget:QueryInput){
-        relations(itemInput:$inputSource){
+        sourceRels: relationships(itemInput:$inputSource){
         id
         title
         defType
@@ -156,7 +157,7 @@ async function queryRelations(nodeId) {
         updated
         created
       },
-      relations(itemInput:$inputTarget){
+      targetRels: relationships(itemInput:$inputTarget){
         id
         title
         defType
@@ -175,7 +176,8 @@ async function queryRelations(nodeId) {
             }
         }
     })
-    return (await graphQLQuery(query))
+    const data = await graphQLQuery(query)
+    return [...data.data.sourceRels, ...data.data.targetRels]
 }
 
 async function graphQLQuery(query) {

@@ -6,5 +6,6 @@ export const State = {
     clickedObj: null,
     store: new Store(),
     treeOfNodes: await new Tree(), // A tree of nodes simplified items, each item have id, title, checked and children.
-    selectedNodes: []
+    selectedNodes: [],
+    relations: [], //relation items, treeNodes refers to it.
 };

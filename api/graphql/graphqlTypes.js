@@ -84,6 +84,8 @@ const Relationship = new GraphQLObjectType({
                 return (await queryRelationshipsResolver(args.relationshipInput, { id: root.parentId, kindOfItem: "relationship" }))[0]
             }
         },
+        created: { type: GraphQLString },
+        updated: { type: GraphQLString },
     })
 })
 

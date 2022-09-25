@@ -1,12 +1,9 @@
 import {State} from "../State.js";
-import {queryDefinitions} from "./dbStore.js";
+import {queryDefinitions, queryNodeChildren, queryRelations} from "./dbStore.js";
 
 export function Tree() {
-    this.tree = async ()=>
-    this.fructify(
-        await queryDefinitions()
-    )
-
+    this.tree = setDefNodes(this)
+    console.log("tree: " + JSON.stringify(this.tree, null, 2))
 }
 
 function TreeNode(id, title, children, visible, data){
@@ -16,12 +13,8 @@ function TreeNode(id, title, children, visible, data){
     this.visible = visible
     this.childrenFetched = false
     this.data = data
-    this.rels = () => {
-
-    }
-    this.relNodesIds = () => {
-
-    }
+    this.rels = []
+    this.relNodesIds = []
 }
 
 
@@ -46,7 +39,7 @@ TreeNode.prototype.getVisibleInLineage = function(curlayer, layer){
 }
 
 Tree.prototype.getNodeById = function(id, title, checked, children){
-    for (let node in this.tree){
+    for (let node of this.tree){
         let found = node.findById(id)
         if(found) return found
     }
@@ -93,5 +86,38 @@ Tree.prototype.fructify = async function(dbNodes){
     for(let node of dbNodes){
         treeNodes.push(new TreeNode(node.id, node.title, [], State.selectedNodes.includes(node.id), node))
     }
+    console.log("treeNodes: " + JSON.stringify(treeNodes, null, 2))
     return treeNodes
+}
+
+async function setDefNodes (treeOfNodes) {
+    let defNodes = await queryDefinitions()
+    treeOfNodes.tree = await treeOfNodes.fructify(defNodes)
+}
+
+TreeNode.prototype.setRels = async function () {
+    const relations = await queryRelations(this.id)
+    console.log("relations: " + JSON.stringify(relations, null, 2))
+    this.rels = relations.map( rel => {
+        rel.id
+        if(State.relations.includes(el => el.id === rel.id)) State.relations.push(this)
+        if(rel.targetId === this.id) this.relNodesIds.push(rel.sourceId)
+        else if(rel.sourceId === this.id) this.relNodesIds.push(rel.targetId)
+        else throw new Error("Relation is not connected to this node: " + JSON.stringify(rel, null, 2) + " node: " + JSON.stringify(this, null, 2))
+    } )
+}
+
+Tree.prototype.shake = async function () {
+    // Fetch children of visible nodes of first layer
+    for (let node of this.tree) {
+        if (node.visible) {
+            if (!node.extraFetched) {
+                node.children = await this.fructify(await queryNodeChildren(node.id))
+                await node.setRels()
+                node.extraFetched = true
+            }
+        }
+    }
+
+
 }
