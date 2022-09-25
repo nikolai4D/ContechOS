@@ -7,46 +7,17 @@ import {Intersection} from "../store/Store/Intersection.js";
 
 export default class Filter {
     constructor() {
-        document.title = "Props";
+        document.title = "Filter";
         this.returnRenderFunc = getDataAsGraph;
-        this.view = "props";
+        this.view = "filter";
         this.ViewHasRenderControl = true;
-        // sessionStorage.setItem("checkedBoxes",[[],[],[],[]])
-        /*
-        [ // Array of layers, ordered by index
-    [ //Definition layer
-        {
-            parentId: null, //null for definition layer
-            itemsIds: []
-        },
-        {
-            parentId: null,
-            itemsIds: []
-        },
-    ],
-    [ //Object layer
-        {
-            parentId: "cd_1",
-            itemsIds: ["co_1", "co_2"]
-        },
-        {
-            parentId: "cd_2", 
-            itemsIds: ["co_3", "co_4"]
-        },
-    ],
-    [ // Type layer
-    ],
-    [ // Instance Layer
-    ],
-]
-        */
     }
 
     async getTemplate() { 
+        //const intersectedData = await Intersection();
         const intersectedData = await this.IntersectionMock(sessionStorage.getItem("checkedBoxes"));
-        // const intersectedData = await Intersection(sessionStorage.getItem("checkedBoxes"));
 
-        sessionStorage.setItem("props", JSON.stringify([{nodes: intersectedData[0] , rels: intersectedData[2] }]));
+        sessionStorage.setItem("props", JSON.stringify([{nodes: intersectedData[1] , rels: intersectedData[2] }]));
         const mainAppNodes = await this.returnRenderFunc("props")
         const filterBoxNodes = await FilterBox(intersectedData[0], intersectedData[1])
         return [mainAppNodes, filterBoxNodes] 
@@ -55,8 +26,7 @@ export default class Filter {
     async setupToolBar() { return setupToolBar("props") }
     async IntersectionMock(checkedNodes){ 
         await Actions.GETALL("props");
-        let nodes,
-            rels = [];
+        let nodes, rels = [];
         let graphJsonData = await JSON.parse(sessionStorage.getItem("props"));
         
         nodes = graphJsonData[0].nodes;

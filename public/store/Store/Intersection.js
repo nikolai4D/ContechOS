@@ -9,23 +9,33 @@ function Checked(id, data, children, relatedNodes, relations){
 }
 
 
-export async function Intersection(frontData = [[],[],[],[]]) {
+export async function Intersection() {
     const store = State.store
+    const selectedNodes = State.selectedNodes
 
+    const currentTree = State.treeOfNodes
+
+    let newTree
     const checkedNodesToReturn = []
-    const availableNodesToReturn = []
     const relationsToReturn = []
 
-    // General idea:
-    let availableNodes = await store.getDefinitionNodes("configDef")
-    const boxNodes = availableNodes.map( el => {
-        return {id: el.id, title: el.title, children: [], checked: frontData[0].includes(el.id)}
+
+
+    let availableNodes = await store.getDefinitionNodes()
+    newTree = availableNodes.map( el => {
+        let checked = false
+        if(selectedNodes.includes(el.id)) {
+            checkedNodesToReturn.push(el)
+            checked = true
+        }
+        return {id: el.id, title: el.title, children: [], checked: checked}
     })
 
-    availableNodesToReturn.push(availableNodes)
+    console.log("boxNodes: " + JSON.stringify(newTree, null, 2))
+
 
     // -> get the layer 1 available nodes (all the children of checked nodes on layer 1)
-    const {checkedNodes, checkToReturn} = narrowCheckedNodes(frontData[0], availableNodes)
+    const {checkedNodes, checkToReturn} = narrowCheckedNodes(treeOfNodes[0], availableNodes)
     checkedNodesToReturn.push(checkToReturn)
     const {avNodes, rels} = await narrowChildren(checkedNodes)
     availableNodes = avNodes
@@ -39,7 +49,7 @@ export async function Intersection(frontData = [[],[],[],[]]) {
 
    // for layers 1 && 2
     for (let index in [1,2]) {
-        const frontLayer = frontData[index]
+        const frontLayer = treeOfNodes[index]
         const checkedNodes = await narrowCheckedNodes(frontLayer, availableNodes)
         const {childAvNodes, rels} = await narrowChildren(checkedNodes)
         availableNodes = childAvNodes
@@ -47,7 +57,7 @@ export async function Intersection(frontData = [[],[],[],[]]) {
         relationsToReturn.push(rels)
     }
 
-    const {chNodes, chToReturn} = await narrowCheckedNodes(frontData[3], availableNodes)
+    const {chNodes, chToReturn} = await narrowCheckedNodes(treeOfNodes[3], availableNodes)
     checkedNodesToReturn.push(chToReturn)
     for(let chNode in chNodes){
         for(let relNode in chNode.relNodes){

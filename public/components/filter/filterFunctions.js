@@ -1,4 +1,5 @@
 import {State} from "../../store/State.js";
+import navigateTo from "../../helpers/navigateTo.js";
 
 async function checkFilter(event) {
     let input
@@ -7,16 +8,26 @@ async function checkFilter(event) {
     else console.log("tagname: " + event.target.tagName)
     input.toggleAttribute("checked")
 
-    const checkBoxParent = event.target.parentElement
-    const ids = []
-    checkBoxParent.querySelectorAll("input").forEach((input) => {
-        if(input.hasAttribute("checked")){
-            ids.push(input.getAttribute("id").substring(9))
-        }
-    })
+    findInBoxNodes(input.id.substring(9)).checked = input.checked
 
-    console.log("ParsedIds: " + ids)
+    navigateTo('/filter')
 }
 
+function findInBoxNodes(id){
+    try {
+        for(let node of State.treeOfNodes){
+            if(node.id === id) return node
+            if(node.hasOwnProperty("children")){
+                for(let child of node.children){
+                    let foundNode = findInBoxNodes(child, id)
+                    if(foundNode) return foundNode
+                }
+            }
+        }
+        throw new Error("No node found with id: " + id)
+    } catch (e) {
+        console.log(e)
+    }
+}
 
 export default checkFilter;

@@ -1,42 +1,46 @@
+import {State} from "../../store/State.js";
+
 async function FilterBox(allNodes, checkedNodes) {
 
-  const nodes = [{
-    id: "patate",
-    title: "Patate",
-    children: [{
-        id: "patate1",
-        title: "Patate1",
-        children: [{
-            id: "patate11",
-            title: "Patate11",
-            children: []
-        },
-        {
-            id: "patate12",
-            title: "Patate12",
-            children: [ {
-                id: "patate121",
-                title: "Patate121"
-            }]
-        }]
-    }]
-  },
-  {
-    id: "patate2",
-    title: "Patate2",
-    children: [{
-        id: "patate21",
-        title: "Patate21",
-        children: [{
-            id: "patate211",
-            title: "Patate211",
-            children: [{
-                id: "patate2111",
-                title: "Patate2111",
-            }]
-        }]
-    }]
-  }]
+  // const nodes = [{
+  //   id: "patate",
+  //   title: "Patate",
+  //   children: [{
+  //       id: "patate1",
+  //       title: "Patate1",
+  //       children: [{
+  //           id: "patate11",
+  //           title: "Patate11",
+  //           children: []
+  //       },
+  //       {
+  //           id: "patate12",
+  //           title: "Patate12",
+  //           children: [ {
+  //               id: "patate121",
+  //               title: "Patate121"
+  //           }]
+  //       }]
+  //   }]
+  // },
+  // {
+  //   id: "patate2",
+  //   title: "Patate2",
+  //   children: [{
+  //       id: "patate21",
+  //       title: "Patate21",
+  //       children: [{
+  //           id: "patate211",
+  //           title: "Patate211",
+  //           children: [{
+  //               id: "patate2111",
+  //               title: "Patate2111",
+  //           }]
+  //       }]
+  //   }]
+  // }]
+
+    const nodes = State.treeOfNodes
 
   let nodeHtmlString = ``
   nodes.forEach(node => {
@@ -85,7 +89,7 @@ function itemRow(node){
     }
 
      let mainRow = `
-          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" checked>
+          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" ${ node.visible? "checked": ""}>
           <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label>
           
           ${ childrenFrame }

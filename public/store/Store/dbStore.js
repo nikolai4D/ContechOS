@@ -36,9 +36,9 @@ function DefTypeNodeRepo(name, kindOfItem, prefix) {
     this.repos = []
 }
 
-function ChildrenNodeRepo(parentId = null){
+function ChildrenNodeRepo(parentId = null, items = []) {
     this.parentId = parentId
-    this.items = null
+    this.items = items
 }
 
 function DefTypeRelRepo(){
@@ -54,14 +54,15 @@ function getLayerIndex(id, mimic) {
     return mimic.findIndex(layer => layer.repos.find(repo => repo.prefix === abbr))
 }
 
-
 async function getDefinitionNodes(stock) {
-    const defTypeRepo = stock.find(layer => layer.name === "configDef")
+    const layer = stock.find(layer => layer.name === "configDef")
+    const defTypeRepo = layer.repos[0]
 
     if (defTypeRepo.repos.length === 0) {
         const defNodes = await queryDefinitions()
         defTypeRepo.repos.push(new ChildrenNodeRepo(null, defNodes))
     }
+    else console.log("defnodes: " + JSON.stringify(defTypeRepo.repos[0]))
     return defTypeRepo.repos[0].items
 }
 
@@ -101,7 +102,7 @@ async function getRelatedRels(id, stock) {
     }
 }
 
-async function queryDefinitions() {
+export async function queryDefinitions() {
     const nodeQuery = JSON.stringify({
         query: `query RooterQueryType($input:QueryInput){
         nodes(itemInput:$input){
@@ -113,10 +114,10 @@ async function queryDefinitions() {
         created
       }
     }`, variables: {
-            input: {layer: 0}
+            input: { defType: "configDef"}
         }
     })
-    const nodes = await graphQLQuery(nodeQuery)
+    const nodes = (await graphQLQuery(nodeQuery)).data.nodes
 
     return nodes
 }
