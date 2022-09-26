@@ -476,19 +476,19 @@ async function Graph(view) {
       .on("contextmenu", rightClicked);
 
     function setColour(d) {
-      if (d.defTypeTitle === "propType") {
+      if (d.defType === "propType") {
         return "#89A7B0";
-      } else if (d.defTypeTitle === "propKey") {
+      } else if (d.defType === "propKey") {
         return "#E9BD60";
-      } else if (d.defTypeTitle === "propVal") {
+      } else if (d.defType === "propVal") {
         return "#C3B65B";
-      } else if (d.defTypeTitle === "configDef") {
+      } else if (d.defType === "configDef") {
         return "#70AA6C";
-      } else if (d.defTypeTitle === "configObj") {
+      } else if (d.defType === "configObj") {
         return "#32BCC3";
-      } else if (d.defTypeTitle === "typeData") {
+      } else if (d.defType === "typeData") {
         return "#E44167";
-      } else if (d.defTypeTitle === "instanceData") {
+      } else if (d.defType === "instanceData") {
         return "#A79587";
       }
     }
