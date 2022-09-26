@@ -91,6 +91,12 @@ TreeNode.prototype.setRels = async function () {
     } )
 }
 
+function getOtherIdInRel(rel, id){
+    if(rel.sourceId === id) return rel.targetId
+    else if (rel.targetId === id) return rel.sourceId
+    else throw new Error("No id found in relation")
+}
+
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
     const visibleNodes = tree.selectedNodesData
     await this.extraFetch()
@@ -99,12 +105,18 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
         (rel.targetId !== this.id && visibleNodes.find(el => el.id === rel.targetId) !== undefined)
     )
 
-    const visRelsIds = visibleRels.map(rel => rel.id)
-    console.log("visRelsIds: " + JSON.stringify(visRelsIds, null, 2))
-    for (let visibleRel of visRelsIds) {
+    for(let visibleRel of visibleRels){
+        const otherNodeId = visibleRel.sourceId === this.id ? visibleRel.targetId : visibleRel.sourceId
+        const otherNode = tree.getNodeById(otherNodeId)
+        await otherNode.extraFetch(tree)
+        let otherChildrenSelectedIds = otherNode.children.filter(othChild => othChild.selected).map(child => child.id)
+
+        if(otherChildrenSelectedIds.length === 0) continue
+
+        console.log("otherChildrenSelectedIds", otherChildrenSelectedIds)
         for(let child of this.children) {
             await child.extraFetch(tree)
-            if (child.rels.find(rel => rel.parentId === visibleRel) === undefined) {
+            if (child.rels.find(rel => rel.parentId === visibleRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
                 console.log("child hidden: " + child.title)
                 child.hidden = true
                 child.selected = false
@@ -120,16 +132,16 @@ TreeNode.prototype.extraFetch = async function (tree,force = false) {
     await this.setRels()
 }
 
-TreeNode.prototype.unHideAll = function(){
+TreeNode.prototype.unHideLineage = function(){
     this.hidden = false
     for(let child of this.children){
-        child.unHideAll()
+        child.unHideLineage()
     }
 }
 
 Tree.prototype.unHideAll = function(){
 for(let node of this.tree){
-        node.unHideAll()
+        node.unHideLineage()
     }
 }
 
