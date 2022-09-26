@@ -3,24 +3,35 @@ import Mutations from "./Mutations.js";
 class Actions {
   constructor() { }
 
-  async GRAPHQL(query) {
+  // async GRAPHQL(query) {
+  //   let response
+  //   try {
+  //     response = await fetch(`/api/graphql`, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //         authorization: sessionStorage.getItem("accessToken"),
+  //       },
+  //       body: query
+  //
+  //     });
+  //   } catch (err) {
+  //     console.log(err);
+  //   }
+  //   return await response.json()
+  // }
 
-    let response
-    try {
-      response = await fetch(`/api/graphql`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          authorization: sessionStorage.getItem("accessToken"),
-        },
-        body: query
-
-      });
-    } catch (err) {
-      console.log(err);
+  async QUERY_NODES_FROM_LAYER (layerIndex){
+    const nodes = {//Todo}
     }
-    return await response.json()
+    return nodes
   }
+
+  async QUERY_FILTER_VIEW_DATA (filterViewData){
+    return [
+        // ToDo nodesForGraph, relationsForGraph, nodesForCheckbox
+    ]
+    }
 
   async CREATE(view, defType, attrs) {
     let defTypeTitle = defType.defTypeTitle;

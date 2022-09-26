@@ -6,12 +6,10 @@ function validateBulkFetch(params
 ) {
     this.defType = params.defType ?? null
     this.parentId = params.parentId ?? null
-    this.targetId = params.targetId ?? null
-    this.sourceId = params.sourceId ?? null
     this.kindOfItem = params.kindOfItem ?? null
     this.title = params.title ?? null
-    this.targetId = params.target ?? null
-    this.sourceId = params.source ?? null
+    this.targetId = params.targetId ?? null
+    this.sourceId = params.sourceId ?? null
     this.from = params.from ?? 0
     this.limit = params.limit ?? 50
     this.defTypes = getPotentialDefTypes(this.defType, this.parentId, this.kindOfItem)
