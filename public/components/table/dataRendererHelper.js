@@ -123,7 +123,7 @@ export async function getDataAsTable(viewName) { return await getTemplateSuper(r
 export function setupToolBar(viewName) {
   document.querySelector("#toolBar").innerHTML = "";
 
-  const toTable = createHtmlElementWithData("button", {}, "View As Table")
+  const toTable = createHtmlElementWithData("button", { "class": "btn" }, "View As Table")
   toTable.innerHTML = "View As Table"
   toTable.addEventListener("click", async () => {
     document.querySelector("#app").innerHTML = "";
@@ -131,7 +131,7 @@ export function setupToolBar(viewName) {
   });
   document.querySelector("#toolBar").appendChild(toTable);
 
-  const toGraph = createHtmlElementWithData("button", {}, "View As Graph")
+  const toGraph = createHtmlElementWithData("button", { "class": "btn" }, "View As Graph")
   toGraph.innerHTML = "View As Graph"
   toGraph.addEventListener("click", async () => {
     document.querySelector("#app").innerHTML = ""
