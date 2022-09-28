@@ -23,6 +23,7 @@ function TreeNode(id, title, layer, children, selected, data){
     this.extraFetched = false
     this.data = data
     this.rels = []
+    this.isViewAllChecked = false
 }
 
 
@@ -74,6 +75,13 @@ TreeNode.prototype.deselectLineage = function(){
     }
 }
 
+TreeNode.prototype.selectChildren = function(){
+    for(let child of this.children){
+        console.log("selecting child: " + child.title)
+        child.selected = true
+    }
+}
+
 Tree.prototype.fructify = function(dbNodes, layer){
     const treeNodes = []
     for(let node of dbNodes){
@@ -98,6 +106,16 @@ function getOtherIdInRel(rel, id){
     if(rel.sourceId === id) return rel.targetId
     else if (rel.targetId === id) return rel.sourceId
     else throw new Error("No id found in relation")
+}
+
+function createPseudoParentRel(parentId, childId){
+    const lineageRel = {
+        sourceId: childId,
+        targetId: parentId,
+        title:"has parent",
+    }
+    console.log("pseudo parent rel created: " + JSON.stringify(lineageRel, null, 2))
+    return lineageRel
 }
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
@@ -162,6 +180,9 @@ Tree.prototype.shake = async function () {
 
                 await node.extraFetch(this)
                 await node.setChildrenVisibility(this)
+                node.children.map (child=> {
+                    if(child.selected) this.visibleRelations.push(createPseudoParentRel(node.id, child.id))
+                })
                 const relevantRels = []
                 node.rels.map(rel => {
                     if(rel.sourceId !== node.id && this.selectedNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
