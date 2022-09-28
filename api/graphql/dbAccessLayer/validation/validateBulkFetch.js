@@ -61,7 +61,7 @@ function getPotentialDefTypes(defType, parentId, kindOfItem) {
         else if (kindOfItem === "relationship") {
             for (let i = 0; i < 4; i++) defTypes.push(
                 voc.layers[i].inString + voc.relationshipTypes.exRel.inString,
-                voc.layers[i].inString + voc.relationshipTypes.exRel.inString)
+                voc.layers[i].inString + voc.relationshipTypes.inRel.inString)
         }
         else if (kindOfItem === "property") defTypes.push(
             voc.layers[4].inString + voc.propertyTypes.pType.inString,
@@ -76,14 +76,13 @@ function getPotentialDefTypes(defType, parentId, kindOfItem) {
             defTypes.push(
                 voc.layers[i].inString,
                 voc.layers[i].inString + voc.relationshipTypes.exRel.inString,
-                voc.layers[i].inString + voc.relationshipTypes.exRel.inString)
+                voc.layers[i].inString + voc.relationshipTypes.inRel.inString)
         }
         defTypes.push(
             voc.layers[4].inString + voc.propertyTypes.pType.inString,
             voc.layers[4].inString + voc.propertyTypes.pValue.inString,
             voc.layers[4].inString + voc.propertyTypes.pKey.inString)
     }
-
     return defTypes
 }
 
