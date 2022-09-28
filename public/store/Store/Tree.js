@@ -94,9 +94,12 @@ Tree.prototype.fructify = function(dbNodes, layer){
 TreeNode.prototype.setRels = async function () {
     const relations = await queryRelations(this.id)
     relations.map( rel => {
-        if(this.rels.find(el => el.id === rel.id) === undefined) this.rels.push(rel)
-        if(State.relations.find(el => el.id === rel.id) === undefined) State.relations.push(rel)
-    } )
+        const stateRel = State.relations.find(stateRel => stateRel.id === rel.id)
+        if (stateRel === undefined) {
+            State.relations.push(rel)
+            this.rels.push(rel)
+        } else if (this.rels.find(rel => rel.id === stateRel.id) === undefined) this.rels.push(stateRel)
+    })
 }
 
 function getOtherIdInRel(rel, id){
