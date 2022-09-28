@@ -2,14 +2,14 @@ import Graph from "../components/graph/Graph.js";
 import FilterBox from "../components/filter/FilterBox.js";
 
 import Actions from "../store/Actions.js";
-import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
 import {State} from "../store/State.js";
 
 export default class Filter {
     constructor() {
-        document.title = "Props";
-        this.returnRenderFunc = getDataAsGraph;
-        this.view = "props";
+        document.title = "Filter";
+        this.returnRenderFunc = renderDataAsGraph;
+        this.view = "filter";
         this.ViewHasRenderControl = true;
         sessionStorage.setItem("checkedBoxes",[[],[],[],[]])
     }
@@ -23,12 +23,12 @@ export default class Filter {
             return rel
         })
 
-        sessionStorage.setItem("props", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+        sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
 
-        const mainAppNodes = await this.returnRenderFunc("props")
+        const mainAppNodes = await this.returnRenderFunc("filter")
         const filterBoxNodes = await FilterBox()
         return [mainAppNodes, filterBoxNodes]
     }
-    async setupToolBar() { return setupToolBar("props") }
+    async setupToolBar() { return setupToolBar("filter",await FilterBox()) }
 
 }

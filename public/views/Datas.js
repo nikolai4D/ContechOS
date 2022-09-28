@@ -1,15 +1,15 @@
-import Graph from "../components/graph/Graph.js";
-import FilterBox from "../components/filter/FilterBox.js";
-
 import Actions from "../store/Actions.js";
-import { getDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
 
 export default class Datas {
   constructor() {
     document.title = "Data";
-    this.returnRenderFunc = getDataAsGraph;
+    this.returnRenderFunc = renderDataAsGraph;
     this.view = "datas";
   }
-  async getTemplate() { return await this.returnRenderFunc("datas") }
+  async getTemplate() { 
+    await Actions.GETALL("datas")
+    return await this.returnRenderFunc("datas")
+}
   async setupToolBar() { return setupToolBar("datas") }
 }
