@@ -37,11 +37,15 @@ async function FilterBox() {
 function itemRow(node){
     if(node.hidden) return ""
 
-  let childrenFrame = `<br/>`
+    let childrenFrame = `<br/>`
 
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
-          <ul>
+            <ul>
+            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}" data-function="checkAll" ${ node.isViewAllChecked? "checked": ""}>
+            <label class="form-check-label" for="all_${node.id}"> All</label>
+            <br/>
+            
           `
       for(let child of node.children){
             childrenFrame += itemRow(child)

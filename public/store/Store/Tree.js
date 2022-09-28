@@ -23,6 +23,7 @@ function TreeNode(id, title, layer, children, selected, data){
     this.extraFetched = false
     this.data = data
     this.rels = []
+    this.isViewAllChecked = false
 }
 
 
@@ -71,6 +72,13 @@ TreeNode.prototype.deselectLineage = function(){
         for (let child of this.children) {
             child.deselectLineage()
         }
+    }
+}
+
+TreeNode.prototype.selectChildren = function(){
+    for(let child of this.children){
+        console.log("selecting child: " + child.title)
+        child.selected = true
     }
 }
 
