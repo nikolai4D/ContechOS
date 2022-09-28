@@ -1,9 +1,10 @@
-import checkFilter from "../components/filter/filterFunctions.js";
+import checkFilter, {checkAll} from "../components/filter/filterFunctions.js";
 
 export default async function (demandedRoute, event) {
     const routes = [
 
-        { path: 'checkFilter', request: checkFilter }
+        { path: 'checkFilter', request: checkFilter },
+        { path: 'checkAll', request: checkAll }
 
     ];
 
