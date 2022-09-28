@@ -1,5 +1,4 @@
 import Graph from "../graph/Graph.js";
-import Actions from "../../store/Actions.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
@@ -55,14 +54,8 @@ function generateDataTable(tableData, idName, sortFunc) {
   return { dataTable: tableRootNode, headerRow: headerNodes };
 }
 
-export async function getTemplateSuper(renderFunc, viewName) {
-  await Actions.GETALL(viewName)
-  return await renderFunc(viewName)
-}
-
 export async function renderDataAsGraph(viewName) {
   const graphView = await Graph(viewName)
-  document.querySelector("#app").appendChild(graphView);
   return graphView;
 }
 
@@ -84,9 +77,9 @@ export async function renderDataAsTable(viewName,
       thNode.addEventListener("click", async () => {
         console.log(clickedHeader === thNode.innerHTML)
         if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
-          await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true)
+          setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true))
         } else {
-          await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false)
+          setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false))
         }
       });
     }
@@ -99,35 +92,31 @@ export async function renderDataAsTable(viewName,
     for (let thNode of headerRow) { // await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
       thNode.addEventListener("click", async () => {
         if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
-          await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortReversedFunc(thNode.innerHTML), thNode.innerHTML, true)
+          setAppDivOnCallback(await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortReversedFunc(thNode.innerHTML), thNode.innerHTML, true))
         } else {
-          await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML), thNode.innerHTML, false)
+          setAppDivOnCallback(await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML), thNode.innerHTML, false))
         }
       });
     }
     relTableDiv.appendChild(dataTable)
   }
 
-  document.querySelector("#app").innerHTML = ""
-  const containerDiv = createHtmlElementWithData('div', { "id": "nodeTableContainerDiv" })
-  containerDiv.appendChild(nodeTableDiv);
-  containerDiv.appendChild(relTableDiv);
-  document.querySelector("#app").appendChild(containerDiv);
-  return containerDiv;
-
+  const setAppDivOnCallback = function(tableDivs){
+    document.querySelector("#app").innerHTML = ""
+    document.querySelector("#app").appendChild(containerDiv[0]);
+    document.querySelector("#app").appendChild(containerDiv[1]);
+  }
+  return [nodeTableDiv,relTableDiv];
 }
 
-export async function getDataAsGraph(viewName) { return await getTemplateSuper(renderDataAsGraph, viewName); }
-export async function getDataAsTable(viewName) { return await getTemplateSuper(renderDataAsTable, viewName); }
-
-export function setupToolBar(viewName) {
+export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
 
   const toTable = createHtmlElementWithData("button", { "class": "btn" }, "View As Table")
   toTable.innerHTML = "View As Table"
   toTable.addEventListener("click", async () => {
-    document.querySelector("#app").innerHTML = "";
-    await getDataAsTable(viewName)
+    document.querySelector("#app").innerHTML = ""
+    appendChildsToSelector("#app",await renderDataAsTable(viewName))
   });
   document.querySelector("#toolBar").appendChild(toTable);
 
@@ -135,7 +124,10 @@ export function setupToolBar(viewName) {
   toGraph.innerHTML = "View As Graph"
   toGraph.addEventListener("click", async () => {
     document.querySelector("#app").innerHTML = ""
-    await getDataAsGraph(viewName)
+    appendChildsToSelector("#app",await renderDataAsGraph(viewName))
+    if(optionalAdditionalNodes !== undefined){
+      appendChildsToSelector("#app", optionalAdditionalNodes)
+    }
   });
   document.querySelector("#toolBar").appendChild(toGraph);
 }
@@ -146,4 +138,14 @@ function createHtmlElementWithData(elementName, attributeData = {}) {
     newElement.setAttribute(key, value)
   }
   return newElement
+}
+
+export function appendChildsToSelector(selector, nodes){
+  if(nodes.constructor === Array){
+    for (const node of nodes) {
+      document.querySelector(selector).appendChild(node);
+    }
+  }else{
+    document.querySelector(selector).appendChild(nodes)
+  }
 }
