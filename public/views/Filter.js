@@ -23,7 +23,7 @@ export default class Filter {
             return rel
         })
 
-        sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+        sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.setSelectedNodesData() , rels: tree.visibleRelations }]));
 
         const mainAppNodes = await this.returnRenderFunc("filter")
         const filterBoxNodes = await FilterBox()

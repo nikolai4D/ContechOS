@@ -77,7 +77,6 @@ TreeNode.prototype.deselectLineage = function(){
 
 TreeNode.prototype.selectChildren = function(){
     for(let child of this.children){
-        console.log("selecting child: " + child.title)
         child.selected = true
     }
 }
@@ -132,11 +131,9 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
 
         if(otherChildrenSelectedIds.length === 0) continue
 
-        console.log("otherChildrenSelectedIds", otherChildrenSelectedIds)
         for(let child of this.children) {
             await child.extraFetch(tree)
             if (child.rels.find(rel => rel.parentId === visibleRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
-                console.log("child hidden: " + child.title)
                 child.hidden = true
                 child.selected = false
             }
