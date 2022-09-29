@@ -111,6 +111,7 @@ export async function renderDataAsTable(viewName,
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
+<<<<<<< HEAD
   const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
   const switchInput = createHtmlElementWithData("input", {
     "class": "form-check-input",
@@ -120,6 +121,14 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
     "class": "form-check-label",
     "for": "flexSwitchCheckDefault",
   });
+=======
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch" })
+  const switchInput = createHtmlElementWithData("input", { "class": "form-check-input",
+    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked":""})
+  const switchLabel = createHtmlElementWithData("label", { "class": "form-check-label",
+    "for": "flexSwitchCheckDefault",});
+  switchLabel.innerHTML = "Table/Graph"
+>>>>>>> 0f0d5f511b56a58a712d1ce947c9916b6248d925
   switchInput.addEventListener("click", async (event, state) => {
     if (event.target.checked) {
       document.querySelector("#app").innerHTML = ""
