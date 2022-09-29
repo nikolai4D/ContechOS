@@ -109,13 +109,11 @@ function getOtherIdInRel(rel, id){
 }
 
 function createPseudoParentRel(parentId, childId){
-    const lineageRel = {
+    return {
         sourceId: childId,
         targetId: parentId,
         title:"has parent",
     }
-    console.log("pseudo parent rel created: " + JSON.stringify(lineageRel, null, 2))
-    return lineageRel
 }
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
