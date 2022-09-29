@@ -23,10 +23,10 @@ export default class Navbar {
             <a class="nav-link" href="#"><</a>
           </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-link="/datas">Type/Data</a>
+              <a class="nav-link" href="#" data-link="/datas">Type/Instance</a>
           </li>
           <li class="nav-item">
-            <a class="nav-link" href="#"><</a>
+            <a class="nav-link" href="#">|</a>
           </li>
             <li class="nav-item">
               <a class="nav-link" href="#" data-link="/filter">Filter</a>
