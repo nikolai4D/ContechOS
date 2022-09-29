@@ -111,25 +111,27 @@ export async function renderDataAsTable(viewName,
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
-
-  const toTable = createHtmlElementWithData("button", { "class": "btn" }, "View As Table")
-  toTable.innerHTML = "View As Table"
-  toTable.addEventListener("click", async () => {
-    document.querySelector("#app").innerHTML = ""
-    appendChildsToSelector("#app",await renderDataAsTable(viewName))
-  });
-  document.querySelector("#toolBar").appendChild(toTable);
-
-  const toGraph = createHtmlElementWithData("button", { "class": "btn" }, "View As Graph")
-  toGraph.innerHTML = "View As Graph"
-  toGraph.addEventListener("click", async () => {
-    document.querySelector("#app").innerHTML = ""
-    appendChildsToSelector("#app",await renderDataAsGraph(viewName))
-    if(optionalAdditionalNodes !== undefined){
-      appendChildsToSelector("#app", optionalAdditionalNodes)
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch" })
+  const switchInput = createHtmlElementWithData("input", { "class": "form-check-input",
+    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked":""})
+  const switchLabel = createHtmlElementWithData("label", { "class": "form-check-label",
+    "for": "flexSwitchCheckDefault",});
+  switchLabel.innerHTML = "Table/Graph"
+  switchInput.addEventListener("click", async (event, state) => {
+    if(event.target.checked){
+      document.querySelector("#app").innerHTML = ""
+      appendChildsToSelector("#app",await renderDataAsGraph(viewName))
+      if(optionalAdditionalNodes !== undefined){
+        appendChildsToSelector("#app", optionalAdditionalNodes)
+      }
+    } else {
+      document.querySelector("#app").innerHTML = ""
+      appendChildsToSelector("#app",await renderDataAsTable(viewName))
     }
   });
-  document.querySelector("#toolBar").appendChild(toGraph);
+  switchDiv.appendChild(switchInput)
+  switchDiv.appendChild(switchLabel)
+  document.querySelector("#toolBar").appendChild(switchDiv);
 }
 
 function createHtmlElementWithData(elementName, attributeData = {}) {
