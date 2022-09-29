@@ -2,13 +2,13 @@ import {State} from "../State.js";
 import {queryDefinitions, queryNodeChildren, queryRelations} from "./dbStore.js";
 
 export function Tree() {
-    this.tree = null
+    this.tree = []
     this.visibleRelations = []
     this.selectedNodesData = []
 }
 
 Tree.prototype.ensureInit = async function () {
-    if(this.tree === null) {
+    if(this.tree.length === 0) {
     const defNodes = await queryDefinitions()
     this.tree = this.fructify(defNodes, 0)}
 }
