@@ -12,7 +12,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     if (e.target.getAttribute("data-link") === "/logout") {
       e.preventDefault();
       sessionStorage.clear();
-      fetch("/api/logout");
+      await fetch("/api/logout");
       navigateTo("/login");
       //location.reload();
       console.log("Logout");
@@ -24,27 +24,24 @@ document.addEventListener("DOMContentLoaded", async () => {
       const loginForm = document.getElementById("login-form");
       const email = loginForm.email.value;
       const pwd = loginForm.pwd.value;
-      auth(email, pwd);
+      await auth(email, pwd);
     }
-
-    if (e.target.getAttribute("data-function") === "/register") {
+    else if (e.target.getAttribute("data-function") === "/register") {
       console.log("Register Function");
       e.preventDefault();
       const registerForm = document.getElementById("register-form");
       const email = registerForm.email.value;
       const pwd = registerForm.pwd.value;
       const code = registerForm.code.value;
-      register(email, pwd, code);
+      await register(email, pwd, code);
     }
-
-
     else if (e.target.matches("[data-function]")) {
       // e.preventDefault();
       await functionRouter(e.target.getAttribute("data-function"), e)
     }
 
 
-    if (e.target.getAttribute("data-view") == "/register") {
+    if (e.target.getAttribute("data-view") === "/register") {
       console.log("Register View");
       e.preventDefault();
       navigateTo(e.target.getAttribute("data-view"));
