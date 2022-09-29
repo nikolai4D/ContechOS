@@ -14,7 +14,6 @@ async function checkFilter(event) {
     treeNode.selected? treeNode.deselectLineage() : treeNode.selected = true
 
     await tree.shake()
-    console.log(State.graphObject)
 
     var div = document.querySelector('#filter-container-box');
     if (div) {
@@ -52,7 +51,21 @@ export async function checkAll(event) {
 
     await tree.shake()
 
-    navigateTo('/filter')
+    var div = document.querySelector('#filter-container-box');
+    if (div) {
+        div.parentNode.removeChild(div);
+    }
+    await tree.ensureInit()
+    tree.visibleRelations.map(rel => {
+        rel.source = rel.sourceId
+        rel.target = rel.targetId
+        return rel
+    })
+    await sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+    document.querySelector("#app").innerHTML = ""
+    const mainAppNodes = await Graph('filter')
+    const filterBoxNodes = await FilterBox()
+    appendChildsToSelector("#app", [mainAppNodes,filterBoxNodes])
 }
 
 function getInputFromEvent(event){
