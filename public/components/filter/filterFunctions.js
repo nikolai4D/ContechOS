@@ -28,6 +28,8 @@ export async function checkAll(event) {
     } else {
         console.log("uncheck all")
         treeNode.deselectLineage()
+        treeNode.selected = true
+
     }
 
     await tree.shake()
