@@ -41,7 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
 
-    if (e.target.getAttribute("data-view") === "/register") {
+    if (e.target.getAttribute("data-view") == "/register") {
       console.log("Register View");
       e.preventDefault();
       navigateTo(e.target.getAttribute("data-view"));
