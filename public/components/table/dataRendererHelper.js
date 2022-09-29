@@ -101,31 +101,35 @@ export async function renderDataAsTable(viewName,
     relTableDiv.appendChild(dataTable)
   }
 
-  const setAppDivOnCallback = function(tableDivs){
+  const setAppDivOnCallback = function (tableDivs) {
     document.querySelector("#app").innerHTML = ""
     document.querySelector("#app").appendChild(containerDiv[0]);
     document.querySelector("#app").appendChild(containerDiv[1]);
   }
-  return [nodeTableDiv,relTableDiv];
+  return [nodeTableDiv, relTableDiv];
 }
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
   const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
-  const switchInput = createHtmlElementWithData("input", { "class": "form-check-input",
-    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked":""})
-  const switchLabel = createHtmlElementWithData("label", { "class": "form-check-label",
-    "for": "flexSwitchCheckDefault",});
+  const switchInput = createHtmlElementWithData("input", {
+    "class": "form-check-input",
+    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked": ""
+  })
+  const switchLabel = createHtmlElementWithData("label", {
+    "class": "form-check-label",
+    "for": "flexSwitchCheckDefault",
+  });
   switchInput.addEventListener("click", async (event, state) => {
-    if(event.target.checked){
+    if (event.target.checked) {
       document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app",await renderDataAsGraph(viewName))
-      if(optionalAdditionalNodes !== undefined){
+      appendChildsToSelector("#app", await renderDataAsGraph(viewName))
+      if (optionalAdditionalNodes !== undefined) {
         appendChildsToSelector("#app", optionalAdditionalNodes)
       }
     } else {
       document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app",await renderDataAsTable(viewName))
+      appendChildsToSelector("#app", await renderDataAsTable(viewName))
     }
   });
   switchDiv.appendChild(switchInput)
@@ -141,12 +145,12 @@ function createHtmlElementWithData(elementName, attributeData = {}) {
   return newElement
 }
 
-export function appendChildsToSelector(selector, nodes){
-  if(nodes.constructor === Array){
+export function appendChildsToSelector(selector, nodes) {
+  if (nodes.constructor === Array) {
     for (const node of nodes) {
       document.querySelector(selector).appendChild(node);
     }
-  }else{
+  } else {
     document.querySelector(selector).appendChild(nodes)
   }
 }
