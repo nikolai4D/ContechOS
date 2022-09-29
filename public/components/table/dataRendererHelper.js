@@ -5,15 +5,15 @@ function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName)
 function propFixedSortReversedFunc(propName) { return (a, b) => sortFunc(a, b, propName) * -1 }
 
 function generateDataTable(tableData, idName, sortFunc) {
-  var max = Object.keys(tableData[0]).length
-  var largestObj = tableData[0];
+  let max = Object.keys(tableData[0]).length;
+  let largestObj = tableData[0];
   tableData.forEach(i => {
     if (Object.keys(i).length > max) {
       max = Object.keys(i).length;
       largestObj = i;
     }
   });
-  var sortedObjectList = Object.values(tableData).sort(sortFunc);
+  const sortedObjectList = Object.values(tableData).sort(sortFunc);
   let headerNodes = []
   const tableIdHeaderNode = createHtmlElementWithData("th", { "scope": "col", "id": idName + "id" })
   tableIdHeaderNode.innerHTML = "id"
@@ -111,12 +111,11 @@ export async function renderDataAsTable(viewName,
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch" })
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
   const switchInput = createHtmlElementWithData("input", { "class": "form-check-input",
     "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked":""})
   const switchLabel = createHtmlElementWithData("label", { "class": "form-check-label",
     "for": "flexSwitchCheckDefault",});
-  switchLabel.innerHTML = "Table/Graph"
   switchInput.addEventListener("click", async (event, state) => {
     if(event.target.checked){
       document.querySelector("#app").innerHTML = ""
