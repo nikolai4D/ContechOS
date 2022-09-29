@@ -1,3 +1,4 @@
+import { State } from "../../store/State.js";
 import Graph from "../graph/Graph.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
@@ -56,6 +57,8 @@ function generateDataTable(tableData, idName, sortFunc) {
 
 export async function renderDataAsGraph(viewName) {
   const graphView = await Graph(viewName)
+  //State.graphObject = graphView
+  //return graphView['graphNode'];
   return graphView;
 }
 

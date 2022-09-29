@@ -31,6 +31,10 @@ async function Graph(view) {
   rels = graphJsonData[0].rels;
 
   const updateData = async (view) => {
+    let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
+
+    nodes = graphJsonData[0].nodes;
+    rels = graphJsonData[0].rels;
     // Preserve position of nodes/rels
     if (nodes !== undefined) {
       const old = new Map(nodes.map((d) => [d.id, d]));
@@ -593,6 +597,7 @@ async function Graph(view) {
   await render(view);
 
 
+  //return { graphNode: svg.node(), updateGraphFunc: render};
   return svg.node();
 }
 export default Graph;

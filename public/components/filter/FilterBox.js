@@ -30,6 +30,7 @@ async function FilterBox() {
 
   let filterDOM = document.createElement("div");
   filterDOM.className = "filter-container"
+  filterDOM.id = "filter-container-box"
   filterDOM.innerHTML = htmlString;
   return filterDOM;
 }
