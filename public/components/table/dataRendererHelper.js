@@ -21,7 +21,11 @@ function generateDataTable(tableData, idName, sortFunc) {
   const tableHeaderRowNode = createHtmlElementWithData("tr")
   tableHeaderRowNode.appendChild(tableIdHeaderNode)
   const tableRootNode = createHtmlElementWithData("table", { "class": "table" })
+  let i = 0;
   for (let header in largestObj) {
+    if(i === 3) {
+      break;
+    }
     if (header === "id") {
       continue;
     }
@@ -29,6 +33,7 @@ function generateDataTable(tableData, idName, sortFunc) {
     newHeaderElement.innerHTML = header
     tableHeaderRowNode.appendChild(newHeaderElement)
     headerNodes.push(newHeaderElement)
+    i = i + 1;
   }
   let tableHeaderTheadNode = createHtmlElementWithData("thead")
   tableHeaderTheadNode.appendChild(tableHeaderRowNode)
@@ -86,7 +91,7 @@ export async function renderDataAsTable(viewName,
     nodeTableDiv.appendChild(dataTable)
   }
 
-  const relTableDiv = createHtmlElementWithData('div', { "id": "relTableDivName" })
+  /*const relTableDiv = createHtmlElementWithData('div', { "id": "relTableDivName" })
   {
     let { dataTable, headerRow } = await generateDataTable(rels, "rels", relsTableSortFunc)
     for (let thNode of headerRow) { // await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
@@ -99,14 +104,14 @@ export async function renderDataAsTable(viewName,
       });
     }
     relTableDiv.appendChild(dataTable)
-  }
+  }*/
 
   const setAppDivOnCallback = function(tableDivs){
     document.querySelector("#app").innerHTML = ""
-    document.querySelector("#app").appendChild(containerDiv[0]);
-    document.querySelector("#app").appendChild(containerDiv[1]);
+    document.querySelector("#app").appendChild(tableDivs[0]);
+   // document.querySelector("#app").appendChild(tableDivs[1]);
   }
-  return [nodeTableDiv,relTableDiv];
+  return [nodeTableDiv]//,relTableDiv];
 }
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
