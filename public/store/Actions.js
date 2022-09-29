@@ -47,6 +47,7 @@ class Actions {
       });
       const recordJson = await record.json();
       recordJson.defTypeTitle = defType.defTypeTitle;
+      recordJson.defType = defType.defTypeTitle;
       delete recordJson.created;
       delete recordJson.updated;
 
