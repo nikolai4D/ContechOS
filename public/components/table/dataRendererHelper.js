@@ -117,7 +117,6 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   const switchLabel = createHtmlElementWithData("label", { "class": "form-check-label",
     "for": "flexSwitchCheckDefault",});
   switchLabel.innerHTML = "Table/Graph"
-
   switchInput.addEventListener("click", async (event, state) => {
     if(event.target.checked){
       document.querySelector("#app").innerHTML = ""
