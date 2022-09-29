@@ -101,6 +101,10 @@ TreeNode.prototype.setRels = async function () {
     })
 }
 
+Tree.prototype.trimRelsFromVisibleRels = function(tree){
+
+}
+
 function getOtherIdInRel(rel, id){
     if(rel.sourceId === id) return rel.targetId
     else if (rel.targetId === id) return rel.sourceId
@@ -136,6 +140,7 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
             if (child.rels.find(rel => rel.parentId === visibleRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
                 child.hidden = true
                 child.selected = false
+                // tree.visibleRelations = tree.visibleRelations.filter(el => el.target !== child.id && el.source !== child.id)
             }
         }
     }
@@ -191,6 +196,15 @@ Tree.prototype.shake = async function () {
     }
 
     this.setSelectedNodesData()
+    this.trimVisibleRelations()
+}
+
+Tree.prototype.trimVisibleRelations = function(){
+    this.visibleRelations = this.visibleRelations.filter(rel => {
+        const source = this.selectedNodesData.find(el => el.id === rel.sourceId)
+        const target = this.selectedNodesData.find(el => el.id === rel.targetId)
+        return source !== undefined && target !== undefined
+    })
 }
 
 TreeNode.prototype.overview = function(){
