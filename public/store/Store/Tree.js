@@ -69,6 +69,7 @@ Tree.prototype.setSelectedNodesData = function(){
 TreeNode.prototype.deselectLineage = function(){
     if(this.selected === true) {
         this.selected = false
+        this.isViewAllChecked = false
         for (let child of this.children) {
             child.deselectLineage()
         }
