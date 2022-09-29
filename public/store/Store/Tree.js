@@ -189,6 +189,8 @@ Tree.prototype.shake = async function () {
         nodesOnThisLayer = nodesOnNextLayer
         nodesOnNextLayer = []
     }
+
+    this.setSelectedNodesData()
 }
 
 TreeNode.prototype.overview = function(){
