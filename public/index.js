@@ -3,6 +3,7 @@ import navigateTo from "./helpers/navigateTo.js";
 import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
+import functionRouter from "./helpers/functionRouter.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -35,6 +36,13 @@ document.addEventListener("DOMContentLoaded", async () => {
       const code = registerForm.code.value;
       register(email, pwd, code);
     }
+
+
+    else if (e.target.matches("[data-function]")) {
+      // e.preventDefault();
+      await functionRouter(e.target.getAttribute("data-function"), e)
+    }
+
 
     if (e.target.getAttribute("data-view") == "/register") {
       console.log("Register View");
@@ -87,4 +95,5 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleToken(sessionStorage.getItem("accessToken"));
   }
 });
+
 window.addEventListener("popstate", router);

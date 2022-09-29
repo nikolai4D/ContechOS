@@ -20,6 +20,8 @@ router.post("/create", async (req, res) => {
     return res.statusCode;
   }
 
+  console.log("instanceData props: " + JSON.stringify(props, null, 2))
+
   //check if parentId exists
   if (!(await helpers.parentIdExist(routerType, parentId, res))) {
     return res.statusCode;
