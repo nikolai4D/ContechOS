@@ -129,7 +129,15 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
       }
     } else {
       document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app", await renderDataAsTable(viewName))
+      const newContainerDiv = createHtmlElementWithData("div", {"class": "col-md-12"})
+      const rowDiv = createHtmlElementWithData("div", {"class": "row"})
+      const dataTableNode = await renderDataAsTable(viewName)
+      dataTableNode[0].className = "col-md-8"
+      optionalAdditionalNodes.className = "col-md-4"
+      rowDiv.appendChild(optionalAdditionalNodes)
+      rowDiv.appendChild(dataTableNode[0])
+      newContainerDiv.appendChild(rowDiv)
+      appendChildsToSelector("#app",newContainerDiv)
     }
   });
   switchDiv.appendChild(switchInput)
