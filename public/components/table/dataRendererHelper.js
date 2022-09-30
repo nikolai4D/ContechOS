@@ -6,15 +6,15 @@ function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName)
 function propFixedSortReversedFunc(propName) { return (a, b) => sortFunc(a, b, propName) * -1 }
 
 function generateDataTable(tableData, idName, sortFunc) {
-  var max = Object.keys(tableData[0]).length
-  var largestObj = tableData[0];
+  let max = Object.keys(tableData[0]).length;
+  let largestObj = tableData[0];
   tableData.forEach(i => {
     if (Object.keys(i).length > max) {
       max = Object.keys(i).length;
       largestObj = i;
     }
   });
-  var sortedObjectList = Object.values(tableData).sort(sortFunc);
+  const sortedObjectList = Object.values(tableData).sort(sortFunc);
   let headerNodes = []
   const tableIdHeaderNode = createHtmlElementWithData("th", { "scope": "col", "id": idName + "id" })
   tableIdHeaderNode.innerHTML = "id"
@@ -22,7 +22,11 @@ function generateDataTable(tableData, idName, sortFunc) {
   const tableHeaderRowNode = createHtmlElementWithData("tr")
   tableHeaderRowNode.appendChild(tableIdHeaderNode)
   const tableRootNode = createHtmlElementWithData("table", { "class": "table" })
+  let i = 0;
   for (let header in largestObj) {
+    if(i === 3) {
+      break;
+    }
     if (header === "id") {
       continue;
     }
@@ -30,6 +34,7 @@ function generateDataTable(tableData, idName, sortFunc) {
     newHeaderElement.innerHTML = header
     tableHeaderRowNode.appendChild(newHeaderElement)
     headerNodes.push(newHeaderElement)
+    i = i + 1;
   }
   let tableHeaderTheadNode = createHtmlElementWithData("thead")
   tableHeaderTheadNode.appendChild(tableHeaderRowNode)
@@ -89,7 +94,7 @@ export async function renderDataAsTable(viewName,
     nodeTableDiv.appendChild(dataTable)
   }
 
-  const relTableDiv = createHtmlElementWithData('div', { "id": "relTableDivName" })
+  /*const relTableDiv = createHtmlElementWithData('div', { "id": "relTableDivName" })
   {
     let { dataTable, headerRow } = await generateDataTable(rels, "rels", relsTableSortFunc)
     for (let thNode of headerRow) { // await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
@@ -102,34 +107,52 @@ export async function renderDataAsTable(viewName,
       });
     }
     relTableDiv.appendChild(dataTable)
-  }
+  }*/
 
-  const setAppDivOnCallback = function(tableDivs){
-    document.querySelector("#app").innerHTML = ""
-    document.querySelector("#app").appendChild(containerDiv[0]);
-    document.querySelector("#app").appendChild(containerDiv[1]);
+  const setAppDivOnCallback = function (tableDivs) {
+    document.querySelector("#tableContainerDiv").innerHTML = ""
+    document.querySelector("#tableContainerDiv").appendChild(tableDivs[0]);
+   // document.querySelector("#app").appendChild(tableDivs[1]);
   }
-  return [nodeTableDiv,relTableDiv];
+  return [nodeTableDiv]//,relTableDiv];
 }
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch" })
-  const switchInput = createHtmlElementWithData("input", { "class": "form-check-input",
-    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked":""})
-  const switchLabel = createHtmlElementWithData("label", { "class": "form-check-label",
-    "for": "flexSwitchCheckDefault",});
-  switchLabel.innerHTML = "Table/Graph"
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
+  const switchInput = createHtmlElementWithData("input", {
+    "class": "form-check-input",
+    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked": ""
+  })
+  const switchLabel = createHtmlElementWithData("label", {
+    "class": "form-check-label",
+    "for": "flexSwitchCheckDefault",
+  });
   switchInput.addEventListener("click", async (event, state) => {
-    if(event.target.checked){
+    if (event.target.checked) {
       document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app",await renderDataAsGraph(viewName))
-      if(optionalAdditionalNodes !== undefined){
+      appendChildsToSelector("#app", await renderDataAsGraph(viewName))
+      if (optionalAdditionalNodes !== undefined) {
         appendChildsToSelector("#app", optionalAdditionalNodes)
       }
     } else {
       document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app",await renderDataAsTable(viewName))
+      const tableContainerDiv = createHtmlElementWithData("div", {"id": "tableContainerDiv"})
+      if (optionalAdditionalNodes !== undefined) {
+        const newContainerDiv = createHtmlElementWithData("div", {"class": "col-md-12"})
+        const rowDiv = createHtmlElementWithData("div", {"class": "row"})
+        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
+        const dataTableNode = createHtmlElementWithData("div", {"class": "col-md-8"})
+        dataTableNode.appendChild(tableContainerDiv)
+        optionalAdditionalNodes.className = "col-md-4"
+        rowDiv.appendChild(optionalAdditionalNodes)
+        rowDiv.appendChild(dataTableNode)
+        newContainerDiv.appendChild(rowDiv)
+        appendChildsToSelector("#app",rowDiv)
+      } else  {
+        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
+        appendChildsToSelector("#app", tableContainerDiv)
+      }
     }
   });
   switchDiv.appendChild(switchInput)
@@ -145,12 +168,12 @@ function createHtmlElementWithData(elementName, attributeData = {}) {
   return newElement
 }
 
-export function appendChildsToSelector(selector, nodes){
-  if(nodes.constructor === Array){
+export function appendChildsToSelector(selector, nodes) {
+  if (nodes.constructor === Array) {
     for (const node of nodes) {
       document.querySelector(selector).appendChild(node);
     }
-  }else{
+  } else {
     document.querySelector(selector).appendChild(nodes)
   }
 }

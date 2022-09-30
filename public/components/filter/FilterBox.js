@@ -2,10 +2,11 @@ import {State} from "../../store/State.js";
 
 async function FilterBox() {
 
-  let nodes = State.treeOfNodes.tree
+  let tree = State.treeOfNodes.tree
+    await State.treeOfNodes.ensureInit()
 
   let nodeHtmlString = ``
-  nodes.forEach(node => {
+  tree.forEach(node => {
         nodeHtmlString += itemRow(node)
       }
   )
