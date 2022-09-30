@@ -14,7 +14,7 @@ async function getItems(params) {
         }
         else {
             let bfData = new validateBulkFetch(params)
-            requestedItems = getBulk(bfData.defTypes, bfData.limit, bfData.from, bfData.filterFunction, bfData.filterParams)
+            requestedItems = getBulk(bfData.defTypes, -1, bfData.from, bfData.filterFunction, bfData.filterParams)
         }
 
         return requestedItems
