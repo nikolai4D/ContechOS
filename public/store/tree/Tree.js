@@ -1,5 +1,5 @@
 import {State} from "../State.js";
-import {queryDefinitions, queryNodeChildren, queryRelations} from "./dbStore.js";
+import {queryDefinitions, queryNodeChildren, queryRelations} from "./treeQueries.js";
 
 export function Tree() {
     this.tree = []
