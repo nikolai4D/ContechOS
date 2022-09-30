@@ -101,10 +101,6 @@ TreeNode.prototype.setRels = async function () {
     })
 }
 
-Tree.prototype.trimRelsFromVisibleRels = function(tree){
-
-}
-
 function getOtherIdInRel(rel, id){
     if(rel.sourceId === id) return rel.targetId
     else if (rel.targetId === id) return rel.sourceId
