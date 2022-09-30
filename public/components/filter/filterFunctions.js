@@ -23,9 +23,13 @@ export async function checkAll(event) {
     const treeNode = tree.getNodeById(input.id.substring(4))
     treeNode.isViewAllChecked = !treeNode.isViewAllChecked
     if (treeNode.isViewAllChecked) {
+        console.log("check all")
         treeNode.selectChildren()
     } else {
+        console.log("uncheck all")
         treeNode.deselectLineage()
+        treeNode.selected = true
+
     }
 
     await tree.shake()
