@@ -18,6 +18,8 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
+import { FilterBox} from "../filter/FilterBox.js"
+import { triggerTreeGetHtml } from "../filter/FilterBox.js"
 
 async function Graph(view) {
   State.view = view;
@@ -439,6 +441,7 @@ async function Graph(view) {
       .style("font-size", styles.nodeLabel.fontSize);
   });
   async function render(view) {
+    
     updateData(view);
     simulation.stop();
 
@@ -589,10 +592,44 @@ async function Graph(view) {
     simulation.alpha(1).restart();
   }
 
-
   await render(view);
 
+  let divContainer = 
+  d3.select(await FilterBox())
 
-  return svg.node();
+  let divContainerCheck = divContainer.selectAll(".form-check-input").on("click", async function(e) {
+    d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
+
+    // render("filter");
+    // d3.select(".filter-container").remove();
+    // d3.select(await FilterBox())
+    // console.log(e)
+
+  })
+
+
+  // console.log(divContainerCheck)
+  // let divContainer =   d3.select(await FilterBox()).attr("id", "TEST").selectAll(".form-check-input").on("change", (d) => console.log(d, "click!"))
+
+  // console.log(  d3.select(await FilterBox()).selectAll(".form-check-input").on("click", (d) => console.log(d, "click!")),  "filter")
+
+  // console.log(d3.select("#accordionPanelsStayOpenExample"))
+  // let divContainer = d3.select(await FilterBox()).on("click", () => console.log("click!"))
+
+
+  // let divContainer = d3.select("#app")
+  // .append("div")
+  // .attr("class","filterContainer")
+  // .select(".filterbutton")
+  // .on("click", () => console.log("hello"))
+
+  
+  // .append("button")
+  // .attr("id", "testbutton")
+  
+ 
+  return [svg.node(), divContainer.node()]
+
+  // return svg.node();
 }
 export default Graph;

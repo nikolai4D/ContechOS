@@ -1,5 +1,5 @@
 import Graph from "../components/graph/Graph.js";
-import FilterBox from "../components/filter/FilterBox.js";
+import {FilterBox} from "../components/filter/FilterBox.js";
 
 import Actions from "../store/Actions.js";
 import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
@@ -27,7 +27,7 @@ export default class Filter {
 
         const mainAppNodes = await this.returnRenderFunc("filter")
         const filterBoxNodes = await FilterBox()
-        return [mainAppNodes, filterBoxNodes]
+        return [mainAppNodes[0], mainAppNodes[1]]
     }
     async setupToolBar() { return setupToolBar("filter",await FilterBox()) }
 

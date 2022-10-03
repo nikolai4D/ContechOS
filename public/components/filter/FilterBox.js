@@ -2,14 +2,7 @@ import {State} from "../../store/State.js";
 
 async function FilterBox() {
 
-  let tree = State.treeOfNodes.tree
-    await State.treeOfNodes.ensureInit()
-
-  let nodeHtmlString = ``
-  tree.forEach(node => {
-        nodeHtmlString += itemRow(node)
-      }
-  )
+  let nodeHtmlString = await triggerTreeGetHtml();
 
   const htmlString = `
 <div class="accordion w-25 position-absolute open" id="accordionPanelsStayOpenExample">
@@ -33,6 +26,18 @@ async function FilterBox() {
   filterDOM.className = "filter-container"
   filterDOM.innerHTML = htmlString;
   return filterDOM;
+}
+
+async function triggerTreeGetHtml() {
+  let tree = State.treeOfNodes.tree;
+  await State.treeOfNodes.ensureInit();
+
+  let nodeHtmlString = ``;
+  tree.forEach(node => {
+    nodeHtmlString += itemRow(node);
+  }
+  );
+  return nodeHtmlString;
 }
 
 function itemRow(node){
@@ -65,4 +70,4 @@ function itemRow(node){
     return mainRow
 }
 
-export default FilterBox;
+export {FilterBox, triggerTreeGetHtml};

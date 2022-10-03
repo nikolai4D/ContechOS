@@ -12,7 +12,7 @@ async function checkFilter(event) {
 
     await tree.shake()
 
-    navigateTo('/filter')
+    // navigateTo('/filter')
 }
 
 export async function checkAll(event) {
@@ -34,7 +34,7 @@ export async function checkAll(event) {
 
     await tree.shake()
 
-    navigateTo('/filter')
+    // navigateTo('/filter')
 }
 
 function getInputFromEvent(event){
