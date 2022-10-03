@@ -598,7 +598,9 @@ async function Graph(view) {
   d3.select(await FilterBox())
 
   let divContainerCheck = divContainer.selectAll(".form-check-input").on("click", async function(e) {
-    d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
+    // d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
+
+  console.log("CLICK")
 
     // render("filter");
     // d3.select(".filter-container").remove();
