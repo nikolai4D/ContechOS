@@ -11,7 +11,6 @@ export default class Filter {
         this.returnRenderFunc = renderDataAsGraph;
         this.view = "filter";
         this.ViewHasRenderControl = true;
-        sessionStorage.setItem("checkedBoxes",[[],[],[],[]])
     }
     async getTemplate() {
         const tree = State.treeOfNodes
