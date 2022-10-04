@@ -1,5 +1,5 @@
-import {queryDefinitions} from "./Store/dbStore.js";
-import {Tree} from "./Store/Tree.js";
+import {queryDefinitions} from "./tree/treeQueries.js";
+import {Tree} from "./tree/Tree.js";
 
 export const State = {
     test: "test",

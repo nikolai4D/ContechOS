@@ -107,8 +107,8 @@ export async function renderDataAsTable(viewName,
   }*/
 
   const setAppDivOnCallback = function (tableDivs) {
-    document.querySelector("#app").innerHTML = ""
-    document.querySelector("#app").appendChild(tableDivs[0]);
+    document.querySelector("#tableContainerDiv").innerHTML = ""
+    document.querySelector("#tableContainerDiv").appendChild(tableDivs[0]);
    // document.querySelector("#app").appendChild(tableDivs[1]);
   }
   return [nodeTableDiv]//,relTableDiv];
@@ -134,15 +134,22 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
       }
     } else {
       document.querySelector("#app").innerHTML = ""
-      const newContainerDiv = createHtmlElementWithData("div", {"class": "col-md-12"})
-      const rowDiv = createHtmlElementWithData("div", {"class": "row"})
-      const dataTableNode = await renderDataAsTable(viewName)
-      dataTableNode[0].className = "col-md-8"
-      optionalAdditionalNodes.className = "col-md-4"
-      rowDiv.appendChild(optionalAdditionalNodes)
-      rowDiv.appendChild(dataTableNode[0])
-      newContainerDiv.appendChild(rowDiv)
-      appendChildsToSelector("#app",newContainerDiv)
+      const tableContainerDiv = createHtmlElementWithData("div", {"id": "tableContainerDiv"})
+      if (optionalAdditionalNodes !== undefined) {
+        const newContainerDiv = createHtmlElementWithData("div", {"class": "col-md-12"})
+        const rowDiv = createHtmlElementWithData("div", {"class": "row"})
+        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
+        const dataTableNode = createHtmlElementWithData("div", {"class": "col-md-8"})
+        dataTableNode.appendChild(tableContainerDiv)
+        optionalAdditionalNodes.className = "col-md-4"
+        rowDiv.appendChild(optionalAdditionalNodes)
+        rowDiv.appendChild(dataTableNode)
+        newContainerDiv.appendChild(rowDiv)
+        appendChildsToSelector("#app",rowDiv)
+      } else  {
+        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
+        appendChildsToSelector("#app", tableContainerDiv)
+      }
     }
   });
   switchDiv.appendChild(switchInput)
