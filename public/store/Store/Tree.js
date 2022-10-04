@@ -230,10 +230,6 @@ TreeNode.prototype.asyncExtraFetch = function (tree, force = false) {
 Tree.prototype.extraFetchAllSelected = async function(){
     const promises = []
     const nodesToExtraFetch = []
-
-    const time = performance.now()
-
-    console.log("start all fetch: " + time)
     //Get promises
     for(let node of this.selectedTreeNodes){
         if(!node.extraFetched) {
@@ -246,10 +242,7 @@ Tree.prototype.extraFetchAllSelected = async function(){
         }
     }
 
-    console.log("awaitng promises: " + (performance.now() - time))
     const resolutions = await Promise.all(promises)
-
-    console.log("promises resolved: " + (performance.now() - time))
     //Map resolutions to nodes
     if(resolutions.length !== 2*nodesToExtraFetch.length) throw new Error("Resolutions and nodes to extra fetch lengths don't match: " + resolutions.length + " " + nodesToExtraFetch.length)
     else {
@@ -259,7 +252,6 @@ Tree.prototype.extraFetchAllSelected = async function(){
         }
     }
 
-    console.log("all fetch done: " + (performance.now() - time))
 }
 
 TreeNode.prototype.setRelations = function (relations) {
