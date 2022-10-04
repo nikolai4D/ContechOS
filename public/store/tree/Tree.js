@@ -5,6 +5,7 @@ export function Tree() {
     this.tree = []
     this.visibleRelations = []
     this.selectedNodesData = []
+    this.selectedTreeNodes = []
 }
 
 Tree.prototype.ensureInit = async function () {
@@ -45,25 +46,29 @@ Tree.prototype.getNodeById = function(id){
     throw new Error("No node found with id: " + id)
 }
 
+/**
+ *
+ * @returns {*[TreeNode]}
+ */
 TreeNode.prototype.getSelectedInLineage = function(){
-    const data = []
+    const selectedTreeNodes = []
     if(this.selected === true) {
-        data.push(this.data)
+        selectedTreeNodes.push(this)
         for (let child of this.children) {
-            data.push(...child.getSelectedInLineage())
+            selectedTreeNodes.push(...child.getSelectedInLineage())
         }
     }
-    return data
+    return selectedTreeNodes
 }
 
-Tree.prototype.setSelectedNodesData = function(){
-    const data = []
-    if(this.tree === null) return data
+Tree.prototype.setSelectedNodesAndData = function(){
+    const selectedTreeNodes = []
+    if(this.tree === null) return []
     for(let node of this.tree){
-        data.push(...node.getSelectedInLineage())
+        selectedTreeNodes.push(...node.getSelectedInLineage())
     }
-    this.selectedNodesData = data
-    return data
+    this.selectedTreeNodes = selectedTreeNodes
+    this.selectedNodesData = selectedTreeNodes.map(node => node.data)
 }
 
 TreeNode.prototype.deselectLineage = function(){
@@ -90,18 +95,6 @@ Tree.prototype.fructify = function(dbNodes, layer){
     return treeNodes
 }
 
-
-TreeNode.prototype.setRels = async function () {
-    const relations = await queryRelations(this.id)
-    relations.map( rel => {
-        const stateRel = State.relations.find(stateRel => stateRel.id === rel.id)
-        if (stateRel === undefined) {
-            State.relations.push(rel)
-            this.rels.push(rel)
-        } else if (this.rels.find(rel => rel.id === stateRel.id) === undefined) this.rels.push(stateRel)
-    })
-}
-
 function getOtherIdInRel(rel, id){
     if(rel.sourceId === id) return rel.targetId
     else if (rel.targetId === id) return rel.sourceId
@@ -118,7 +111,7 @@ function createPseudoParentRel(parentId, childId){
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
     const visibleNodes = tree.selectedNodesData
-    await this.extraFetch()
+    // await this.extraFetch()
     const visibleRels = this.rels.filter(rel =>
         (rel.sourceId !== this.id && visibleNodes.find(el => el.id === rel.sourceId) !== undefined) ||
         (rel.targetId !== this.id && visibleNodes.find(el => el.id === rel.targetId) !== undefined)
@@ -127,7 +120,7 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
     for(let visibleRel of visibleRels){
         const otherNodeId = visibleRel.sourceId === this.id ? visibleRel.targetId : visibleRel.sourceId
         const otherNode = tree.getNodeById(otherNodeId)
-        await otherNode.extraFetch(tree)
+        // await otherNode.extraFetch(tree)
         let otherChildrenSelectedIds = otherNode.children.filter(othChild => othChild.selected).map(child => child.id)
 
         if(otherChildrenSelectedIds.length === 0) continue
@@ -137,17 +130,9 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
             if (child.rels.find(rel => rel.parentId === visibleRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
                 child.hidden = true
                 child.selected = false
-                // tree.visibleRelations = tree.visibleRelations.filter(el => el.target !== child.id && el.source !== child.id)
             }
         }
     }
-}
-
-TreeNode.prototype.extraFetch = async function (tree,force = false) {
-    if(this.extraFetched && !force) return
-    this.extraFetched = true
-    if(this.layer<3) this.children = await tree.fructify(await queryNodeChildren(this.id), this.layer + 1)
-    await this.setRels()
 }
 
 TreeNode.prototype.unHideLineage = function(){
@@ -165,7 +150,8 @@ for(let node of this.tree){
 
 Tree.prototype.shake = async function () {
     this.unHideAll()
-    this.setSelectedNodesData()
+    this.setSelectedNodesAndData()
+    await this.extraFetchAllSelected()
     this.visibleRelations = []
     let nodesOnThisLayer = this.tree
     let nodesOnNextLayer = []
@@ -175,7 +161,7 @@ Tree.prototype.shake = async function () {
         for (let node of nodesOnThisLayer) {
             if (node.selected) {
 
-                await node.extraFetch(this)
+                // await node.extraFetch(this)
                 await node.setChildrenVisibility(this)
                 node.children.map (child=> {
                     if(child.selected) this.visibleRelations.push(createPseudoParentRel(node.id, child.id))
@@ -192,7 +178,7 @@ Tree.prototype.shake = async function () {
         nodesOnNextLayer = []
     }
 
-    this.setSelectedNodesData()
+    this.setSelectedNodesAndData()
     this.trimVisibleRelations()
 }
 
@@ -215,4 +201,59 @@ TreeNode.prototype.overview = function(){
 
 Tree.prototype.overview = function(){
     return this.tree.map(node => node.overview())
+}
+
+TreeNode.prototype.extraFetch = async function (tree,force = false) {
+    if(this.extraFetched && !force) return
+    this.extraFetched = true
+    if(this.layer<3) this.children = await tree.fructify(await queryNodeChildren(this.id), this.layer + 1)
+    this.setRelations(await queryRelations(this.id))
+}
+
+
+TreeNode.prototype.asyncExtraFetch = function (tree, force = false) {
+    if (this.extraFetched && !force) return
+    this.extraFetched = true
+
+    const childrenPromise = this.layer < 3 ? asyncQueryNodeChildren(this.id) : Promise.resolve({data: {nodes: []}})
+    const relsPromise = asyncQueryRelations(this.id)
+
+    return {childrenPromise, relsPromise}
+}
+
+Tree.prototype.extraFetchAllSelected = async function(){
+    const promises = []
+    const nodesToExtraFetch = []
+    //Get promises
+    for(let node of this.selectedTreeNodes){
+        if(!node.extraFetched) {
+            const extraObject = node.asyncExtraFetch(this)
+            if(extraObject !== undefined) {
+                promises.push(extraObject.childrenPromise)
+                promises.push(extraObject.relsPromise)
+                nodesToExtraFetch.push(node)
+            }
+        }
+    }
+
+    const resolutions = await Promise.all(promises)
+    //Map resolutions to nodes
+    if(resolutions.length !== 2*nodesToExtraFetch.length) throw new Error("Resolutions and nodes to extra fetch lengths don't match: " + resolutions.length + " " + nodesToExtraFetch.length)
+    else {
+        for(let i=0; i<resolutions.length; i+=2){
+            nodesToExtraFetch[i/2].children = this.fructify(resolutions[i].data.nodes, nodesToExtraFetch[i / 2].layer + 1)
+            nodesToExtraFetch[i/2].setRelations([...resolutions[i+1].data.sourceRels, ...resolutions[i+1].data.targetRels])
+        }
+    }
+
+}
+
+TreeNode.prototype.setRelations = function (relations) {
+    relations.map( rel => {
+        const stateRel = State.relations.find(stateRel => stateRel.id === rel.id)
+        if (stateRel === undefined) {
+            State.relations.push(rel)
+            this.rels.push(rel)
+        } else if (this.rels.find(rel => rel.id === stateRel.id) === undefined) this.rels.push(stateRel)
+    })
 }
