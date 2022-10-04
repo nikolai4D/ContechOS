@@ -24,21 +24,16 @@ export default class Filter {
         })
 
         sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
-        let gridDiv = createHtmlElementWithData("div")
         let rowDiv = createHtmlElementWithData("div", {"class": "row"})
-        gridDiv.appendChild(rowDiv)
         let firstColumnDiv = createHtmlElementWithData("div", {"class": "col-md", "id": "filterbox-grid-container-id"})
         rowDiv.appendChild(firstColumnDiv)
         let secondColumnDiv = createHtmlElementWithData("div", {"class": "col-md", "id": "data-display-grid-container-id"})
         rowDiv.appendChild(secondColumnDiv)
 
         const mainAppNodes = await this.returnRenderFunc("filter", firstColumnDiv)
-        //dataDisplayDiv.appendChild(mainAppNodes[0])
-        //filterboxDiv.appendChild(mainAppNodes[1])
         firstColumnDiv.appendChild(mainAppNodes[1])
         secondColumnDiv.appendChild(mainAppNodes[0])
-        //const filterBoxNodes = await FilterBox()
-        return [gridDiv]
+        return [rowDiv]
     }
     async setupToolBar() { return setupToolBar("filter",await FilterBox()) }
 

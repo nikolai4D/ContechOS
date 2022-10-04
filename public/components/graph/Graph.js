@@ -449,19 +449,10 @@ async function Graph(view, parentNode) {
     await updateData(view);
     d3.select("#filter-container-id").remove()
     divContainer = d3.select(await FilterBox())
-    //document.querySelector("#filterbox-grid-container-id").appendChild(divContainer.node());
     parentNode.appendChild(divContainer.node());
     divContainer.selectAll(".form-check-input").on("click", async function(e) {
-      //d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
       await checkFilter(e)
       await render("filter");
-      //document.querySelector("#app").innerHTML = "";
-      //filterbox-grid-container-id
-      //document.querySelector("#app").appendChild(divContainer.node());
-      // d3.select(".filter-container").remove();
-      // d3.select(await FilterBox())
-      // console.log(e)
-
     })
     simulation.stop();
 
