@@ -39,6 +39,27 @@ export async function queryNodeChildren(parentId) {
     return (await graphQLQuery(query)).data.nodes
 }
 
+export async function asyncQueryNodeChildren(parentId) {
+    const query= JSON.stringify( {
+        query: `query RooterQueryType($input:QueryInput){
+        nodes(itemInput:$input){
+        id
+        title
+        defType
+        parentId
+        updated
+        created
+      }
+    }`, variables: {
+            input: {
+                parentId: parentId
+            }
+        }
+    })
+
+    return graphQLQuery(query)
+}
+
 export async function queryRelations(nodeId) {
     const query= JSON.stringify( {
         query: `query RooterQueryType($inputSource:QueryInput, $inputTarget:QueryInput){
@@ -73,6 +94,41 @@ export async function queryRelations(nodeId) {
     })
     const data = await graphQLQuery(query)
     return [...data.data.sourceRels, ...data.data.targetRels]
+}
+
+export async function asyncQueryRelations(nodeId) {
+    const query= JSON.stringify( {
+        query: `query RooterQueryType($inputSource:QueryInput, $inputTarget:QueryInput){
+        sourceRels: relationships(itemInput:$inputSource){
+        id
+        title
+        defType
+        parentId
+        sourceId
+        targetId
+        updated
+        created
+      },
+      targetRels: relationships(itemInput:$inputTarget){
+        id
+        title
+        defType
+        parentId
+        sourceId
+        targetId
+        updated
+        created
+      }
+    }`, variables: {
+            inputSource: {
+                sourceId: nodeId
+            },
+            inputTarget: {
+                targetId: nodeId
+            }
+        }
+    })
+    return graphQLQuery(query)
 }
 
 async function graphQLQuery(query) {
