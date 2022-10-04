@@ -1,5 +1,11 @@
 import {State} from "../State.js";
-import {queryDefinitions, queryNodeChildren, queryRelations} from "./treeQueries.js";
+import {
+    asyncQueryNodeChildren,
+    asyncQueryRelations,
+    queryDefinitions,
+    queryNodeChildren,
+    queryRelations
+} from "./treeQueries.js";
 
 export function Tree() {
     this.tree = []
