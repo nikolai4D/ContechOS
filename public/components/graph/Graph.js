@@ -19,9 +19,9 @@ import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropK
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { FilterBox} from "../filter/FilterBox.js"
-import { triggerTreeGetHtml } from "../filter/FilterBox.js"
+import { checkFilter } from "../filter/filterFunctions.js"
 
-async function Graph(view) {
+async function Graph(view, parentNode) {
   State.view = view;
   Actions.GETDEF();
 
@@ -33,6 +33,10 @@ async function Graph(view) {
   rels = graphJsonData[0].rels;
 
   const updateData = async (view) => {
+    graphJsonData = await JSON.parse(sessionStorage.getItem(view));
+
+    nodes = graphJsonData[0].nodes;
+    rels = graphJsonData[0].rels;
     // Preserve position of nodes/rels
     if (nodes !== undefined) {
       const old = new Map(nodes.map((d) => [d.id, d]));
@@ -440,9 +444,25 @@ async function Graph(view) {
       .attr("y", (data) => data.y)
       .style("font-size", styles.nodeLabel.fontSize);
   });
+
   async function render(view) {
-    
-    updateData(view);
+    await updateData(view);
+    d3.select("#filter-container-id").remove()
+    divContainer = d3.select(await FilterBox())
+    //document.querySelector("#filterbox-grid-container-id").appendChild(divContainer.node());
+    parentNode.appendChild(divContainer.node());
+    divContainer.selectAll(".form-check-input").on("click", async function(e) {
+      //d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
+      await checkFilter(e)
+      await render("filter");
+      //document.querySelector("#app").innerHTML = "";
+      //filterbox-grid-container-id
+      //document.querySelector("#app").appendChild(divContainer.node());
+      // d3.select(".filter-container").remove();
+      // d3.select(await FilterBox())
+      // console.log(e)
+
+    })
     simulation.stop();
 
     link = svg
@@ -590,25 +610,25 @@ async function Graph(view) {
 
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
+    return svg.node()
   }
-
+  let divContainer = d3.select(await FilterBox())
   await render(view);
-
-  let divContainer = 
-  d3.select(await FilterBox())
+/*
+  let divContainer = d3.select(await FilterBox())
 
   let divContainerCheck = divContainer.selectAll(".form-check-input").on("click", async function(e) {
-    // d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
-
-  console.log("CLICK")
-
-    // render("filter");
+     //d3.select(".accordion-body").append(d3.select(await triggerTreeGetHtml()).node())
+    await checkFilter(e)
+    //console.log("CLICK")
+    //d3.select("#filter-container-id").remove()
+    await render("filter");
     // d3.select(".filter-container").remove();
     // d3.select(await FilterBox())
     // console.log(e)
 
   })
-
+*/
 
   // console.log(divContainerCheck)
   // let divContainer =   d3.select(await FilterBox()).attr("id", "TEST").selectAll(".form-check-input").on("change", (d) => console.log(d, "click!"))

@@ -59,8 +59,8 @@ function generateDataTable(tableData, idName, sortFunc) {
   return { dataTable: tableRootNode, headerRow: headerNodes };
 }
 
-export async function renderDataAsGraph(viewName) {
-  const graphView = await Graph(viewName)
+export async function renderDataAsGraph(viewName, parentNode) {
+  const graphView = await Graph(viewName, parentNode)
   return graphView;
 }
 
@@ -150,7 +150,7 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").appendChild(switchDiv);
 }
 
-function createHtmlElementWithData(elementName, attributeData = {}) {
+export function createHtmlElementWithData(elementName, attributeData = {}) {
   let newElement = document.createElement(elementName);
   for (let [key, value] of Object.entries(attributeData)) {
     newElement.setAttribute(key, value)

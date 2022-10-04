@@ -1,16 +1,26 @@
 import {State} from "../../store/State.js";
 import navigateTo from "../../helpers/navigateTo.js";
 
-async function checkFilter(event) {
+export async function checkFilter(event) {
     const tree = State.treeOfNodes
 
     let input =getInputFromEvent(event)
+    console.log(input)
     input.toggleAttribute("checked")
 
     const treeNode = tree.getNodeById(input.id.substring(9))
     treeNode.selected? treeNode.deselectLineage() : treeNode.selected = true
 
     await tree.shake()
+
+    tree.visibleRelations.map(rel => {
+        rel.source = rel.sourceId
+        rel.target = rel.targetId
+        return rel
+    })
+
+    sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+
 
     // navigateTo('/filter')
 }
@@ -33,6 +43,14 @@ export async function checkAll(event) {
     }
 
     await tree.shake()
+
+    tree.visibleRelations.map(rel => {
+        rel.source = rel.sourceId
+        rel.target = rel.targetId
+        return rel
+    })
+
+    sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
 
     // navigateTo('/filter')
 }

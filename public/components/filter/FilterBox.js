@@ -24,6 +24,7 @@ async function FilterBox() {
 
   let filterDOM = document.createElement("div");
   filterDOM.className = "filter-container"
+  filterDOM.id = "filter-container-id"
   filterDOM.innerHTML = htmlString;
   return filterDOM;
 }
@@ -48,7 +49,7 @@ function itemRow(node){
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
             <ul>
-            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}" data-function="checkAll" ${ node.isViewAllChecked? "checked": ""}>
+            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.isViewAllChecked? "checked": ""}>
             <label class="form-check-label" for="all_${node.id}"> All</label>
             <br/>
             
@@ -61,7 +62,7 @@ function itemRow(node){
     }
 
      let mainRow = `
-          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" ${ node.selected? "checked": ""}>
+          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
           <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label>
           
           ${ childrenFrame }
