@@ -1,4 +1,5 @@
 import Graph from "../graph/Graph.js";
+import {createHtmlElementWithData, appendChildsToSelector} from "../DomElementHelper.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
@@ -59,8 +60,8 @@ function generateDataTable(tableData, idName, sortFunc) {
   return { dataTable: tableRootNode, headerRow: headerNodes };
 }
 
-export async function renderDataAsGraph(viewName, parentNode) {
-  const graphView = await Graph(viewName, parentNode)
+export async function renderDataAsGraph(viewName, useFilter = false, parentNode) {
+  const graphView = await Graph(viewName, useFilter, parentNode)
   return graphView;
 }
 
@@ -155,22 +156,4 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   switchDiv.appendChild(switchInput)
   switchDiv.appendChild(switchLabel)
   document.querySelector("#toolBar").appendChild(switchDiv);
-}
-
-export function createHtmlElementWithData(elementName, attributeData = {}) {
-  let newElement = document.createElement(elementName);
-  for (let [key, value] of Object.entries(attributeData)) {
-    newElement.setAttribute(key, value)
-  }
-  return newElement
-}
-
-export function appendChildsToSelector(selector, nodes) {
-  if (nodes.constructor === Array) {
-    for (const node of nodes) {
-      document.querySelector(selector).appendChild(node);
-    }
-  } else {
-    document.querySelector(selector).appendChild(nodes)
-  }
 }
