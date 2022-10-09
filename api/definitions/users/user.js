@@ -36,6 +36,7 @@ router.post("/create", async (req, res) => {
 });
 
 router.post("/updatePwd", async (req, res) => {
+
   const { email, oldPwd, newPwd } = req.body;
 
   if (!email || !oldPwd || !newPwd) {
@@ -62,6 +63,7 @@ router.post("/updatePwd", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
+
   try {
     result = await record.getAll();
     res.status(200).json(result);
@@ -70,12 +72,31 @@ router.get("/", async (req, res) => {
   }
 });
 
+router.post("/apiKey", async (req, res) => {
+  const { email } = req.body;
+
+  if (!email) {
+    return res.status(400).json("email missing");
+  }
+
+  const foundUser = (await record.getAll()).find(
+    (person) => person.email === email
+  );
+  if (!foundUser) return res.sendStatus(409); //Conflict
+  try {
+    result = foundUser.apiKey;
+    res.status(200).json(result);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+});
+
+
 router.get("/:id", async (req, res) => {
   let userArray = await record.getAllId();
   if (!userArray.includes(req.params.id)) {
     return res.status(400).json("userId does not exist");
   }
-
   try {
     result = await record.getById(req.params.id);
     res.status(200).json(result);
