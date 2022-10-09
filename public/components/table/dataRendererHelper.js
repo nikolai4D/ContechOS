@@ -3,6 +3,7 @@ import Graph from "../graph/Graph.js";
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
 function propFixedSortReversedFunc(propName) { return (a, b) => sortFunc(a, b, propName) * -1 }
+import Modal from "../Modal.js";
 
 function generateDataTable(tableData, idName, sortFunc) {
   let max = Object.keys(tableData[0]).length;
@@ -111,20 +112,20 @@ export async function renderDataAsTable(viewName,
     document.querySelector("#tableContainerDiv").appendChild(tableDivs[0]);
    // document.querySelector("#app").appendChild(tableDivs[1]);
   }
-  return [nodeTableDiv]//,relTableDiv];
 }
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-middle justify-content-end" })
   const switchInput = createHtmlElementWithData("input", {
     "class": "form-check-input",
     "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked": ""
   })
   const switchLabel = createHtmlElementWithData("label", {
-    "class": "form-check-label",
+    "class": "form-check-label text-secondary",
     "for": "flexSwitchCheckDefault",
   });
+  switchLabel.innerHTML ="|"
   switchInput.addEventListener("click", async (event, state) => {
     if (event.target.checked) {
       document.querySelector("#app").innerHTML = ""
@@ -153,8 +154,23 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
     }
   });
   switchDiv.appendChild(switchInput)
-  switchDiv.appendChild(switchLabel)
-  document.querySelector("#toolBar").appendChild(switchDiv);
+
+  const rowDiv = createHtmlElementWithData("div", {"class": "d-flex align-items-center justify-content-sm-end", "id": "containerToolbar"})
+
+  rowDiv.appendChild(switchDiv);
+  document.querySelector("#toolBar").classList.add("container-fluid")
+  document.querySelector("#toolBar").appendChild(rowDiv);
+  if (viewName === "filter"){
+    switchDiv.appendChild(switchLabel)
+
+    const containerModal = createHtmlElementWithData("div", {"id": "containerModal"})
+    containerModal.innerHTML=`${Modal()}`
+    document.querySelector("#containerToolbar").appendChild(containerModal);
+
+
+  } 
+
+
 }
 
 function createHtmlElementWithData(elementName, attributeData = {}) {
