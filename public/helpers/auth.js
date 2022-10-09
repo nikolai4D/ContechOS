@@ -15,8 +15,9 @@ export default async function auth(email, pwd) {
       }
       throw new Error(`${responseAuth.status} ${responseAuth.statusText}`);
     }
-
     const token = `Bearer ${(await responseAuth.json()).accessToken}`;
+    // console.log(await responseAuth.json())
+
     sessionStorage.setItem("accessToken", await token);
 
     navigateTo("/");
