@@ -1,4 +1,4 @@
-const filterItems = (item, params) => {
+const filterFunction = (item, params) => {
     for (let key in params) {
         if (params[key] !== null && (!item.hasOwnProperty(key) || params[key] !== item[key])) {
             return false
@@ -9,4 +9,4 @@ const filterItems = (item, params) => {
     return true
 }
 
-module.exports = { filterItems }
+module.exports = { filterItems: filterFunction }

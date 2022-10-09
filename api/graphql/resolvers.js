@@ -54,4 +54,10 @@ async function graphResolver(params = {}, enforcedParams = {}, isUniqueOrNull = 
     return items
 }
 
+async function cascadeResolver(params = {}, enforcedParams = {}) {
+
+}
+
+
+
 module.exports = { graphResolver, itemsResolver }

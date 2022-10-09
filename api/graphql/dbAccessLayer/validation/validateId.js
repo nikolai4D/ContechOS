@@ -1,6 +1,6 @@
 const { voc } = require("../voc");
 const { doesFileExist, getItemById, getBulk } = require("../fileManager");
-const { filterItems } = require("../helpers/filterItems");
+const { filterItems } = require("../helpers/filterFunction");
 
 /**
  * Infer data from id

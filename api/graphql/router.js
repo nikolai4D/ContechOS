@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLString } = require('graphql');
+const { GraphQLSchema, GraphQLObjectType, GraphQLString} = require('graphql');
 const { GraphQLList } = require("graphql/type")
 const { Node, Relationship, Property, MutationItem, QueryInput } = require("./graphqlTypes")
 const { graphResolver } = require("./resolvers");
@@ -37,11 +37,22 @@ let schema = new GraphQLSchema({
                     return await graphResolver(args.itemInput, { kindOfItem: "property" })
                 }
             },
+            cascade: {
+                type: new GraphQLList(Node),
+                args: {
+                    configDefs: { type: new GraphQLList(GraphQLString) },
+                    configObjs: { type: new GraphQLList(GraphQLString) },
+                    typeInstances: { type: new GraphQLList(GraphQLString) },
+                    dataInstances: { type: new GraphQLList(GraphQLString) },
+                },
+                async resolve(root, args) {
+
+                }
+            }
         },
     }),
     types: [Node, Relationship, Property, QueryInput, MutationItem]
-}
-)
+})
 
 router.use('', graphqlHTTP({
     schema: schema,

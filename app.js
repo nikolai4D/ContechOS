@@ -6,6 +6,7 @@ const corsOptions = require("./config/corsOptions");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
+const cascade = require("./api/graphql/dbAccessLayer/helpers/cascade");
 
 const PORT = process.env.PORT;
 const app = express();
@@ -41,5 +42,48 @@ app.use("/", express.static(__dirname + "/public"));
 app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
+
+// query params template
+// {
+//   "configDef":
+//   {
+//     "title": ["Discipline definition", "Phase definition", "Property definition"]
+//   },
+//   "configObj":
+//   {
+//     "title":"Discipline"
+//   },
+//   "typeData":
+//   {
+//     "title":"A"
+//   },
+//   "instanceData":
+//   {
+//   }
+// }
+let cascadeParams = {
+  "configDef":
+  {
+    "title": ["Discipline Definition", "Phase Definition", "Properties Definition"]
+  },
+  "configObj":
+  {
+    "title":["Discipline"]
+  },
+  "typeData":
+  {
+    "title":["A"]
+  },
+  "instanceData":
+  {
+  }
+}
+
+async function d() {
+  let answer = await cascade(cascadeParams)
+  console.log('answer', JSON.stringify(answer, null, 2))
+}
+
+d()
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));
