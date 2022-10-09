@@ -1,5 +1,3 @@
-import { State } from "../store/State.js"
-import  Mutations from "../store/Mutations.js"
 import Actions from "../store/Actions.js";
 
 export function copyToClipboard(e) {
