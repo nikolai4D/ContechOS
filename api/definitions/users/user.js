@@ -36,7 +36,6 @@ router.post("/create", async (req, res) => {
 });
 
 router.post("/updatePwd", async (req, res) => {
-
   const { email, oldPwd, newPwd } = req.body;
 
   if (!email || !oldPwd || !newPwd) {
@@ -63,7 +62,6 @@ router.post("/updatePwd", async (req, res) => {
 });
 
 router.get("/", async (req, res) => {
-
   try {
     result = await record.getAll();
     res.status(200).json(result);
