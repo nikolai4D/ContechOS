@@ -1,8 +1,8 @@
 export default function(){
 
     return `
-    <div class="nav-link link-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    query
+    <div class="p-2 link-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
+    <i class="bi bi-braces"></i>
     </div>
 
     <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
