@@ -35,15 +35,12 @@ export default function(){
 
       
     const copyIcon = (part) => {
-        return `
-
-                <i data-function="copyToClipboard" id="modalClipboard${part}" class="p-1 bi bi-clipboard text-secondary" role="button"></i>
-        `
+        return `<i data-function="copyToClipboard" id="modalClipboard${part}" class="p-1 bi bi-clipboard text-secondary" role="button"></i>`
     }
 
     return `
-    <div class="p-2 link-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal">
-    <i class="bi bi-braces"></i>
+    <div class="p-2 link-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" >
+    <i class="bi bi-braces" role="button"></i>
     </div>
     
 
