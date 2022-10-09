@@ -5,7 +5,6 @@ import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
 import functionRouter from "./helpers/functionRouter.js";
 
-
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
 
