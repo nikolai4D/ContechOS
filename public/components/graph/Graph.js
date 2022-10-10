@@ -21,13 +21,13 @@ import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { FilterBox} from "../filter/FilterBox.js"
 import { checkFilter } from "../filter/filterFunctions.js"
 
-async function Graph(view, useFilterPara = false, parentNode) {
+async function Graph(view) {
   State.view = view;
   Actions.GETDEF();
 
   let nodes,
     rels = [];
-  let divContainer;
+  //let divContainer;
   let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
 
   nodes = graphJsonData[0].nodes;
@@ -443,15 +443,6 @@ async function Graph(view, useFilterPara = false, parentNode) {
 
   async function render(view) {
     await updateData(view);
-    if(useFilterPara){
-      d3.select("#filter-container-id").remove()
-      divContainer = d3.select(await FilterBox())
-      parentNode.appendChild(divContainer.node());
-      divContainer.selectAll(".form-check-input").on("click", async function(e) {
-        await checkFilter(e)
-        await render("filter");
-      })
-    }
     simulation.stop();
 
     link = svg
@@ -602,13 +593,7 @@ async function Graph(view, useFilterPara = false, parentNode) {
     return svg.node()
   }
 
-  if(useFilterPara){
-    divContainer = d3.select(await FilterBox())
-    await render(view);
-    return [svg.node(), divContainer.node()]
-  } else{
-    await render(view);
-    return [svg.node()]
-  }
+  await render(view);
+  return [svg.node(), async () => await render(view)]
 }
 export default Graph;
