@@ -2,7 +2,7 @@ const { getItems } = require("../../dbAccessLayer/crud/read")
 
 // ToDo: optimize. Refactor.
 
-async function cascade(params = {},intersect = true) {
+async function cascade(params = {}) {
 
     let configDefNodes = await getAllRequiredNodesFromLayer("configDef", params.configDef)
     let configObjNodes = await getAllRequiredNodesFromLayer("configObj", params.configObj)
@@ -17,7 +17,7 @@ async function cascade(params = {},intersect = true) {
     let dataInstanceExternalRels = await getRelsFromNodes(dataInstanceNodes, "instanceData", "ExternalRel")
     let dataInstanceInternalRels = await getRelsFromNodes(dataInstanceNodes, "instanceData", "InternalRel")
 
-    if(intersect === true) {
+    if(params.hasOwnProperty('intersect') && params.intersect === false) {
         configObjNodes = IntersectLayer(configDefNodes, configObjNodes, configDefExternalRels, configObjExternalRels, configDefInternalRels, configObjInternalRels)
         typeInstanceNodes = IntersectLayer(configObjNodes, typeInstanceNodes, configObjExternalRels, typeInstanceExternalRels, configObjInternalRels, typeInstanceInternalRels)
         dataInstanceNodes = IntersectLayer(typeInstanceNodes, dataInstanceNodes, typeInstanceExternalRels, dataInstanceExternalRels, typeInstanceInternalRels, dataInstanceInternalRels)
@@ -54,7 +54,6 @@ async function getRelsFromNodes(nodeArray, layerName, relType) {
             }
         }
     }
-    // console.log(array.length)
     return array
 }
 
@@ -69,8 +68,6 @@ function externalIntersect(parentLayerNodes, childLayerNodes, parentLayerRels, c
     for(let parentNode of parentLayerNodes){
         let parentRels = parentLayerRels.filter(rel => rel.sourceId === parentNode.id || rel.targetId === parentNode.id)
         let childNodes = childLayerNodes.filter(childNode => childNode.parentId === parentNode.id)
-        // console.log("parentNode: " + parentNode.title)
-        // console.log("childNodes", JSON.stringify(childNodes, null,2))
         for (let childNode of childNodes){
             let isValid = true
             let childRels = childLayerRels.filter(rel => rel.sourceId === childNode.id || rel.targetId === childNode.id)

@@ -1,6 +1,6 @@
 const { GraphQLObjectType, GraphQLString } = require("graphql/index");
 const { GraphQLInputObjectType, GraphQLList } = require("graphql/type");
-const { queryNodesResolver, queryRelationshipsResolver, graphResolver } = require("./resolvers");
+const { queryNodesResolver, queryRelationshipsResolver, graphResolver, cascadeResolver} = require("./resolvers");
 const { GraphQLEnumType, GraphQLNonNull, GraphQLID, GraphQLInt } = require("graphql");
 
 const DefinitionType = new GraphQLEnumType({
@@ -201,4 +201,22 @@ const MutationItem = new GraphQLObjectType({
     }
 })
 
-module.exports = { Node, Relationship, Property, QueryInput, MutationItem }
+const CascadeNode = new GraphQLObjectType({
+    name: "CascadeNode",
+    fields: () => ({
+        id: { type: GraphQLID },
+        title: { type: GraphQLString },
+        defTypeTitle: { type: GraphQLString },
+        parentId: { type: GraphQLID },
+        childrenNodes: {
+            type: new GraphQLList(CascadeNode),
+            resolve: async (root) => {
+                return await cascadeResolver(root.cascade, root.depth + 1, root.id)
+            }
+        },
+        created: { type: GraphQLString },
+        updated: { type: GraphQLString },
+    })
+})
+
+module.exports = { Node, Relationship, Property, CascadeNode, QueryInput, MutationItem }

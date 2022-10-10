@@ -3,8 +3,9 @@ const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema, GraphQLObjectType, GraphQLString} = require('graphql');
 const { GraphQLList } = require("graphql/type")
-const { Node, Relationship, Property, MutationItem, QueryInput } = require("./graphqlTypes")
+const { Node, Relationship, Property, MutationItem, QueryInput, CascadeNode} = require("./graphqlTypes")
 const { graphResolver } = require("./resolvers");
+const cascade = require("./dbAccessLayer/helpers/cascade");
 
 let schema = new GraphQLSchema({
     query: new GraphQLObjectType({
@@ -38,7 +39,7 @@ let schema = new GraphQLSchema({
                 }
             },
             cascade: {
-                type: new GraphQLList(Node),
+                type: new GraphQLList(CascadeNode),
                 args: {
                     configDefs: { type: new GraphQLList(GraphQLString) },
                     configObjs: { type: new GraphQLList(GraphQLString) },
@@ -46,12 +47,15 @@ let schema = new GraphQLSchema({
                     dataInstances: { type: new GraphQLList(GraphQLString) },
                 },
                 async resolve(root, args) {
+                    let intersection = await cascade(args)
+                    intersection["depth"] = 0
 
+                    return [intersection]
                 }
             }
         },
     }),
-    types: [Node, Relationship, Property, QueryInput, MutationItem]
+    types: [Node, Relationship, Property, CascadeNode, QueryInput, MutationItem]
 })
 
 router.use('', graphqlHTTP({

@@ -84,6 +84,6 @@ async function d() {
   console.log('answer', JSON.stringify(answer, null, 2))
 }
 
-d()
+// d()
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));
