@@ -60,9 +60,8 @@ function generateDataTable(tableData, idName, sortFunc) {
   return { dataTable: tableRootNode, headerRow: headerNodes };
 }
 
-export async function renderDataAsGraph(viewName, useFilter = false, parentNode) {
-  const graphView = await Graph(viewName, useFilter, parentNode)
-  return graphView;
+export async function renderDataAsGraph(viewName) {
+  return await Graph(viewName)
 }
 
 export async function renderDataAsTable(viewName,

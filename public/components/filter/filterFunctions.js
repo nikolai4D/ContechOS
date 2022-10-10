@@ -1,5 +1,6 @@
 import {State} from "../../store/State.js";
 import navigateTo from "../../helpers/navigateTo.js";
+import {FilterBox} from "./FilterBox.js";
 
 export async function checkFilter(event) {
     const tree = State.treeOfNodes
@@ -20,9 +21,6 @@ export async function checkFilter(event) {
     })
 
     sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
-
-
-    // navigateTo('/filter')
 }
 
 export async function checkAll(event) {
@@ -49,8 +47,18 @@ export async function checkAll(event) {
     })
 
     sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+}
 
-    // navigateTo('/filter')
+export async function setFilterBoxCallback(parentNode, filterBoxNode, callbackFunc){
+    filterBoxNode.querySelectorAll(".form-check-input").forEach(box => 
+        box.addEventListener("click", async function(e) {
+        await checkFilter(e)
+        await callbackFunc();
+        document.querySelector("#filter-container-id").remove()
+        let newFilterBox = await FilterBox()
+        parentNode.appendChild(newFilterBox);
+        setFilterBoxCallback(parentNode, newFilterBox, callbackFunc)
+    }))
 }
 
 function getInputFromEvent(event){

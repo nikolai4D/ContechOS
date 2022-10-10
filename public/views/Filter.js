@@ -1,5 +1,6 @@
 import Graph from "../components/graph/Graph.js";
 import {FilterBox} from "../components/filter/FilterBox.js";
+import {checkFilter, setFilterBoxCallback} from "../components/filter/filterFunctions.js";
 
 import Actions from "../store/Actions.js";
 import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
@@ -30,11 +31,13 @@ export default class Filter {
         let secondColumnDiv = createHtmlElementWithData("div", {"class": "col-lg", "id": "data-display-grid-container-id"})
         rowDiv.appendChild(secondColumnDiv)
 
-        const mainAppNodes = await this.returnRenderFunc("filter", true, firstColumnDiv)
-        firstColumnDiv.appendChild(mainAppNodes[1])
-        secondColumnDiv.appendChild(mainAppNodes[0])
+        const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
+        let filterBox = await FilterBox()
+        setFilterBoxCallback(firstColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        firstColumnDiv.appendChild(filterBox)
+        secondColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         return [rowDiv]
     }
-    async setupToolBar() { return setupToolBar("filter",await FilterBox()) }
+    async setupToolBar() { return setupToolBar("filter", await FilterBox()) }
 
 }
