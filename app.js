@@ -43,47 +43,30 @@ app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-// query params template
-// {
+//
+// let cascadeParams = {
 //   "configDef":
 //   {
-//     "title": ["Discipline definition", "Phase definition", "Property definition"]
+//     "title": ["Discipline Definition", "Phase Definition", "Properties Definition"]
 //   },
 //   "configObj":
 //   {
-//     "title":"Discipline"
+//     "title":["Discipline"]
 //   },
 //   "typeData":
 //   {
-//     "title":"A"
+//     "title":["A"]
 //   },
 //   "instanceData":
 //   {
 //   }
 // }
-let cascadeParams = {
-  "configDef":
-  {
-    "title": ["Discipline Definition", "Phase Definition", "Properties Definition"]
-  },
-  "configObj":
-  {
-    "title":["Discipline"]
-  },
-  "typeData":
-  {
-    "title":["A"]
-  },
-  "instanceData":
-  {
-  }
-}
-
-async function d() {
-  let answer = await cascade(cascadeParams)
-  console.log('answer', JSON.stringify(answer, null, 2))
-}
-
+//
+// async function d() {
+//   let answer = await cascade(cascadeParams)
+//   //console.log('answer', JSON.stringify(answer, null, 2))
+// }
+//
 // d()
 
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

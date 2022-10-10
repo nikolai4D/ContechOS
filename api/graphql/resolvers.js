@@ -57,8 +57,13 @@ async function graphResolver(params = {}, enforcedParams = {}, isUniqueOrNull = 
 }
 
 async function cascadeResolver(cascade, depth, parentId) {
-    let layerName = voc.layer[depth].inString
-    let children = cascade[layerName].filter(item => item.parentId === parentId)
+    let layerName = voc.layers[depth].inString
+    let children = cascade[layerName+"Nodes"].filter(item => item.parentId === parentId)
+    console.log("children: " + JSON.stringify(children, null, 2))
+    children.map(child => {
+        child.depth = depth
+        child.cascade = cascade
+    })
     return children
 }
 

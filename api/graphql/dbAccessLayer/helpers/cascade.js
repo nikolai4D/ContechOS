@@ -6,24 +6,25 @@ async function cascade(params = {}) {
 
     let configDefNodes = await getAllRequiredNodesFromLayer("configDef", params.configDef)
     let configObjNodes = await getAllRequiredNodesFromLayer("configObj", params.configObj)
-    let typeInstanceNodes = await getAllRequiredNodesFromLayer("typeData", params.typeData)
-    let dataInstanceNodes = await getAllRequiredNodesFromLayer("instanceData", params.instanceData)
+    let typeDataNodes = await getAllRequiredNodesFromLayer("typeData", params.typeData)
+    let instanceDataNodes = await getAllRequiredNodesFromLayer("instanceData", params.instanceData)
     let configDefExternalRels = await getRelsFromNodes(configDefNodes, "configDef", "ExternalRel")
     let configDefInternalRels = await getRelsFromNodes(configDefNodes, "configDef", "InternalRel")
     let configObjExternalRels = await getRelsFromNodes(configObjNodes, "configObj", "ExternalRel")
     let configObjInternalRels = await getRelsFromNodes(configObjNodes, "configObj", "InternalRel")
-    let typeInstanceExternalRels = await getRelsFromNodes(typeInstanceNodes, "typeData", "ExternalRel")
-    let typeInstanceInternalRels = await getRelsFromNodes(typeInstanceNodes, "typeData", "InternalRel")
-    let dataInstanceExternalRels = await getRelsFromNodes(dataInstanceNodes, "instanceData", "ExternalRel")
-    let dataInstanceInternalRels = await getRelsFromNodes(dataInstanceNodes, "instanceData", "InternalRel")
+    let typeDataExternalRels = await getRelsFromNodes(typeDataNodes, "typeData", "ExternalRel")
+    let typeDataInternalRels = await getRelsFromNodes(typeDataNodes, "typeData", "InternalRel")
+    let instanceDataExternalRels = await getRelsFromNodes(instanceDataNodes, "instanceData", "ExternalRel")
+    let instanceDataInternalRels = await getRelsFromNodes(instanceDataNodes, "instanceData", "InternalRel")
 
     if(params.hasOwnProperty('intersect') && params.intersect === false) {
         configObjNodes = IntersectLayer(configDefNodes, configObjNodes, configDefExternalRels, configObjExternalRels, configDefInternalRels, configObjInternalRels)
-        typeInstanceNodes = IntersectLayer(configObjNodes, typeInstanceNodes, configObjExternalRels, typeInstanceExternalRels, configObjInternalRels, typeInstanceInternalRels)
-        dataInstanceNodes = IntersectLayer(typeInstanceNodes, dataInstanceNodes, typeInstanceExternalRels, dataInstanceExternalRels, typeInstanceInternalRels, dataInstanceInternalRels)
+        typeDataNodes = IntersectLayer(configObjNodes, typeDataNodes, configObjExternalRels, typeDataExternalRels, configObjInternalRels, typeDataInternalRels)
+        instanceDataNodes = IntersectLayer(typeDataNodes, instanceDataNodes, typeDataExternalRels, instanceDataExternalRels, typeDataInternalRels, instanceDataInternalRels)
     }
 
-    return {configDefNodes, configObjNodes, typeInstanceNodes, dataInstanceNodes}
+
+    return {configDefNodes, configObjNodes, typeDataNodes, instanceDataNodes}
 }
 
 async function getAllRequiredNodesFromLayer(layerName, params = {}) {

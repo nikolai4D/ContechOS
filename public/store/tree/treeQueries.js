@@ -131,6 +131,52 @@ export async function asyncQueryRelations(nodeId) {
     return graphQLQuery(query)
 }
 
+
+export async function queryCascade(cascadeInput) {
+    const query = JSON.stringify({
+
+        query: `query RooterQueryType($cascadeInput: CascadeInput){
+        cascade(cascadeInput:$cascadeInput){
+        id
+        title
+        defType
+        parentId
+        updated
+        created
+        childrenNodes{
+            id
+            title
+            defType
+            parentId
+            updated
+            created
+            
+            childrenNodes{
+                id
+                title
+                defType
+                parentId
+                updated
+                created
+                            
+                childrenNodes{
+                    id
+                    title
+                    defType
+                    parentId
+                    updated
+                    created
+                }
+            }
+        }
+    }}`, variables: {
+            cascadeInput: cascadeInput
+    }
+    })
+
+    return graphQLQuery(query)
+}
+
 async function graphQLQuery(query) {
     {
         let response

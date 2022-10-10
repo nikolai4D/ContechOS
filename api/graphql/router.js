@@ -1,9 +1,9 @@
 const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLString} = require('graphql');
+const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLBoolean} = require('graphql');
 const { GraphQLList } = require("graphql/type")
-const { Node, Relationship, Property, MutationItem, QueryInput, CascadeNode} = require("./graphqlTypes")
+const { Node, Relationship, Property, MutationItem, QueryInput, CascadeNode, CascadeInput} = require("./graphqlTypes")
 const { graphResolver } = require("./resolvers");
 const cascade = require("./dbAccessLayer/helpers/cascade");
 
@@ -41,21 +41,22 @@ let schema = new GraphQLSchema({
             cascade: {
                 type: new GraphQLList(CascadeNode),
                 args: {
-                    configDefs: { type: new GraphQLList(GraphQLString) },
-                    configObjs: { type: new GraphQLList(GraphQLString) },
-                    typeInstances: { type: new GraphQLList(GraphQLString) },
-                    dataInstances: { type: new GraphQLList(GraphQLString) },
+                    cascadeInput: { type: CascadeInput }
                 },
                 async resolve(root, args) {
-                    let intersection = await cascade(args)
-                    intersection["depth"] = 0
+                    let answer = await cascade(args.cascadeInput)
 
-                    return [intersection]
+                    answer.configDefNodes.map(node => {
+                        node.cascade = answer
+                        node.depth = 0
+                    })
+
+                    return answer.configDefNodes
                 }
             }
         },
     }),
-    types: [Node, Relationship, Property, CascadeNode, QueryInput, MutationItem]
+    types: [Node, Relationship, Property, CascadeNode, CascadeInput, QueryInput, MutationItem]
 })
 
 router.use('', graphqlHTTP({
