@@ -11,16 +11,14 @@ export function copyToClipboard(e) {
   } 
 
 export async function showApi() {
+  const apiText = document.getElementById(`textApi`).innerText;
+  if (/\d/.test(apiText)) return // if contains a number (as api keys do)
 
-const apiText = document.getElementById(`textApi`).innerText;
-
-if (/\d/.test(apiText)) return // if contains a number (as api keys do)
-
-const accessToken = sessionStorage.getItem("accessToken");
-const email = parseJwt(accessToken).email;
-await Actions.GET_API(email)
-const apiKey = JSON.parse(sessionStorage.getItem("apiKey"))[0]
-document.getElementById(`textApi`).innerText = ` ${apiKey}`
+  const accessToken = sessionStorage.getItem("accessToken");
+  const email = parseJwt(accessToken).email;
+  await Actions.GET_API(email)
+  const apiKey = JSON.parse(sessionStorage.getItem("apiKey"))[0]
+  document.getElementById(`textApi`).innerText = ` ${apiKey}`
 }
 
 function parseJwt (token) {
