@@ -5,10 +5,10 @@ export default function(){
     const header = "Generated API from active filter"
 
     let cascadeInput = State.treeOfNodes.getCascadeParams()
-    console.log("cascadeInput", JSON.stringify(cascadeInput, null, 2))
-    const dynamicQuery = `
-    {
-        query:\`query RooterQueryType($cascadeInput: CascadeInput){
+
+    const query = JSON.stringify({
+
+        query: `query RooterQueryType($cascadeInput: CascadeInput){
         cascade(cascadeInput:$cascadeInput){
         id
         title
@@ -42,30 +42,10 @@ export default function(){
                 }
             }
         }
-    }}, variables: {
-            cascadeInput: ${JSON.stringify(cascadeInput, null, 2)}
+    }}`, variables: {
+            cascadeInput: cascadeInput
         }
-    }`
-
-    const query =`
-{
-    query:
-    \`query RooterQueryType($input:QueryInput){
-        nodes(itemInput:$input){
-        id
-        title
-        defType
-        parentId
-        updated
-        created
-        }
-    }\`,
-    variables: {
-        input: {
-            parentId: parentId
-        }
-    }
-}`
+    }, null, 2)
 
     const { protocol, port, hostname } = window.location;
 
@@ -119,7 +99,7 @@ export default function(){
                         Query: ${copyIcon("Query")}
 
                             <pre id="textQuery" class="${classPre}">
-                            ${dynamicQuery}
+                            ${query}
                             </pre>
                         </div>
                 </div>

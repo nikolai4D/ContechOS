@@ -12,7 +12,7 @@ export async function queryDefinitions() {
     }`, variables: {
             input: { defType: "configDef"}
         }
-    })
+    }, null, 2)
 
     console.log("nodeQuery", nodeQuery)
     const nodes = (await graphQLQuery(nodeQuery)).data.nodes
@@ -174,8 +174,9 @@ export async function queryCascade(cascadeInput) {
     }}`, variables: {
             cascadeInput: cascadeInput
     }
-    })
+    }, null, 2)
 
+    console.log("cascadeQuery", query)
     return graphQLQuery(query)
 }
 
