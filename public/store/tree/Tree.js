@@ -119,17 +119,19 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
     const selectedNodes = tree.selectedNodesData
 
     const internalRelsFirstDegree = []
-    const visibleRels = []
+    const includedRels = []
     this.rels.map(rel => {
         if(rel.sourceId === this.id && rel.targetId === this.id) internalRelsFirstDegree.push(rel)
         else if((rel.sourceId !== this.id && selectedNodes.find(el => el.id === rel.sourceId) !== undefined) ||
             (rel.targetId !== this.id && selectedNodes.find(el => el.id === rel.targetId) !== undefined)) {
-            visibleRels.push(rel)
+            includedRels.push(rel)
         }
     })
 
-    for(let visibleRel of visibleRels){
-        const otherNodeId = visibleRel.sourceId === this.id ? visibleRel.targetId : visibleRel.sourceId
+    let excludedFirst = []
+
+    for(let inclRel of includedRels){
+        const otherNodeId = inclRel.sourceId === this.id ? inclRel.targetId : inclRel.sourceId
         const otherNode = tree.getNodeById(otherNodeId)
         let otherChildrenSelectedIds = otherNode.children.filter(othChild => othChild.selected).map(child => child.id)
 
@@ -137,12 +139,30 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
 
         for(let child of this.children) {
             await child.extraFetch(tree)
-            if (child.rels.find(rel => rel.parentId === visibleRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
-                child.excluded = true
-                child.selected = false
+            if (child.rels.find(rel => rel.parentId === inclRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
+                // child.excluded = true
+                // child.selected = false
+                excludedFirst.push(child)
             }
         }
     }
+
+    for (let excNode of excludedFirst){
+        let rescued = false
+        let fdRels = excNode.rels.filter(rel => internalRelsFirstDegree.find(parentRel => rel.parentId === parentRel.id))
+        for ( let rel of fdRels) {
+            let otherNodeId = (rel.sourceId === excNode.id)? rel.sourceId : rel.targetId
+            if(!excludedFirst.includes(otherNodeId)) rescued = true
+        }
+
+        if(rescued === false) {
+            excNode.selected = false
+            excNode.excluded = true
+        }
+    }
+
+
+
 }
 
 TreeNode.prototype.unHideLineage = function(){
