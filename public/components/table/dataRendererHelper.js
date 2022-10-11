@@ -1,4 +1,5 @@
 import Graph from "../graph/Graph.js";
+import Modal from "../Modal.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
@@ -116,17 +117,17 @@ export async function renderDataAsTable(viewName,
 
 export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").innerHTML = "";
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-2 justify-content-end" })
   const switchInput = createHtmlElementWithData("input", {
     "class": "form-check-input",
-    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked": ""
+    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault"
   })
   const switchLabel = createHtmlElementWithData("label", {
     "class": "form-check-label",
     "for": "flexSwitchCheckDefault",
   });
   switchInput.addEventListener("click", async (event, state) => {
-    if (event.target.checked) {
+    if (!event.target.checked) {
       document.querySelector("#app").innerHTML = ""
       appendChildsToSelector("#app", await renderDataAsGraph(viewName))
       if (optionalAdditionalNodes !== undefined) {
@@ -154,7 +155,15 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   });
   switchDiv.appendChild(switchInput)
   switchDiv.appendChild(switchLabel)
+  document.querySelector("#toolBar").classList.add("container-fluid", "d-flex", "align-items-center", "justify-content-sm-end")
+
   document.querySelector("#toolBar").appendChild(switchDiv);
+  if (viewName === "filter"){
+    const containerModal = createHtmlElementWithData("div", {"id": "containerModal"})
+    containerModal.innerHTML=`${Modal()}`
+    document.querySelector("#toolBar").appendChild(containerModal);
+
+  }
 }
 
 function createHtmlElementWithData(elementName, attributeData = {}) {
