@@ -116,6 +116,6 @@ let cascadeParams = {
 async function d() {
   console.log("cascade: " + JSON.stringify(await queryCascade(cascadeParams), null, 2))
 }
-d()
+
 
 window.addEventListener("popstate", router);

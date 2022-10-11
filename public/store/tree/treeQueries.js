@@ -13,6 +13,8 @@ export async function queryDefinitions() {
             input: { defType: "configDef"}
         }
     })
+
+    console.log("nodeQuery", nodeQuery)
     const nodes = (await graphQLQuery(nodeQuery)).data.nodes
 
     return nodes

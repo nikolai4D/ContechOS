@@ -1,6 +1,51 @@
+import {State} from "../store/State.js";
+
 export default function(){
 
     const header = "Generated API from active filter"
+
+    let cascadeInput = State.treeOfNodes.getCascadeParams()
+    console.log("cascadeInput", JSON.stringify(cascadeInput, null, 2))
+    const dynamicQuery = `
+    {
+        query:\`query RooterQueryType($cascadeInput: CascadeInput){
+        cascade(cascadeInput:$cascadeInput){
+        id
+        title
+        defType
+        parentId
+        updated
+        created
+        childrenNodes{
+            id
+            title
+            defType
+            parentId
+            updated
+            created
+            
+            childrenNodes{
+                id
+                title
+                defType
+                parentId
+                updated
+                created
+                            
+                childrenNodes{
+                    id
+                    title
+                    defType
+                    parentId
+                    updated
+                    created
+                }
+            }
+        }
+    }}, variables: {
+            cascadeInput: ${JSON.stringify(cascadeInput, null, 2)}
+        }
+    }`
 
     const query =`
 {
@@ -74,7 +119,7 @@ export default function(){
                         Query: ${copyIcon("Query")}
 
                             <pre id="textQuery" class="${classPre}">
-                            ${query}
+                            ${dynamicQuery}
                             </pre>
                         </div>
                 </div>
