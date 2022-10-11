@@ -52,12 +52,16 @@ export async function checkAll(event) {
 export async function setFilterBoxCallback(parentNode, filterBoxNode, callbackFunc){
     filterBoxNode.querySelectorAll(".form-check-input").forEach(box => 
         box.addEventListener("click", async function(e) {
-        await checkFilter(e)
-        await callbackFunc();
-        document.querySelector("#filter-container-id").remove()
-        let newFilterBox = await FilterBox()
-        parentNode.appendChild(newFilterBox);
-        setFilterBoxCallback(parentNode, newFilterBox, callbackFunc)
+            if(e.currentTarget.id.startsWith('all')){
+                await checkAll(e)
+            } else{
+                await checkFilter(e)
+            }
+            await callbackFunc();
+            document.querySelector("#filter-container-id").remove()
+            let newFilterBox = await FilterBox()
+            parentNode.appendChild(newFilterBox);
+            setFilterBoxCallback(parentNode, newFilterBox, callbackFunc)
     }))
 }
 

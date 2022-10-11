@@ -93,8 +93,8 @@ export async function renderDataAsTable(viewName,
   }
 
   const setAppDivOnCallback = function (tableDivs) {
-    document.querySelector("#data-display-grid-container-id").innerHTML = ""
-    document.querySelector("#data-display-grid-container-id").appendChild(tableDivs[0]);
+    document.querySelector("#filterbox-grid-container-id").innerHTML = ""
+    document.querySelector("#filterbox-grid-container-id").appendChild(tableDivs[0]);
   }
   return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
 }
@@ -111,7 +111,7 @@ export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
     "for": "flexSwitchCheckDefault",
   });
   switchInput.addEventListener("click", async (event, state) => {
-    if (event.target.checked) {
+    if (!event.target.checked) {
       graphDisplayFunc()
     } else {
       tableDisplayFunc()
@@ -122,4 +122,7 @@ export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
   document.querySelector("#toolBar").classList.add("container-fluid", "d-flex", "align-items-center", "justify-content-sm-end")
 
   document.querySelector("#toolBar").appendChild(switchDiv);
+  const containerModal = createHtmlElementWithData("div", {"id": "containerModal"})
+  containerModal.innerHTML=`${Modal()}`
+  document.querySelector("#toolBar").appendChild(containerModal);
 }

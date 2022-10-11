@@ -32,20 +32,20 @@ export default class Filter {
 
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        setFilterBoxCallback(firstColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
-        firstColumnDiv.appendChild(filterBox)
-        secondColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
+        setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
+        secondColumnDiv.appendChild(filterBox)
         return [rowDiv]
     }
 
     async displayDataAndFilter(firstColumnDiv, secondColumnDiv) {
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        setFilterBoxCallback(firstColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.innerHTML = ""
-        firstColumnDiv.appendChild(filterBox)
+        firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         secondColumnDiv.innerHTML = ""
-        secondColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
+        secondColumnDiv.appendChild(filterBox)
     }
 
     async setupToolBar() { return setupToolBar( 
