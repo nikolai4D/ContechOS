@@ -69,9 +69,4 @@ function itemRow(node){
     return mainRow
 }
 
-function toggleHideShow(node) {
-
-}
-
-
 export default FilterBox;
