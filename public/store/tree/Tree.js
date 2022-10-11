@@ -117,10 +117,16 @@ function createPseudoParentRel(parentId, childId){
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
     const selectedNodes = tree.selectedNodesData
-    const visibleRels = this.rels.filter(rel =>
-        (rel.sourceId !== this.id && selectedNodes.find(el => el.id === rel.sourceId) !== undefined) ||
-        (rel.targetId !== this.id && selectedNodes.find(el => el.id === rel.targetId) !== undefined)
-    )
+
+    const internalRelsFirstDegree = []
+    const visibleRels = []
+    this.rels.map(rel => {
+        if(rel.sourceId === this.id && rel.targetId === this.id) internalRelsFirstDegree.push(rel)
+        else if((rel.sourceId !== this.id && selectedNodes.find(el => el.id === rel.sourceId) !== undefined) ||
+            (rel.targetId !== this.id && selectedNodes.find(el => el.id === rel.targetId) !== undefined)) {
+            visibleRels.push(rel)
+        }
+    })
 
     for(let visibleRel of visibleRels){
         const otherNodeId = visibleRel.sourceId === this.id ? visibleRel.targetId : visibleRel.sourceId
@@ -172,6 +178,7 @@ Tree.prototype.shake = async function () {
                 })
                 const relevantRels = []
                 node.rels.map(rel => {
+                    if(rel.sourceId === rel.targetId) relevantRels.push(rel)
                     if(rel.sourceId !== node.id && this.selectedNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
                 })
                 this.visibleRelations.push(...relevantRels)
