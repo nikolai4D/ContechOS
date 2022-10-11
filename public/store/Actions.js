@@ -137,6 +137,29 @@ class Actions {
     }
   }
 
+  async GET_API(email) {
+    try {
+        let getHeaders = {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        };
+    
+        const records = await fetch(`/api/user/apiKey`, {
+          method: "POST",
+          body:  JSON.stringify({email}),
+          headers: getHeaders,
+        });
+    
+        const sendRecords = (await records.json());
+        const mutate = Mutations;
+        mutate.SET_STATE("apiKey", sendRecords);
+    
+      } catch (err) {
+        console.log(err);
+      }
+    
+  }
+
   async GETALL(view) {
     try {
       console.log(view)
