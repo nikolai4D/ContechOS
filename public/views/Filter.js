@@ -3,7 +3,7 @@ import {FilterBox} from "../components/filter/FilterBox.js";
 import {checkFilter, setFilterBoxCallback} from "../components/filter/filterFunctions.js";
 
 import Actions from "../store/Actions.js";
-import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import { renderDataAsGraph, setupToolBar, renderDataAsTable } from "../components/table/dataRendererHelper.js";
 import {State} from "../store/State.js";
 import {createHtmlElementWithData} from "../components/DomElementHelper.js";
 
@@ -12,7 +12,6 @@ export default class Filter {
         document.title = "Filter";
         this.returnRenderFunc = renderDataAsGraph;
         this.view = "filter";
-        this.ViewHasRenderControl = true;
     }
     async getTemplate() {
         const tree = State.treeOfNodes
@@ -38,6 +37,27 @@ export default class Filter {
         secondColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         return [rowDiv]
     }
-    async setupToolBar() { return setupToolBar("filter", await FilterBox()) }
+
+    async displayDataAndFilter(firstColumnDiv, secondColumnDiv) {
+        const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
+        let filterBox = await FilterBox()
+        setFilterBoxCallback(firstColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        firstColumnDiv.innerHTML = ""
+        firstColumnDiv.appendChild(filterBox)
+        secondColumnDiv.innerHTML = ""
+        secondColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
+    }
+
+    async setupToolBar() { return setupToolBar( 
+        () => {
+            this.returnRenderFunc = renderDataAsGraph;
+            this.displayDataAndFilter(
+                document.querySelector("#filterbox-grid-container-id"),
+                document.querySelector("#data-display-grid-container-id"));},
+        () =>  {
+            this.returnRenderFunc = renderDataAsTable;
+            this.displayDataAndFilter(
+                document.querySelector("#filterbox-grid-container-id"),
+                document.querySelector("#data-display-grid-container-id"));})}
 
 }

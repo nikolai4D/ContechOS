@@ -91,30 +91,14 @@ export async function renderDataAsTable(viewName,
     nodeTableDiv.appendChild(dataTable)
   }
 
-  /*const relTableDiv = createHtmlElementWithData('div', { "id": "relTableDivName" })
-  {
-    let { dataTable, headerRow } = await generateDataTable(rels, "rels", relsTableSortFunc)
-    for (let thNode of headerRow) { // await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
-      thNode.addEventListener("click", async () => {
-        if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
-          setAppDivOnCallback(await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortReversedFunc(thNode.innerHTML), thNode.innerHTML, true))
-        } else {
-          setAppDivOnCallback(await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML), thNode.innerHTML, false))
-        }
-      });
-    }
-    relTableDiv.appendChild(dataTable)
-  }*/
-
   const setAppDivOnCallback = function (tableDivs) {
-    document.querySelector("#tableContainerDiv").innerHTML = ""
-    document.querySelector("#tableContainerDiv").appendChild(tableDivs[0]);
-   // document.querySelector("#app").appendChild(tableDivs[1]);
+    document.querySelector("#data-display-grid-container-id").innerHTML = ""
+    document.querySelector("#data-display-grid-container-id").appendChild(tableDivs[0]);
   }
-  return [nodeTableDiv]//,relTableDiv];
+  return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
 }
 
-export function setupToolBar(viewName, optionalAdditionalNodes) {
+export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
   document.querySelector("#toolBar").innerHTML = "";
   const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
   const switchInput = createHtmlElementWithData("input", {
@@ -127,29 +111,9 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   });
   switchInput.addEventListener("click", async (event, state) => {
     if (event.target.checked) {
-      document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app", await renderDataAsGraph(viewName))
-      if (optionalAdditionalNodes !== undefined) {
-        appendChildsToSelector("#app", optionalAdditionalNodes)
-      }
+      graphDisplayFunc()
     } else {
-      document.querySelector("#app").innerHTML = ""
-      const tableContainerDiv = createHtmlElementWithData("div", {"id": "tableContainerDiv"})
-      if (optionalAdditionalNodes !== undefined) {
-        const newContainerDiv = createHtmlElementWithData("div", {"class": "col-md-12"})
-        const rowDiv = createHtmlElementWithData("div", {"class": "row"})
-        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
-        const dataTableNode = createHtmlElementWithData("div", {"class": "col-md-8"})
-        dataTableNode.appendChild(tableContainerDiv)
-        optionalAdditionalNodes.className = "col-md-4"
-        rowDiv.appendChild(optionalAdditionalNodes)
-        rowDiv.appendChild(dataTableNode)
-        newContainerDiv.appendChild(rowDiv)
-        appendChildsToSelector("#app",rowDiv)
-      } else  {
-        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
-        appendChildsToSelector("#app", tableContainerDiv)
-      }
+      tableDisplayFunc()
     }
   });
   switchDiv.appendChild(switchInput)
