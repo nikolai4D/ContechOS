@@ -1,4 +1,5 @@
 import Graph from "../graph/Graph.js";
+import Modal from "../Modal.js";
 import {createHtmlElementWithData, appendChildsToSelector} from "../DomElementHelper.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
@@ -100,10 +101,10 @@ export async function renderDataAsTable(viewName,
 
 export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
   document.querySelector("#toolBar").innerHTML = "";
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-3 justify-content-end" })
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-2 justify-content-end" })
   const switchInput = createHtmlElementWithData("input", {
     "class": "form-check-input",
-    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault", "checked": ""
+    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault"
   })
   const switchLabel = createHtmlElementWithData("label", {
     "class": "form-check-label",
@@ -118,5 +119,7 @@ export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
   });
   switchDiv.appendChild(switchInput)
   switchDiv.appendChild(switchLabel)
+  document.querySelector("#toolBar").classList.add("container-fluid", "d-flex", "align-items-center", "justify-content-sm-end")
+
   document.querySelector("#toolBar").appendChild(switchDiv);
 }
