@@ -43,30 +43,4 @@ app.get("/*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "public", "index.html"));
 });
 
-//
-// let cascadeParams = {
-//   "configDef":
-//   {
-//     "title": ["Discipline Definition", "Phase Definition", "Properties Definition"]
-//   },
-//   "configObj":
-//   {
-//     "title":["Discipline"]
-//   },
-//   "typeData":
-//   {
-//     "title":["A"]
-//   },
-//   "instanceData":
-//   {
-//   }
-// }
-//
-// async function d() {
-//   let answer = await cascade(cascadeParams)
-//   //console.log('answer', JSON.stringify(answer, null, 2))
-// }
-//
-// d()
-
 app.listen(PORT, () => console.log(`App running on port ${PORT}`));

@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
-const { GraphQLSchema, GraphQLObjectType, GraphQLString, GraphQLBoolean} = require('graphql');
+const { GraphQLSchema, GraphQLObjectType} = require('graphql');
 const { GraphQLList } = require("graphql/type")
 const { Node, Relationship, Property, MutationItem, QueryInput, CascadeNode, CascadeInput} = require("./graphqlTypes")
 const { graphResolver } = require("./resolvers");

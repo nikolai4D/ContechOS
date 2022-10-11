@@ -1,26 +1,51 @@
+import {State} from "../store/State.js";
+
 export default function(){
 
     const header = "Generated API from active filter"
 
-    const query =`
-{
-    query:
-    \`query RooterQueryType($input:QueryInput){
-        nodes(itemInput:$input){
+    let cascadeInput = State.treeOfNodes.getCascadeParams()
+
+    const query = JSON.stringify({
+
+        query: `query RooterQueryType($cascadeInput: CascadeInput){
+        cascade(cascadeInput:$cascadeInput){
         id
         title
         defType
         parentId
         updated
         created
+        childrenNodes{
+            id
+            title
+            defType
+            parentId
+            updated
+            created
+            
+            childrenNodes{
+                id
+                title
+                defType
+                parentId
+                updated
+                created
+                            
+                childrenNodes{
+                    id
+                    title
+                    defType
+                    parentId
+                    updated
+                    created
+                }
+            }
         }
-    }\`,
-    variables: {
-        input: {
-            parentId: parentId
+    }}`, variables: {
+            cascadeInput: cascadeInput
         }
-    }
-}`
+    }, null, 2)
 
     const { protocol, port, hostname } = window.location;
 

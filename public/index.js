@@ -15,7 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       sessionStorage.clear();
       await fetch("/api/logout");
       navigateTo("/login");
-      //location.reload();
       console.log("Logout");
     }
 
@@ -94,28 +93,6 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-let cascadeParams = {
-  "configDef":
-      {
-        "title": ["Discipline Definition", "Phase Definition", "Properties Definition"]
-      },
-  "configObj":
-      {
-        "title":["Discipline", "Phase"]
-      },
-  "typeData":
-      {
-        "title":["A"],
-        "parentId": "co_d99c026d-dd78-4474-af01-7b5cd08e572e"
-      },
-  "instanceData":
-      {
-      }
-}
 
-async function d() {
-  console.log("cascade: " + JSON.stringify(await queryCascade(cascadeParams), null, 2))
-}
-d()
 
 window.addEventListener("popstate", router);
