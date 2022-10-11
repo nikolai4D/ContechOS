@@ -26,7 +26,7 @@ function TreeNode(id, title, layer, children, selected, data){
     this.layer = layer
     this.children = children
     this.selected = selected
-    this.hidden = false
+    this.excluded = false
     this.extraFetched = false
     this.data = data
     this.rels = []
@@ -116,17 +116,15 @@ function createPseudoParentRel(parentId, childId){
 }
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
-    const visibleNodes = tree.selectedNodesData
-    // await this.extraFetch()
+    const selectedNodes = tree.selectedNodesData
     const visibleRels = this.rels.filter(rel =>
-        (rel.sourceId !== this.id && visibleNodes.find(el => el.id === rel.sourceId) !== undefined) ||
-        (rel.targetId !== this.id && visibleNodes.find(el => el.id === rel.targetId) !== undefined)
+        (rel.sourceId !== this.id && selectedNodes.find(el => el.id === rel.sourceId) !== undefined) ||
+        (rel.targetId !== this.id && selectedNodes.find(el => el.id === rel.targetId) !== undefined)
     )
 
     for(let visibleRel of visibleRels){
         const otherNodeId = visibleRel.sourceId === this.id ? visibleRel.targetId : visibleRel.sourceId
         const otherNode = tree.getNodeById(otherNodeId)
-        // await otherNode.extraFetch(tree)
         let otherChildrenSelectedIds = otherNode.children.filter(othChild => othChild.selected).map(child => child.id)
 
         if(otherChildrenSelectedIds.length === 0) continue
@@ -134,7 +132,7 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
         for(let child of this.children) {
             await child.extraFetch(tree)
             if (child.rels.find(rel => rel.parentId === visibleRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
-                child.hidden = true
+                child.excluded = true
                 child.selected = false
             }
         }
@@ -142,7 +140,7 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
 }
 
 TreeNode.prototype.unHideLineage = function(){
-    this.hidden = false
+    this.excluded = false
     for(let child of this.children){
         child.unHideLineage()
     }
