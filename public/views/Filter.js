@@ -1,7 +1,4 @@
-import Graph from "../components/graph/Graph.js";
 import FilterBox from "../components/filter/FilterBox.js";
-
-import Actions from "../store/Actions.js";
 import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
 import {State} from "../store/State.js";
 
