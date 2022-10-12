@@ -8,19 +8,10 @@ async function cascade(params = {}) {
     let configObjNodes = await getAllRequiredNodesFromLayer("configObj", params.configObj)
     let typeDataNodes = await getAllRequiredNodesFromLayer("typeData", params.typeData)
     let instanceDataNodes = await getAllRequiredNodesFromLayer("instanceData", params.instanceData)
-    let configDefExternalRels = await getRelsFromNodes(configDefNodes, "configDef", "ExternalRel")
-    let configDefInternalRels = await getRelsFromNodes(configDefNodes, "configDef", "InternalRel")
-    let configObjExternalRels = await getRelsFromNodes(configObjNodes, "configObj", "ExternalRel")
-    let configObjInternalRels = await getRelsFromNodes(configObjNodes, "configObj", "InternalRel")
-    let typeDataExternalRels = await getRelsFromNodes(typeDataNodes, "typeData", "ExternalRel")
-    let typeDataInternalRels = await getRelsFromNodes(typeDataNodes, "typeData", "InternalRel")
-    let instanceDataExternalRels = await getRelsFromNodes(instanceDataNodes, "instanceData", "ExternalRel")
-    let instanceDataInternalRels = await getRelsFromNodes(instanceDataNodes, "instanceData", "InternalRel")
 
-    if(!(params.hasOwnProperty('intersect') && params.intersect === false)) {
-        configObjNodes = IntersectLayer(configDefNodes, configObjNodes, configDefExternalRels, configObjExternalRels, configDefInternalRels, configObjInternalRels)
-        typeDataNodes = IntersectLayer(configObjNodes, typeDataNodes, configObjExternalRels, typeDataExternalRels, configObjInternalRels, typeDataInternalRels)
-        instanceDataNodes = IntersectLayer(typeDataNodes, instanceDataNodes, typeDataExternalRels, instanceDataExternalRels, typeDataInternalRels, instanceDataInternalRels)
+    if(!(params.hasOwnProperty('intersect: ') && params.intersect === false)) {
+        typeDataNodes = await intersect(configObjNodes, typeDataNodes, "configObj", "typeData")
+        instanceDataNodes = await intersect(typeDataNodes, instanceDataNodes, "typeData", "instanceData")
     }
 
     return {configDefNodes, configObjNodes, typeDataNodes, instanceDataNodes}
@@ -44,61 +35,54 @@ async function getAllRequiredNodesFromLayer(layerName, params = {}) {
     return array
 }
 
-async function getRelsFromNodes(nodeArray, layerName, relType) {
+async function getRelsOfNode(nodeId, nodesInLayer, layerName) {
+
+    let targetExtRels = await getItems({targetId: nodeId, kindOfItem: "relationship", defType: layerName + "ExternalRel"})
+    let sourceExtRels = await getItems({sourceId: nodeId, kindOfItem: "relationship", defType: layerName + "ExternalRel"})
+
+    let targetIntRels = await getItems({targetId: nodeId, kindOfItem: "relationship", defType: layerName + "InternalRel"})
+    let sourceIntRels = await getItems({sourceId: nodeId, kindOfItem: "relationship", defType: layerName + "InternalRel"})
+
+    let rels = [...targetExtRels, ...sourceExtRels, ...targetIntRels, ...sourceIntRels]
+
+    let selfRels = []
+    let relevantRels = []
+
+    rels.map(rel => {
+        if(rel.target === rel.source) selfRels.push(rel)
+        else if (nodesInLayer.find(node => (node.id === rel.source && node.id !== nodeId) || (node.id === rel.target && node.id !== nodeId))) relevantRels.push(rel)
+    })
+    return {relevantRels, selfRels}
+}
+
+
+
+async function intersect(nodesInLayer, childLayerNodes, layerName, childLayerName) {
     let array = []
-    for (let node of nodeArray) {
-        let rels = await getItems({targetId: node.id, kindOfItem: "relationship", defType: layerName + relType})
-        if(rels )for (let rel of rels){
-            if(nodeArray.find(el => el.id === rel.source)) {
-                array.push(rel)
-            }
+
+    for (let parent of nodesInLayer) {
+        let {relevantRels} = await getRelsOfNode(parent.id, nodesInLayer, layerName)
+        let children = childLayerNodes.filter(node => node.parentId === parent.id)
+
+        for (let rel of relevantRels) {
+            let otherNodeId = rel.source === parent.id ? rel.target : rel.source
+            if(!childLayerNodes.find(node => node.id === otherNodeId)) relevantRels.splice(relevantRels.indexOf(rel), 1)
         }
-    }
-    return array
-}
 
-function IntersectLayer(parentLayerNodes, childLayerNodes, parentLayerExternalRels, childLayerExternalRels, parentLayerInternalRels, childLayerInternalRels) {
-    let externalIntersected = externalIntersect(parentLayerNodes, childLayerNodes, parentLayerExternalRels, childLayerExternalRels)
-
-    let internalIntersected = internalIntersect(parentLayerNodes, childLayerNodes, parentLayerInternalRels, childLayerInternalRels, externalIntersected)
-    return externalIntersected.concat(internalIntersected)
-}
-
-function externalIntersect(parentLayerNodes, childLayerNodes, parentLayerRels, childLayerRels) {
-    let array = []
-    for(let parentNode of parentLayerNodes){
-        let parentRels = parentLayerRels.filter(rel => rel.source === parentNode.id || rel.target === parentNode.id)
-        let childNodes = childLayerNodes.filter(childNode => childNode.parentId === parentNode.id)
-        for (let childNode of childNodes){
+        for (let child of children) {
+            let childRelRels = (await getRelsOfNode(child.id, childLayerNodes, childLayerName)).relevantRels
+            if (child.title === "Phase") console.log("childRelRels", JSON.stringify(childRelRels, null, 2))
             let isValid = true
-            let childRels = childLayerRels.filter(rel => rel.source === childNode.id || rel.target === childNode.id)
-            for (let parentRel of parentRels){
-                let matchingChildRel = childRels.find(rel => rel.parentId === parentRel.id)
-                if(!matchingChildRel) {
+            for (let revRel of relevantRels) {
+                if (child.title === "Phase") console.log("revRel", JSON.stringify(revRel, null, 2))
+                if (!childRelRels.find(rel => rel.parentId === revRel.id)) {
                     isValid = false
-                    break
                 }
             }
-            if(isValid) array.push(childNode)
+            if (isValid) array.push(child)
         }
     }
-
-    return array
-}
-
-function getOtherNodeFromRel(rel, node){
-    if(rel.sourceId === node.id) return rel.targetId
-    else return rel.sourceId
-}
-
-function internalIntersect(parentLayerNodes, childLayerNodes, parentLayerRels, childLayerRels, externalIntersected) {
-    let array = []
-    let relevantRels = childLayerRels.filter(rel => externalIntersect.find(node => node.id === rel.source || node.id === rel.target))
-    for (let childNode of childLayerNodes){
-        if(externalIntersected.find(node => node.id === childNode.id)) continue
-        if(relevantRels.find(rel => rel.source === childNode.id || rel.target === childNode.id && parentLayerRels.find(pRel => pRel.id === rel.parentId))) array.push(childNode)
-    }
-    return array
+        return array
 }
 
 module.exports = cascade
