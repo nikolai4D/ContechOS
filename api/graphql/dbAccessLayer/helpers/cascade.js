@@ -1,20 +1,31 @@
 const { getItems } = require("../../dbAccessLayer/crud/read")
+const {validateId} = require("../validation/validateId");
 
 // ToDo: optimize. Refactor.
 
 async function cascade(params = {}) {
 
-    let configDefNodes = await getAllRequiredNodesFromLayer("configDef", params.configDef)
-    let configObjNodes = await getAllRequiredNodesFromLayer("configObj", params.configObj)
-    let typeDataNodes = await getAllRequiredNodesFromLayer("typeData", params.typeData)
-    let instanceDataNodes = await getAllRequiredNodesFromLayer("instanceData", params.instanceData)
+    try {
+        let configDefNodes = await getAllRequiredNodesFromLayer("configDef", params.configDef)
+        let configObjNodes = await getAllRequiredNodesFromLayer("configObj", params.configObj)
+        let typeDataNodes = await getAllRequiredNodesFromLayer("typeData", params.typeData)
+        let instanceDataNodes = await getAllRequiredNodesFromLayer("instanceData", params.instanceData)
 
-    if(!(params.hasOwnProperty('intersect: ') && params.intersect === false)) {
-        typeDataNodes = await intersect(configObjNodes, typeDataNodes, "configObj", "typeData")
-        instanceDataNodes = await intersect(typeDataNodes, instanceDataNodes, "typeData", "instanceData")
+        if (!(params.hasOwnProperty('intersect') && params.intersect === false)) {
+            let coWraps = await wrap(configObjNodes, null, "configObj")
+            configObjNodes = getValidDataFromWraps(coWraps)
+            let tdWraps = await intersection(coWraps, typeDataNodes, "typeData")
+            typeDataNodes = getValidDataFromWraps(tdWraps)
+
+            let idWraps = await intersection(tdWraps, instanceDataNodes, "instanceData")
+            instanceDataNodes = getValidDataFromWraps(idWraps)
+        }
+
+        return {configDefNodes, configObjNodes, typeDataNodes, instanceDataNodes}
+    } catch (e) {
+        console.log(e)
+        return e
     }
-
-    return {configDefNodes, configObjNodes, typeDataNodes, instanceDataNodes}
 }
 
 async function getAllRequiredNodesFromLayer(layerName, params = {}) {
@@ -36,7 +47,6 @@ async function getAllRequiredNodesFromLayer(layerName, params = {}) {
 }
 
 async function getRelsOfNode(nodeId, nodesInLayer, layerName) {
-
     let targetExtRels = await getItems({targetId: nodeId, kindOfItem: "relationship", defType: layerName + "ExternalRel"})
     let sourceExtRels = await getItems({sourceId: nodeId, kindOfItem: "relationship", defType: layerName + "ExternalRel"})
 
@@ -55,32 +65,103 @@ async function getRelsOfNode(nodeId, nodesInLayer, layerName) {
     return {relevantRels, selfRels}
 }
 
-async function intersect(nodesInLayer, childLayerNodes, layerName, childLayerName) {
+function Node(data, parent, rels){
+    this.id = data.id
+    this.data = data
+    this.parent = parent
+    this.rels = rels
+    this.isValid = true
+    this.children = []
+    this.dependantSiblings = []
+    this.needsValidation = true
+}
+
+async function wrap(nodes, parentWraps, layerName){
+    let wraps = []
+    for (let node of nodes){
+        let rels = (await getRelsOfNode(node.id, nodes, layerName)).relevantRels
+        let parent = parentWraps === null ? null : parentWraps.find(wrap => wrap.id === node.parentId)
+        wraps.push(new Node(node, parent, rels))
+    }
+    return wraps
+}
+
+function getValidDataFromWraps(wraps){
     let array = []
+    for (let wrap of wraps) if(wrap.isValid) array.push(wrap.data)
+    return array
+}
 
-    for (let parent of nodesInLayer) {
-        let {relevantRels} = await getRelsOfNode(parent.id, nodesInLayer, layerName)
-        let children = childLayerNodes.filter(node => node.parentId === parent.id)
+async function intersection(parentWraps, childNodes, childLayerName){
+    let childWraps = []
 
-        for (let rel of relevantRels) {
-            let otherNodeId = rel.source === parent.id ? rel.target : rel.source
-            if(!childLayerNodes.find(node => node.id === otherNodeId)) relevantRels.splice(relevantRels.indexOf(rel), 1)
-        }
+    let validParentWraps = parentWraps.filter(wrap => wrap.isValid)
 
+    for (let parent of validParentWraps){
+        let children = childNodes.filter(node => node.parentId === parent.id)
         for (let child of children) {
-            let childRelRels = (await getRelsOfNode(child.id, childLayerNodes, childLayerName)).relevantRels
-            if (child.title === "Phase") console.log("childRelRels", JSON.stringify(childRelRels, null, 2))
-            let isValid = true
-            for (let revRel of relevantRels) {
-                if (child.title === "Phase") console.log("revRel", JSON.stringify(revRel, null, 2))
-                if (!childRelRels.find(rel => rel.parentId === revRel.id)) {
-                    isValid = false
-                }
-            }
-            if (isValid) array.push(child)
+            let rels = (await getRelsOfNode(child.id, childNodes, childLayerName)).relevantRels
+            let childWrap = new Node(child, parent, rels)
+            parent.children.push(childWrap)
+            childWraps.push(childWrap)
         }
     }
-        return array
+
+    function validateChildren() {
+        for (let parent of validParentWraps) {
+            if(parent.rels.length === 0) parent.children.map(child => child.needsValidation = false)
+            for (let rel of parent.rels) {
+                let otherNodeId = rel.source === parent.id ? rel.target : rel.source
+                let otherWrap = validParentWraps.find(wrap => wrap.id === otherNodeId)
+                if (otherWrap.children.length === 0 || !otherWrap.children.find(child => child.isValid)) continue
+
+                parent.children.map(child => {
+                    if (child.needsValidation === false) return
+                    child.needsValidation = false
+                    child.isValid = true
+
+                    let matchingRels = child.rels.filter(childRel => childRel.parentId === rel.id)
+                    if (matchingRels.length === 0) {
+                        console.log("no matching rels for " + child.data.title + " for parentRel " + rel.title)
+                        child.isValid = false
+                        child.dependantSiblings.forEach(sibling => {
+                            sibling.needsValidation = true
+                            console.log("sibling " + sibling.data.title + " needs validation because of " + child.data.title)
+                        })
+                        return
+                    }
+                    let relIsValid = false
+                    for (let matchingRel of matchingRels) {
+                        let otherNodeId = matchingRel.source === child.id ? matchingRel.target : matchingRel.source
+                        let otherWrap = childWraps.find(wrap => wrap.id === otherNodeId)
+                        if (otherWrap.isValid) {
+                            relIsValid = true
+                            child.dependantSiblings.push(otherWrap)
+                        }
+                    }
+                    if (!relIsValid) {
+                        child.isValid = false
+                        child.dependantSiblings.forEach(sibling => {
+                            sibling.needsValidation = true
+                            console.log("sibling " + sibling.data.title + " needs validation because of " + child.data.title)
+                        })
+                    }
+                })
+            }
+        }
+    }
+
+    let i = 5
+    while(i > 0 && validParentWraps.find(wrap => wrap.children.find(child => child.needsValidation))) {
+        console.log("i", i)
+        i--
+        validateChildren()
+        let needyChildren = childWraps.filter(wrap => wrap.needsValidation).map(wrap => wrap.data.title)
+        if(needyChildren.length > 0) console.log("needyChildren", needyChildren)
+    }
+
+    return childWraps
 }
+
 
 module.exports = cascade
