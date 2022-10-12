@@ -55,8 +55,6 @@ async function getRelsOfNode(nodeId, nodesInLayer, layerName) {
     return {relevantRels, selfRels}
 }
 
-
-
 async function intersect(nodesInLayer, childLayerNodes, layerName, childLayerName) {
     let array = []
 
