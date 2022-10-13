@@ -14,7 +14,6 @@ export async function queryDefinitions() {
         }
     }, null, 2)
 
-    console.log("nodeQuery", nodeQuery)
     const nodes = (await graphQLQuery(nodeQuery)).data.nodes
 
     return nodes
@@ -176,7 +175,6 @@ export async function queryCascade(cascadeInput) {
     }
     }, null, 2)
 
-    console.log("cascadeQuery", query)
     return graphQLQuery(query)
 }
 

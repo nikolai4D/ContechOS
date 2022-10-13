@@ -23,7 +23,6 @@ async function cascade(params = {}) {
 
         return {configDefNodes, configObjNodes, typeDataNodes, instanceDataNodes}
     } catch (e) {
-        console.log(e)
         return e
     }
 }
@@ -122,11 +121,9 @@ async function intersection(parentWraps, childNodes, childLayerName){
 
                     let matchingRels = child.rels.filter(childRel => childRel.parentId === rel.id)
                     if (matchingRels.length === 0) {
-                        console.log("no matching rels for " + child.data.title + " for parentRel " + rel.title)
                         child.isValid = false
                         child.dependantSiblings.forEach(sibling => {
                             sibling.needsValidation = true
-                            console.log("sibling " + sibling.data.title + " needs validation because of " + child.data.title)
                         })
                         return
                     }
@@ -143,7 +140,6 @@ async function intersection(parentWraps, childNodes, childLayerName){
                         child.isValid = false
                         child.dependantSiblings.forEach(sibling => {
                             sibling.needsValidation = true
-                            console.log("sibling " + sibling.data.title + " needs validation because of " + child.data.title)
                         })
                     }
                 })
@@ -153,11 +149,10 @@ async function intersection(parentWraps, childNodes, childLayerName){
 
     let i = 5
     while(i > 0 && validParentWraps.find(wrap => wrap.children.find(child => child.needsValidation))) {
-        console.log("i", i)
         i--
         validateChildren()
-        let needyChildren = childWraps.filter(wrap => wrap.needsValidation).map(wrap => wrap.data.title)
-        if(needyChildren.length > 0) console.log("needyChildren", needyChildren)
+        // let needyChildren = childWraps.filter(wrap => wrap.needsValidation).map(wrap => wrap.data.title)
+        // if(needyChildren.length > 0) console.log("needyChildren", needyChildren)
     }
 
     return childWraps
