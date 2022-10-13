@@ -3,14 +3,7 @@ import { iconEye } from "./toggleHideShow.js";
 
 async function FilterBox() {
 
-  let tree = State.treeOfNodes.tree
-    await State.treeOfNodes.ensureInit()
-
-  let nodeHtmlString = ``
-  tree.forEach(node => {
-        nodeHtmlString += itemRow(node)
-      }
-  )
+  let nodeHtmlString = await triggerTreeGetHtml();
 
   const htmlString = `
 <div class="accordion w-25 position-absolute open" id="accordionPanelsStayOpenExample">
@@ -32,19 +25,32 @@ async function FilterBox() {
 
   let filterDOM = document.createElement("div");
   filterDOM.className = "filter-container container-fluid"
+  filterDOM.id = "filter-container-id"
   filterDOM.innerHTML = htmlString;
   return filterDOM;
 }
 
+async function triggerTreeGetHtml() {
+  let tree = State.treeOfNodes.tree;
+  await State.treeOfNodes.ensureInit();
+
+  let nodeHtmlString = ``;
+  tree.forEach(node => {
+    nodeHtmlString += itemRow(node);
+  }
+  );
+  return nodeHtmlString;
+}
+
 function itemRow(node){
-    if(node.hidden) return ""
+    if(node.excluded) return ""
 
     let childrenFrame = `<br/>`
 
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
             <ul>
-            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}" data-function="checkAll" ${ node.viewAll? "checked": ""}>
+            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.isViewAllChecked? "checked": ""}>
             <label class="form-check-label" for="all_${node.id}"> All</label>
             <br/>
           `
@@ -60,7 +66,7 @@ function itemRow(node){
   
      let mainRow = `
      <div id="form-check-input-container" class="d-inline-block" role="button">
-          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" data-function="checkFilter" ${ node.selected? "checked": ""}>
+          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
           <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label> ${ node.selected? iconShow : ""}
           </div>
           ${ childrenFrame }
@@ -69,4 +75,4 @@ function itemRow(node){
     return mainRow
 }
 
-export default FilterBox;
+export {FilterBox, triggerTreeGetHtml};
