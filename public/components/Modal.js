@@ -1,59 +1,11 @@
-import {State} from "../store/State.js";
-
 export default function(){
 
     const header = "Generated API from active filter"
-
-    let cascadeInput = State.treeOfNodes.getCascadeParams()
-
-    const query = JSON.stringify({
-
-        query: `query RooterQueryType($cascadeInput: CascadeInput){
-        cascade(cascadeInput:$cascadeInput){
-        id
-        title
-        defType
-        parentId
-        updated
-        created
-        childrenNodes{
-            id
-            title
-            defType
-            parentId
-            updated
-            created
-            
-            childrenNodes{
-                id
-                title
-                defType
-                parentId
-                updated
-                created
-                            
-                childrenNodes{
-                    id
-                    title
-                    defType
-                    parentId
-                    updated
-                    created
-                }
-            }
-        }
-    }}`, variables: {
-            cascadeInput: cascadeInput
-        }
-    }, null, 2)
-
     const { protocol, port, hostname } = window.location;
-
     const requestType = "/POST"
     const textPort = port ? `:${port}` : null;
     const url = protocol + "//" +hostname + textPort + "/api/graphql";
     const api = "Click to show API Key"
-
     const classDiv = "p-3 border rounded border-1"
     const classPre =`border rounded border-1 bg-light`
     
@@ -99,7 +51,6 @@ export default function(){
                         Query: ${copyIcon("Query")}
 
                             <pre id="textQuery" class="${classPre}">
-                            ${query}
                             </pre>
                         </div>
                 </div>
