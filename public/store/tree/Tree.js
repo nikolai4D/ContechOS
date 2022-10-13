@@ -83,6 +83,7 @@ TreeNode.prototype.deselectLineage = function(){
     if(this.selected === true) {
         if(this.parent !== null) this.parent.viewAll = false
         this.selected = false
+        this.hidden_placeholder = false
         this.viewAll = false
         for (let child of this.children) {
             child.deselectLineage()
