@@ -18,6 +18,8 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
+import { FilterBox} from "../filter/FilterBox.js"
+import { checkFilter } from "../filter/filterFunctions.js"
 
 async function Graph(view) {
   State.view = view;
@@ -25,6 +27,7 @@ async function Graph(view) {
 
   let nodes,
     rels = [];
+  //let divContainer;
   let graphJsonData = await JSON.parse(sessionStorage.getItem(view));
 
   nodes = graphJsonData[0].nodes;
@@ -340,7 +343,6 @@ async function Graph(view) {
   };
 
   let link = g.append("g").attr("class", "forLinks").select(".forLinks");
-  // .selectAll("path")
 
   let linkLabel = g
     .selectAll(".linkLabel")
@@ -438,8 +440,9 @@ async function Graph(view) {
       .attr("y", (data) => data.y)
       .style("font-size", styles.nodeLabel.fontSize);
   });
+
   async function render(view) {
-    updateData(view);
+    await updateData(view);
     simulation.stop();
 
     link = svg
@@ -587,12 +590,10 @@ async function Graph(view) {
 
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
+    return svg.node()
   }
 
-
   await render(view);
-
-
-  return svg.node();
+  return [svg.node(), async () => await render(view)]
 }
 export default Graph;

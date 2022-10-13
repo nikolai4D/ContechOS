@@ -1,17 +1,16 @@
 import Actions from "../store/Actions.js";
 import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import {createHtmlElementWithData, appendChildsToSelector} from "../components/DomElementHelper.js";
 
 export default class Props {
     constructor() {
         document.title = "Props";
         this.returnRenderFunc = renderDataAsGraph;
         this.view = "props";
-        //this.ViewHasRenderControl = true;
     }
     async getTemplate() { 
         console.log("props")
         await Actions.GETALL("props")
-        return await this.returnRenderFunc("props")
+        return (await this.returnRenderFunc("props"))[0]
     }
-    async setupToolBar() { return setupToolBar("props") }
 }
