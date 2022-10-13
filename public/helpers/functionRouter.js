@@ -1,6 +1,6 @@
 import checkFilter, {checkAll} from "../components/filter/filterFunctions.js";
 import toggleHideShow from "../components/filter/toggleHideShow.js";
-import {copyToClipboard, showApi } from "../components/modalHelpers.js";
+import {copyToClipboard, showApi, getQuery } from "../components/modalHelpers.js";
 
 export default async function (demandedRoute, event) {
     const routes = [
@@ -9,7 +9,9 @@ export default async function (demandedRoute, event) {
         { path: 'checkAll', request: checkAll },
         { path: 'toggleHideShow', request: toggleHideShow },
         { path: 'copyToClipboard', request: copyToClipboard },
-        { path: 'showApi', request: showApi }
+        { path: 'showApi', request: showApi },
+        { path: 'getQuery', request: getQuery }
+
 
     ];
 

@@ -64,8 +64,8 @@ export default function(){
     }
 
     return `
-    <div class="p-2 link-secondary" data-bs-toggle="modal" data-bs-target="#exampleModal" >
-    <i class="bi bi-braces" role="button"></i>
+    <div class="p-2 link-secondary"data-bs-toggle="modal" data-bs-target="#exampleModal" >
+    <i class="bi bi-braces"  data-function="getQuery"  role="button"></i>
     </div>
     
 

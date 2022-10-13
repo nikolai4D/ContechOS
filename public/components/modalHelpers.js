@@ -1,4 +1,5 @@
 import Actions from "../store/Actions.js";
+import {State} from "../store/State.js";
 
 export function copyToClipboard(e) {
     const buttonId = e.target.id;
@@ -30,3 +31,54 @@ function parseJwt (token) {
 
   return JSON.parse(jsonPayload);
 };
+
+
+export function getQuery () {
+
+  let cascadeInput = State.treeOfNodes.getCascadeParams()
+
+  const query = JSON.stringify({
+
+      query: `query RooterQueryType($cascadeInput: CascadeInput){
+      cascade(cascadeInput:$cascadeInput){
+      id
+      title
+      defType
+      parentId
+      updated
+      created
+      childrenNodes{
+          id
+          title
+          defType
+          parentId
+          updated
+          created
+          
+          childrenNodes{
+              id
+              title
+              defType
+              parentId
+              updated
+              created
+                          
+              childrenNodes{
+                  id
+                  title
+                  defType
+                  parentId
+                  updated
+                  created
+              }
+          }
+      }
+  }}`, variables: {
+          cascadeInput: cascadeInput
+      }
+  }, null, 2)
+
+
+  document.getElementById(`textQuery`).innerText = ` ${query}`
+
+}
