@@ -58,11 +58,15 @@ export default async function router() {
     for (const node of viewResult) {
       document.querySelector("#app").appendChild(node);
     }
-  } else if (viewResult instanceof SVGElement) {
+  } else if (isElement(viewResult)) {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").appendChild(viewResult);
   } else {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").innerHTML = viewResult;
   }
+}
+
+function isElement(element) {
+  return element instanceof Element || element instanceof Document;  
 }

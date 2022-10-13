@@ -9,7 +9,6 @@ export default class Configs {
     }
     async getTemplate() { 
         await Actions.GETALL("configs")
-        return await this.returnRenderFunc("configs")
+        return (await this.returnRenderFunc("configs"))[0]
     }
-    async setupToolBar() { return setupToolBar("configs") }
 }

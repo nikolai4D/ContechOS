@@ -1,5 +1,6 @@
 import Graph from "../graph/Graph.js";
 import Modal from "../Modal.js";
+import {createHtmlElementWithData, appendChildsToSelector} from "../DomElementHelper.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
@@ -61,8 +62,7 @@ function generateDataTable(tableData, idName, sortFunc) {
 }
 
 export async function renderDataAsGraph(viewName) {
-  const graphView = await Graph(viewName)
-  return graphView;
+  return await Graph(viewName)
 }
 
 export async function renderDataAsTable(viewName,
@@ -92,30 +92,14 @@ export async function renderDataAsTable(viewName,
     nodeTableDiv.appendChild(dataTable)
   }
 
-  /*const relTableDiv = createHtmlElementWithData('div', { "id": "relTableDivName" })
-  {
-    let { dataTable, headerRow } = await generateDataTable(rels, "rels", relsTableSortFunc)
-    for (let thNode of headerRow) { // await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML))
-      thNode.addEventListener("click", async () => {
-        if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
-          setAppDivOnCallback(await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortReversedFunc(thNode.innerHTML), thNode.innerHTML, true))
-        } else {
-          setAppDivOnCallback(await renderDataAsTable(viewName, nodesTableSortFunc, propFixedSortFunc(thNode.innerHTML), thNode.innerHTML, false))
-        }
-      });
-    }
-    relTableDiv.appendChild(dataTable)
-  }*/
-
   const setAppDivOnCallback = function (tableDivs) {
-    document.querySelector("#tableContainerDiv").innerHTML = ""
-    document.querySelector("#tableContainerDiv").appendChild(tableDivs[0]);
-   // document.querySelector("#app").appendChild(tableDivs[1]);
+    document.querySelector("#filterbox-grid-container-id").innerHTML = ""
+    document.querySelector("#filterbox-grid-container-id").appendChild(tableDivs[0]);
   }
-  return [nodeTableDiv]//,relTableDiv];
+  return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
 }
 
-export function setupToolBar(viewName, optionalAdditionalNodes) {
+export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
   document.querySelector("#toolBar").innerHTML = "";
   const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-2 justify-content-end" })
   const switchInput = createHtmlElementWithData("input", {
@@ -128,29 +112,9 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   });
   switchInput.addEventListener("click", async (event, state) => {
     if (!event.target.checked) {
-      document.querySelector("#app").innerHTML = ""
-      appendChildsToSelector("#app", await renderDataAsGraph(viewName))
-      if (optionalAdditionalNodes !== undefined) {
-        appendChildsToSelector("#app", optionalAdditionalNodes)
-      }
+      graphDisplayFunc()
     } else {
-      document.querySelector("#app").innerHTML = ""
-      const tableContainerDiv = createHtmlElementWithData("div", {"id": "tableContainerDiv"})
-      if (optionalAdditionalNodes !== undefined) {
-        const newContainerDiv = createHtmlElementWithData("div", {"class": "col-md-12"})
-        const rowDiv = createHtmlElementWithData("div", {"class": "row"})
-        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
-        const dataTableNode = createHtmlElementWithData("div", {"class": "col-md-8"})
-        dataTableNode.appendChild(tableContainerDiv)
-        optionalAdditionalNodes.className = "col-md-4"
-        rowDiv.appendChild(optionalAdditionalNodes)
-        rowDiv.appendChild(dataTableNode)
-        newContainerDiv.appendChild(rowDiv)
-        appendChildsToSelector("#app",rowDiv)
-      } else  {
-        tableContainerDiv.appendChild((await renderDataAsTable(viewName))[0])
-        appendChildsToSelector("#app", tableContainerDiv)
-      }
+      tableDisplayFunc()
     }
   });
   switchDiv.appendChild(switchInput)
@@ -158,28 +122,7 @@ export function setupToolBar(viewName, optionalAdditionalNodes) {
   document.querySelector("#toolBar").classList.add("container-fluid", "d-flex", "align-items-center", "justify-content-sm-end")
 
   document.querySelector("#toolBar").appendChild(switchDiv);
-  if (viewName === "filter"){
-    const containerModal = createHtmlElementWithData("div", {"id": "containerModal"})
-    containerModal.innerHTML=`${Modal()}`
-    document.querySelector("#toolBar").appendChild(containerModal);
-
-  }
-}
-
-function createHtmlElementWithData(elementName, attributeData = {}) {
-  let newElement = document.createElement(elementName);
-  for (let [key, value] of Object.entries(attributeData)) {
-    newElement.setAttribute(key, value)
-  }
-  return newElement
-}
-
-export function appendChildsToSelector(selector, nodes) {
-  if (nodes.constructor === Array) {
-    for (const node of nodes) {
-      document.querySelector(selector).appendChild(node);
-    }
-  } else {
-    document.querySelector(selector).appendChild(nodes)
-  }
+  const containerModal = createHtmlElementWithData("div", {"id": "containerModal"})
+  containerModal.innerHTML=`${Modal()}`
+  document.querySelector("#toolBar").appendChild(containerModal);
 }

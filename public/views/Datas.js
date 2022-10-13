@@ -9,7 +9,6 @@ export default class Datas {
   }
   async getTemplate() { 
     await Actions.GETALL("datas")
-    return await this.returnRenderFunc("datas")
-}
-  async setupToolBar() { return setupToolBar("datas") }
+    return (await this.returnRenderFunc("datas"))[0]
+  }
 }
