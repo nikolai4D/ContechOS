@@ -120,38 +120,52 @@ TreeNode.prototype.setChildrenVisibility = async function (tree) {
 
     const internalRelsFirstDegree = []
     const includedRels = []
+
+    // This.rels group internal and external rels.
     this.rels.map(rel => {
+
+        // If this node is source and target of the internal rel.
         if(rel.sourceId === this.id && rel.targetId === this.id) internalRelsFirstDegree.push(rel)
+
+        // If the other node of the rel is displayed (then later the rel should be shown).
         else if((rel.sourceId !== this.id && selectedNodes.find(el => el.id === rel.sourceId) !== undefined) ||
             (rel.targetId !== this.id && selectedNodes.find(el => el.id === rel.targetId) !== undefined)) {
             includedRels.push(rel)
         }
     })
 
+    // Nodes whose parent have a relation with another parent, but child have not (example: email and profile
     let excludedFirst = []
 
+    // inclRels only have displayed nodes as source and target.
     for(let inclRel of includedRels){
         const otherNodeId = inclRel.sourceId === this.id ? inclRel.targetId : inclRel.sourceId
         const otherNode = tree.getNodeById(otherNodeId)
         let otherChildrenSelectedIds = otherNode.children.filter(othChild => othChild.selected).map(child => child.id)
 
+        // if the other parent have no selected children, we don't intersect with it (example: profile def is checked bt not profile, all project def children should show up.)
         if(otherChildrenSelectedIds.length === 0) continue
 
         for(let child of this.children) {
             await child.extraFetch(tree)
+            // make sure that the child have a rel descending from the incl rel. Else add it to the excluded list.
             if (child.rels.find(rel => rel.parentId === inclRel.id && otherChildrenSelectedIds.includes(getOtherIdInRel(rel, child.id))) === undefined) {
-                // child.excluded = true
-                // child.selected = false
                 excludedFirst.push(child)
             }
         }
     }
 
+    // The excluded then get a chance to be included if they have a rel with a selected child of the other parent.
     for (let excNode of excludedFirst){
         let rescued = false
+        // If the excluded node have an internal rel with a sibling, then it get rescued (for example: email got rescued by project
+
+        // Get the childrels of rels that have the same source and target (example: email_to_project is child of projectdef_to_projectDef)
         let fdRels = excNode.rels.filter(rel => internalRelsFirstDegree.find(parentRel => rel.parentId === parentRel.id))
         for ( let rel of fdRels) {
             let otherNodeId = (rel.sourceId === excNode.id)? rel.sourceId : rel.targetId
+
+            //After making sure that the other node is not also excluded, we rescue it.
             if(!excludedFirst.includes(otherNodeId)) rescued = true
         }
 
