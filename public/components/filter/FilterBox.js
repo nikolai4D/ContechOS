@@ -43,7 +43,7 @@ async function triggerTreeGetHtml() {
 }
 
 function itemRow(node){
-    if(node.hidden) return ""
+    if(node.excluded) return ""
 
     let childrenFrame = `<br/>`
 
