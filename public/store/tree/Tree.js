@@ -9,8 +9,7 @@ import {
 
 export function Tree() {
     this.tree = []
-    this.visibleRelations = []
-    this.selectedNodesData = []
+    this.selectedRelations = []
     this.selectedTreeNodes = []
 }
 
@@ -24,7 +23,7 @@ function TreeNode(id, title, layer, children, selected, data, parent){
     this.id = id
     this.title = title
     this.layer = layer
-    this.hidden_placeholder = false
+    this.hidden = false
     this.parent = parent
     this.children = children
     this.selected = selected
@@ -75,14 +74,13 @@ Tree.prototype.setSelectedNodesAndData = function(){
         selectedTreeNodes.push(...node.getSelectedInLineage())
     }
     this.selectedTreeNodes = selectedTreeNodes
-    this.selectedNodesData = selectedTreeNodes.map(node => node.data)
 }
 
 TreeNode.prototype.deselectLineage = function(){
     if(this.selected === true) {
         if(this.parent !== null) this.parent.viewAll = false
         this.selected = false
-        this.hidden_placeholder = false
+        this.hidden = false
         this.viewAll = false
         for (let child of this.children) {
             child.deselectLineage()
@@ -120,7 +118,7 @@ function createPseudoParentRel(parentId, childId){
 }
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
-    const selectedNodes = tree.selectedNodesData
+    const selectedNodes = tree.selectedTreeNodes.map(node => node.data)
 
     const internalRelsFirstDegree = []
     const includedRels = []
@@ -200,7 +198,7 @@ Tree.prototype.shake = async function () {
     this.unHideAll()
     this.setSelectedNodesAndData()
     await this.extraFetchAllSelected()
-    this.visibleRelations = []
+    const selectedRels = []
     let nodesOnThisLayer = this.tree
     let nodesOnNextLayer = []
 
@@ -209,17 +207,16 @@ Tree.prototype.shake = async function () {
         for (let node of nodesOnThisLayer) {
             if (node.selected) {
 
-                // await node.extraFetch(this)
                 await node.setChildrenVisibility(this)
                 node.children.map (child=> {
-                    if(child.selected) this.visibleRelations.push(createPseudoParentRel(node.id, child.id))
+                    if(child.selected) selectedRels.push(createPseudoParentRel(node.id, child.id))
                 })
                 const relevantRels = []
                 node.rels.map(rel => {
                     if(rel.sourceId === rel.targetId) relevantRels.push(rel)
-                    if(rel.sourceId !== node.id && this.selectedNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
+                    if(rel.sourceId !== node.id && this.selectedTreeNodes.map(node => node.data).find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
                 })
-                this.visibleRelations.push(...relevantRels)
+                selectedRels.push(...relevantRels)
                 nodesOnNextLayer.push(...node.children)
             }
         }
@@ -228,13 +225,30 @@ Tree.prototype.shake = async function () {
     }
 
     this.setSelectedNodesAndData()
-    this.trimVisibleRelations()
+    this.selectedRelations = trimRels(selectedRels, this.selectedTreeNodes)
+
+    console.log("nodes: " + this.tree.map(node => node.title + ", " + node.hidden))
 }
 
-Tree.prototype.trimVisibleRelations = function(){
-    this.visibleRelations = this.visibleRelations.filter(rel => {
-        const source = this.selectedNodesData.find(el => el.id === rel.sourceId)
-        const target = this.selectedNodesData.find(el => el.id === rel.targetId)
+
+Tree.prototype.getVisibleData = function(){
+    const visibleNodes = this.selectedTreeNodes.filter(node => !node.hidden)
+    const visibleNodesData = visibleNodes.map(node => node.data)
+    const visibleRels = trimRels(this.selectedRelations, visibleNodes).map(rel => {
+        rel['source'] = rel.sourceId
+        rel['target'] = rel.targetId
+        return rel
+    })
+    return {
+        nodes: visibleNodesData,
+        relations: visibleRels
+    }
+}
+
+function trimRels(rels, nodes){
+    return rels.filter(rel => {
+        const source = nodes.find(node => node.id === rel.sourceId)
+        const target = nodes.find(node => node.id === rel.targetId)
         return source !== undefined && target !== undefined
     })
 }

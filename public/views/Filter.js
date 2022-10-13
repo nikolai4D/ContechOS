@@ -17,13 +17,8 @@ export default class Filter {
         const tree = State.treeOfNodes
         await tree.ensureInit()
 
-        tree.visibleRelations.map(rel => {
-            rel.source = rel.sourceId
-            rel.target = rel.targetId
-            return rel
-        })
-
-        sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+        const {nodes, relations} = tree.getVisibleData()
+        sessionStorage.setItem("filter", JSON.stringify([{nodes: nodes , rels: relations }]));
         let rowDiv = createHtmlElementWithData("div", {"class": "row"})
         let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right", "id": "filterbox-grid-container-id"})
         rowDiv.appendChild(firstColumnDiv)
@@ -32,7 +27,7 @@ export default class Filter {
 
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        await setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         secondColumnDiv.appendChild(filterBox)
         return [rowDiv]
@@ -41,7 +36,7 @@ export default class Filter {
     async displayDataAndFilter(firstColumnDiv, secondColumnDiv, firstClass, secondClass) {
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        await setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.innerHTML = ""
         firstColumnDiv.className = firstClass
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
