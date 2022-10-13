@@ -90,6 +90,7 @@ TreeNode.prototype.deselectLineage = function(){
     }
 }
 
+
 TreeNode.prototype.selectChildren = function(){
     for(let child of this.children){
         child.selected = true
