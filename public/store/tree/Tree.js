@@ -35,7 +35,6 @@ function TreeNode(id, title, layer, children, selected, data, parent){
     this.viewAll = false
 }
 
-
 TreeNode.prototype.findIdInLineage = function(id){
     if(this.id === id) return this
     if(this.children.length !== 0){

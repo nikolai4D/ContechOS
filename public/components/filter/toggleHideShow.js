@@ -1,4 +1,5 @@
 import { eyeFillHide, eyeFillShow } from "../Icons.js"
+import {State} from "../../store/State.js";
 
 export default function (e){
 
@@ -6,7 +7,10 @@ export default function (e){
     const { hide, show } = iconEye(nodeId);
     const iconType = getNodeIdIconType(e).iconType;
     const newIcon = iconType === "Show" ? hide : show
-    
+
+    let treeNode = State.treeOfNodes.getNodeById(nodeId)
+    treeNode.hidden_placeholder = !treeNode.hidden_placeholder
+
     document.getElementById(`toggleEyeContainer_${nodeId}`).innerHTML = newIcon;
 }
 
