@@ -44,7 +44,7 @@ function itemRow(node){
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
             <ul>
-            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}" data-function="checkAll" ${ node.isViewAllChecked? "checked": ""}>
+            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}" data-function="checkAll" ${ node.viewAll? "checked": ""}>
             <label class="form-check-label" for="all_${node.id}"> All</label>
             <br/>
           `

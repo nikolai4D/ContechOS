@@ -21,8 +21,8 @@ export async function checkAll(event) {
 
     const tree = State.treeOfNodes
     const treeNode = tree.getNodeById(input.id.substring(4))
-    treeNode.isViewAllChecked = !treeNode.isViewAllChecked
-    if (treeNode.isViewAllChecked) {
+    treeNode.viewAll = !treeNode.viewAll
+    if (treeNode.viewAll) {
         treeNode.selectChildren()
     } else {
         treeNode.deselectLineage()

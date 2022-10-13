@@ -20,17 +20,19 @@ Tree.prototype.ensureInit = async function () {
     this.tree = this.fructify(defNodes, 0)}
 }
 
-function TreeNode(id, title, layer, children, selected, data){
+function TreeNode(id, title, layer, children, selected, data, parent){
     this.id = id
     this.title = title
     this.layer = layer
+    this.hidden_placeholder = false
+    this.parent = parent
     this.children = children
     this.selected = selected
     this.hidden = false
     this.extraFetched = false
     this.data = data
     this.rels = []
-    this.isViewAllChecked = false
+    this.viewAll = false
 }
 
 
@@ -79,8 +81,9 @@ Tree.prototype.setSelectedNodesAndData = function(){
 
 TreeNode.prototype.deselectLineage = function(){
     if(this.selected === true) {
+        if(this.parent !== null) this.parent.viewAll = false
         this.selected = false
-        this.isViewAllChecked = false
+        this.viewAll = false
         for (let child of this.children) {
             child.deselectLineage()
         }
@@ -93,10 +96,10 @@ TreeNode.prototype.selectChildren = function(){
     }
 }
 
-Tree.prototype.fructify = function(dbNodes, layer){
+Tree.prototype.fructify = function(dbNodes, layer, parent = null){
     const treeNodes = []
     for(let node of dbNodes){
-        treeNodes.push(new TreeNode(node.id, node.title, layer,[], false, node))
+        treeNodes.push(new TreeNode(node.id, node.title, layer,[], false, node, parent))
     }
     return treeNodes
 }
@@ -212,7 +215,7 @@ Tree.prototype.overview = function(){
 TreeNode.prototype.extraFetch = async function (tree,force = false) {
     if(this.extraFetched && !force) return
     this.extraFetched = true
-    if(this.layer<3) this.children = await tree.fructify(await queryNodeChildren(this.id), this.layer + 1)
+    if(this.layer<3) this.children = await tree.fructify(await queryNodeChildren(this.id), this.layer + 1, this)
     this.setRelations(await queryRelations(this.id))
 }
 
@@ -247,8 +250,9 @@ Tree.prototype.extraFetchAllSelected = async function(){
     if(resolutions.length !== 2*nodesToExtraFetch.length) throw new Error("Resolutions and nodes to extra fetch lengths don't match: " + resolutions.length + " " + nodesToExtraFetch.length)
     else {
         for(let i=0; i<resolutions.length; i+=2){
-            nodesToExtraFetch[i/2].children = this.fructify(resolutions[i].data.nodes, nodesToExtraFetch[i / 2].layer + 1)
-            nodesToExtraFetch[i/2].setRelations([...resolutions[i+1].data.sourceRels, ...resolutions[i+1].data.targetRels])
+            let treeNode = nodesToExtraFetch[i/2]
+            treeNode.children = this.fructify(resolutions[i].data.nodes, nodesToExtraFetch[i / 2].layer + 1, treeNode)
+            treeNode.setRelations([...resolutions[i+1].data.sourceRels, ...resolutions[i+1].data.targetRels])
         }
     }
 
