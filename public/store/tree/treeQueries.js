@@ -12,7 +12,8 @@ export async function queryDefinitions() {
     }`, variables: {
             input: { defType: "configDef"}
         }
-    })
+    }, null, 2)
+
     const nodes = (await graphQLQuery(nodeQuery)).data.nodes
 
     return nodes
@@ -128,6 +129,52 @@ export async function asyncQueryRelations(nodeId) {
             }
         }
     })
+    return graphQLQuery(query)
+}
+
+
+export async function queryCascade(cascadeInput) {
+    const query = JSON.stringify({
+
+        query: `query RooterQueryType($cascadeInput: CascadeInput){
+        cascade(cascadeInput:$cascadeInput){
+        id
+        title
+        defType
+        parentId
+        updated
+        created
+        childrenNodes{
+            id
+            title
+            defType
+            parentId
+            updated
+            created
+            
+            childrenNodes{
+                id
+                title
+                defType
+                parentId
+                updated
+                created
+                            
+                childrenNodes{
+                    id
+                    title
+                    defType
+                    parentId
+                    updated
+                    created
+                }
+            }
+        }
+    }}`, variables: {
+            cascadeInput: cascadeInput
+    }
+    }, null, 2)
+
     return graphQLQuery(query)
 }
 

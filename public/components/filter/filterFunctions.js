@@ -6,7 +6,6 @@ export async function checkFilter(event) {
     const tree = State.treeOfNodes
 
     let input =getInputFromEvent(event)
-    console.log(input)
     input.toggleAttribute("checked")
 
     const treeNode = tree.getNodeById(input.id.substring(9))
@@ -68,7 +67,7 @@ export async function setFilterBoxCallback(parentNode, filterBoxNode, callbackFu
 function getInputFromEvent(event){
     if(event.target.tagName === "LABEL") return document.getElementById(event.target.getAttribute("for"))
     else if ( event.target.tagName === "INPUT" ) return event.target
-    else console.log("tagname: " + event.target.tagName)
+    // else console.log("tagname: " + event.target.tagName)
 }
 
 export default checkFilter;

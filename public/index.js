@@ -4,6 +4,7 @@ import handleToken from "./helpers/handleToken.js";
 import auth from "./helpers/auth.js";
 import register from "./helpers/register.js";
 import functionRouter from "./helpers/functionRouter.js";
+import {queryCascade} from "./store/tree/treeQueries.js";
 
 document.addEventListener("DOMContentLoaded", async () => {
   console.log("DOMContentLoaded");
@@ -14,7 +15,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       sessionStorage.clear();
       await fetch("/api/logout");
       navigateTo("/login");
-      //location.reload();
       console.log("Logout");
     }
 
@@ -92,5 +92,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     handleToken(sessionStorage.getItem("accessToken"));
   }
 });
+
+
 
 window.addEventListener("popstate", router);
