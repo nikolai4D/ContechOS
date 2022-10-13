@@ -321,3 +321,45 @@ TreeNode.prototype.setRelations = function (relations) {
         } else if (this.rels.find(rel => rel.id === stateRel.id) === undefined) this.rels.push(stateRel)
     })
 }
+
+TreeNode.prototype.getCascadeParamsInLineage = function(cascadeParams, isParentViewAllChecked = false){
+    if(this.selected === false ) return
+
+    let layers = [
+        "configDef",
+        "configObj",
+        "typeData",
+        "instanceData"
+    ]
+
+    if(isParentViewAllChecked === false) {
+        let layer = layers[this.layer]
+        if(!cascadeParams[layer].hasOwnProperty("id")) cascadeParams[layer].id = []
+        cascadeParams[layer].id.push(this.id)
+    }
+
+    if(this.isViewAllChecked){
+        let childLayer = layers[this.layer+1]
+        if(!cascadeParams[childLayer].hasOwnProperty("parentId")) cascadeParams[childLayer].parentId = []
+        cascadeParams[childLayer].parentId.push(this.id)
+    }
+
+    for (let child of this.children){
+        child.getCascadeParamsInLineage(cascadeParams, this.isViewAllChecked)
+    }
+}
+
+Tree.prototype.getCascadeParams = function(){
+    let cascadeParams = {
+        configDef: {},
+        configObj: {},
+        typeData: {},
+        instanceData: {},
+    }
+
+    for(let node of this.tree){
+        node.getCascadeParamsInLineage(cascadeParams)
+    }
+
+    return cascadeParams
+}

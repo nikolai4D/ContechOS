@@ -1,6 +1,6 @@
 const { validateId } = require("./validateId");
 const { voc } = require("../voc");
-const { filterItems } = require("../helpers/filterItems");
+const { filterItems } = require("../helpers/filterFunction");
 
 function validateBulkFetch(params
 ) {

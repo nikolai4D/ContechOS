@@ -1,4 +1,6 @@
 const { getItems } = require("./dbAccessLayer/crud/read");
+const cascade = require("./dbAccessLayer/helpers/cascade");
+const {voc} = require("./dbAccessLayer/voc");
 
 const definitionTypes = [
     "configDef",
@@ -54,4 +56,16 @@ async function graphResolver(params = {}, enforcedParams = {}, isUniqueOrNull = 
     return items
 }
 
-module.exports = { graphResolver, itemsResolver }
+async function cascadeResolver(cascade, depth, parentId) {
+    let layerName = voc.layers[depth].inString
+    let children = cascade[layerName+"Nodes"].filter(item => item.parentId === parentId)
+    children.map(child => {
+        child.depth = depth
+        child.cascade = cascade
+    })
+    return children
+}
+
+
+
+module.exports = { graphResolver, cascadeResolver }
