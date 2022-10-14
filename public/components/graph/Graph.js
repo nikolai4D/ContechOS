@@ -46,7 +46,7 @@ async function Graph(view) {
   };
 
   let width = window.innerWidth,
-    height = window.innerHeight - 50;
+    height = window.innerHeight - 60;
 
   const simulation = d3
     .forceSimulation(nodes)
