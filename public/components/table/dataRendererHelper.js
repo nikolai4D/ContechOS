@@ -95,33 +95,5 @@ export async function renderDataAsTable(viewName,
     document.querySelector("#filterbox-grid-container-id").innerHTML = ""
     document.querySelector("#filterbox-grid-container-id").appendChild(tableDivs[0]);
   }
-  return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
-}
-
-export function setupToolBar(graphDisplayFunc, tableDisplayFunc, checked, containerNode) {
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
-  const switchInput = createHtmlElementWithData("input", {
-    "class": "form-check-input",
-    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault"
-  })
-  if(checked()){
-    switchInput.setAttribute("checked", "")
-  }
-  const switchLabel = createHtmlElementWithData("label", {
-    "class": "form-check-label",
-    "for": "flexSwitchCheckDefault",
-  });
-  switchInput.addEventListener("click", async (event, state) => {
-    if (!event.target.checked) {
-      graphDisplayFunc()
-    } else {
-      tableDisplayFunc()
-    }
-  });
-  switchDiv.appendChild(switchInput)
-  switchDiv.appendChild(switchLabel)
-  containerNode.appendChild(switchDiv);
-  const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
-  containerModal.innerHTML=`${Modal()}`
-  containerNode.appendChild(containerModal);
+  return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]
 }

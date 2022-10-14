@@ -1,7 +1,7 @@
 import {FilterBox} from "../components/filter/FilterBox.js";
-import {setFilterBoxCallback} from "../components/filter/filterFunctions.js";
+import {setFilterBoxCallback, setupToolBar, addFunctionsToFilterbox} from "../components/filter/filterFunctions.js";
 
-import { renderDataAsGraph, setupToolBar, renderDataAsTable } from "../components/table/dataRendererHelper.js";
+import {renderDataAsGraph, renderDataAsTable } from "../components/table/dataRendererHelper.js";
 import {State} from "../store/State.js";
 import {createHtmlElementWithData} from "../components/DomElementHelper.js";
 
@@ -47,7 +47,7 @@ export default class Filter {
         await this.setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector(this.filterboxHeaderId))
     }
 
-    async setupToolBar(firstDiv, secondDiv, containerNode) { return setupToolBar( 
+    async setupToolBar(firstDiv, secondDiv, containerNode) { return addFunctionsToFilterbox( 
         () => {
             this.returnRenderFunc = renderDataAsGraph;
             this.isInTableView = false;
