@@ -2,7 +2,6 @@ import {State} from "../../store/State.js";
 import { iconEye } from "./toggleHideShow.js";
 
 async function FilterBox() {
-
   let nodeHtmlString = await triggerTreeGetHtml();
 
   const htmlString = `
@@ -50,7 +49,7 @@ function itemRow(node){
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
             <ul>
-            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.isViewAllChecked? "checked": ""}>
+            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.viewAll? "checked": ""}>
             <label class="form-check-label" for="all_${node.id}"> All</label>
             <br/>
           `
@@ -61,13 +60,24 @@ function itemRow(node){
       childrenFrame += `</ul>`
     }
 
-    const iconShow = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${iconEye(node.id).show}</div>`
-  
-  
+    //const eye = node.hidden? iconEye(node.id).hide : iconEye(node.id).show
+    let eye
+    if(node.hidden){
+        console.log(node.title + " is hidden")
+        eye = iconEye(node.id).hide
+    }
+    else {
+        console.log(node.title + " is shown")
+        eye = iconEye(node.id).show
+    }
+
+    const eyeDiv = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${eye}</div>`
+
      let mainRow = `
      <div id="form-check-input-container" class="d-inline-block" role="button">
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
-          <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label> ${ node.selected? iconShow : ""}
+          <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label> 
+          ${ node.selected? eyeDiv : ""}
           </div>
           ${ childrenFrame }
      `
