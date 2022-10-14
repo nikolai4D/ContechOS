@@ -1,5 +1,5 @@
 import Actions from "../store/Actions.js";
-import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import {renderDataAsGraph} from "../components/table/dataRendererHelper.js";
 
 export default class Datas {
   constructor() {
