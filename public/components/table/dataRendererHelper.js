@@ -81,7 +81,6 @@ export async function renderDataAsTable(viewName,
     let { dataTable, headerRow } = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
     for (let thNode of headerRow) {
       thNode.addEventListener("click", async () => {
-        console.log(clickedHeader === thNode.innerHTML)
         if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
           setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true))
         } else {
@@ -99,13 +98,15 @@ export async function renderDataAsTable(viewName,
   return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
 }
 
-export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
-  document.querySelector("#toolBar").innerHTML = "";
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch d-flex p-2 justify-content-end" })
+export function setupToolBar(graphDisplayFunc, tableDisplayFunc, checked) {
+  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
   const switchInput = createHtmlElementWithData("input", {
     "class": "form-check-input",
     "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault"
   })
+  if(checked()){
+    switchInput.setAttribute("checked", "")
+  }
   const switchLabel = createHtmlElementWithData("label", {
     "class": "form-check-label",
     "for": "flexSwitchCheckDefault",
@@ -119,10 +120,10 @@ export function setupToolBar(graphDisplayFunc, tableDisplayFunc) {
   });
   switchDiv.appendChild(switchInput)
   switchDiv.appendChild(switchLabel)
-  document.querySelector("#toolBar").classList.add("container-fluid", "d-flex", "align-items-center", "justify-content-sm-end")
+  let parentNodeName = "#accordion-container-switch-modalbtn"
 
-  document.querySelector("#toolBar").appendChild(switchDiv);
-  const containerModal = createHtmlElementWithData("div", {"id": "containerModal"})
+  document.querySelector(parentNodeName).appendChild(switchDiv);
+  const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
   containerModal.innerHTML=`${Modal()}`
-  document.querySelector("#toolBar").appendChild(containerModal);
+  document.querySelector(parentNodeName).appendChild(containerModal);
 }

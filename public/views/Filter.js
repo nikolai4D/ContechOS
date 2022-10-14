@@ -1,8 +1,6 @@
-import Graph from "../components/graph/Graph.js";
 import {FilterBox} from "../components/filter/FilterBox.js";
-import {checkFilter, setFilterBoxCallback} from "../components/filter/filterFunctions.js";
+import {setFilterBoxCallback} from "../components/filter/filterFunctions.js";
 
-import Actions from "../store/Actions.js";
 import { renderDataAsGraph, setupToolBar, renderDataAsTable } from "../components/table/dataRendererHelper.js";
 import {State} from "../store/State.js";
 import {createHtmlElementWithData} from "../components/DomElementHelper.js";
@@ -12,6 +10,7 @@ export default class Filter {
         document.title = "Filter";
         this.returnRenderFunc = renderDataAsGraph;
         this.view = "filter";
+        this.isInTableView = false;
     }
     async getTemplate() {
         const tree = State.treeOfNodes
@@ -27,27 +26,30 @@ export default class Filter {
 
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        await setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         secondColumnDiv.appendChild(filterBox)
+        //await this.setupToolBar()
         return [rowDiv]
     }
 
     async displayDataAndFilter(firstColumnDiv, secondColumnDiv, firstClass, secondClass) {
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        await setFilterBoxCallback(secondColumnDiv, filterBox, dataNodeAndRedrawFunc[1])
+        setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.innerHTML = ""
         firstColumnDiv.className = firstClass
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         secondColumnDiv.innerHTML = ""
         secondColumnDiv.className = secondClass
         secondColumnDiv.appendChild(filterBox)
+        await this.setupToolBar()
     }
 
     async setupToolBar() { return setupToolBar( 
         () => {
             this.returnRenderFunc = renderDataAsGraph;
+            this.isInTableView = false;
             this.displayDataAndFilter(
                 document.querySelector("#filterbox-grid-container-id"),
                 document.querySelector("#data-display-grid-container-id"),
@@ -55,10 +57,12 @@ export default class Filter {
                 "");},
         () =>  {
             this.returnRenderFunc = renderDataAsTable;
+            this.isInTableView = true;
             this.displayDataAndFilter(
                 document.querySelector("#filterbox-grid-container-id"),
                 document.querySelector("#data-display-grid-container-id"),
                 "col order-2",
-                "col order-1");})}
+                "col order-1");},
+        () =>  this.isInTableView)}
 
 }

@@ -1,5 +1,5 @@
 import {State} from "../../store/State.js";
-import {FilterBox} from "./FilterBox.js";
+import {triggerTreeGetHtml} from "./FilterBox.js";
 import toggleHideShow from "./toggleHideShow.js";
 
 export async function checkFilter(event) {
@@ -35,10 +35,9 @@ async function updateData(){
     sessionStorage.setItem("filter", JSON.stringify([{nodes: nodes , rels: relations }]));
 }
 
-export async function setFilterBoxCallback(parentNode, filterBoxNode, callbackFunc){
+export async function setFilterBoxCallback(filterBoxNode, redrawData){
     filterBoxNode.querySelectorAll(".form-check-input, i").forEach(box =>
         box.addEventListener("click", async function(e) {
-            console.log("callbacked")
             if(e.currentTarget.id.startsWith('all')){
                 await checkAll(e)
             }
@@ -50,18 +49,17 @@ export async function setFilterBoxCallback(parentNode, filterBoxNode, callbackFu
             }
 
             await updateData()
-            await callbackFunc();
-            document.querySelector("#filter-container-id").remove()
-            let newFilterBox = await FilterBox()
-            parentNode.appendChild(newFilterBox);
-            setFilterBoxCallback(parentNode, newFilterBox, callbackFunc)
+            await redrawData();
+            let filterboxBody = document.querySelector("#accordion-body-id")
+            filterboxBody.innerHTML = ""
+            filterboxBody.innerHTML = await triggerTreeGetHtml()
+            setFilterBoxCallback(filterboxBody, redrawData)
     }))
 }
 
 function getInputFromEvent(event){
     if(event.target.tagName === "LABEL") return document.getElementById(event.target.getAttribute("for"))
     else if ( event.target.tagName === "INPUT" ) return event.target
-    // else console.log("tagname: " + event.target.tagName)
 }
 
 export default checkFilter;
