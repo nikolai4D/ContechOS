@@ -41,14 +41,6 @@ export default async function router() {
   document.querySelector("#nav").innerHTML = "";
   document.querySelector("#app").innerHTML = "";
 
-  if(view.setupToolBar !== undefined){
-    document.querySelector("#toolBar").innerHTML = "";
-    view.setupToolBar();
-  }
-  else{
-    document.querySelector("#toolBar").innerHTML = "";
-  }
-
   const viewResult = await view.getTemplate();
   //No nav
   if (match.route.path === "/login" || match.route.path === "/register") {
@@ -65,6 +57,11 @@ export default async function router() {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").innerHTML = viewResult;
   }
+
+  if(view.setupToolBar !== undefined){
+    view.setupToolBar();
+  }
+
 }
 
 function isElement(element) {
