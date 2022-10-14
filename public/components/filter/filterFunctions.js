@@ -38,7 +38,6 @@ async function updateData(){
 export async function setFilterBoxCallback(filterBoxNode, redrawData){
     filterBoxNode.querySelectorAll(".form-check-input, i").forEach(box =>
         box.addEventListener("click", async function(e) {
-            console.log("callbacked")
             if(e.currentTarget.id.startsWith('all')){
                 await checkAll(e)
             }

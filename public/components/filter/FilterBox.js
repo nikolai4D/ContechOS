@@ -7,12 +7,13 @@ async function FilterBox() {
   const htmlString = `
 <div class="accordion w-25 position-absolute open" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
-    <h2 class="accordion-header row" id="panelsStayOpen-headingOne">
+    <h2 class="accordion-header" id="panelsStayOpen-headingOne">
       <button class="accordion-button col-sm" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
         Filter
       </button>
     </h2>
     <div id="panelsStayOpen-collapseOne" class="accordion-collapse show" aria-labelledby="panelsStayOpen-headingOne">
+    <div id="accordion-container-switch-modalbtn" class="d-flex justify-content-end"></div>
       <div class="accordion-body" id="accordion-body-id">
       ${nodeHtmlString}
       </div>
@@ -63,11 +64,9 @@ function itemRow(node){
     //const eye = node.hidden? iconEye(node.id).hide : iconEye(node.id).show
     let eye
     if(node.hidden){
-        console.log(node.title + " is hidden")
         eye = iconEye(node.id).hide
     }
     else {
-        console.log(node.title + " is shown")
         eye = iconEye(node.id).show
     }
 

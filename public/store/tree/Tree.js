@@ -227,7 +227,6 @@ Tree.prototype.shake = async function () {
     this.setSelectedNodesAndData()
     this.selectedRelations = trimRels(selectedRels, this.selectedTreeNodes)
 
-    console.log("nodes: " + this.tree.map(node => node.title + ", " + node.hidden))
 }
 
 
