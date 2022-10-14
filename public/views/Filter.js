@@ -1,5 +1,5 @@
 import {FilterBox} from "../components/filter/FilterBox.js";
-import {setFilterBoxCallback, setupToolBar, addFunctionsToFilterbox} from "../components/filter/filterFunctions.js";
+import {setFilterBoxCallback, addFunctionsToFilterbox} from "../components/filter/filterFunctions.js";
 
 import {renderDataAsGraph, renderDataAsTable } from "../components/table/dataRendererHelper.js";
 import {State} from "../store/State.js";
@@ -13,6 +13,7 @@ export default class Filter {
         this.isInTableView = false;
         this.filterboxHeaderId = "#accordion-container-switch-modalbtn";
     }
+    
     async getTemplate() {
         const tree = State.treeOfNodes
         await tree.ensureInit()
@@ -24,13 +25,7 @@ export default class Filter {
         rowDiv.appendChild(firstColumnDiv)
         let secondColumnDiv = createHtmlElementWithData("div", {"class": "", "id": "data-display-grid-container-id"})
         rowDiv.appendChild(secondColumnDiv)
-
-        const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
-        let filterBox = await FilterBox()
-        setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
-        firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
-        secondColumnDiv.appendChild(filterBox)
-        await this.setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector(this.filterboxHeaderId))
+        await this.displayDataAndFilter(firstColumnDiv, secondColumnDiv, "float-right", "");
         return [rowDiv]
     }
 
@@ -66,5 +61,4 @@ export default class Filter {
                 "col order-1");},
         () =>  this.isInTableView,
         containerNode)}
-
 }

@@ -1,5 +1,5 @@
 import Actions from "../store/Actions.js";
-import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import { renderDataAsGraph} from "../components/table/dataRendererHelper.js";
 import {createHtmlElementWithData, appendChildsToSelector} from "../components/DomElementHelper.js";
 
 export default class Props {

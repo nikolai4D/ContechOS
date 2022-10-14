@@ -1,6 +1,8 @@
 import {State} from "../../store/State.js";
 import {triggerTreeGetHtml} from "./FilterBox.js";
 import toggleHideShow from "./toggleHideShow.js";
+import {createHtmlElementWithData} from "../DomElementHelper.js";
+import Modal from "../Modal.js";
 
 export async function checkFilter(event) {
     const tree = State.treeOfNodes
@@ -76,9 +78,9 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     });
     switchInput.addEventListener("click", async (event, state) => {
         if (!event.target.checked) {
-        graphDisplayFunc()
+            graphDisplayFunc()
         } else {
-        tableDisplayFunc()
+            tableDisplayFunc()
         }
     });
     switchDiv.appendChild(switchInput)
@@ -89,4 +91,4 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     containerNode.appendChild(containerModal);
 }
 
-export default setupToolBar;
+export default addFunctionsToFilterbox;

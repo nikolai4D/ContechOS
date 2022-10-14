@@ -1,6 +1,5 @@
 import Graph from "../graph/Graph.js";
-import Modal from "../Modal.js";
-import {createHtmlElementWithData, appendChildsToSelector} from "../DomElementHelper.js";
+import {createHtmlElementWithData} from "../DomElementHelper.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
