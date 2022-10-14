@@ -78,17 +78,19 @@ export async function renderDataAsTable(viewName,
 
   const nodeTableDiv = createHtmlElementWithData('div', { "id": "nodeTableDivName" })
   {
-    let { dataTable, headerRow } = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
-    for (let thNode of headerRow) {
-      thNode.addEventListener("click", async () => {
-        if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
-          setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true))
-        } else {
-          setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false))
-        }
-      });
+    if(nodes !== undefined && nodes.length > 0){
+      let { dataTable, headerRow } = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
+      for (let thNode of headerRow) {
+        thNode.addEventListener("click", async () => {
+          if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
+            setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true))
+          } else {
+            setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false))
+          }
+        });
+      }
+      nodeTableDiv.appendChild(dataTable)
     }
-    nodeTableDiv.appendChild(dataTable)
   }
 
   const setAppDivOnCallback = function (tableDivs) {
