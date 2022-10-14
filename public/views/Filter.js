@@ -11,6 +11,7 @@ export default class Filter {
         this.returnRenderFunc = renderDataAsGraph;
         this.view = "filter";
         this.isInTableView = false;
+        this.filterboxHeaderId = "#accordion-container-switch-modalbtn";
     }
     async getTemplate() {
         const tree = State.treeOfNodes
@@ -29,7 +30,7 @@ export default class Filter {
         setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         secondColumnDiv.appendChild(filterBox)
-        //await this.setupToolBar()
+        await this.setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector(this.filterboxHeaderId))
         return [rowDiv]
     }
 
@@ -43,26 +44,27 @@ export default class Filter {
         secondColumnDiv.innerHTML = ""
         secondColumnDiv.className = secondClass
         secondColumnDiv.appendChild(filterBox)
-        await this.setupToolBar()
+        await this.setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector(this.filterboxHeaderId))
     }
 
-    async setupToolBar() { return setupToolBar( 
+    async setupToolBar(firstDiv, secondDiv, containerNode) { return setupToolBar( 
         () => {
             this.returnRenderFunc = renderDataAsGraph;
             this.isInTableView = false;
             this.displayDataAndFilter(
-                document.querySelector("#filterbox-grid-container-id"),
-                document.querySelector("#data-display-grid-container-id"),
+                firstDiv,
+                secondDiv,
                 "float-right",
                 "");},
         () =>  {
             this.returnRenderFunc = renderDataAsTable;
             this.isInTableView = true;
             this.displayDataAndFilter(
-                document.querySelector("#filterbox-grid-container-id"),
-                document.querySelector("#data-display-grid-container-id"),
+                firstDiv,
+                secondDiv,
                 "col order-2",
                 "col order-1");},
-        () =>  this.isInTableView)}
+        () =>  this.isInTableView,
+        containerNode)}
 
 }

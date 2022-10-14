@@ -98,7 +98,7 @@ export async function renderDataAsTable(viewName,
   return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
 }
 
-export function setupToolBar(graphDisplayFunc, tableDisplayFunc, checked) {
+export function setupToolBar(graphDisplayFunc, tableDisplayFunc, checked, containerNode) {
   const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
   const switchInput = createHtmlElementWithData("input", {
     "class": "form-check-input",
@@ -120,10 +120,8 @@ export function setupToolBar(graphDisplayFunc, tableDisplayFunc, checked) {
   });
   switchDiv.appendChild(switchInput)
   switchDiv.appendChild(switchLabel)
-  let parentNodeName = "#accordion-container-switch-modalbtn"
-
-  document.querySelector(parentNodeName).appendChild(switchDiv);
+  containerNode.appendChild(switchDiv);
   const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
   containerModal.innerHTML=`${Modal()}`
-  document.querySelector(parentNodeName).appendChild(containerModal);
+  containerNode.appendChild(containerModal);
 }
