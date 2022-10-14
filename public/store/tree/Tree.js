@@ -9,8 +9,7 @@ import {
 
 export function Tree() {
     this.tree = []
-    this.visibleRelations = []
-    this.selectedNodesData = []
+    this.selectedRelations = []
     this.selectedTreeNodes = []
 }
 
@@ -20,19 +19,20 @@ Tree.prototype.ensureInit = async function () {
     this.tree = this.fructify(defNodes, 0)}
 }
 
-function TreeNode(id, title, layer, children, selected, data){
+function TreeNode(id, title, layer, children, selected, data, parent){
     this.id = id
     this.title = title
     this.layer = layer
+    this.hidden = false
+    this.parent = parent
     this.children = children
     this.selected = selected
     this.excluded = false
     this.extraFetched = false
     this.data = data
     this.rels = []
-    this.isViewAllChecked = false
+    this.viewAll = false
 }
-
 
 TreeNode.prototype.findIdInLineage = function(id){
     if(this.id === id) return this
@@ -74,18 +74,20 @@ Tree.prototype.setSelectedNodesAndData = function(){
         selectedTreeNodes.push(...node.getSelectedInLineage())
     }
     this.selectedTreeNodes = selectedTreeNodes
-    this.selectedNodesData = selectedTreeNodes.map(node => node.data)
 }
 
 TreeNode.prototype.deselectLineage = function(){
     if(this.selected === true) {
+        if(this.parent !== null) this.parent.viewAll = false
         this.selected = false
-        this.isViewAllChecked = false
+        this.hidden = false
+        this.viewAll = false
         for (let child of this.children) {
             child.deselectLineage()
         }
     }
 }
+
 
 TreeNode.prototype.selectChildren = function(){
     for(let child of this.children){
@@ -93,10 +95,10 @@ TreeNode.prototype.selectChildren = function(){
     }
 }
 
-Tree.prototype.fructify = function(dbNodes, layer){
+Tree.prototype.fructify = function(dbNodes, layer, parent = null){
     const treeNodes = []
     for(let node of dbNodes){
-        treeNodes.push(new TreeNode(node.id, node.title, layer,[], false, node))
+        treeNodes.push(new TreeNode(node.id, node.title, layer,[], false, node, parent))
     }
     return treeNodes
 }
@@ -116,7 +118,7 @@ function createPseudoParentRel(parentId, childId){
 }
 
 TreeNode.prototype.setChildrenVisibility = async function (tree) {
-    const selectedNodes = tree.selectedNodesData
+    const selectedNodes = tree.selectedTreeNodes.map(node => node.data)
 
     const internalRelsFirstDegree = []
     const includedRels = []
@@ -196,7 +198,7 @@ Tree.prototype.shake = async function () {
     this.unHideAll()
     this.setSelectedNodesAndData()
     await this.extraFetchAllSelected()
-    this.visibleRelations = []
+    const selectedRels = []
     let nodesOnThisLayer = this.tree
     let nodesOnNextLayer = []
 
@@ -205,17 +207,16 @@ Tree.prototype.shake = async function () {
         for (let node of nodesOnThisLayer) {
             if (node.selected) {
 
-                // await node.extraFetch(this)
                 await node.setChildrenVisibility(this)
                 node.children.map (child=> {
-                    if(child.selected) this.visibleRelations.push(createPseudoParentRel(node.id, child.id))
+                    if(child.selected) selectedRels.push(createPseudoParentRel(node.id, child.id))
                 })
                 const relevantRels = []
                 node.rels.map(rel => {
                     if(rel.sourceId === rel.targetId) relevantRels.push(rel)
-                    if(rel.sourceId !== node.id && this.selectedNodesData.find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
+                    if(rel.sourceId !== node.id && this.selectedTreeNodes.map(node => node.data).find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
                 })
-                this.visibleRelations.push(...relevantRels)
+                selectedRels.push(...relevantRels)
                 nodesOnNextLayer.push(...node.children)
             }
         }
@@ -224,13 +225,30 @@ Tree.prototype.shake = async function () {
     }
 
     this.setSelectedNodesAndData()
-    this.trimVisibleRelations()
+    this.selectedRelations = trimRels(selectedRels, this.selectedTreeNodes)
+
+    console.log("nodes: " + this.tree.map(node => node.title + ", " + node.hidden))
 }
 
-Tree.prototype.trimVisibleRelations = function(){
-    this.visibleRelations = this.visibleRelations.filter(rel => {
-        const source = this.selectedNodesData.find(el => el.id === rel.sourceId)
-        const target = this.selectedNodesData.find(el => el.id === rel.targetId)
+
+Tree.prototype.getVisibleData = function(){
+    const visibleNodes = this.selectedTreeNodes.filter(node => !node.hidden)
+    const visibleNodesData = visibleNodes.map(node => node.data)
+    const visibleRels = trimRels(this.selectedRelations, visibleNodes).map(rel => {
+        rel['source'] = rel.sourceId
+        rel['target'] = rel.targetId
+        return rel
+    })
+    return {
+        nodes: visibleNodesData,
+        relations: visibleRels
+    }
+}
+
+function trimRels(rels, nodes){
+    return rels.filter(rel => {
+        const source = nodes.find(node => node.id === rel.sourceId)
+        const target = nodes.find(node => node.id === rel.targetId)
         return source !== undefined && target !== undefined
     })
 }
@@ -251,7 +269,7 @@ Tree.prototype.overview = function(){
 TreeNode.prototype.extraFetch = async function (tree,force = false) {
     if(this.extraFetched && !force) return
     this.extraFetched = true
-    if(this.layer<3) this.children = await tree.fructify(await queryNodeChildren(this.id), this.layer + 1)
+    if(this.layer<3) this.children = await tree.fructify(await queryNodeChildren(this.id), this.layer + 1, this)
     this.setRelations(await queryRelations(this.id))
 }
 
@@ -286,8 +304,9 @@ Tree.prototype.extraFetchAllSelected = async function(){
     if(resolutions.length !== 2*nodesToExtraFetch.length) throw new Error("Resolutions and nodes to extra fetch lengths don't match: " + resolutions.length + " " + nodesToExtraFetch.length)
     else {
         for(let i=0; i<resolutions.length; i+=2){
-            nodesToExtraFetch[i/2].children = this.fructify(resolutions[i].data.nodes, nodesToExtraFetch[i / 2].layer + 1)
-            nodesToExtraFetch[i/2].setRelations([...resolutions[i+1].data.sourceRels, ...resolutions[i+1].data.targetRels])
+            let treeNode = nodesToExtraFetch[i/2]
+            treeNode.children = this.fructify(resolutions[i].data.nodes, nodesToExtraFetch[i / 2].layer + 1, treeNode)
+            treeNode.setRelations([...resolutions[i+1].data.sourceRels, ...resolutions[i+1].data.targetRels])
         }
     }
 

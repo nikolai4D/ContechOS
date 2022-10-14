@@ -16,13 +16,8 @@ export default class Filter {
         const tree = State.treeOfNodes
         await tree.ensureInit()
 
-        tree.visibleRelations.map(rel => {
-            rel.source = rel.sourceId
-            rel.target = rel.targetId
-            return rel
-        })
-
-        sessionStorage.setItem("filter", JSON.stringify([{nodes: tree.selectedNodesData , rels: tree.visibleRelations }]));
+        const {nodes, relations} = tree.getVisibleData()
+        sessionStorage.setItem("filter", JSON.stringify([{nodes: nodes , rels: relations }]));
         let rowDiv = createHtmlElementWithData("div", {"class": "row"})
         let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right", "id": "filterbox-grid-container-id"})
         rowDiv.appendChild(firstColumnDiv)
