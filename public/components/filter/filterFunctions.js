@@ -96,6 +96,7 @@ function setDragEvent(e, div){
         div.style.left = Math.min(Math.max((cursorPosX - cursorDivXOffset), 0),appWidth - divWidth) + "px"
         div.style.top =  Math.min(Math.max(cursorPosY - cursorDivYOffset, appTop), appBottom - divHeight) + "px"
 
+        resizeFilterBox()
     })
 
 }
@@ -104,6 +105,7 @@ function setDragEvent(e, div){
 function resizeFilterBox(){
     let accordion =  document.getElementById("accordion-body-id")
     accordion.style.height = "auto"
+
     let div = document.querySelector("#data-display-grid-container-id")
 
     let divOffsets = div.firstElementChild.firstElementChild.getBoundingClientRect();
