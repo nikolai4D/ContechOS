@@ -18,10 +18,10 @@ export default class Filter {
 
         const {nodes, relations} = tree.getVisibleData()
         sessionStorage.setItem("filter", JSON.stringify([{nodes: nodes , rels: relations }]));
-        let rowDiv = createHtmlElementWithData("div", {"class": "row"})
-        let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right", "id": "filterbox-grid-container-id"})
+        let rowDiv = createHtmlElementWithData("div", {"class": "row m-0 p-0"})
+        let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right m-0 p-0", "id": "filterbox-grid-container-id"})
         rowDiv.appendChild(firstColumnDiv)
-        let secondColumnDiv = createHtmlElementWithData("div", {"class": "", "id": "data-display-grid-container-id"})
+        let secondColumnDiv = createHtmlElementWithData("div", {"class": "position-absolute m-0 p-0", "id": "data-display-grid-container-id"})
         rowDiv.appendChild(secondColumnDiv)
 
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
@@ -29,7 +29,6 @@ export default class Filter {
         setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])
         secondColumnDiv.appendChild(filterBox)
-        //await this.setupToolBar()
         return [rowDiv]
     }
 
