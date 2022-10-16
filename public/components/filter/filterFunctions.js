@@ -1,6 +1,8 @@
 import {State} from "../../store/State.js";
 import {triggerTreeGetHtml} from "./FilterBox.js";
 import toggleHideShow from "./toggleHideShow.js";
+import {createHtmlElementWithData} from "../DomElementHelper.js";
+import Modal from "../Modal.js";
 
 export async function checkFilter(event) {
     const tree = State.treeOfNodes
@@ -24,8 +26,12 @@ export async function checkAll(event) {
     } else {
         treeNode.deselectLineage()
         treeNode.selected = true
-
     }
+}
+
+function getInputFromEvent(event){
+    if(event.target.tagName === "LABEL") return document.getElementById(event.target.getAttribute("for"))
+    else if ( event.target.tagName === "INPUT" ) return event.target
 }
 
 async function updateData(){
@@ -126,9 +132,32 @@ function resizeFilterBox(){
     }
 }
 
-function getInputFromEvent(event){
-    if(event.target.tagName === "LABEL") return document.getElementById(event.target.getAttribute("for"))
-    else if ( event.target.tagName === "INPUT" ) return event.target
+export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, checked, containerNode) {
+    const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
+    const switchInput = createHtmlElementWithData("input", {
+        "class": "form-check-input",
+        "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault"
+    })
+    if(checked()){
+        switchInput.setAttribute("checked", "")
+    }
+    const switchLabel = createHtmlElementWithData("label", {
+        "class": "form-check-label",
+        "for": "flexSwitchCheckDefault",
+    });
+    switchInput.addEventListener("click", async (event, state) => {
+        if (!event.target.checked) {
+            graphDisplayFunc()
+        } else {
+            tableDisplayFunc()
+        }
+    });
+    switchDiv.appendChild(switchInput)
+    switchDiv.appendChild(switchLabel)
+    containerNode.appendChild(switchDiv);
+    const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
+    containerModal.innerHTML=`${Modal()}`
+    containerNode.appendChild(containerModal);
 }
 
-export default checkFilter;
+export default addFunctionsToFilterbox;

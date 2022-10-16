@@ -1,4 +1,4 @@
-import { renderDataAsGraph, setupToolBar } from "../components/table/dataRendererHelper.js";
+import { renderDataAsGraph} from "../components/table/dataRendererHelper.js";
 import Actions from "../store/Actions.js";
 
 export default class Configs {

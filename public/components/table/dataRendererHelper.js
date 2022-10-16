@@ -1,6 +1,5 @@
 import Graph from "../graph/Graph.js";
-import Modal from "../Modal.js";
-import {createHtmlElementWithData, appendChildsToSelector} from "../DomElementHelper.js";
+import {createHtmlElementWithData} from "../DomElementHelper.js";
 
 function sortFunc(a, b, propName) { return (a[propName] > b[propName]) ? 1 : ((b[propName] > a[propName]) ? -1 : 0) }
 function propFixedSortFunc(propName) { return (a, b) => sortFunc(a, b, propName) }
@@ -78,52 +77,24 @@ export async function renderDataAsTable(viewName,
 
   const nodeTableDiv = createHtmlElementWithData('div', { "id": "nodeTableDivName" })
   {
-    let { dataTable, headerRow } = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
-    for (let thNode of headerRow) {
-      thNode.addEventListener("click", async () => {
-        if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
-          setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true))
-        } else {
-          setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false))
-        }
-      });
+    if(nodes !== undefined && nodes.length > 0){
+      let { dataTable, headerRow } = await generateDataTable(nodes, "nodes", nodesTableSortFunc)
+      for (let thNode of headerRow) {
+        thNode.addEventListener("click", async () => {
+          if (clickedHeader === thNode.innerHTML && wasReversedSorted === false) {
+            setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortReversedFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, true))
+          } else {
+            setAppDivOnCallback(await renderDataAsTable(viewName, propFixedSortFunc(thNode.innerHTML), relsTableSortFunc, thNode.innerHTML, false))
+          }
+        });
+      }
+      nodeTableDiv.appendChild(dataTable)
     }
-    nodeTableDiv.appendChild(dataTable)
   }
 
   const setAppDivOnCallback = function (tableDivs) {
     document.querySelector("#filterbox-grid-container-id").innerHTML = ""
     document.querySelector("#filterbox-grid-container-id").appendChild(tableDivs[0]);
   }
-  return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]//,relTableDiv];
-}
-
-export function setupToolBar(graphDisplayFunc, tableDisplayFunc, checked) {
-  const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
-  const switchInput = createHtmlElementWithData("input", {
-    "class": "form-check-input",
-    "type": "checkbox", "role": "switch", "id": "flexSwitchCheckDefault"
-  })
-  if(checked()){
-    switchInput.setAttribute("checked", "")
-  }
-  const switchLabel = createHtmlElementWithData("label", {
-    "class": "form-check-label",
-    "for": "flexSwitchCheckDefault",
-  });
-  switchInput.addEventListener("click", async (event, state) => {
-    if (!event.target.checked) {
-      graphDisplayFunc()
-    } else {
-      tableDisplayFunc()
-    }
-  });
-  switchDiv.appendChild(switchInput)
-  switchDiv.appendChild(switchLabel)
-  let parentNodeName = "#accordion-container-switch-modalbtn"
-
-  document.querySelector(parentNodeName).appendChild(switchDiv);
-  const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
-  containerModal.innerHTML=`${Modal()}`
-  document.querySelector(parentNodeName).appendChild(containerModal);
+  return [nodeTableDiv, async () => await setAppDivOnCallback(await renderDataAsTable(viewName))]
 }

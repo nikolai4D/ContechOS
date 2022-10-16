@@ -57,11 +57,6 @@ export default async function router() {
     document.querySelector("#nav").innerHTML = await nav.getTemplate();
     document.querySelector("#app").innerHTML = viewResult;
   }
-
-  if(view.setupToolBar !== undefined){
-    view.setupToolBar();
-  }
-
 }
 
 function isElement(element) {
