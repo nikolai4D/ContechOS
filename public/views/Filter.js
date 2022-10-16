@@ -23,9 +23,9 @@ export default class Filter {
         let rowDiv = createHtmlElementWithData("div", {"class": "row"})
         let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right", "id": "filterbox-grid-container-id"})
         rowDiv.appendChild(firstColumnDiv)
-        let secondColumnDiv = createHtmlElementWithData("div", {"class": "", "id": "data-display-grid-container-id"})
+        let secondColumnDiv = createHtmlElementWithData("div", {"class": "position-absolute", "id": "data-display-grid-container-id"})
         rowDiv.appendChild(secondColumnDiv)
-        await this.displayDataAndFilter(firstColumnDiv, secondColumnDiv, "float-right", "");
+        await this.displayDataAndFilter(firstColumnDiv, secondColumnDiv, "float-right", "position-absolute");
         return [rowDiv]
     }
 
