@@ -32,7 +32,7 @@ export default class Filter {
     async displayDataAndFilter(firstColumnDiv, secondColumnDiv, firstClass, secondClass) {
         const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
         let filterBox = await FilterBox()
-        setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
+        await setFilterBoxCallback(filterBox, dataNodeAndRedrawFunc[1])
         firstColumnDiv.innerHTML = ""
         firstColumnDiv.className = firstClass
         firstColumnDiv.appendChild(dataNodeAndRedrawFunc[0])

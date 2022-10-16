@@ -85,7 +85,7 @@ function setDragEvent(e, div){
     let cursorDivXOffset = e.clientX - left
     let cursorDivYOffset = e.clientY - top
 
-    div.addEventListener("dragend", (e) => {
+    let moveDiv = (e)=>{
 
         let cursorPosX = e.clientX
         let cursorPosY = e.clientY
@@ -103,7 +103,10 @@ function setDragEvent(e, div){
         div.style.top =  Math.min(Math.max(cursorPosY - cursorDivYOffset, appTop), appBottom - divHeight) + "px"
 
         resizeFilterBox()
-    })
+        div.removeEventListener("dragend", (e) => moveDiv(e))
+    }
+
+    div.addEventListener("dragend", e => moveDiv(e))
 
 }
 
