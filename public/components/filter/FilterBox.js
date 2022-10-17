@@ -8,7 +8,7 @@ async function FilterBox() {
 <div class="accordion w-25 position-fixed open" draggable="true" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button id= "filter-box-handle" class="accordion-button col-sm" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+      <button id= "filter-box-handle" class="accordion-button col-sm" type="button" draggable="true" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
         Filter
       </button>
     </h2>

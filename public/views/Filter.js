@@ -20,12 +20,12 @@ export default class Filter {
 
         const {nodes, relations} = tree.getVisibleData()
         sessionStorage.setItem("filter", JSON.stringify([{nodes: nodes , rels: relations }]));
-        let rowDiv = createHtmlElementWithData("div", {"class": "row"})
-        let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right", "id": "filterbox-grid-container-id"})
+        let rowDiv = createHtmlElementWithData("div", {"class": "row m-0 p-0"})
+        let firstColumnDiv = createHtmlElementWithData("div", {"class": "float-right m-0 p-0", "id": "filterbox-grid-container-id"})
         rowDiv.appendChild(firstColumnDiv)
         let secondColumnDiv = createHtmlElementWithData("div", {"class": "position-absolute", "id": "data-display-grid-container-id"})
         rowDiv.appendChild(secondColumnDiv)
-        await this.displayDataAndFilter(firstColumnDiv, secondColumnDiv, "float-right", "position-absolute");
+        await this.displayDataAndFilter(firstColumnDiv, secondColumnDiv, "float-right", "position-absolute m-0 p-0");
         return [rowDiv]
     }
 

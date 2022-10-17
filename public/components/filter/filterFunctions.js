@@ -118,13 +118,10 @@ function resizeFilterBox(){
     let div = document.querySelector("#data-display-grid-container-id")
 
     let divOffsets = div.firstElementChild.firstElementChild.getBoundingClientRect();
-    let divHeight = divOffsets.height
     let divBottom = divOffsets.bottom
 
     let appOffsets = document.querySelector("#app").getBoundingClientRect();
-    let appBottom = appOffsets.bottom;
     let appHeight = appOffsets.height;
-    let appTop = appOffsets.top;
 
     if(divBottom > appHeight){
         console.log("resize")
