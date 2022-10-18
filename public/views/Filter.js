@@ -50,7 +50,7 @@ export default class Filter {
                 firstDiv,
                 secondDiv,
                 "float-right",
-                "");},
+                "position-absolute");},
         () =>  {
             this.returnRenderFunc = renderDataAsTable;
             this.isInTableView = true;
