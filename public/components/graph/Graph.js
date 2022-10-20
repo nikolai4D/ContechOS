@@ -448,7 +448,7 @@ async function Graph(view) {
     link = svg
       .select(".forLinks")
       .selectAll(".linkSVG")
-      .data(rels)
+      .data(rels, (d) => d["id"])
       .join(
         (enter) => {
           const link_enter = enter
@@ -470,9 +470,7 @@ async function Graph(view) {
               }
             });
           return link_enter;
-        },
-        (update) => update
-
+        }
       )
       .join("path")
       .on("click", clicked)
@@ -517,9 +515,6 @@ async function Graph(view) {
             .on("contextmenu", rightClicked)
 
           return entered;
-        },
-        (update) => {
-          return update;
         }
       );
 
