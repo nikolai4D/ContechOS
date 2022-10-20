@@ -13,7 +13,7 @@ function validateBulkFetch(params
     this.sourceId = variableToArray(params.sourceId) ?? null
     this.from = params.from ?? 0
     this.limit = params.limit ?? 50
-    this.defTypes = getPotentialDefTypes(this.defType, this.parentId, this.kindOfItem)
+    this.defTypes = getPotentialDefTypes(this.defType, this.parentId, this.sourceId, this.targetId, this.kindOfItem)
 
     this.filterParams = {
         target: this.targetId,
@@ -45,10 +45,11 @@ function doesDefTypeExist(defType) {
     throw new Error("layer of the defType is invalid, defType: " + defType)
 }
 
-function getPotentialDefTypes(defTypes, parentIds, kindOfItems) {
+function getPotentialDefTypes(defTypes, parentIds, sourceIds, targetIds, kindOfItems) {
     let potentialDefTypes = []
 
     if (defTypes !== null) {
+        console.log("det", defTypes)
         for(let defType of defTypes){
             if(doesDefTypeExist(defType)) {
                 potentialDefTypes.push(defType)
@@ -56,12 +57,35 @@ function getPotentialDefTypes(defTypes, parentIds, kindOfItems) {
         }
     }
     else if (parentIds !== null) {
+        console.log("pid")
         for (let parentId of parentIds) {
             const parentData = new validateId(parentId)
+
             potentialDefTypes.push(parentData.childrenDefType())
         }
     }
+    else if(sourceIds !== null) {
+        for (let sourceId of sourceIds) {
+            const sourceData = new validateId(sourceId)
+            potentialDefTypes.push(
+                voc.layers[sourceData.layerIndex].inString + voc.relationshipTypes.exRel.inString,
+                voc.layers[sourceData.layerIndex].inString + voc.relationshipTypes.inRel.inString
+            )
+
+        }
+    }
+    else if(targetIds !== null) {
+        for (let targetId of targetIds) {
+            const targetData = new validateId(targetId)
+            potentialDefTypes.push(
+                voc.layers[targetData.layerIndex].inString + voc.relationshipTypes.exRel.inString,
+                voc.layers[targetData.layerIndex].inString + voc.relationshipTypes.inRel.inString
+            )
+
+        }
+    }
     else if (kindOfItems !== null) {
+        console.log("koi", kindOfItems)
         for (let kindOfItem of kindOfItems) {
             if (kindOfItem === "node") {
                 for (let i = 0; i < 4; i++) potentialDefTypes.push(voc.layers[i].inString)
