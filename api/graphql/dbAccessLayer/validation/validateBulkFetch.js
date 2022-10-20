@@ -1,15 +1,16 @@
 const { validateId } = require("./validateId");
 const { voc } = require("../voc");
 const { filterItems } = require("../helpers/filterFunction");
+const variableToArray = require("../helpers/variableToArray");
 
 function validateBulkFetch(params
 ) {
-    this.defType = params.defType ?? null
-    this.parentId = params.parentId ?? null
-    this.kindOfItem = params.kindOfItem ?? null
-    this.title = params.title ?? null
-    this.targetId = params.targetId ?? null
-    this.sourceId = params.sourceId ?? null
+    this.defType = variableToArray(params.defType) ?? null
+    this.parentId = variableToArray(params.parentId) ?? null
+    this.kindOfItem = variableToArray(params.kindOfItem) ?? null
+    this.title = variableToArray(params.title) ?? null
+    this.targetId = variableToArray(params.targetId) ?? null
+    this.sourceId = variableToArray(params.sourceId) ?? null
     this.from = params.from ?? 0
     this.limit = params.limit ?? 50
     this.defTypes = getPotentialDefTypes(this.defType, this.parentId, this.kindOfItem)
@@ -44,46 +45,53 @@ function doesDefTypeExist(defType) {
     throw new Error("layer of the defType is invalid, defType: " + defType)
 }
 
-function getPotentialDefTypes(defType, parentId, kindOfItem) {
-    let defTypes = []
+function getPotentialDefTypes(defTypes, parentIds, kindOfItems) {
+    let potentialDefTypes = []
 
-    if (defType !== null && doesDefTypeExist(defType)) {
-        defTypes.push(defType)
-    }
-    else if (parentId !== null) {
-        const parentData = new validateId(parentId)
-        defTypes.push(parentData.childrenDefType())
-    }
-    else if (kindOfItem !== null) {
-        if (kindOfItem === "node") {
-            for (let i = 0; i < 4; i++) defTypes.push(voc.layers[i].inString)
+    if (defTypes !== null) {
+        for(let defType of defTypes){
+            if(doesDefTypeExist(defType)) {
+                potentialDefTypes.push(defType)
+            }
         }
-        else if (kindOfItem === "relationship") {
-            for (let i = 0; i < 4; i++) defTypes.push(
-                voc.layers[i].inString + voc.relationshipTypes.exRel.inString,
-                voc.layers[i].inString + voc.relationshipTypes.inRel.inString)
+    }
+    else if (parentIds !== null) {
+        for (let parentId of parentIds) {
+            const parentData = new validateId(parentId)
+            potentialDefTypes.push(parentData.childrenDefType())
         }
-        else if (kindOfItem === "property") defTypes.push(
-            voc.layers[4].inString + voc.propertyTypes.pType.inString,
-            voc.layers[4].inString + voc.propertyTypes.pValue.inString,
-            voc.layers[4].inString + voc.propertyTypes.pKey.inString,
-
-        )
-        else throw new Error("invalid kind of item: " + kindOfItem)
+    }
+    else if (kindOfItems !== null) {
+        for (let kindOfItem of kindOfItems) {
+            if (kindOfItem === "node") {
+                for (let i = 0; i < 4; i++) potentialDefTypes.push(voc.layers[i].inString)
+            } else if (kindOfItem === "relationship") {
+                for (let i = 0; i < 4; i++) potentialDefTypes.push(
+                    voc.layers[i].inString + voc.relationshipTypes.exRel.inString,
+                    voc.layers[i].inString + voc.relationshipTypes.inRel.inString)
+            } else if (kindOfItem === "property") potentialDefTypes.push(
+                voc.layers[4].inString + voc.propertyTypes.pType.inString,
+                voc.layers[4].inString + voc.propertyTypes.pValue.inString,
+                voc.layers[4].inString + voc.propertyTypes.pKey.inString,
+            )
+            else throw new Error("invalid kind of item: " + kindOfItem)
+        }
     }
     else { //Set all directories to be looked in.
         for (let i = 0; i < 4; i++) {
-            defTypes.push(
+            potentialDefTypes.push(
                 voc.layers[i].inString,
                 voc.layers[i].inString + voc.relationshipTypes.exRel.inString,
                 voc.layers[i].inString + voc.relationshipTypes.inRel.inString)
         }
-        defTypes.push(
+        potentialDefTypes.push(
             voc.layers[4].inString + voc.propertyTypes.pType.inString,
             voc.layers[4].inString + voc.propertyTypes.pValue.inString,
             voc.layers[4].inString + voc.propertyTypes.pKey.inString)
     }
-    return defTypes
+
+    console.log(JSON.stringify("pdt: " + potentialDefTypes, null, 2))
+    return potentialDefTypes
 }
 
 
