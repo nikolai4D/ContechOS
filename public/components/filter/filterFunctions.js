@@ -43,7 +43,6 @@ async function updateData(){
 
 export async function setFilterBoxCallback(filterBoxNode, redrawData){
     filterBoxNode.addEventListener("dragstart", async (event) => {
-        console.log("filterBoxNode drag")
         setDragEvent(event, document.querySelector("#data-display-grid-container-id"))
     })
 
@@ -74,7 +73,6 @@ function setDragEvent(e, div){
 
     document.querySelector("#app").addEventListener("dragover", function(e) {
         e.preventDefault()
-        console.log("dragover")
         e.dataTransfer.dropEffect = "move"
     })
 
@@ -124,7 +122,6 @@ function resizeFilterBox(){
     let appHeight = appOffsets.height;
 
     if(divBottom > appHeight){
-        console.log("resize")
         let accordion =  document.getElementById("accordion-body-id")
         let accordionTop = accordion.getBoundingClientRect().top
         accordion.style.height = appHeight - accordionTop + "px"

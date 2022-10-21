@@ -58,12 +58,9 @@ function itemRow(node){
             childrenFrame += itemRow(child)
       }
 
-      console.log("cf: " + childrenFrame)
         if(childrenFrame.lastIndexOf("<br/>") === childrenFrame.length - 5 ){
-            console.log("last <br/>")
             childrenFrame = childrenFrame.slice(0, -5)
         }
-        else console.log("no last <br/>: " + childrenFrame.slice(childrenFrame.length-5, childrenFrame.length))
 
       childrenFrame += `</ul>`
     }
