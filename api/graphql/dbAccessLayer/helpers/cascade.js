@@ -30,16 +30,14 @@ async function cascade(params = {}) {
 async function getAllRequiredNodesFromLayer(layerName, params = {}) {
     let array = []
 
-    if(params.title !== undefined) for (let title of params.title) {
-        array.push(...await getItems({title: title, kindOfItem: "node", defType: layerName}))
-    }
-    if(params.id !== undefined) for (let id of params.id) {
-        let nodes = await getItems({id: id, kindOfItem: "node", defType: layerName})
+    if(params.title !== undefined) array.push(...await getItems({title: params.title, kindOfItem: "node", defType: layerName}))
+    if(params.id !== undefined) {
+        let nodes = await getItems({id: params.id, kindOfItem: "node", defType: layerName})
         for (let node of nodes) if(!array.find(el => el.id === node.id)) array.push(node)
     }
     if(layerName === "configDef") return array
-    if(params.parentId !== undefined) for (let parentId of params.parentId) {
-        let nodes = await getItems({parentId: parentId, kindOfItem: "node", defType: layerName})
+    if(params.parentId !== undefined) {
+        let nodes = await getItems({parentId: params.parentId, kindOfItem: "node", defType: layerName})
         for (let node of nodes) if(!array.find(el => el.id === node.id)) array.push(node)
     }
     return array
@@ -151,8 +149,6 @@ async function intersection(parentWraps, childNodes, childLayerName){
     while(i > 0 && validParentWraps.find(wrap => wrap.children.find(child => child.needsValidation))) {
         i--
         validateChildren()
-        // let needyChildren = childWraps.filter(wrap => wrap.needsValidation).map(wrap => wrap.data.title)
-        // if(needyChildren.length > 0) console.log("needyChildren", needyChildren)
     }
 
     return childWraps
