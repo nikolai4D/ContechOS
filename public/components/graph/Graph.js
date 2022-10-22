@@ -448,7 +448,7 @@ async function Graph(view) {
     link = svg
       .select(".forLinks")
       .selectAll(".linkSVG")
-      .data(rels)
+      .data(rels, (d) => d["id"])
       .join(
         (enter) => {
           const link_enter = enter
@@ -470,9 +470,7 @@ async function Graph(view) {
               }
             });
           return link_enter;
-        },
-        (update) => update
-
+        }
       )
       .join("path")
       .on("click", clicked)
@@ -517,9 +515,6 @@ async function Graph(view) {
             .on("contextmenu", rightClicked)
 
           return entered;
-        },
-        (update) => {
-          return update;
         }
       );
 
@@ -533,8 +528,8 @@ async function Graph(view) {
             .attr("class", "nodeLabel")
 
             .text((d) => {
-              if (d.title.length > 25) {
-                return d.title.slice(0, 25) + "...";
+              if (d.title.length > 10) {
+                return d.title.slice(0, 10) + "...";
               }
               return d.title;
             })
@@ -548,11 +543,6 @@ async function Graph(view) {
             .on("contextmenu", rightClicked)
             .attr("dy", 4);
           return entered;
-        },
-        (update) => {
-          const updated = update
-            .text(node => node.title)
-          return updated;
         }
       );
 
