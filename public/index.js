@@ -94,5 +94,55 @@ document.addEventListener("DOMContentLoaded", async () => {
 });
 
 
+let query =  JSON.stringify( {
+    query: `query RooterQueryType($input:QueryInput){
+        properties(itemInput:$input){
+        id
+        title
+        defType
+        parentId
+        parentProperty {
+          id
+          title
+        }
+        childrenProperties{
+            id
+            title
+        }
+        updated
+        created
+      }
+    }`, variables: {
+      input: {
+        id: "pt_3ca1d74a-6410-4f08-a6de-4dbaa029a735"
+      }
+    }
+  })
+
+
+async function graphQLQuery(query) {
+  {
+    let response
+    try {
+      response = await fetch(`/api/graphql`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        },
+        body: query
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    return await response.json()
+  }
+}
+
+async function f(){
+  let answer = await graphQLQuery(query)
+  console.log("answer: ", JSON.stringify(answer, null, 2))
+}
+f()
 
 window.addEventListener("popstate", router);

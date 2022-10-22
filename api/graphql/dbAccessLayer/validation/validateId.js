@@ -141,6 +141,12 @@ function getInstanceDataPropKeys(layerIndex, item) {
     else throw new Error("invalid state: propKeys field is missing.")
 }
 
+function getChildrenPropertyType(parentPropertyType){
+    if(parentPropertyType === voc.propertyTypes.pType.inString) return voc.propertyTypes.pKey
+    else if(parentPropertyType === voc.propertyTypes.pKey.inString) return voc.propertyTypes.pValue
+    else throw new Error("Invalid state: parent property type is invalid.")
+}
+
 function getChildrenDefType(layerIndex, relationshipType, propertyType) {
 
     if (layerIndex === 3) throw "instance data cannot have children."
@@ -149,8 +155,8 @@ function getChildrenDefType(layerIndex, relationshipType, propertyType) {
         throw new Error("property value cannot have children.")
     }
     let childLayerIndex = ([0, 1, 2].includes(layerIndex)) ? layerIndex + 1 : layerIndex
+    if(layerIndex === 4) propertyType = getChildrenPropertyType(propertyType.inString)
     let defType = voc.layers[childLayerIndex].inString + relationshipType.inString + propertyType.inString
-
     return defType
 }
 

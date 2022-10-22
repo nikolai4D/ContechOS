@@ -18,9 +18,9 @@ const DefinitionType = new GraphQLEnumType({
         "instanceData": { value: "instanceData" },
         "instanceDataExternalRel": { value: "instanceDataExternalRel" },
         "instanceDataInternalRel": { value: "instanceDataInternalRel" },
-        "PropType": { value: "PropType" },
-        "PropKey": { value: "PropKey" },
-        "PropVal": { value: "PropVal" }
+        "PropType": { value: "propType" },
+        "PropKey": { value: "propKey" },
+        "PropVal": { value: "propVal" }
     }
 })
 
@@ -29,7 +29,7 @@ const KindOfItem = new GraphQLEnumType({
     values: {
         node: { value: "node" },
         relationship: { value: "relationship" },
-        property: { value: "relationship" }
+        property: { value: "property" }
     }
 })
 
@@ -126,7 +126,6 @@ const Node = new GraphQLObjectType({
                 relationshipInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("RESOLVING RELATIONshipS, rootid: " + root.id)
                 return [...(await graphResolver(args.relationshipInput, { targetId: root.id, kindOfItem: "relationship" })),
                 ...(await graphResolver(args.relationshipInput, { sourceId: root.id, kindOfItem: "relationship" }))]
             }
@@ -140,25 +139,28 @@ const Property = new GraphQLObjectType({
         error: { type: GraphQLString },
         id: { type: GraphQLID },
         title: { type: GraphQLString },
+        parentId: { type: GraphQLID },
         defType: { type: DefinitionType },
         created: { type: GraphQLString },
         updated: { type: GraphQLString },
-        parentNode: {
+        parentProperty: {
             type: Property,
             args: {
-                nodeInput: { type: QueryInput }
+                propertyInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await graphResolver(args.nodeInput, { id: root.parentId, kindOfItem: "property" }))[0]
+                if(root.parentId === null || root.parentId === undefined) return null
+                return (await graphResolver(args.propertyInput, { id: root.parentId, kindOfItem: "property" }))[0]
             }
         },
-        childrenNodes: {
-            type: new GraphQLList(Node),
+        childrenProperties: {
+            type: new GraphQLList(Property),
             args: {
-                nodeInput: { type: QueryInput }
+                propertyInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await graphResolver(args.nodeInput, { parentId: root.id, kindOfItem: "property" }))
+                console.log("root.id: " + root.id)
+                return (await graphResolver(args.propertyInput, { parentId: root.id, kindOfItem: "property" }))
             }
         },
     })

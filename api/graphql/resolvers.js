@@ -46,7 +46,9 @@ async function graphResolver(params = {}, enforcedParams = {}, isUniqueOrNull = 
         params[key] = enforcedParams[key]
     }
 
+    console.log("params: ", params)
     const items = await getItems(params)
+    console.log("items: ", JSON.stringify(items, null, 2))
     if (isUniqueOrNull) {
         if (items.length === 1) return items[0]
         else if (items.length === 0) return null
