@@ -67,8 +67,8 @@ router.post("/createBulkRel", async (req, res) => {
 });
 
 router.post("/readRelBySourceAndTarget", async (req, res) => {
-  const { source, target } = req.body;
-  const reqBody = { source, target };
+  const { sourceId, targetId } = req.body;
+  const reqBody = { sourceId, targetId };
 
   //check if keys/values exist in reqBody
   if (!(await helpers.reqBodyExists(reqBody, res))) {
@@ -76,11 +76,11 @@ router.post("/readRelBySourceAndTarget", async (req, res) => {
   }
 
   //check if source exists
-  if (!(await helpers.idExist(routerTypeSource, source, res))) {
+  if (!(await helpers.idExist(routerTypeSource, sourceId, res))) {
     return res.statusCode;
   }
   //check if target exists
-  if (!(await helpers.idExist(routerTypeTarget, target, res))) {
+  if (!(await helpers.idExist(routerTypeTarget, targetId, res))) {
     return res.statusCode;
   }
 

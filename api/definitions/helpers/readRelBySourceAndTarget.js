@@ -3,12 +3,12 @@ async function readRelBySourceAndTarget(routerType, reqBody, res) {
   //Record instance
   const record = new Record(routerType);
 
-  const { source, target } = reqBody;
+  const { sourceId, targetId } = reqBody;
 
-  await record.readRelBySourceAndTarget(source, target);
+  console.log(await record.readRelBySourceAndTarget(sourceId, targetId));
 
   try {
-    result = await record.readRelBySourceAndTarget(source, target);
+    result = await record.readRelBySourceAndTarget(sourceId, targetId);
     return res.status(200).json(result);
   } catch (error) {
     console.log({ error });
