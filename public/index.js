@@ -93,8 +93,68 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+
+  const query = JSON.stringify({
+
+    query: `mutation MutationQueryType($input: MutationInput){
+        (cascadeInput:$cascadeInput){
+        id
+        title
+        defType
+        parentId
+        updated
+        created
+        childrenNodes{
+            id
+            title
+            defType
+            parentId
+            updated
+            created
+            
+            childrenNodes{
+                id
+                title
+                defType
+                parentId
+                updated
+                created
+                            
+                childrenNodes{
+                    id
+                    title
+                    defType
+                    parentId
+                    updated
+                    created
+                }
+            }
+        }
+    }}`, variables: {
+            kind
+    }
+
+async function graphQLQuery(query) {
+  {
+    let response
+    try {
+      response = await fetch(`/api/graphql`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        },
+        body: query
+      });
+    } catch (err) {
+      console.log(err);
+    }
+    return await response.json()
+  }
+}
 function f(){
 
 }
+f()
 
 window.addEventListener("popstate", router);

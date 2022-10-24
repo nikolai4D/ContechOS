@@ -3,7 +3,7 @@ const router = express.Router();
 const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema, GraphQLObjectType} = require('graphql');
 const { GraphQLList } = require("graphql/type")
-const { Node, Relationship, Property, MutationItem, QueryInput, CascadeNode, CascadeInput} = require("./graphqlTypes")
+const { Node, Relationship, Property, MutationItem, CreationInput , QueryInput, CascadeNode, CascadeInput} = require("./graphqlTypes")
 const { graphResolver } = require("./resolvers");
 const cascade = require("./dbAccessLayer/helpers/cascade");
 
@@ -56,7 +56,36 @@ let schema = new GraphQLSchema({
             }
         },
     }),
-    types: [Node, Relationship, Property, CascadeNode, CascadeInput, QueryInput, MutationItem]
+    mutation: new GraphQLObjectType({
+        name: "RootMutationType",
+        fields: {
+            create: {
+                type: MutationItem,
+                args: {
+                    item: { type: CreateInput }
+                },
+                async resolve(root, args){
+                    console.log("graphQL create request received.")
+                    return await createItem(args.item)
+                }
+            },
+            delete: {
+                type: new GraphQLList( GraphQLString),
+                args: { id: {type: GraphQLString} },
+                async resolve(root, args){
+                    return await deleteItem(args.id)
+                }
+            },
+            update: {
+                type: MutationItem,
+                args: { id: {type: GraphQLString} },
+                async resolve(root, args){
+                    return await updateItem(args.id)
+                }
+            },
+        }
+    }),
+    types: [Node, Relationship, Property, CascadeNode, CascadeInput, QueryInput, CreateInput, MutationItem]
 })
 
 router.use('', graphqlHTTP({
