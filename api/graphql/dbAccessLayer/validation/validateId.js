@@ -151,7 +151,6 @@ function getChildrenDefType(layerIndex, relationshipType, propertyType) {
 
     if (layerIndex === 3) throw "instance data cannot have children."
     if (layerIndex === 4 && propertyType.inString === "Val") {
-        console.log("being there")
         throw new Error("property value cannot have children.")
     }
     let childLayerIndex = ([0, 1, 2].includes(layerIndex)) ? layerIndex + 1 : layerIndex

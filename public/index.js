@@ -100,7 +100,6 @@ let query =  JSON.stringify( {
         id
         title
         defType
-        parentId
         parentProperty {
           id
           title
@@ -114,7 +113,7 @@ let query =  JSON.stringify( {
       }
     }`, variables: {
       input: {
-        id: "pt_3ca1d74a-6410-4f08-a6de-4dbaa029a735"
+        id: "cd_befb06f8-2011-4d33-bdf9-1294d7b29395"
       }
     }
   })
