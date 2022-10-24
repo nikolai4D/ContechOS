@@ -2,7 +2,7 @@ const {IdController} = require("./idValidator")
 const {Voc} = require("../voc");
 const { v4} = require('uuid');
 
-function RelCreaValidator(params){
+function relCreaValidator(params){
 
         this.sourceIdData = new IdController(params.sourceId)
         this.targetIdData= new IdController(params.targetId)
@@ -67,4 +67,4 @@ function getFormattedParams(sourceId, targetId, parent) {
 }
 
 
-module.exports = { RelCreaController: RelCreaValidator }
+module.exports = { relCreaValidator }

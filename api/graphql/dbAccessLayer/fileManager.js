@@ -57,6 +57,17 @@ function getBulk(defTypes, limit = 50, from = 0, filterFunction = null, filterPa
     return items
 }
 
+function createFile(defType, id, item){
+    fs.writeFileSync(
+        `../db/${defType}/${id}.json`,
+        JSON.stringify(item, null, 2)
+    );
+    console.log("created: " + JSON.stringify({ id, defType, ...item }, null,2))
+    return { id, defType, ...item }
+}
 
+async function deleteFile(path){
+    return fs.promises.unlink(path)
+}
 
-module.exports = { getItemById, getBulk, doesFileExist }
+module.exports = { getItemById, getBulk, doesFileExist, createFile, deleteFile }

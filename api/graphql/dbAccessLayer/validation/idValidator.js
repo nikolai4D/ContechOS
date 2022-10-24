@@ -179,4 +179,4 @@ function getSourceId(koi, item) {
     else throw new Error("source is missing in item.")
 }
 
-module.exports = { validateId: idValidator }
+module.exports = { idValidator }

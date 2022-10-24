@@ -1,12 +1,12 @@
-const {IdController} =  require("./idValidator")
-const {Voc} = require("../voc");
+const {idValidator} =  require("./idValidator")
+const {voc} = require("../voc");
 const { v4: uuidv4 } = require("uuid");
 
-function NodeCreaValidator(params){
+function nodeCreaValidator(params){
     this.parentIdData = getParentIdData(params.parentId)
-
     this.layerIndex = getLayerIndex(this.parentIdData)
-    this.defType = Voc.layers[this.layerIndex].inString
+
+    this.defType = voc.layers[this.layerIndex].inString
     this.id = getId(this.layerIndex)
 
     this.formattedParams = getFormattedParams(this.parentIdData)
@@ -14,7 +14,7 @@ function NodeCreaValidator(params){
 
 function getParentIdData(parentId){
     if(parentId === null || parentId === undefined) return null
-    let parentData = new IdController(parentId)
+    let parentData = new idValidator(parentId)
 
     if(parentData.kindOfItem !== "node") throw new Error("Node creation interrupted: parent must be a node")
     else return parentData
@@ -26,7 +26,8 @@ function getLayerIndex(parent){
 }
 
 function getId(layerIndex){
-    return Voc.layers[layerIndex].abbr + "_" + uuidv4()
+
+    return voc.layers[layerIndex].abbr + "_" + uuidv4()
 }
 
 function getFormattedParams(parent){
@@ -34,4 +35,4 @@ function getFormattedParams(parent){
     else return {}
 }
 
-module.exports = { NodeCreaController: NodeCreaValidator }
+module.exports = { nodeCreaValidator }

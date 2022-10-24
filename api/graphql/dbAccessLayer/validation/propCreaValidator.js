@@ -2,7 +2,7 @@ const {IdController} = require("./idValidator")
 const {Voc} = require("../voc");
 const {v4} = require("uuid");
 
-function PropCreaValidator(params){
+function propCreaValidator(params){
     this.parent = getParent(params)
     this.propertyType = getPropertyType(this.parent)
 
@@ -39,4 +39,4 @@ function getDefType(propertyType){
     return "prop" + propertyType.inString
 }
 
-module.exports = { PropCreaController: PropCreaValidator }
+module.exports = { propCreaValidator }

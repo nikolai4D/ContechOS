@@ -4,7 +4,7 @@ const { graphqlHTTP } = require('express-graphql');
 const { GraphQLSchema, GraphQLObjectType, GraphQLString} = require('graphql');
 const { GraphQLList } = require("graphql/type")
 const { createItem } = require("./dbAccessLayer/crud/create")
-const { Node, Relationship, Property, MutationItem, CreateInput , QueryInput, CascadeNode, CascadeInput} = require("./graphqlTypes")
+const { Node, Relationship, Property, MutationItem, CreateInput , QueryInput, CascadeNode, CascadeInput, deleteItem} = require("./graphqlTypes")
 const { graphResolver } = require("./resolvers");
 const cascade = require("./dbAccessLayer/helpers/cascade");
 
@@ -86,7 +86,7 @@ let schema = new GraphQLSchema({
             },
         }
     }),
-    types: [Node, Relationship, Property, CascadeNode, CascadeInput, QueryInput, CreateInput, MutationItem]
+    types: [Node, Relationship, Property, CascadeNode, CascadeInput, QueryInput, CreateInput, MutationItem, deleteItem]
 })
 
 router.use('', graphqlHTTP({

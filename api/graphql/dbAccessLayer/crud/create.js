@@ -1,8 +1,8 @@
 const {createFile} = require("../fileManager")
-const {RelCreaController} = require("../validation/RelCreaValidator");
-const {NodeCreaController} = require("../validation/NodeCreaValidator");
-const {PropCreaController} = require("../validation/PropCreaValidator");
-const {PropFieldCreaController} = require("../validation/PropFieldCreaValidator");
+const {relCreaValidator} = require("../validation/relCreaValidator");
+const {nodeCreaValidator} = require("../validation/nodeCreaValidator");
+const {propCreaValidator} = require("../validation/propCreaValidator");
+const {propFieldCreaValidator} = require("../validation/propFieldCreaValidator");
 
 function itemCreationParams(
     title,
@@ -44,9 +44,9 @@ async function createItem(params) {
         if(!params.hasOwnProperty("kindOfItem")) {
             throw new Error("creation interrupted: kindOfItem was not provided in params. params: " + JSON.stringify(params, null, 2))
         }
-        else if(params.kindOfItem === "node") controller = new NodeCreaController(params)
-        else if(params.kindOfItem === "relation") controller = new RelCreaController(params)
-        else if(params.kindOfItem === "property") controller = new PropCreaController(params)
+        else if(params.kindOfItem === "node") controller = new nodeCreaValidator(params)
+        else if(params.kindOfItem === "relation") controller = new relCreaValidator(params)
+        else if(params.kindOfItem === "property") controller = new propCreaValidator(params)
         else throw new Error("Creation interrupted: kindOfItem was invalid. kind of item: " + params.kindOfItem)
 
         const fParams = controller.formattedParams
@@ -57,7 +57,7 @@ async function createItem(params) {
         }
 
         if(["node","relation"].includes(controller.kindOfItem)) {
-            const propFieldCon = new PropFieldCreaController(params, params.parentId)
+            const propFieldCon = new propFieldCreaValidator(params, params.parentId)
             const formattedProps = propFieldCon.formattedParams
             for(let field in formattedProps){
                 formattedParams[field] = formattedProps[field]
@@ -71,6 +71,7 @@ async function createItem(params) {
         return await createFile(defType, id, formattedParams)
 
     } catch(e){
+        console.log("error: " + e.message)
         return {
             status: "cancelled",
             error: "Creation cancelled due to:\n" + e.message}

@@ -1,6 +1,6 @@
 const {IdController} = require("./idValidator")
 
-function PropFieldCreaValidator(params, itemParentId = null){
+function propFieldCreaValidator(params, itemParentId = null){
         this.parent = getParent(itemParentId)
         this.props = ()=> getProps(params)
         this.typeDataPropKeys = ()=> getTypeDataPropKeys(params)
@@ -75,4 +75,4 @@ function getFormattedParams(parent, props, propKeys, typeDataPropKeys, instanceD
         else if([1,2].includes(parent.layerIndex)) return {props: props()}
 }
 
-module.exports = { PropFieldCreaController: PropFieldCreaValidator }
+module.exports = { propFieldCreaValidator }

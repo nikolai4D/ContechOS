@@ -104,6 +104,14 @@ document.addEventListener("DOMContentLoaded", async () => {
       }
     }})
 
+const deleteQuery = JSON.stringify({
+  query: `mutation RootMutationType($id: GraphQLString){
+    delete(id:$id){
+      title
+    }}`, variables: {
+    id: "cd_9cedbfac-b8be-4af8-ba7b-77afc9a655e7"
+  }})
+
 async function graphQLQuery(query) {
   {
     let response
