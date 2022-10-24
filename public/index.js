@@ -93,46 +93,16 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-
   const query = JSON.stringify({
-
-    query: `mutation MutationQueryType($input: MutationInput){
-        (cascadeInput:$cascadeInput){
-        id
-        title
-        defType
-        parentId
-        updated
-        created
-        childrenNodes{
-            id
-            title
-            defType
-            parentId
-            updated
-            created
-            
-            childrenNodes{
-                id
-                title
-                defType
-                parentId
-                updated
-                created
-                            
-                childrenNodes{
-                    id
-                    title
-                    defType
-                    parentId
-                    updated
-                    created
-                }
-            }
-        }
+    query: `mutation RootMutationType($input: CreateInput){
+    create(item:$input){
+      title
     }}`, variables: {
-            kind
-    }
+      input: {
+        kindOfItem: "node",
+        title: "test",
+      }
+    }})
 
 async function graphQLQuery(query) {
   {
@@ -152,8 +122,10 @@ async function graphQLQuery(query) {
     return await response.json()
   }
 }
-function f(){
 
+async function f() {
+  let answer = graphQLQuery(query)
+  await console.log("answer: " + JSON.stringify(answer, null, 2))
 }
 f()
 

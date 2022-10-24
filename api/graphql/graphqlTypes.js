@@ -246,4 +246,22 @@ const CascadeInput = new GraphQLInputObjectType({
     }
 })
 
-module.exports = { Node, Relationship, Property, CascadeWrapper, CascadeNode, QueryInput, CascadeInput, MutationItem }
+const CreateInput = new GraphQLInputObjectType({
+    name: "CreateInput",
+    fields: {
+        kindOfItem: { type: new GraphQLNonNull(KindOfItem)},
+        title:  { type: new GraphQLNonNull(GraphQLString)},
+        parentId: { type: GraphQLID},
+        targetId: { type: GraphQLID},
+        sourceId: { type: GraphQLID},
+        props: {
+            type: new GraphQLList(GraphQLString),
+            description: `a stringified JSON like '{"pk_whateverpropkeyid":"pv_thepropvalueid"}'`
+        },
+        propKeys: { type: new GraphQLList(GraphQLString) },
+        typeDataPropKeys: { type: new GraphQLList(GraphQLString) },
+        instanceDataPropKeys: { type: new GraphQLList(GraphQLString) },
+    }
+})
+
+module.exports = { Node, Relationship, Property, CascadeWrapper, CascadeNode, QueryInput, CascadeInput, MutationItem, CreateInput }
