@@ -9,7 +9,7 @@ const { filterItems } = require("../helpers/filterFunction");
  * @constructor
  */
 
-function validateId(id, shouldExists = true) {
+function idValidator(id, shouldExists = true) {
     this.id = id
     this.abbr = getAbbrFromId(this.id)
     this.kindOfItem = getKindOfItemFromAbbr(this.abbr)
@@ -179,4 +179,4 @@ function getSourceId(koi, item) {
     else throw new Error("source is missing in item.")
 }
 
-module.exports = { validateId }
+module.exports = { validateId: idValidator }

@@ -1,8 +1,8 @@
-const { validateId } = require("./validateId");
+const { validateId } = require("./idValidator");
 const { voc } = require("../voc");
 const { filterItems } = require("../helpers/filterFunction");
 
-function validateBulkFetch(params
+function bulkFetchValidator(params
 ) {
     this.defType = params.defType ?? null
     this.parentId = params.parentId ?? null
@@ -88,4 +88,4 @@ function getPotentialDefTypes(defType, parentId, kindOfItem) {
 
 
 
-module.exports = { validateBulkFetch, doesDefTypeExist }
+module.exports = { validateBulkFetch: bulkFetchValidator, doesDefTypeExist }

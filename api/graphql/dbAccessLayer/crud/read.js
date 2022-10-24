@@ -1,6 +1,6 @@
 const { getItemById, getBulk } = require("../fileManager");
-const { validateId } = require("../validation/validateId");
-const { validateBulkFetch } = require("../validation/validateBulkFetch");
+const { validateId } = require("../validation/idValidator");
+const { validateBulkFetch } = require("../validation/BulkFetchValidator");
 
 async function getItems(params) {
 

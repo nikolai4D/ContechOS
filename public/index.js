@@ -93,6 +93,8 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
+function f(){
 
+}
 
 window.addEventListener("popstate", router);
