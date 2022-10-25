@@ -11,9 +11,6 @@ async function deleteItem(params) {
 
         const filesToDelete = delCon.filesToDelete
 
-        console.log("here")
-
-        console.log("files to delete: " + JSON.stringify(filesToDelete, null, 2))
         const deletionPromises = []
         for (let file in filesToDelete) {
             deletionPromises.push(deleteFile(filesToDelete[file]))

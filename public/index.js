@@ -107,7 +107,7 @@ const query = JSON.stringify({
 const deleteQuery = JSON.stringify({
   query: `mutation RootMutationType($id: String){
     delete(id:$id)}`, variables: {
-    id: "cd_9cedbfac-b8be-4af8-ba7b-77afc9a655e7"
+    id: "cder_dee94a55-45f9-4f62-9bbb-2b0e5fd2d64c-cd_5c179621-5bb8-4ad0-be00-450102411a46-cd_1d6f1b8b-992f-4972-8ade-38ef884b7d97"
   }})
 
 async function graphQLQuery(query) {

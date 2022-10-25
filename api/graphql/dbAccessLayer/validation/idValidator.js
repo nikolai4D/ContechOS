@@ -44,8 +44,8 @@ function idValidator(id, shouldExists = true) {
     this.targetId = () => getTargetId(this.kindOfItem, this.item())
     this.sourceId = () => getSourceId(this.kindOfItem, this.item())
 
-    this.relsItIsTargetOf = () => getRelsThisIsTargetOf(this.id)
-    this.relsItIsSourceOf = () => getRelsThisIsSourceOf(this.id)
+    this.relsItIsTargetOf = () => getRelsThisIsTargetOf(this.id, this.defType)
+    this.relsItIsSourceOf = () => getRelsThisIsSourceOf(this.id, this.defType)
 }
 
 function getAbbrFromId(string) {
@@ -164,13 +164,15 @@ function getChildren(id, childrenDefType) {
 }
 
 function getRelsThisIsTargetOf(id, defType) {
-    console.log("here")
-
-    return getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { target: id })
+    let extRels = getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { target: id })
+    let intRels = getBulk([defType + voc.relationshipTypes.inRel.inString], - 1, 0, filterItems, { target: id })
+    return extRels.concat(intRels)
 }
 
 function getRelsThisIsSourceOf(id, defType) {
-    return getBulk([defType + voc.relationshipTypes.inRel.inString], - 1, 0, filterItems, { target: id })
+    let extRels = getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { source: id })
+    let intRels = getBulk([defType + voc.relationshipTypes.inRel.inString], - 1, 0, filterItems, { target: id })
+    return extRels.concat(intRels)
 }
 
 function getTargetId(koi, item) {
