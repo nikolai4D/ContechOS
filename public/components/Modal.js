@@ -3,13 +3,14 @@ export default function() {
     const header = "Generated API from active filter"
     const {protocol, port, hostname} = window.location;
     const requestType = "/POST"
-    const textPort = port ? `:${port}` : null;
-    const url = protocol + "//" + hostname + textPort + "/api/graphql";
+    const textPort = port ? `:${port}` : "";
+    const url = protocol + "//" +hostname + textPort + "/api/graphql";
     const api = "Click to show API Key"
     const classDiv = "p-3 border rounded border-1"
-    const classPre = `border rounded border-1 bg-light`
+    const classPre =`border rounded border-1 bg-light`
+    
 
-
+      
     const copyIcon = (part) => {
         return `<i data-function="copyToClipboard" id="modalClipboard${part}" class="p-1 bi bi-clipboard text-secondary" role="button"></i>`
     }
