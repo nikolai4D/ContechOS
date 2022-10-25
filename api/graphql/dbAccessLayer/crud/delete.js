@@ -3,6 +3,7 @@ const {deleteFile} = require("../fileManager");
 
 async function deleteItem(params) {
 
+    console.log("params: " + JSON.stringify(params, null, 2))
     try {
         if (!params.hasOwnProperty("id")) throw new Error("deletion interrupted: no id was provided in the parameters.")
 
