@@ -8,9 +8,7 @@ export default function() {
     const api = "Click to show API Key"
     const classDiv = "p-3 border rounded border-1"
     const classPre =`border rounded border-1 bg-light`
-    
 
-      
     const copyIcon = (part) => {
         return `<i data-function="copyToClipboard" id="modalClipboard${part}" class="p-1 bi bi-clipboard text-secondary" role="button"></i>`
     }
