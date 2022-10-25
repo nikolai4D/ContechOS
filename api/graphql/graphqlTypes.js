@@ -264,4 +264,5 @@ const CreateInput = new GraphQLInputObjectType({
     }
 })
 
+
 module.exports = { Node, Relationship, Property, CascadeWrapper, CascadeNode, QueryInput, CascadeInput, MutationItem, CreateInput }

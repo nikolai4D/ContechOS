@@ -1,11 +1,15 @@
-const { IdController } = require("./idValidator")
+const { idValidator } = require("./idValidator")
 
-function DeleteController(id){
-    this.idCon = new IdController(id)
+function deleteValidator(id){
+    this.idCon = new idValidator(id)
+
+
     this.absenceOfChildren = doesItemHaveChildren(this.idCon)
+
     this.absenceOfrelsThisIsTargetOf= isItemTarget(this.idCon)
 
     this.relsItIsSourceOf = getRelsItIsSourceOf(this.idCon)
+
 
     this.filesItIsSourceOf = getFilesItIsSourceOf(this.relsItIsSourceOf)
 
@@ -22,9 +26,12 @@ function doesItemHaveChildren(idCon){
 
 function isItemTarget(idCon){
     if(idCon.kindOfItem !== "node") return false
+
     const rels = idCon.relsItIsTargetOf(idCon)
+
     if (rels.length > 0) throw new Error("Cannot delete an item if it is a target of relation. Relations: " + JSON.stringify(rels, null,2))
     else return false
+
 }
 
 function getRelsItIsSourceOf(idCon){
@@ -56,4 +63,4 @@ function getIdsToDelete(idCon, rels){
     })]
 }
 
-module.exports = { DeleteController }
+module.exports = { deleteValidator }

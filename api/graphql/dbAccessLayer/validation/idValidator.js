@@ -11,6 +11,8 @@ const { filterItems } = require("../helpers/filterFunction");
 
 function idValidator(id, shouldExists = true) {
     this.id = id
+
+
     this.abbr = getAbbrFromId(this.id)
     this.kindOfItem = getKindOfItemFromAbbr(this.abbr)
     this.layerIndex = getLayerIndexFromAbbr(this.abbr)
@@ -19,6 +21,7 @@ function idValidator(id, shouldExists = true) {
     this.propertyType = getPropertyTypeFromAbbr(this.abbr, this.kindOfItem)
     this.defType = this.layer.inString + this.relationshipType.inString + this.propertyType.inString
     this.exists = doesItemExistsInDb(this.id, this.defType, shouldExists)
+
 
 
     this.loadedItem = null
@@ -33,6 +36,7 @@ function idValidator(id, shouldExists = true) {
     this.propKeys = () => getPropKeys(this.layerIndex, this.item)
     this.typeDataPropKeys = () => getTypeDataPropKeys()
     this.instanceDataPropKey = () => getInstanceDataPropKeys()
+
 
     this.childrenDefType = () => getChildrenDefType(this.layerIndex, this.relationshipType, this.propertyType)
     this.children = () => getChildren(this.id, this.childrenDefType)
@@ -160,6 +164,8 @@ function getChildren(id, childrenDefType) {
 }
 
 function getRelsThisIsTargetOf(id, defType) {
+    console.log("here")
+
     return getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { target: id })
 }
 

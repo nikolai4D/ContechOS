@@ -73,10 +73,11 @@ let schema = new GraphQLSchema({
             },
             delete: {
                 type: new GraphQLList( GraphQLString),
-                args: { id: {type: GraphQLString} },
+                args: {
+                    id: {type: GraphQLString}
+                },
                 async resolve(root, args){
-                    console.log("graphQL delete request received.")
-                    return await deleteItem(args.id)
+                    return await deleteItem({id: args.id})
                 }
             }
         }
