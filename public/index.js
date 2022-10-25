@@ -93,15 +93,4 @@ document.addEventListener("DOMContentLoaded", async () => {
   }
 });
 
-const query = JSON.stringify({
-  query: `mutation RootMutationType($input: CreateInput){
-  create(item:$input){
-    title
-  }}`, variables: {
-    input: {
-      kindOfItem: "node",
-      title: "test",
-    }
-}})
-
 window.addEventListener("popstate", router);
