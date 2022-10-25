@@ -152,8 +152,16 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     switchDiv.appendChild(switchInput)
     switchDiv.appendChild(switchLabel)
     containerNode.appendChild(switchDiv);
+
+    //Delete Modal Content if there is already one.
+    let modalDialog = document.querySelector("#modal-dialog")
+    if(modalDialog){ modalDialog.remove() }
+
     const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
-    containerModal.innerHTML=`${Modal()}`
+    let modal = Modal()
+    containerModal.innerHTML = modal.modalButton
+    let modalContent = modal.modalContent
+    document.body.appendChild(modalContent)
     containerNode.appendChild(containerModal);
 }
 
