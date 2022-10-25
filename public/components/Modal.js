@@ -3,7 +3,7 @@ export default function(){
     const header = "Generated API from active filter"
     const { protocol, port, hostname } = window.location;
     const requestType = "/POST"
-    const textPort = port ? `:${port}` : null;
+    const textPort = port ? `:${port}` : "";
     const url = protocol + "//" +hostname + textPort + "/api/graphql";
     const api = "Click to show API Key"
     const classDiv = "p-3 border rounded border-1"
