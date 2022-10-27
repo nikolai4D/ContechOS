@@ -42,6 +42,10 @@ async function updateData(){
 }
 
 export async function setFilterBoxCallback(filterBoxNode, redrawData){
+    filterBoxNode.addEventListener("dragstart", async (event) => {
+        setDragEvent(event, document.querySelector("#data-display-grid-container-id"))
+    })
+
     filterBoxNode.querySelectorAll(".form-check-input, i").forEach(box =>
         box.addEventListener("click", async function(e) {
             if(e.currentTarget.id.startsWith('all')){
@@ -53,6 +57,7 @@ export async function setFilterBoxCallback(filterBoxNode, redrawData){
             else if (e.currentTarget.id.startsWith('toggleEye')){
                 toggleHideShow(e)
             }
+            else return
 
             await updateData()
             await redrawData();
@@ -60,7 +65,68 @@ export async function setFilterBoxCallback(filterBoxNode, redrawData){
             filterboxBody.innerHTML = ""
             filterboxBody.innerHTML = await triggerTreeGetHtml()
             setFilterBoxCallback(filterboxBody, redrawData)
+            resizeFilterBox()
     }))
+}
+
+function setDragEvent(e, div){
+
+    document.querySelector("#app").addEventListener("dragover", function(e) {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = "move"
+    })
+
+    let offsets = div.getBoundingClientRect();
+    let top = offsets.top;
+    let left = offsets.left;
+
+    let cursorDivXOffset = e.clientX - left
+    let cursorDivYOffset = e.clientY - top
+
+    let moveDiv = (e)=>{
+
+        let cursorPosX = e.clientX
+        let cursorPosY = e.clientY
+
+        let divOffsets = div.firstElementChild.firstElementChild.getBoundingClientRect();
+        let divWidth = divOffsets.width;
+        let divHeight = divOffsets.height;
+
+        let appOffsets = document.querySelector("#app").getBoundingClientRect();
+        let appTop = appOffsets.top;
+        let appWidth = appOffsets.width;
+        let appBottom = appOffsets.bottom;
+
+        div.style.left = Math.min(Math.max((cursorPosX - cursorDivXOffset), 0),appWidth - divWidth) + "px"
+        div.style.top =  Math.min(Math.max(cursorPosY - cursorDivYOffset, appTop), appBottom - divHeight) + "px"
+
+        resizeFilterBox()
+        div.removeEventListener("dragend", (e) => moveDiv(e))
+    }
+
+    div.addEventListener("dragend", e => moveDiv(e))
+
+}
+
+
+function resizeFilterBox(){
+    let accordion =  document.getElementById("accordion-body-id")
+    accordion.style.height = "auto"
+
+    let div = document.querySelector("#data-display-grid-container-id")
+
+    let divOffsets = div.firstElementChild.firstElementChild.getBoundingClientRect();
+    let divBottom = divOffsets.bottom
+
+    let appOffsets = document.querySelector("#app").getBoundingClientRect();
+    let appHeight = appOffsets.height;
+
+    if(divBottom > appHeight){
+        let accordion =  document.getElementById("accordion-body-id")
+        let accordionTop = accordion.getBoundingClientRect().top
+        accordion.style.height = appHeight - accordionTop + "px"
+        accordion.style.overflowY = "scroll"
+    }
 }
 
 export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, checked, containerNode) {
@@ -86,8 +152,16 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     switchDiv.appendChild(switchInput)
     switchDiv.appendChild(switchLabel)
     containerNode.appendChild(switchDiv);
+
+    //Delete Modal Content if there is already one.
+    let modalDialog = document.querySelector("#modal-dialog")
+    if(modalDialog){ modalDialog.remove() }
+
     const containerModal = createHtmlElementWithData("div", {"id": "containerModal", "class":"" })
-    containerModal.innerHTML=`${Modal()}`
+    let modal = Modal()
+    containerModal.innerHTML = modal.modalButton
+    let modalContent = modal.modalContent
+    document.body.appendChild(modalContent)
     containerNode.appendChild(containerModal);
 }
 
