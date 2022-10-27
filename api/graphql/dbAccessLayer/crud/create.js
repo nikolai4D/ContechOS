@@ -32,8 +32,8 @@ async function createItem(params) {
         let id
         let defType
         const formattedParams = {
-            created: new Date(),
-            updated: new Date()
+            created: new Date().toString(),
+            updated: new Date().toString()
         }
 
         if (!params.hasOwnProperty("title")) throw new Error("Creation interrupted: a title was not provided")
