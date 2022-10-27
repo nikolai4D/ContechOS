@@ -21,7 +21,6 @@ async function getItems(params) {
         }
         else {
             let bfData = new validateBulkFetch(params)
-            console.log(JSON.stringify(bfData.filterParams, null, 2))
             requestedItems = getBulk(bfData.defTypes, -1, bfData.from, bfData.filterFunction, bfData.filterParams)
         }
 
