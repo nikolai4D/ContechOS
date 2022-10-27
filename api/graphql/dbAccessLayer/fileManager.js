@@ -31,6 +31,7 @@ function getItemById(id, defType) {
  * @returns {*[]}
  */
 function getBulk(defTypes, limit = 50, from = 0, filterFunction = null, filterParams) {
+    // console.log(JSON.stringify({ defTypes, limit, from, filterFunction, filterParams }, null, 2))
     const items = []
     for (let defType of defTypes) {
         const dir = `../db/${defType}/`
