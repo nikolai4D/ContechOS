@@ -29,10 +29,10 @@ function idValidator(id, shouldExists = true) {
         return this.loadedItem
     }
 
-    this.parentId = () => getParentId(this.layerIndex, this.item())
+    this.parentId = () => getParentId(this.layerIndex, this.item(), this.propertyType)
 
-    this.props = () => getProps(this.layerIndex, this.item)
-    this.propKeys = () => getPropKeys(this.layerIndex, this.item)
+    this.props = () => getProps(this.layerIndex, this.item())
+    this.propKeys = () => getPropKeys(this.layerIndex, this.item())
     this.typeDataPropKeys = () => getTypeDataPropKeys()
     this.instanceDataPropKey = () => getInstanceDataPropKeys()
 
@@ -114,7 +114,7 @@ function getProps(layerIndex, item) {
         else return null
     }
     else if (item.hasOwnProperty("props")) return item.props
-    else throw new Error("invalid state: propKeys field is missing.")
+    else throw new Error("invalid state: props field is missing.")
 }
 
 function getPropKeys(layerIndex, item) {
@@ -148,7 +148,6 @@ function getChildrenDefType(layerIndex, relationshipType, propertyType) {
 
     if (layerIndex === 3) throw "instance data cannot have children."
     if (layerIndex === 4 && propertyType.inString === "Val") {
-        console.log("being there")
         throw new Error("property value cannot have children.")
     }
     let childLayerIndex = ([0, 1, 2].includes(layerIndex)) ? layerIndex + 1 : layerIndex

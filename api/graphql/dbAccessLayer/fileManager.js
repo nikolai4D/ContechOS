@@ -62,7 +62,7 @@ function createFile(defType, id, item){
         `../db/${defType}/${id}.json`,
         JSON.stringify(item, null, 2)
     );
-    console.log("created: " + JSON.stringify({ id, defType, ...item }, null,2))
+    // console.log("created: " + JSON.stringify({ id, defType, ...item }, null,2))
     return { id, defType, ...item }
 }
 

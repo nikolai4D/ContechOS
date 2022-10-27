@@ -60,7 +60,6 @@ const Relationship = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("resolving relationship source node")
                 return (await queryNodesResolver(args.nodeInput, { id: root.source, kindOfItem: "node" }))[0]
             }
         },
@@ -70,7 +69,6 @@ const Relationship = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("resolving target node")
                 return (await queryNodesResolver(args.nodeInput, { id: root.target, kindOfItem: "node" }))[0]
             }
         },
@@ -80,7 +78,6 @@ const Relationship = new GraphQLObjectType({
                 relationshipInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("resolving relationship parent node")
                 return (await queryRelationshipsResolver(args.relationshipInput, { id: root.parentId, kindOfItem: "relationship" }))[0]
             }
         },
@@ -126,10 +123,21 @@ const Node = new GraphQLObjectType({
                 relationshipInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("RESOLVING RELATIONshipS, rootid: " + root.id)
                 return [...(await graphResolver(args.relationshipInput, { targetId: root.id, kindOfItem: "relationship" })),
                 ...(await graphResolver(args.relationshipInput, { sourceId: root.id, kindOfItem: "relationship" }))]
             }
+        },
+        props: {
+            type: new GraphQLList(Prop),
+        },
+        propKeys: {
+            type: new GraphQLList(GraphQLString),
+        },
+        typeDataPropKeys: {
+            type: new GraphQLList(GraphQLString),
+        },
+        instanceDataPropKeys: {
+            type: new GraphQLList(GraphQLString),
         }
     })
 })
@@ -180,6 +188,17 @@ const QueryInput = new GraphQLInputObjectType({
     }
 })
 
+const Prop = new GraphQLObjectType({
+    name: "prop",
+    fields: {
+        key: { type: GraphQLNonNull(GraphQLString),
+            resolve: (root) => { return Object.keys(root)[0] }},
+        value: { type: GraphQLNonNull(GraphQLString),
+            resolve: (root) => {
+            return root[Object.keys(root)[0]] }},
+    }
+})
+
 const MutationItem = new GraphQLObjectType({
     name: "MutationItem",
     fields: {
@@ -192,7 +211,7 @@ const MutationItem = new GraphQLObjectType({
         targetId: { type: GraphQLID },
         sourceId: { type: GraphQLID },
         props: {
-            type: new GraphQLList(GraphQLString),
+            type: new GraphQLList(Prop),
             description: `a stringified JSON like '{"pk_whateverpropkeyid":"pv_thepropvalueid"}'`
         },
         propKeys: { type: new GraphQLList(GraphQLString) },
@@ -246,6 +265,14 @@ const CascadeInput = new GraphQLInputObjectType({
     }
 })
 
+const InputProp = new GraphQLInputObjectType({
+    name: "InputProp",
+    fields: {
+        key: { type: GraphQLNonNull(GraphQLString) },
+        value: { type: GraphQLNonNull(GraphQLString) },
+    }
+})
+
 const CreateInput = new GraphQLInputObjectType({
     name: "CreateInput",
     fields: {
@@ -255,7 +282,7 @@ const CreateInput = new GraphQLInputObjectType({
         targetId: { type: GraphQLID},
         sourceId: { type: GraphQLID},
         props: {
-            type: new GraphQLList(GraphQLString),
+            type: new GraphQLList(InputProp),
             description: `a stringified JSON like '{"pk_whateverpropkeyid":"pv_thepropvalueid"}'`
         },
         propKeys: { type: new GraphQLList(GraphQLString) },

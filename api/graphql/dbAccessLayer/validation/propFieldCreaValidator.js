@@ -24,14 +24,18 @@ function getParent(itemParentId){
 }
 
 function checkPropsAreValid(props, validKeys){
-        for (let propKey in props){
-                if(!validKeys.includes(propKey)) throw new Error("error: prop have invalid propKey. Prop: " + propKey + ": " + JSON.stringify(props[propKey]))
+        let formattedProps = []
+        for (let prop of props){
+                if(!validKeys.includes(prop.key)) throw new Error("error: prop have invalid propKey. Prop: " + prop.key + ": " + JSON.stringify(prop.key))
                 else {
-                        let propCon = new idValidator(props[propKey])
-                        if(propCon.parentId() !== propKey) throw new Error("error: prop value associated to incorrect propKey. PropValue: " + props[propKey] + ", propKey: " + propKey)
+                        let propCon = new idValidator(prop.value)
+                        if(propCon.parentId() !== prop.key) throw new Error("error: prop value associated to incorrect propKey. PropValue: " + prop.value + ", propKey: " + prop.key)
+                        let formattedProp = {}
+                        formattedProp[prop.key] = prop.value
+                        formattedProps.push(formattedProp)
                 }
         }
-        return props
+        return formattedProps
 }
 
 function getProps(parent, params){
@@ -45,7 +49,10 @@ function getProps(parent, params){
                 validKeys = granPa.instanceDataPropKey()
         }
         else if (parent.layerIndex == 1) validKeys = parent.typeDataPropKeys()
-        else if (parent.layerIndex == 0) validKeys = parent.propKeys()
+        else if (parent.layerIndex == 0) {
+                validKeys = parent.propKeys()
+        }
+
         return checkPropsAreValid(props, validKeys)
 }
 
@@ -78,13 +85,13 @@ function getPropKeys(parent, params){
         else return checkPropKeysAreValid(params.propKeys)
 }
 
-function getFormattedParams(vld, params){
+function getFormattedParams(vld){
         parent = vld.parent
 
         if(parent === null || parent === undefined) return {propKeys: vld.propKeys()}
         else if(parent.layerIndex == 0) {
                 return {
-                        propKeys: vld.props(),
+                        props: vld.props(),
                         typeDataPropKeys: vld.typeDataPropKeys(),
                         instanceDataPropKeys: vld.instanceDataPropKeys()
                 }
