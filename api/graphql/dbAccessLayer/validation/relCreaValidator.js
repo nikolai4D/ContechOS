@@ -1,5 +1,5 @@
 const {idValidator} = require("./idValidator")
-const {Voc} = require("../voc");
+const {voc} = require("../voc");
 const { v4} = require('uuid');
 
 function relCreaValidator(params){
@@ -32,7 +32,7 @@ function getParentId(parentId, source){
         if((parentId === null || parentId === undefined) && source.layerIndex === 0)  return null
 
         let parData = new idValidator(parentId)
-        if(parData.layerIndex !== source.layerIndex + 1) throw new Error("Relation parentId is not directly above the source layer.")
+        if(parData.layerIndex !== source.layerIndex - 1) throw new Error("Relation parentId is not directly above the source layer.")
         return parData
 }
 
@@ -41,14 +41,18 @@ function areSourceAndTargetOfValidTypes(target, source, parent, layerIndex){
                 if(target.kindOfItem !== "node") throw new Error("target must be a node.")
                 else if(source.kindOfItem !== "node") throw new Error("source must be a node.")
         }
-        else if(parent.targetId() !== target.parentId()) throw new Error("Target parentId does not match parent targetId")
+        else if(parent.targetId() !== target.parentId()) {
+                console.log("parent.targetId", parent.targetId())
+                console.log("target.parentId()", target.parentId())
+                throw new Error("Target parentId does not match parent targetId")
+        }
         else if(parent.sourceId() !== source.parentId()) throw "Source parentId does not match parent sourceId"
 }
 
 function getRelationType(source, target, parent){
-        if(parent !== null) return parent.relationType
-        if(source.id() === target.id()) return Voc.relationTypes.inRel
-        else return Voc.relationTypes.exRel
+        if(parent !== null) return parent.relationshipType
+        if(source.id === target.id) return voc.relationshipTypes.inRel
+        else return voc.relationshipTypes.exRel
 }
 
 function getDefType(layer, relationType){
