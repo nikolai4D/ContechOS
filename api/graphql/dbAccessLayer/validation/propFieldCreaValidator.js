@@ -50,10 +50,12 @@ function getProps(parent, params){
 }
 
 function checkPropKeysAreValid(propKeys){
-        for(let propKey in propKeys){
+
+        for(let propKey of propKeys){
                 const keyCon = new idValidator(propKey)
                 if(keyCon.defType !== "propKey") throw new Error("the id proposed as a propKey is not a propKey.")
         }
+
         return propKeys
 }
 
@@ -70,6 +72,7 @@ function getInstanceDataPropKeys(parent, params){
 }
 
 function getPropKeys(parent, params){
+
         if(parent !== null && parent !== undefined) throw new Error("'propKeys' can only be created on a configDef item. A parent was provided: " + parent.id)
         else if(!params.hasOwnProperty("propKeys")) return []
         else return checkPropKeysAreValid(params.propKeys)

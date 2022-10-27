@@ -12,7 +12,6 @@ const { filterItems } = require("../helpers/filterFunction");
 function idValidator(id, shouldExists = true) {
     this.id = id
 
-
     this.abbr = getAbbrFromId(this.id)
     this.kindOfItem = getKindOfItemFromAbbr(this.abbr)
     this.layerIndex = getLayerIndexFromAbbr(this.abbr)
