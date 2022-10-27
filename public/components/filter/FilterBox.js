@@ -5,10 +5,10 @@ async function FilterBox() {
   let nodeHtmlString = await triggerTreeGetHtml();
 
   const htmlString = `
-<div class="accordion w-25 position-absolute open" id="accordionPanelsStayOpenExample">
+<div class="accordion w-25 position-fixed open" draggable="true" id="accordionPanelsStayOpenExample">
   <div class="accordion-item">
     <h2 class="accordion-header" id="panelsStayOpen-headingOne">
-      <button class="accordion-button col-sm" type="button" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
+      <button id= "filter-box-handle" class="accordion-button col-sm" type="button" draggable="true" data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
         Filter
       </button>
     </h2>
@@ -24,7 +24,7 @@ async function FilterBox() {
 
 
   let filterDOM = document.createElement("div");
-  filterDOM.className = "filter-container container-fluid"
+  filterDOM.className = "filter-container container-fluid  m-0 p-0"
   filterDOM.id = "filter-container-id"
   filterDOM.innerHTML = htmlString;
   return filterDOM;
@@ -58,17 +58,14 @@ function itemRow(node){
             childrenFrame += itemRow(child)
       }
 
+        if(childrenFrame.lastIndexOf("<br/>") === childrenFrame.length - 5 ){
+            childrenFrame = childrenFrame.slice(0, -5)
+        }
+
       childrenFrame += `</ul>`
     }
 
-    //const eye = node.hidden? iconEye(node.id).hide : iconEye(node.id).show
-    let eye
-    if(node.hidden){
-        eye = iconEye(node.id).hide
-    }
-    else {
-        eye = iconEye(node.id).show
-    }
+    const eye = node.hidden? iconEye(node.id).hide : iconEye(node.id).show
 
     const eyeDiv = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${eye}</div>`
 
