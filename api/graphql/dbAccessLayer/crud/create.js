@@ -27,7 +27,6 @@ function itemCreationParams(
 async function createItem(params) {
     try {
 
-        console.log("provided params: " + JSON.stringify(params))
 
         let id
         let defType
@@ -59,15 +58,11 @@ async function createItem(params) {
         if(params.kindOfItem === "node") {
             const propFieldCon = new propFieldCreaValidator(params, params.parentId)
             const formattedProps = propFieldCon.formattedParams
-            console.log("formattedProps: " + JSON.stringify(formattedProps, null, 2))
             for(let field in formattedProps){
                 formattedParams[field] = formattedProps[field]
             }
         }
 
-        console.log("defType: " + defType)
-        console.log("id: " + id)
-        console.log("formattedParams: " + JSON.stringify(formattedParams, null, 2))
 
         return await createFile(defType, id, formattedParams)
 
