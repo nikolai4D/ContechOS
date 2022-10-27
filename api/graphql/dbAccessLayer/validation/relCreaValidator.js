@@ -1,11 +1,10 @@
-const {IdController} = require("./idValidator")
+const {idValidator} = require("./idValidator")
 const {Voc} = require("../voc");
 const { v4} = require('uuid');
 
 function relCreaValidator(params){
-
-        this.sourceIdData = new IdController(params.sourceId)
-        this.targetIdData= new IdController(params.targetId)
+        this.sourceIdData = new idValidator(params.sourceId)
+        this.targetIdData= new idValidator(params.targetId)
 
 
         areSourceAndTargetOnTheSameLevel(this.sourceIdData, this.targetIdData)
@@ -32,7 +31,7 @@ function areSourceAndTargetOnTheSameLevel(source, target){
 function getParentId(parentId, source){
         if((parentId === null || parentId === undefined) && source.layerIndex === 0)  return null
 
-        let parData = new IdController(parentId)
+        let parData = new idValidator(parentId)
         if(parData.layerIndex !== source.layerIndex + 1) throw new Error("Relation parentId is not directly above the source layer.")
         return parData
 }

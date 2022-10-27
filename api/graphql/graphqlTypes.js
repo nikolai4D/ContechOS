@@ -29,7 +29,7 @@ const KindOfItem = new GraphQLEnumType({
     values: {
         node: { value: "node" },
         relationship: { value: "relationship" },
-        property: { value: "relationship" }
+        property: { value: "property" }
     }
 })
 

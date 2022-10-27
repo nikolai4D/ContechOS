@@ -67,7 +67,6 @@ let schema = new GraphQLSchema({
                     item: { type: CreateInput }
                 },
                 async resolve(root, args){
-                    console.log("graphQL create request received.")
                     return await createItem(args.item)
                 }
             },

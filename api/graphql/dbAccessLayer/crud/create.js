@@ -39,18 +39,18 @@ async function createItem(params) {
         else if (params.title === "" || params.title === null || params.title === undefined) throw new Error("Creation interrupted: title invalid.")
         else formattedParams.title = params.title
 
-        let controller
+        let validator
         if(!params.hasOwnProperty("kindOfItem")) {
             throw new Error("creation interrupted: kindOfItem was not provided in params. params: " + JSON.stringify(params, null, 2))
         }
-        else if(params.kindOfItem === "node") controller = new nodeCreaValidator(params)
-        else if(params.kindOfItem === "relation") controller = new relCreaValidator(params)
-        else if(params.kindOfItem === "property") controller = new propCreaValidator(params)
+        else if(params.kindOfItem === "node") validator = new nodeCreaValidator(params)
+        else if(params.kindOfItem === "relationship") validator = new relCreaValidator(params)
+        else if(params.kindOfItem === "property") validator = new propCreaValidator(params)
         else throw new Error("Creation interrupted: kindOfItem was invalid. kind of item: " + params.kindOfItem)
 
-        const fParams = controller.formattedParams
-        id = controller.id
-        defType = controller.defType
+        const fParams = validator.formattedParams
+        id = validator.id
+        defType = validator.defType
         for(let field in fParams){
             formattedParams[field] = fParams[field]
         }
