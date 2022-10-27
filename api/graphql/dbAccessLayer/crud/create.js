@@ -56,9 +56,10 @@ async function createItem(params) {
             formattedParams[field] = fParams[field]
         }
 
-        if(["node","relation"].includes(controller.kindOfItem)) {
+        if(params.kindOfItem === "node") {
             const propFieldCon = new propFieldCreaValidator(params, params.parentId)
             const formattedProps = propFieldCon.formattedParams
+            console.log("formattedProps: " + JSON.stringify(formattedProps, null, 2))
             for(let field in formattedProps){
                 formattedParams[field] = formattedProps[field]
             }

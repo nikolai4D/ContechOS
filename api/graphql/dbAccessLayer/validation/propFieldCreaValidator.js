@@ -1,19 +1,25 @@
-const {IdController} = require("./idValidator")
+const {idValidator} = require("./idValidator")
 
 function propFieldCreaValidator(params, itemParentId = null){
         this.parent = getParent(itemParentId)
-        this.props = ()=> getProps(params)
-        this.typeDataPropKeys = ()=> getTypeDataPropKeys(params)
-        this.instanceDataPropKeys = ()=> getInstanceDataPropKeys(params)
-        this.propKeys = ()=> getPropKeys(params)
+        this.props = ()=> getProps(this.parent, params)
 
-        this.formattedParams = getFormattedParams()
+        this.typeDataPropKeys = ()=> getTypeDataPropKeys(this.parent, params)
+
+        this.instanceDataPropKeys = ()=> getInstanceDataPropKeys(this.parent, params)
+        this.propKeys = ()=> getPropKeys(this.parent, params)
+
+        this.formattedParams = getFormattedParams(this, params)
+
 }
 
 function getParent(itemParentId){
         if(itemParentId === null) return null
-        let itemParent = new IdController(itemParentId)
-        if([3,4].includes(itemParent.layerIndex)) throw new Error("Invalid parent: instanceData cannot be parent, property cannot be parent of an item with a prop field. Parent: " + JSON.stringify(itemParent))
+
+        let itemParent = new idValidator(itemParentId)
+        if(itemParent === undefined) return null
+
+        if([3,4].includes(itemParent.layerIndex)) throw new Error("Invalid parent of an item with a prop field. Parent: " + JSON.stringify(itemParent))
         return itemParent
 }
 
@@ -21,7 +27,7 @@ function checkPropsAreValid(props, validKeys){
         for (let propKey in props){
                 if(!validKeys.includes(propKey)) throw new Error("error: prop have invalid propKey. Prop: " + propKey + ": " + JSON.stringify(props[propKey]))
                 else {
-                        let propCon = new IdController(props[propKey])
+                        let propCon = new idValidator(props[propKey])
                         if(propCon.parentId() !== propKey) throw new Error("error: prop value associated to incorrect propKey. PropValue: " + props[propKey] + ", propKey: " + propKey)
                 }
         }
@@ -35,7 +41,7 @@ function getProps(parent, params){
         const props = params.props
         let validKeys
         if (parent.layerIndex == 2){
-                let granPa = new IdController(parent.getParent())
+                let granPa = new idValidator(parent.getParent())
                 validKeys = granPa.instanceDataPropKey()
         }
         else if (parent.layerIndex == 1) validKeys = parent.typeDataPropKeys()
@@ -45,34 +51,42 @@ function getProps(parent, params){
 
 function checkPropKeysAreValid(propKeys){
         for(let propKey in propKeys){
-                const keyCon = new IdController(propKey)
+                const keyCon = new idValidator(propKey)
                 if(keyCon.defType !== "propKey") throw new Error("the id proposed as a propKey is not a propKey.")
         }
         return propKeys
 }
 
 function getTypeDataPropKeys(parent, params){
-        if(parent.layerIndex != 0) throw new Error("'getTypeDataPropKeys' can only be set on configObj. Parent layerIndex provided: " + parent.layerIndex)
+        if(parent === null || parent.layerIndex != 0) throw new Error("'getTypeDataPropKeys' can only be set on configObj. Parent layerIndex provided: " + parent.layerIndex)
         else if(!params.hasOwnProperty("typeDataPropKeys")) return []
         else return checkPropKeysAreValid(params.typeDataPropKeys)
 }
 
 function getInstanceDataPropKeys(parent, params){
-        if(parent.layerIndex != 0) throw new Error("'getInstanceDataPropKeys' can only be set on configObj. Parent layerIndex provided: " + parent.layerIndex)
+        if(parent === null || parent.layerIndex != 0) throw new Error("'getInstanceDataPropKeys' can only be set on configObj. Parent layerIndex provided: " + parent.layerIndex)
         else if(!params.hasOwnProperty("instanceDataPropKeys")) return []
         else return checkPropKeysAreValid(params.instanceDataPropKeys)
 }
 
 function getPropKeys(parent, params){
-        if(parent !== null) throw new Error("'propKeys' can only be created on a configDef item. A parent was provided: " + parent.id)
+        if(parent !== null && parent !== undefined) throw new Error("'propKeys' can only be created on a configDef item. A parent was provided: " + parent.id)
         else if(!params.hasOwnProperty("propKeys")) return []
         else return checkPropKeysAreValid(params.propKeys)
 }
 
-function getFormattedParams(parent, props, propKeys, typeDataPropKeys, instanceDataPropKeys){
-        if(parent === null) return propKeys()
-        else if(parent.layerIndex == 0) return {propKeys: props(), typeDataPropKeys: typeDataPropKeys(), instanceDataPropKeys: instanceDataPropKeys()}
-        else if([1,2].includes(parent.layerIndex)) return {props: props()}
+function getFormattedParams(vld, params){
+        parent = vld.parent
+
+        if(parent === null || parent === undefined) return {propKeys: vld.propKeys()}
+        else if(parent.layerIndex == 0) {
+                return {
+                        propKeys: vld.props(),
+                        typeDataPropKeys: vld.typeDataPropKeys(),
+                        instanceDataPropKeys: vld.instanceDataPropKeys()
+                }
+        }
+        else if([1,2].includes(parent.layerIndex)) return {props: vld.props()}
 }
 
 module.exports = { propFieldCreaValidator }
