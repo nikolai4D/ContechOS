@@ -60,7 +60,6 @@ const Relationship = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("resolving relationship source node")
                 return (await queryNodesResolver(args.nodeInput, { id: root.source, kindOfItem: "node" }))[0]
             }
         },
@@ -70,7 +69,6 @@ const Relationship = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("resolving target node")
                 return (await queryNodesResolver(args.nodeInput, { id: root.target, kindOfItem: "node" }))[0]
             }
         },
@@ -80,7 +78,6 @@ const Relationship = new GraphQLObjectType({
                 relationshipInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("resolving relationship parent node")
                 return (await queryRelationshipsResolver(args.relationshipInput, { id: root.parentId, kindOfItem: "relationship" }))[0]
             }
         },
@@ -126,7 +123,6 @@ const Node = new GraphQLObjectType({
                 relationshipInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                console.log("RESOLVING RELATIONshipS, rootid: " + root.id)
                 return [...(await graphResolver(args.relationshipInput, { targetId: root.id, kindOfItem: "relationship" })),
                 ...(await graphResolver(args.relationshipInput, { sourceId: root.id, kindOfItem: "relationship" }))]
             }
