@@ -30,9 +30,29 @@ function TreeNode(id, title, layer, children, selected, data, parent){
     this.excluded = false
     this.extraFetched = false
     this.data = data
+    this.formatProperties()
     this.data['defTypeTitle'] = data.defType
     this.rels = []
     this.viewAll = false
+}
+
+
+TreeNode.prototype.formatProperties = function(){
+    if(this.data.propKeys === null) delete this.data.propKeys
+    if (this.data.typeDataPropKeys === null) delete this.data.typeDataPropKeys
+    if (this.data.instanceDataPropKeys === null) delete this.data.instanceDataPropKeys
+    if (this.data.props === null) {
+        delete this.data.props
+        return
+    }
+
+    let formattedProps = []
+    for ( let prop in this.data.props) {
+        let obj = {}
+        obj[prop] = this.data.props[prop]
+        formattedProps.push(obj)
+    }
+    this.data.props = formattedProps
 }
 
 TreeNode.prototype.findIdInLineage = function(id){
