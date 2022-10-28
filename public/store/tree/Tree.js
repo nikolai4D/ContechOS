@@ -34,6 +34,7 @@ function TreeNode(id, title, layer, children, selected, data, parent){
     this.data['defTypeTitle'] = data.defType
     this.rels = []
     this.viewAll = false
+    console.log("data: ", JSON.stringify(data, null,2))
 }
 
 
@@ -49,7 +50,7 @@ TreeNode.prototype.formatProperties = function(){
     let formattedProps = []
     for ( let prop in this.data.props) {
         let obj = {}
-        obj[prop] = this.data.props[prop]
+        obj[prop.key] = this.data.props[prop.value]
         formattedProps.push(obj)
     }
     this.data.props = formattedProps
