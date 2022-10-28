@@ -9,8 +9,9 @@ const { filterItems } = require("../helpers/filterFunction");
  * @constructor
  */
 
-function validateId(id, shouldExists = true) {
+function idValidator(id, shouldExists = true) {
     this.id = id
+
     this.abbr = getAbbrFromId(this.id)
     this.kindOfItem = getKindOfItemFromAbbr(this.abbr)
     this.layerIndex = getLayerIndexFromAbbr(this.abbr)
@@ -21,18 +22,20 @@ function validateId(id, shouldExists = true) {
     this.exists = doesItemExistsInDb(this.id, this.defType, shouldExists)
 
 
+
     this.loadedItem = null
     this.item = () => { //This way we don't fetch item before it s necessary, and we fetch it only once.
         if (this.loadedItem === null) this.loadedItem = getItemById(this.id, this.defType)
         return this.loadedItem
     }
 
-    this.parentId = () => getParentId(this.layerIndex, this.item())
+    this.parentId = () => getParentId(this.layerIndex, this.item(), this.propertyType)
 
-    this.props = () => getProps(this.layerIndex, this.item)
-    this.propKeys = () => getPropKeys(this.layerIndex, this.item)
+    this.props = () => getProps(this.layerIndex, this.item())
+    this.propKeys = () => getPropKeys(this.layerIndex, this.item())
     this.typeDataPropKeys = () => getTypeDataPropKeys()
     this.instanceDataPropKey = () => getInstanceDataPropKeys()
+
 
     this.childrenDefType = () => getChildrenDefType(this.layerIndex, this.relationshipType, this.propertyType)
     this.children = () => getChildren(this.id, this.childrenDefType)
@@ -40,8 +43,8 @@ function validateId(id, shouldExists = true) {
     this.targetId = () => getTargetId(this.kindOfItem, this.item())
     this.sourceId = () => getSourceId(this.kindOfItem, this.item())
 
-    this.relsItIsTargetOf = () => getRelsThisIsTargetOf(this.id)
-    this.relsItIsSourceOf = () => getRelsThisIsSourceOf(this.id)
+    this.relsItIsTargetOf = () => getRelsThisIsTargetOf(this.id, this.defType)
+    this.relsItIsSourceOf = () => getRelsThisIsSourceOf(this.id, this.defType)
 }
 
 function getAbbrFromId(string) {
@@ -111,7 +114,7 @@ function getProps(layerIndex, item) {
         else return null
     }
     else if (item.hasOwnProperty("props")) return item.props
-    else throw new Error("invalid state: propKeys field is missing.")
+    else throw new Error("invalid state: props field is missing.")
 }
 
 function getPropKeys(layerIndex, item) {
@@ -145,7 +148,6 @@ function getChildrenDefType(layerIndex, relationshipType, propertyType) {
 
     if (layerIndex === 3) throw "instance data cannot have children."
     if (layerIndex === 4 && propertyType.inString === "Val") {
-        console.log("being there")
         throw new Error("property value cannot have children.")
     }
     let childLayerIndex = ([0, 1, 2].includes(layerIndex)) ? layerIndex + 1 : layerIndex
@@ -160,11 +162,15 @@ function getChildren(id, childrenDefType) {
 }
 
 function getRelsThisIsTargetOf(id, defType) {
-    return getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { target: id })
+    let extRels = getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { target: id })
+    let intRels = getBulk([defType + voc.relationshipTypes.inRel.inString], - 1, 0, filterItems, { target: id })
+    return extRels.concat(intRels)
 }
 
 function getRelsThisIsSourceOf(id, defType) {
-    return getBulk([defType + voc.relationshipTypes.inRel.inString], - 1, 0, filterItems, { target: id })
+    let extRels = getBulk([defType + voc.relationshipTypes.exRel.inString], - 1, 0, filterItems, { source: id })
+    let intRels = getBulk([defType + voc.relationshipTypes.inRel.inString], - 1, 0, filterItems, { target: id })
+    return extRels.concat(intRels)
 }
 
 function getTargetId(koi, item) {
@@ -179,4 +185,4 @@ function getSourceId(koi, item) {
     else throw new Error("source is missing in item.")
 }
 
-module.exports = { validateId }
+module.exports = { idValidator }

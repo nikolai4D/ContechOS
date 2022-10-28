@@ -1,8 +1,8 @@
-const { validateId } = require("./validateId");
+const { idValidator } = require("./idValidator");
 const { voc } = require("../voc");
 const { filterItems } = require("../helpers/filterFunction");
 
-function validateBulkFetch(params
+function bulkFetchValidator(params
 ) {
     this.defType = params.defType ?? null
     this.parentId = params.parentId ?? null
@@ -20,6 +20,7 @@ function validateBulkFetch(params
         parentId: this.parentId,
         title: this.title,
     }
+
     this.filterFunction = (item, params) => filterItems(item, params)
 }
 
@@ -51,7 +52,7 @@ function getPotentialDefTypes(defType, parentId, kindOfItem) {
         defTypes.push(defType)
     }
     else if (parentId !== null) {
-        const parentData = new validateId(parentId)
+        const parentData = new idValidator(parentId)
         defTypes.push(parentData.childrenDefType())
     }
     else if (kindOfItem !== null) {
@@ -86,6 +87,4 @@ function getPotentialDefTypes(defType, parentId, kindOfItem) {
     return defTypes
 }
 
-
-
-module.exports = { validateBulkFetch, doesDefTypeExist }
+module.exports = { bulkFetchValidator}

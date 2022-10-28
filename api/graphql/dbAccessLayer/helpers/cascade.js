@@ -1,5 +1,5 @@
 const { getItems } = require("../../dbAccessLayer/crud/read")
-const {validateId} = require("../validation/validateId");
+const {validateId} = require("../validation/idValidator");
 
 // ToDo: optimize. Refactor.
 

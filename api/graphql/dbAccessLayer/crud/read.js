@@ -1,6 +1,6 @@
 const { getItemById, getBulk } = require("../fileManager");
-const { validateId } = require("../validation/validateId");
-const { validateBulkFetch } = require("../validation/validateBulkFetch");
+const { idValidator } = require("../validation/idValidator");
+const { bulkFetchValidator } = require("../validation/BulkFetchValidator");
 
 async function getItems(params) {
 
@@ -9,11 +9,11 @@ async function getItems(params) {
         let requestedItems
 
         if (params.id !== undefined) {
-            const idData = new validateId(params.id)
+            const idData = new idValidator(params.id)
             requestedItems = [await getItemById(idData.id, idData.defType)]
         }
         else {
-            let bfData = new validateBulkFetch(params)
+            let bfData = new bulkFetchValidator(params)
             requestedItems = getBulk(bfData.defTypes, -1, bfData.from, bfData.filterFunction, bfData.filterParams)
         }
 
