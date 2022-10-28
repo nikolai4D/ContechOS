@@ -6,7 +6,10 @@ export async function queryDefinitions() {
         title
         defType
         parentId
-        props
+        props {
+            key
+            value
+        }
         propKeys
         typeDataPropKeys
         instanceDataPropKeys
@@ -31,7 +34,10 @@ export async function queryNodeChildren(parentId) {
         title
         defType
         parentId
-        props
+        props {
+            key
+            value
+        }
         propKeys
         typeDataPropKeys
         instanceDataPropKeys
@@ -57,7 +63,10 @@ export async function asyncQueryNodeChildren(parentId) {
         title
         defType
         parentId
-        props
+        props {
+            key
+            value
+        }
         propKeys
         typeDataPropKeys
         instanceDataPropKeys
@@ -163,7 +172,10 @@ export async function queryCascade(cascadeInput) {
             title
             defType
             parentId
-            props
+            props {
+                key
+                value
+            }
             typeDataPropKeys
             instanceDataPropKeys
             updated
@@ -174,7 +186,10 @@ export async function queryCascade(cascadeInput) {
                 title
                 defType
                 parentId
-                props
+                props {
+                    key
+                    value
+                }
                 updated
                 created
                             
@@ -183,7 +198,10 @@ export async function queryCascade(cascadeInput) {
                     title
                     defType
                     parentId
-                    props
+                    props {
+                        key
+                        value
+                    }
                     updated
                     created
                 }
