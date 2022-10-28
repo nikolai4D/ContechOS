@@ -6,6 +6,13 @@ export async function queryDefinitions() {
         title
         defType
         parentId
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataPropKeys
+        instanceDataPropKeys
         updated
         created
       }
@@ -27,8 +34,16 @@ export async function queryNodeChildren(parentId) {
         title
         defType
         parentId
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataPropKeys
+        instanceDataPropKeys
         updated
         created
+       
       }
     }`, variables: {
             input: {
@@ -48,6 +63,13 @@ export async function asyncQueryNodeChildren(parentId) {
         title
         defType
         parentId
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataPropKeys
+        instanceDataPropKeys
         updated
         created
       }
@@ -142,6 +164,7 @@ export async function queryCascade(cascadeInput) {
         title
         defType
         parentId
+        propKeys
         updated
         created
         childrenNodes{
@@ -149,6 +172,12 @@ export async function queryCascade(cascadeInput) {
             title
             defType
             parentId
+            props {
+                key
+                value
+            }
+            typeDataPropKeys
+            instanceDataPropKeys
             updated
             created
             
@@ -157,6 +186,10 @@ export async function queryCascade(cascadeInput) {
                 title
                 defType
                 parentId
+                props {
+                    key
+                    value
+                }
                 updated
                 created
                             
@@ -165,6 +198,10 @@ export async function queryCascade(cascadeInput) {
                     title
                     defType
                     parentId
+                    props {
+                        key
+                        value
+                    }
                     updated
                     created
                 }
