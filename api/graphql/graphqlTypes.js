@@ -9,7 +9,7 @@ const DefinitionType = new GraphQLEnumType({
         "configDef": { value: "configDef" },
         "configDefExternalRel": { value: "configDefExternalRel" },
         "configDefInternalRel": { value: "configDefInternalRel" },
-        "configObj": { value: "configDef" },
+        "configObj": { value: "configObj" },
         "configObjExternalRel": { value: "configObjExternalRel" },
         "configObjInternalRel": { value: "configObjInternalRel" },
         "typeData": { value: "typeData" },
@@ -239,6 +239,18 @@ const CascadeNode = new GraphQLObjectType({
             resolve: async (root) => {
                 return await cascadeResolver(root.cascade, root.depth + 1, root.id)
             }
+        },
+        props: {
+            type: new GraphQLList(Prop),
+        },
+        propKeys: {
+            type: new GraphQLList(GraphQLString),
+        },
+        typeDataPropKeys: {
+            type: new GraphQLList(GraphQLString),
+        },
+        instanceDataPropKeys: {
+            type: new GraphQLList(GraphQLString),
         },
         created: { type: GraphQLString },
         updated: { type: GraphQLString },
