@@ -21,12 +21,14 @@
 
 
 ---
+- [ ] The ticket is done, OR it's been mentioned why it's not done above
+
+- [ ] Removed console.log in code
+
+- [ ] Pulled dev into this branch
+
+- [ ] Resolved merge conflicts
+
 - [ ] The ID of branch is of format "ABC123-"
 
-- [ ] The ticket is done, OR it's been mentioned why it's not done above.
-
-- [ ] Pulled dev into this branch.
-
-- [ ] Resolved merge conflicts.
-
-- [ ] Added a reviewer.
+- [ ] Added a reviewer
