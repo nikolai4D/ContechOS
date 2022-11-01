@@ -181,7 +181,8 @@
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
-                "fieldTypeId": 2,
+                "fieldTypeId": 1,
+                "fieldProperties": [1],
                 "displayTitle": "Parent"
               }
             },
