@@ -105,17 +105,19 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
 
   let dropDownString = "";
   if (defType.defTypeTitle === "configObj") {
-console.log(window.location.pathname)
+
     if (window.location.pathname === "/filter") {
-      // dropDownString = dropDown(
-      //   displayTitle,
-      //   keyOfAttribute,
-      //   allNodesByDefType,
-      //   null,
-      //   `${keyOfAttribute}_typeData`,
-      //   "_typeData"
-      // );
-      dropDownString = createInput(displayTitle, keyOfAttribute, State.clickedObj.title, 'disabled');
+      dropDownString = dropDown(
+        displayTitle,
+        keyOfAttribute,
+        allNodesByDefType,
+        null,
+        `${keyOfAttribute}_typeData`,
+        "_typeData"
+      );
+      // dropDownString = createInput(displayTitle, keyOfAttribute, State.clickedObj.title, 'disabled');
+      // console.log(State.clickedObj)
+      // createInput(displayTitle, fieldsArray, keyOfAttribute);
 
     }
     else {
