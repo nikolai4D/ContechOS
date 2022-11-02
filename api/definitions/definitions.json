@@ -182,7 +182,7 @@
                 "defTypeId": 5,
                 "returnValue": "id",
                 "fieldTypeId": 1,
-                "fieldProperties": [1],
+                "fieldProperties": [2],
                 "displayTitle": "Parent"
               }
             },

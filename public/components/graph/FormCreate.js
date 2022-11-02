@@ -322,11 +322,14 @@ const createDropdownKeyValue = (
     propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
     let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
 
-    let getParent = State.clickedObj.parentId;
+    // let getParent = State.clickedObj.parentId;
 
-    let getParentsParent = configNodes.filter((node) => node.id === getParent);
-    console.log(getParentsParent)
-    let typeDataPropKeys = getParentsParent[0].typeDataPropKeys;
+    let getParent = State.clickedObj
+
+    // let getParentsParent = configNodes.filter((node) => node.id === getParent);
+    // console.log(getParentsParent)
+    // let typeDataPropKeys = getParentsParent[0].typeDataPropKeys;
+    let typeDataPropKeys = getParent.typeDataPropKeys;
 
     let allKeysByParent = propsNodesRels.filter((node) => {
       return typeDataPropKeys.includes(node.id);
