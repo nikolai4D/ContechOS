@@ -37,6 +37,7 @@ class Actions {
       if (
         defType.defTypeTitle === "propKey" ||
         defType.defTypeTitle === "propVal" ||
+        defType.defTypeTitle === "typeData" ||
         defType.defTypeTitle === "configObj" ||
         defType.defTypeTitle === "instanceData"
       ) {
