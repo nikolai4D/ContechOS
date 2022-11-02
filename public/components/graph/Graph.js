@@ -18,8 +18,10 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
-import { FilterBox} from "../filter/FilterBox.js"
-import { checkFilter } from "../filter/filterFunctions.js"
+import { triggerTreeGetHtml } from "../filter/FilterBox.js";
+import { Tree } from "../../store/tree/Tree.js";
+// const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
+
 
 async function Graph(view) {
   State.view = view;
@@ -335,8 +337,18 @@ async function Graph(view) {
             State.clickedObj,
             State.propKeys
           );
+
           await updateData(view);
           await render(view);
+          // State.treeOfNodes.shake();
+          // State.treeOfNodes();
+          // State.treeOfNodes = new Tree()
+          document.getElementById("accordion-body-id").innerHTML = await triggerTreeGetHtml();
+
+          // await Graph(view);
+
+          // d3.select("#accordion-body-id").HTML()
+
         });
       });
     }

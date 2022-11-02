@@ -28,10 +28,12 @@ class Actions {
         type = "rels";
       }
 
+      // TODO Create a node or rel in Tree
+
+      Mutations.ADD_NODE_TO_TREE(recordJson)
+
       recordsInView[0][type].push(recordJson);
 
-      //   if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
-      console.log(defType.defTypeTitle);
       if (
         defType.defTypeTitle === "propKey" ||
         defType.defTypeTitle === "propVal" ||
