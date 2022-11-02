@@ -441,6 +441,19 @@ async function Graph(view) {
       .style("font-size", styles.nodeLabel.fontSize);
   });
 
+  // create a tooltip
+  let tooltip = createTooptip()
+
+  function createTooptip(){
+    return g
+    .append("text")
+    .attr("id", "tooltipId")
+    .style("text-anchor", styles.nodeLabel.textAnchor)
+    .style("cursor", "default")
+    .style("fill", styles.nodeLabel.fill)
+    .text("I'm a circle!"); 
+  }
+
   async function render(view) {
     await updateData(view);
     simulation.stop();
@@ -519,7 +532,7 @@ async function Graph(view) {
       );
 
     nodeLabel = g
-      .selectAll("text")
+      .selectAll(".nodeLabel")
       .data(nodes, (d) => d["id"])
       .join(
         (enter) => {
@@ -541,6 +554,15 @@ async function Graph(view) {
               event.preventDefault();
             })
             .on("contextmenu", rightClicked)
+            .on("mouseenter", function(e, d){
+              if(d.text.includes("...")){
+                d3.select("#tooltipId").style("visibility", "visible")
+                d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px").text(d.title)
+              }
+            })
+            .on("mouseout", function(){
+              d3.select("#tooltipId").style("visibility", "hidden")
+            })
             .attr("dy", 4);
           return entered;
         }
@@ -553,8 +575,12 @@ async function Graph(view) {
         (enter) => {
           const linkLabel = enter
             .append("text")
-            .text((link) => link.title)
-            // .on("click", clicked)
+            .text((d) => {
+              if (d.title.length > 10) {
+                return d.title.slice(0, 10) + "...";
+              }
+              return d.title;
+            })
             .style("fill", (d) => {
               if (d.title === "has parent") {
                 return "red";
@@ -565,7 +591,16 @@ async function Graph(view) {
 
             .on("click", clicked)
 
-            .on("contextmenu", rightClicked);
+            .on("contextmenu", rightClicked)
+            .on("mouseenter", function(e, d){
+              if(d.text.includes("...")){
+                d3.select("#tooltipId").style("visibility", "visible")
+                d3.select("#tooltipId").attr("x", 20+(d.source.x + d.target.x) / 2+"px").attr("y",40+(d.source.y + d.target.y) / 2+"px").text(d.title)
+              }
+            })
+            .on("mouseout", function(){
+              d3.select("#tooltipId").style("visibility", "hidden")
+            });
           return linkLabel;
         },
         (update) => {
@@ -578,6 +613,8 @@ async function Graph(view) {
       .attr("class", "linkLabel")
       .attr("dy", 0);
 
+    tooltip.remove()
+    tooltip = createTooptip()
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
     return svg.node()
