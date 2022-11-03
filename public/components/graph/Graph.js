@@ -555,7 +555,7 @@ async function Graph(view) {
             })
             .on("contextmenu", rightClicked)
             .on("mouseenter", function(e, d){
-              if(d.text.includes("...")){
+              if(d.title.length > 10){
                 d3.select("#tooltipId").style("visibility", "visible")
                 d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px").text(d.title)
               }
@@ -593,7 +593,7 @@ async function Graph(view) {
 
             .on("contextmenu", rightClicked)
             .on("mouseenter", function(e, d){
-              if(d.text.includes("...")){
+              if(d.title.length > 10){
                 d3.select("#tooltipId").style("visibility", "visible")
                 d3.select("#tooltipId").attr("x", 20+(d.source.x + d.target.x) / 2+"px").attr("y",40+(d.source.y + d.target.y) / 2+"px").text(d.title)
               }
