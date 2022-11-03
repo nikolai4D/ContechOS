@@ -1,7 +1,7 @@
 import {State} from "../../store/State.js";
 import { iconEye } from "./toggleHideShow.js";
 
-export async function FilterBox() {
+async function FilterBox() {
   let nodeHtmlString = await triggerTreeGetHtml();
 
   const htmlString = `
@@ -30,7 +30,7 @@ export async function FilterBox() {
   return filterDOM;
 }
 
-export async function triggerTreeGetHtml() {
+async function triggerTreeGetHtml() {
   let tree = State.treeOfNodes.tree;
   await State.treeOfNodes.ensureInit();
 
