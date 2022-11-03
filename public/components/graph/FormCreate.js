@@ -106,18 +106,6 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
   let dropDownString = "";
   if (defType.defTypeTitle === "configObj") {
 
-    if (window.location.pathname === "/filter") {
-      dropDownString = dropDown(
-        displayTitle,
-        keyOfAttribute,
-        allNodesByDefType,
-        null,
-        `${keyOfAttribute}_typeData`,
-        "_typeData"
-      );
-
-    }
-    else {
     dropDownString = dropDown(
       displayTitle,
       keyOfAttribute,
@@ -126,7 +114,7 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
       `${keyOfAttribute}_typeData`,
       "_typeData"
     );
-    }
+    
   } else {
     dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType);
   }
@@ -316,7 +304,6 @@ const createDropdownKeyValue = (
     });
   } 
   else if (State.clickedObj.defTypeTitle === "configObj" && window.location.pathname === "/filter") {
-
 
     generateDropdownTypeDataPropKeys();
   }
