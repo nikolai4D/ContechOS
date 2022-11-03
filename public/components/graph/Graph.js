@@ -20,6 +20,8 @@ import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { triggerTreeGetHtml } from "../filter/FilterBox.js";
 import { Tree } from "../../store/tree/Tree.js";
+import {FilterBox} from "../filter/FilterBox.js";
+import {setFilterBoxCallback, addFunctionsToFilterbox} from "../filter/filterFunctions.js";
 // const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
 
 
@@ -343,7 +345,12 @@ async function Graph(view) {
           // State.treeOfNodes.shake();
           // State.treeOfNodes();
           // State.treeOfNodes = new Tree()
-          document.getElementById("accordion-body-id").innerHTML = await triggerTreeGetHtml();
+          let filterBox = await FilterBox()
+          await setFilterBoxCallback(filterBox, async () => await render(view))
+          let filterBoxContainerNode = document.querySelector("#data-display-grid-container-id")
+          filterBoxContainerNode.innerHTML = ""
+          filterBoxContainerNode.appendChild(filterBox)
+          //document.getElementById("accordion-body-id").innerHTML = await triggerTreeGetHtml();
 
           // await Graph(view);
 
