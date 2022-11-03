@@ -27,7 +27,6 @@ class Actions {
       if (defType.defTypeTitle.slice(-3) === "Rel") {
         type = "rels";
       }
-      console.log(view)
       if (view === "filter") Mutations.ADD_NODE_TO_TREE(recordJson)
 
       recordsInView[0][type].push(recordJson);

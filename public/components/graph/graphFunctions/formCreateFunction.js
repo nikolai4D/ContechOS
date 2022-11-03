@@ -69,11 +69,7 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
     else {
-      // if (keyOfAttribute === 'parentId' && defType.defTypeTitle === 'typeData') {
-      //   formDataObj['parentId'] = formData[`field_parentId_typeData`].value;
 
-      // }
-      // else 
       if (keyOfAttribute === 'parentId' || keyOfAttribute === 'source') {
         formDataObj['parentId'] = clickedObj.id;
       }
