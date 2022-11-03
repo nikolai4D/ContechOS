@@ -1,3 +1,4 @@
+import { State } from "./State.js"
 class Mutations {
     async SET_STATE(view, records) {
         let data = await JSON.parse(sessionStorage.getItem(`${view}`));
@@ -22,7 +23,33 @@ class Mutations {
         data[0]["nodes"].push(records);
         sessionStorage.setItem(`${view}`, JSON.stringify(data));
     }
+
+    async ADD_NODE_TO_TREE(newNode) {
+
+        const layers = ["configDef", "configObj", "typeData", "instanceData"]
+        const nodeLayer = layers.indexOf(newNode.defType)
+        if (nodeLayer === -1) return;
+
+        let tree = State.treeOfNodes;
+        let parentNode = null;
+        
+        if (newNode.parentId) { 
+             parentNode = tree.getNodeById(newNode.parentId)
+             let fructified = tree.fructify([newNode], nodeLayer, parentNode)[0]
+             fructified.selected = true;
+             parentNode.children.push(fructified);
+        }
+        else {
+            let fructified = tree.fructify([newNode], nodeLayer, parentNode)[0]
+            fructified.selected = true;
+            tree.tree.push(fructified);
+        }
+
+        await tree.shake()
+    }
 }
+
+
 
 export default new Mutations();
 

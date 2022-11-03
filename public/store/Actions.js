@@ -27,14 +27,15 @@ class Actions {
       if (defType.defTypeTitle.slice(-3) === "Rel") {
         type = "rels";
       }
+      console.log(view)
+      if (view === "filter") Mutations.ADD_NODE_TO_TREE(recordJson)
 
       recordsInView[0][type].push(recordJson);
 
-      //   if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
-      console.log(defType.defTypeTitle);
       if (
         defType.defTypeTitle === "propKey" ||
         defType.defTypeTitle === "propVal" ||
+        defType.defTypeTitle === "typeData" ||
         defType.defTypeTitle === "configObj" ||
         defType.defTypeTitle === "instanceData"
       ) {

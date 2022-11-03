@@ -301,8 +301,7 @@ const createDropdownKeyValue = (
       }
     });
   } 
-   // this part is for creating typeData directly from configObj (different from other views)
-  else if (State.clickedObj.defTypeTitle === "configObj" && window.location.pathname === "/filter") {
+  else if (State.clickedObj.defTypeTitle === "configObj" && window.location.pathname === "/filter") { // this part 
     generateDropdownTypeDataPropKeys();
   }
   
