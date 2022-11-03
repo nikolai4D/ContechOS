@@ -95,6 +95,13 @@ export async function queryRelations(nodeId) {
         targetId
         updated
         created
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataRelPropKeys
+        instanceDataRelPropKeys
       },
       targetRels: relationships(itemInput:$inputTarget){
         id
@@ -105,6 +112,13 @@ export async function queryRelations(nodeId) {
         targetId
         updated
         created
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataRelPropKeys
+        instanceDataRelPropKeys
       }
     }`, variables: {
             inputSource: {
@@ -131,6 +145,13 @@ export async function asyncQueryRelations(nodeId) {
         targetId
         updated
         created
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataRelPropKeys
+        instanceDataRelPropKeys
       },
       targetRels: relationships(itemInput:$inputTarget){
         id
@@ -141,6 +162,13 @@ export async function asyncQueryRelations(nodeId) {
         targetId
         updated
         created
+        props {
+            key
+            value
+        }
+        propKeys
+        typeDataRelPropKeys
+        instanceDataRelPropKeys
       }
     }`, variables: {
             inputSource: {

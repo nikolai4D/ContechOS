@@ -34,6 +34,9 @@ function validateId(id, shouldExists = true) {
     this.typeDataPropKeys = () => getTypeDataPropKeys()
     this.instanceDataPropKey = () => getInstanceDataPropKeys()
 
+    this.typeDataRelPropKeys = () => getTypeDataRelPropKeys()
+    this.instanceDataRelPropKey = () => getInstanceDataRelPropKeys()
+
     this.childrenDefType = () => getChildrenDefType(this.layerIndex, this.relationshipType, this.propertyType)
     this.children = () => getChildren(this.id, this.childrenDefType)
 
@@ -140,6 +143,27 @@ function getInstanceDataPropKeys(layerIndex, item) {
     else if (item.hasOwnProperty("instanceDataPropKeys")) return item.instanceDataPropKeys
     else throw new Error("invalid state: propKeys field is missing.")
 }
+
+
+function getTypeDataRelPropKeys(layerIndex, item) {
+    if (layerIndex != 1) {
+        if (item.hasOwnProperty("propKeys")) throw new Error("Invalid state: typeDataRelPropKeys found as field of a non configObj item. Item: " + JSON.stringify(item, null, 2))
+        else return null
+    }
+    else if (item.hasOwnProperty("typeDataRelPropKeys")) return item.typeDataRelPropKeys
+    else throw new Error("invalid state: propKeys field is missing.")
+}
+
+function getInstanceDataRelPropKeys(layerIndex, item) {
+    if (layerIndex != 1) {
+        if (item.hasOwnProperty("propKeys")) throw new Error("Invalid state: instanceDataRelPropKeys found as field of a non typeDef item. Item: " + JSON.stringify(item, null, 2))
+        else return null
+    }
+    else if (item.hasOwnProperty("instanceDataRelPropKeys")) return item.instanceDataRelPropKeys
+    else throw new Error("invalid state: propKeys field is missing.")
+}
+
+
 
 function getChildrenDefType(layerIndex, relationshipType, propertyType) {
 
