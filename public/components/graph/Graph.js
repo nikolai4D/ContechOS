@@ -18,11 +18,7 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
-import { triggerTreeGetHtml } from "../filter/FilterBox.js";
-import { Tree } from "../../store/tree/Tree.js";
-import {FilterBox} from "../filter/FilterBox.js";
-import {setFilterBoxCallback, addFunctionsToFilterbox} from "../filter/filterFunctions.js";
-// const dataNodeAndRedrawFunc = await this.returnRenderFunc("filter")
+import {updateFilterBox} from  "../filter/updateFilterBox.js"
 
 
 async function Graph(view) {
@@ -141,14 +137,7 @@ async function Graph(view) {
             );
             await updateData(view);
             await render(view);
-
-            console.log("HELLO")
-
-            let filterBox = await FilterBox()
-            await setFilterBoxCallback(filterBox, async () => await render(view))
-            let filterBoxContainerNode = document.querySelector("#accordion-body-id")
-            filterBoxContainerNode.innerHTML = ""
-            filterBoxContainerNode.appendChild(filterBox)
+            await updateFilterBox(render, view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
@@ -350,19 +339,8 @@ async function Graph(view) {
 
           await updateData(view);
           await render(view);
-          // State.treeOfNodes.shake();
-          // State.treeOfNodes();
-          // State.treeOfNodes = new Tree()
-          let filterBox = await FilterBox()
-          await setFilterBoxCallback(filterBox, async () => await render(view))
-          let filterBoxContainerNode = document.querySelector("#data-display-grid-container-id")
-          filterBoxContainerNode.innerHTML = ""
-          filterBoxContainerNode.appendChild(filterBox)
-          //document.getElementById("accordion-body-id").innerHTML = await triggerTreeGetHtml();
 
-          // await Graph(view);
-
-          // d3.select("#accordion-body-id").HTML()
+          await updateFilterBox(render, view);
 
         });
       });
@@ -614,3 +592,4 @@ async function Graph(view) {
   return [svg.node(), async () => await render(view)]
 }
 export default Graph;
+
