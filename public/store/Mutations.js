@@ -1,4 +1,3 @@
-import { State } from "./State.js"
 class Mutations {
     async SET_STATE(view, records) {
         let data = await JSON.parse(sessionStorage.getItem(`${view}`));
@@ -23,80 +22,7 @@ class Mutations {
         data[0]["nodes"].push(records);
         sessionStorage.setItem(`${view}`, JSON.stringify(data));
     }
-
-    async ADD_NODE_TO_TREE(newNode) {
-
-
-        const layers = ["configDef", "configObj", "typeData", "instanceData"]
-        const nodeLayer = layers.indexOf(newNode.defType)
-        if (nodeLayer === -1) return;
-
-        let tree = State.treeOfNodes;
-        let parentNode = null;
-        
-        if (newNode.parentId) { 
-             parentNode = tree.getNodeById(newNode.parentId)
-             let fructified = tree.fructify([newNode], nodeLayer, parentNode)[0]
-             fructified.selected = true;
-             parentNode.children.push(fructified);
-        }
-        else {
-            let fructified = tree.fructify([newNode], nodeLayer, parentNode)[0]
-            fructified.selected = true;
-            tree.tree.push(fructified);
-        }
-
-        await tree.shake()
-
-        // console.log(fructified)
-        // console.log(tree)
-        // console.log(newNode)
-        // console.log(parentNode)
-
-
-//          pushNodeToTree(State.treeOfNodes.tree)
-
-
-//         // getNodeById
-
-
-//         function pushNodeToTree(anArray) {
-//             newNode.selected = true;
-//             newNode.children = []
-//             newNode.excluded = false;
-//             newNode.extraFetched = false;
-//             newNode.hidden = false;
-//             newNode.rels = []
-//             newNode.false = false
-//             if (newNode.defTypeTitle === "configDef") {
-//                 State.treeOfNodes.tree.push(newNode)
-//                 State.treeOfNodes.selectedTreeNodes.push(newNode);
-//                 return
-// }
-//             anArray.forEach(existingNode => {
-//                 if (existingNode.id === newNode.parentId){
-//                     existingNode.children.push(newNode);
-//                     State.treeOfNodes.selectedRelations.push({
-//                         sourceId: newNode.id,
-//                         source: newNode.id,
-//                         targetId: newNode.parentId,
-//                         target: newNode.parentId,
-//                         title:"has parent",
-//                     })
-//                     return;
-//                 }
-
-//                 else pushNodeToTree(existingNode.children)
-//             });
-//             return anArray;
-//         }
-//         State.treeOfNodes.ensureInit()
-
-
-    }
 }
-
-
 
 export default new Mutations();
 
