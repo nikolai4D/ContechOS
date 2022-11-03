@@ -105,7 +105,6 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
 
   let dropDownString = "";
   if (defType.defTypeTitle === "configObj") {
-
     dropDownString = dropDown(
       displayTitle,
       keyOfAttribute,
@@ -114,7 +113,6 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
       `${keyOfAttribute}_typeData`,
       "_typeData"
     );
-    
   } else {
     dropDownString = dropDown(displayTitle, keyOfAttribute, allNodesByDefType);
   }
@@ -303,8 +301,8 @@ const createDropdownKeyValue = (
       }
     });
   } 
+   // this part is for creating type data directly from config def (different from other views)
   else if (State.clickedObj.defTypeTitle === "configObj" && window.location.pathname === "/filter") {
-
     generateDropdownTypeDataPropKeys();
   }
   
