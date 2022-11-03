@@ -115,9 +115,6 @@ const createDropdown = (fieldsArray, keyOfAttribute, defType, displayTitle) => {
         `${keyOfAttribute}_typeData`,
         "_typeData"
       );
-      // dropDownString = createInput(displayTitle, keyOfAttribute, State.clickedObj.title, 'disabled');
-      // console.log(State.clickedObj)
-      // createInput(displayTitle, fieldsArray, keyOfAttribute);
 
     }
     else {
@@ -319,36 +316,9 @@ const createDropdownKeyValue = (
     });
   } 
   else if (State.clickedObj.defTypeTitle === "configObj" && window.location.pathname === "/filter") {
-    propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
-    let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
 
-    // let getParent = State.clickedObj.parentId;
 
-    let getParent = State.clickedObj
-
-    // let getParentsParent = configNodes.filter((node) => node.id === getParent);
-    // console.log(getParentsParent)
-    // let typeDataPropKeys = getParentsParent[0].typeDataPropKeys;
-    let typeDataPropKeys = getParent.typeDataPropKeys;
-
-    let allKeysByParent = propsNodesRels.filter((node) => {
-      return typeDataPropKeys.includes(node.id);
-    });
-
-    allKeysByParent.forEach((propKey) => {
-      let filtered = propsNodesRels.filter(
-        (node) => node.parentId === propKey.id
-      );
-      if (filtered.length > 0) {
-        dropDownHtmlString += dropDown(
-          propKey.title,
-          propKey.title,
-          filtered,
-          null,
-          propKey.id
-        );
-      }
-    });
+    generateDropdownTypeDataPropKeys();
   }
   
   else if (State.clickedObj.defTypeTitle === "typeData") {
@@ -380,4 +350,37 @@ const createDropdownKeyValue = (
     });
   }
   fieldsArray.push(dropDownHtmlString);
+
+  /**
+   * Summary. Generates drop down from propKeys. Gets typeDataPropKeys from parent into the "create" form to then pick prop value from (drop down).
+   *  @return {string} Appends to variable "dropDownHtmlString"
+   *  @param {string} dropDownHtmlString
+  */
+  function generateDropdownTypeDataPropKeys() {
+    propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+    let getParent = State.clickedObj;
+
+    let typeDataPropKeys = getParent.typeDataPropKeys;
+
+    let allKeysByParent = propsNodesRels.filter((node) => {
+      return typeDataPropKeys.includes(node.id);
+    });
+
+    allKeysByParent.forEach((propKey) => {
+      let filtered = propsNodesRels.filter(
+        (node) => node.parentId === propKey.id
+      );
+
+      if (filtered.length > 0) {
+        dropDownHtmlString += dropDown(
+          propKey.title,
+          propKey.title,
+          filtered,
+          null,
+          propKey.id
+        );
+      }
+    });
+  }
 };
