@@ -141,6 +141,14 @@ async function Graph(view) {
             );
             await updateData(view);
             await render(view);
+
+            console.log("HELLO")
+
+            let filterBox = await FilterBox()
+            await setFilterBoxCallback(filterBox, async () => await render(view))
+            let filterBoxContainerNode = document.querySelector("#accordion-body-id")
+            filterBoxContainerNode.innerHTML = ""
+            filterBoxContainerNode.appendChild(filterBox)
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {

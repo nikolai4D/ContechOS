@@ -45,6 +45,7 @@ TreeNode.prototype.formatProperties = function(){
         delete this.data.props
         return
     }
+    if(this.data.props === undefined) return
 
     let formattedProps = []
     for ( let prop of this.data.props) {
