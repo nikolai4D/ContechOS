@@ -21,14 +21,14 @@
 
 
 ---
-- [ ] The ticket is done, OR it's been mentioned why it's not done above
+- [x] The ticket is done, OR it's been mentioned why it's not done above
 
-- [ ] Removed console.log in code
+- [x] Removed console.log in code
 
-- [ ] Pulled dev into this branch
+- [x] Pulled dev into this branch
 
-- [ ] Resolved merge conflicts
+- [x] Resolved merge conflicts
 
-- [ ] The ID of branch is of format "ABC123-"
+- [x] The ID of branch is of format "ABC-123"
 
-- [ ] Added a reviewer
+- [x] Added a reviewer
