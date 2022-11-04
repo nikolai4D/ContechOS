@@ -30,29 +30,34 @@ function TreeNode(id, title, layer, children, selected, data, parent){
     this.excluded = false
     this.extraFetched = false
     this.data = data
-    this.formatProperties()
+    this.formatProperties(this.data)
     this.data['defTypeTitle'] = data.defType
     this.rels = []
     this.viewAll = false
 }
 
 
-TreeNode.prototype.formatProperties = function(){
-    if(this.data.propKeys === null) delete this.data.propKeys
-    if (this.data.typeDataPropKeys === null) delete this.data.typeDataPropKeys
-    if (this.data.instanceDataPropKeys === null) delete this.data.instanceDataPropKeys
-    if (this.data.props === null) {
-        delete this.data.props
+TreeNode.prototype.formatProperties = function(data){
+    if(data.propKeys === null) delete data.propKeys
+    if (data.typeDataPropKeys === null) delete data.typeDataPropKeys
+    if (data.instanceDataPropKeys === null) delete data.instanceDataPropKeys
+    if (data.typeDataRelPropKeys === null) delete data.typeDataRelPropKeys
+    if (data.instanceDataRelPropKeys === null) delete data.instanceDataRelPropKeys
+    if (data.parentId === null) delete data.parentId
+
+    if (data.props === null) {
+        delete data.props
         return
     }
+    if(data.props === undefined) return
 
     let formattedProps = []
-    for ( let prop of this.data.props) {
+    for ( let prop of data.props) {
         let obj = {}
         obj[prop.key] = prop.value
         formattedProps.push(obj)
     }
-    this.data.props = formattedProps
+    data.props = formattedProps
 }
 
 TreeNode.prototype.findIdInLineage = function(id){
@@ -235,7 +240,10 @@ Tree.prototype.shake = async function () {
                 const relevantRels = []
                 node.rels.map(rel => {
                     if(rel.sourceId === rel.targetId) relevantRels.push(rel)
-                    if(rel.sourceId !== node.id && this.selectedTreeNodes.map(node => node.data).find(el => el.id === rel.sourceId) !== undefined) relevantRels.push(rel)
+                    if(rel.sourceId !== node.id && this.selectedTreeNodes.map(node => node.data).find(el => el.id === rel.sourceId) !== undefined) 
+                    {
+                        relevantRels.push(rel)
+                    }
                 })
                 selectedRels.push(...relevantRels)
                 nodesOnNextLayer.push(...node.children)
@@ -339,6 +347,10 @@ TreeNode.prototype.setRelations = function (relations) {
             State.relations.push(rel)
             this.rels.push(rel)
         } else if (this.rels.find(rel => rel.id === stateRel.id) === undefined) this.rels.push(stateRel)
+
+        this.formatProperties(rel)
+        rel['defTypeTitle'] = rel.defType
+
     })
 }
 

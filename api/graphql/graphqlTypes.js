@@ -94,6 +94,18 @@ const Relationship = new GraphQLObjectType({
         },
         created: { type: GraphQLString },
         updated: { type: GraphQLString },
+        props: {
+            type: new GraphQLList(Prop),
+        },
+        propKeys: {
+            type: new GraphQLList(GraphQLString),
+        },
+        typeDataRelPropKeys: {
+            type: new GraphQLList(GraphQLString),
+        },
+        instanceDataRelPropKeys: {
+            type: new GraphQLList(GraphQLString),
+        }
     })
 })
 
@@ -217,6 +229,8 @@ const MutationItem = new GraphQLObjectType({
         propKeys: { type: new GraphQLList(GraphQLString) },
         typeDataPropKeys: { type: new GraphQLList(GraphQLString) },
         instanceDataPropKeys: { type: new GraphQLList(GraphQLString) },
+        typeDataRelPropKeys: { type: new GraphQLList(GraphQLString) },
+        instanceDataRelPropKeys: { type: new GraphQLList(GraphQLString) },
     }
 })
 

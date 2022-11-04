@@ -282,7 +282,6 @@ const createDropdownKeyValue = (
     ).defTypeTitle;
 
     allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`];
-    console.log(titleOfKeyAttribute, State.clickedObj)
     let allKeysByParent = propsNodesRels.filter((node) => {
       return allKeyIdsByParent.includes(node.id);
     });
@@ -301,7 +300,13 @@ const createDropdownKeyValue = (
         );
       }
     });
-  } else if (State.clickedObj.defTypeTitle === "typeData") {
+  } 
+   // this part is for creating typeData directly from configObj (different from other views)
+  else if (State.clickedObj.defTypeTitle === "configObj" && window.location.pathname === "/filter") {
+    generateDropdownTypeDataPropKeys();
+  }
+  
+  else if (State.clickedObj.defTypeTitle === "typeData") {
     propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
     let configNodes = JSON.parse(sessionStorage.getItem(`configs`))[0].nodes;
 
@@ -330,4 +335,37 @@ const createDropdownKeyValue = (
     });
   }
   fieldsArray.push(dropDownHtmlString);
+
+  /**
+   * Summary. Generates drop down from propKeys. Gets typeDataPropKeys from parent into the "create" form to then pick prop value from (drop down).
+   *  @return {string} Appends to variable "dropDownHtmlString"
+   *  @param {string} dropDownHtmlString
+  */
+  function generateDropdownTypeDataPropKeys() {
+    propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
+
+    let getParent = State.clickedObj;
+
+    let typeDataPropKeys = getParent.typeDataPropKeys;
+
+    let allKeysByParent = propsNodesRels.filter((node) => {
+      return typeDataPropKeys.includes(node.id);
+    });
+
+    allKeysByParent.forEach((propKey) => {
+      let filtered = propsNodesRels.filter(
+        (node) => node.parentId === propKey.id
+      );
+
+      if (filtered.length > 0) {
+        dropDownHtmlString += dropDown(
+          propKey.title,
+          propKey.title,
+          filtered,
+          null,
+          propKey.id
+        );
+      }
+    });
+  }
 };
