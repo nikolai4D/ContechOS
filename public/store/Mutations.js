@@ -52,36 +52,6 @@ class Mutations {
         let tree = State.treeOfNodes;
         let node = tree.getNodeById(id)
         node.deleteTreeNode()
-
-        //Todo: redraw filterbox
-        // Not sure what your flow to redraw the filterbox is.
-        // Needs to call tree.shake() to intersect without this node.
-
-
-//         let nodeToDelete = tree.getNodeById(id)
-//         let fructified = tree.fructify([newNode], nodeLayer, parentNode)[0]
-//         fructified.selected = true;
-//         parentNode.children.push(fructified);
-//
-// function removeFromTree(anArray) {
-//         anArray.forEach(existingNode => {
-//                             if (existingNode.id === newNode.parentId){
-//                                 existingNode.children.push(newNode);
-//                                 State.treeOfNodes.selectedRelations.push({
-//                                     sourceId: newNode.id,
-//                                     source: newNode.id,
-//                                     targetId: newNode.parentId,
-//                                     target: newNode.parentId,
-//                                     title:"has parent",
-//                                 })
-//                                 return;
-//                             }
-//
-//                             else pushNodeToTree(existingNode.children)
-//                         });
-//                         return anArray;
-//                     }
-//
    }
 }
 
