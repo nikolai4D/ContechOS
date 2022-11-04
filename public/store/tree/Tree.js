@@ -64,8 +64,10 @@ TreeNode.prototype.deleteTreeNode = function(){
     let tree = State.treeOfNodes
 
     //Remove from parent children
-    let parent = this.parent
-    parent.children.splice(parent.children.indexOf(this), 1)
+    if(this.parent !== null || this.parent !== undefined) {
+        let parent = this.parent
+        parent.children.splice(parent.children.indexOf(this), 1)
+    }
 
     this.rels.forEach(rel => {
         //Delete related rels ref in other node
@@ -77,7 +79,6 @@ TreeNode.prototype.deleteTreeNode = function(){
         State.relations.splice(State.relations.indexOf(this.rels), 1)
     })
 
-    delete this
 }
 
 TreeNode.prototype.findIdInLineage = function(id){
