@@ -47,6 +47,32 @@ class Mutations {
 
         await tree.shake()
     }
+    async DELETE_NODE_FROM_TREE(id){
+        let nodeToDelete = tree.getNodeById(id)
+        let fructified = tree.fructify([newNode], nodeLayer, parentNode)[0]
+        fructified.selected = true;
+        parentNode.children.push(fructified);
+
+function removeFromTree(anArray) {
+        anArray.forEach(existingNode => {
+                            if (existingNode.id === newNode.parentId){
+                                existingNode.children.push(newNode);
+                                State.treeOfNodes.selectedRelations.push({
+                                    sourceId: newNode.id,
+                                    source: newNode.id,
+                                    targetId: newNode.parentId,
+                                    target: newNode.parentId,
+                                    title:"has parent",
+                                })
+                                return;
+                            }
+            
+                            else pushNodeToTree(existingNode.children)
+                        });
+                        return anArray;
+                    }
+
+    }
 }
 
 
