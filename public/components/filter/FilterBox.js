@@ -35,6 +35,8 @@ async function triggerTreeGetHtml() {
   await State.treeOfNodes.ensureInit();
 
   let nodeHtmlString = ``;
+  tree.sort((a, b) => a.title.localeCompare(b.title));
+
   tree.forEach(node => {
     nodeHtmlString += itemRow(node);
   }
@@ -54,6 +56,9 @@ function itemRow(node){
             <label class="form-check-label" for="all_${node.id}"> All</label>
             <br/>
           `
+      
+      node.children.sort((a, b) => a.title.localeCompare(b.title));
+
       for(let child of node.children){
             childrenFrame += itemRow(child)
       }
@@ -80,5 +85,6 @@ function itemRow(node){
 
     return mainRow
 }
+
 
 export {FilterBox, triggerTreeGetHtml};
