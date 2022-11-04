@@ -64,10 +64,9 @@ TreeNode.prototype.deleteTreeNode = function(){
     let tree = State.treeOfNodes
 
     //Remove from parent children
-    if(this.parent !== null || this.parent !== undefined) {
-        let parent = this.parent
-        parent.children.splice(parent.children.indexOf(this), 1)
-    }
+    let parent = this.parent
+
+    if(parent) parent.children.splice(parent.children.indexOf(this), 1)
 
     this.rels.forEach(rel => {
         //Delete related rels ref in other node
