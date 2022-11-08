@@ -23,8 +23,6 @@ class Actions {
       delete recordJson.created;
       delete recordJson.updated;
 
-      console.log(recordJson)
-
       let type = recordJson.defTypeTitle.slice(-3) === "Rel" ? "rels" : "nodes"
       let prevView;
   
