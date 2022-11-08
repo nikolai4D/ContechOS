@@ -14,6 +14,40 @@ class Mutations {
         }
     }
 
+    async ADD_NODE_REL_TO_SESSION(view, type, recordJson, defTypeTitle, attrs, prevView=false) {
+            const recordsInView = JSON.parse(sessionStorage.getItem(view));
+
+            // nodes that can have "has parent" rels
+            if (
+                defTypeTitle === "propKey" ||
+                defTypeTitle === "propVal" ||
+                defTypeTitle === "typeData" ||
+                defTypeTitle === "configObj" ||
+                defTypeTitle === "instanceData"
+              ) {
+
+            // previous view can't have "has parent" rel for type data
+              if (prevView && defTypeTitle === "typeData") return
+              
+              let newParentRel = await this.getNewParentRel(recordJson, attrs);
+              recordsInView[0].rels.push(newParentRel);
+            }
+            recordsInView[0][type].push(recordJson);
+            sessionStorage.setItem(view, JSON.stringify(recordsInView));
+          }
+
+    async getNewParentRel(recordJson, attrs) {
+        let source = recordJson.id;
+        let target = await attrs.parentId;
+        let rel = {
+            id: `${source}_${target}`,
+            source,
+            target,
+            title: "has parent",
+        };
+        return rel;
+    }
+
     async ADD_NODE_TO_STATE(view, records) {
         let data = await JSON.parse(sessionStorage.getItem(`${view}`))
 
@@ -46,6 +80,17 @@ class Mutations {
         }
 
         await tree.shake()
+    }
+
+    async ADD_REL_TO_TREE(newRel) {
+        let tree = State.treeOfNodes;
+
+        let sourceNode = tree.getNodeById(newRel.source)
+        let targetNode = tree.getNodeById(newRel.target)
+        sourceNode.setRelations([newRel])
+        targetNode.setRelations([newRel])
+        await tree.shake()
+
     }
 }
 
