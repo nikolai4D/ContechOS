@@ -74,6 +74,9 @@ class Actions {
       recordsInView[type] = typesInView
       console.log([recordsInView], 'toSessionStorage')
       sessionStorage.setItem(view, JSON.stringify([recordsInView]));
+
+      Mutations.UPDATE_NODE_IN_TREE(recordJson)
+
     } catch (err) {
       console.log(err);
     }

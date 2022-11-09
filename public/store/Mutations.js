@@ -92,6 +92,10 @@ class Mutations {
         await tree.shake()
 
     }
+
+    async UPDATE_NODE_IN_TREE(editedNode){
+
+    }
 }
 
 
