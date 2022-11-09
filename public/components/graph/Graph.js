@@ -20,6 +20,9 @@ import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { FilterBox} from "../filter/FilterBox.js"
 import { reCalcTopPlacement } from "./graphComponents/helpers.js"
+import {updateFilterBox} from  "../filter/updateFilterBox.js"
+
+
 async function Graph(view) {
   State.view = view;
   Actions.GETDEF();
@@ -136,6 +139,7 @@ async function Graph(view) {
             );
             await updateData(view);
             await render(view);
+            await updateFilterBox(render, view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
@@ -264,6 +268,8 @@ async function Graph(view) {
           );
           await updateData(view);
           await render(view);
+          await updateFilterBox(render, view);
+
           d3.select(".FormMenuContainer").remove();
 
         });
@@ -319,6 +325,8 @@ async function Graph(view) {
         await updateData(State.view);
         await render(State.view);
         d3.select(".contextMenuContainer").remove();
+        await updateFilterBox(render, view);
+
       });
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
@@ -338,8 +346,12 @@ async function Graph(view) {
             State.clickedObj,
             State.propKeys
           );
+
           await updateData(view);
           await render(view);
+
+          await updateFilterBox(render, view);
+
         });
       });
     }
@@ -590,3 +602,4 @@ async function Graph(view) {
   return [svg.node(), async () => await render(view)]
 }
 export default Graph;
+
