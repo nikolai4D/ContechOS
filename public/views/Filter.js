@@ -39,10 +39,10 @@ export default class Filter {
         secondColumnDiv.innerHTML = ""
         secondColumnDiv.className = secondClass
         secondColumnDiv.appendChild(filterBox)
-        await this.setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector(this.filterboxHeaderId))
+        await this.setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector(this.filterboxHeaderId), dataNodeAndRedrawFunc[1])
     }
 
-    async setupToolBar(firstDiv, secondDiv, containerNode) { return addFunctionsToFilterbox(
+    async setupToolBar(firstDiv, secondDiv, containerNode, reRenderGraph) { return addFunctionsToFilterbox(
         () => {
             this.returnRenderFunc = renderDataAsGraph;
             this.isInTableView = false;
@@ -60,5 +60,6 @@ export default class Filter {
                 "col order-2",
                 "col order-1");},
         () =>  this.isInTableView,
-        containerNode)}
+        containerNode,
+        reRenderGraph)}
 }

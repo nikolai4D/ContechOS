@@ -77,7 +77,7 @@ function itemRow(node){
      let mainRow = `
      <div id="form-check-input-container" class="d-inline-block" role="button">
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
-          <label class="form-check-label" for="checkbox_${node.id}"> ${node.title}</label> 
+          <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
           ${ node.selected? eyeDiv : ""}
           </div>
           ${ childrenFrame }

@@ -11,6 +11,7 @@ export function Tree() {
     this.tree = []
     this.selectedRelations = []
     this.selectedTreeNodes = []
+    this.intersect = true
 }
 
 Tree.prototype.ensureInit = async function () {
@@ -253,7 +254,7 @@ Tree.prototype.shake = async function () {
         for (let node of nodesOnThisLayer) {
             if (node.selected) {
                 if(i<3) {
-                    await node.setChildrenVisibility(this)
+                    if(this.intersect) await node.setChildrenVisibility(this)
                     node.children.map(child => {
                         if (child.selected) selectedRels.push(createPseudoParentRel(node.id, child.id))
                     })

@@ -4,6 +4,10 @@ import toggleHideShow from "./toggleHideShow.js";
 import {createHtmlElementWithData} from "../DomElementHelper.js";
 import Modal from "../Modal.js";
 
+import  Graph  from "../graph/Graph.js"
+import { updateFilterBox } from "./updateFilterBox.js";
+
+
 export async function checkFilter(event) {
     const tree = State.treeOfNodes
 
@@ -129,7 +133,7 @@ function resizeFilterBox(){
     }
 }
 
-export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, checked, containerNode) {
+export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, checked, containerNode, reRenderGraph) {
     const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
     const switchInput = createHtmlElementWithData("input", {
         "class": "form-check-input",
@@ -149,6 +153,18 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
             tableDisplayFunc()
         }
     });
+
+    let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
+    const switchIntersectionInput = createHtmlElementWithData("input", { "type": "checkbox"})
+    switchIntersectionInput.checked = intersectChecked
+
+    containerNode.appendChild(switchIntersectionInput);
+    switchIntersectionInput.addEventListener("click", async (event, state) => {
+            await switchIntersection(reRenderGraph);
+            await updateData()
+            await reRenderGraph()
+        });
+
     switchDiv.appendChild(switchInput)
     switchDiv.appendChild(switchLabel)
     containerNode.appendChild(switchDiv);
@@ -163,6 +179,24 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     let modalContent = modal.modalContent
     document.body.appendChild(modalContent)
     containerNode.appendChild(containerModal);
+
+    //let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
+    //containerNode.insertAdjacentHTML("afterbegin", ` <input data-function="switchIntersection" ${intersectChecked} type="checkbox">`)
+
 }
 
-export default addFunctionsToFilterbox;
+export async function switchIntersection(reRender){
+    State.treeOfNodes.intersect = !State.treeOfNodes.intersect
+
+    let tree = State.treeOfNodes.tree 
+
+    if (tree.intersect) tree.forEach(node => node.deselectLineage())
+
+    await State.treeOfNodes.shake()
+    await updateFilterBox(reRender, "filter")
+
+    console.log(State.treeOfNodes)
+
+}
+
+export default addFunctionsToFilterbox
