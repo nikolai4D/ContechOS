@@ -442,9 +442,9 @@ async function Graph(view) {
   });
 
   // create a tooltip
-  let tooltip = createTooptip()
+  let tooltip = createTooltip()
 
-  function createTooptip(){
+  function createTooltip(){
     return g
     .append("text")
     .attr("id", "tooltipId")
@@ -665,7 +665,7 @@ async function Graph(view) {
       .attr("dy", 0);
 
     tooltip.remove()
-    tooltip = createTooptip()
+    tooltip = createTooltip()
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
     return svg.node()
