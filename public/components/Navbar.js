@@ -17,7 +17,7 @@ export default class Navbar {
             <a class="nav-link" href="#">|</a>
           </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-link="/filter"></a>
+              <a class="nav-link" href="#" data-link="/filter">Database</a>
           </li>
         </ul>
         <form class="d-flex">
