@@ -181,7 +181,7 @@ export async function switchIntersection(){
 
     const arraySvgAndFunction = await Graph("filter")
     
-    updateFilterBox(arraySvgAndFunction[1], "filter")
+    await updateFilterBox(arraySvgAndFunction[1], "filter")
 
     console.log(State.treeOfNodes)
 

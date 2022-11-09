@@ -11,7 +11,7 @@ export function Tree() {
     this.tree = []
     this.selectedRelations = []
     this.selectedTreeNodes = []
-    this.intersect = false
+    this.intersect = true
 }
 
 Tree.prototype.ensureInit = async function () {
