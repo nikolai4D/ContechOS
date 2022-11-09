@@ -19,7 +19,9 @@ import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropK
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { FilterBox} from "../filter/FilterBox.js"
-import { checkFilter } from "../filter/filterFunctions.js"
+import { reCalcTopPlacement } from "./graphComponents/helpers.js"
+import {updateFilterBox} from  "../filter/updateFilterBox.js"
+
 
 async function Graph(view) {
   State.view = view;
@@ -137,6 +139,7 @@ async function Graph(view) {
             );
             await updateData(view);
             await render(view);
+            await updateFilterBox(render, view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
@@ -144,6 +147,7 @@ async function Graph(view) {
           });
         });
       }
+      reCalcTopPlacement(d3, ".contextMenu")
     });
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
@@ -236,6 +240,7 @@ async function Graph(view) {
           }
         }
         ReactiveFormCreate();
+
         State.propKeys = [];
         contextMenuItemClick(d3);
       }
@@ -263,6 +268,8 @@ async function Graph(view) {
           );
           await updateData(view);
           await render(view);
+          await updateFilterBox(render, view);
+
           d3.select(".FormMenuContainer").remove();
 
         });
@@ -306,6 +313,8 @@ async function Graph(view) {
       document.getElementById(
         "delete-item"
       ).innerHTML = `- Delete (${State.clickedObj.title})`;
+      reCalcTopPlacement(d3, ".contextMenu")
+
 
       d3.selectAll("#delete-item").on("click", async (e) => {
         await Actions.DELETE(
@@ -316,6 +325,8 @@ async function Graph(view) {
         await updateData(State.view);
         await render(State.view);
         d3.select(".contextMenuContainer").remove();
+        await updateFilterBox(render, view);
+
       });
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
@@ -335,8 +346,12 @@ async function Graph(view) {
             State.clickedObj,
             State.propKeys
           );
+
           await updateData(view);
           await render(view);
+
+          await updateFilterBox(render, view);
+
         });
       });
     }
@@ -646,3 +661,4 @@ async function Graph(view) {
   return [svg.node(), async () => await render(view)]
 }
 export default Graph;
+

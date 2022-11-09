@@ -10,7 +10,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
   event.preventDefault();
   const formData = document.getElementById("formCreate");
 
-
   definitions = JSON.parse(sessionStorage.getItem("definitions"))[0];
   const defId = parseInt(d.target.attributes.getNamedItem("data-defid").value);
   const defTypeId = parseInt(
@@ -70,11 +69,8 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
       }
     }
     else {
-      if (keyOfAttribute === 'parentId' && defType.defTypeTitle === 'typeData') {
-        formDataObj['parentId'] = formData[`field_parentId_typeData`].value;
 
-      }
-      else if (keyOfAttribute === 'parentId' || keyOfAttribute === 'source') {
+      if (keyOfAttribute === 'parentId' || keyOfAttribute === 'source') {
         formDataObj['parentId'] = clickedObj.id;
       }
       else {
@@ -109,18 +105,6 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
 
           }
 
-
-          else if (defType.defTypeTitle === 'typeData') {
-
-            let props = propKeys.map(propKey => {
-              let theKey = propKey.id;
-              let theValue = formData[`field_${propKey.title}`].value;
-              return { [theKey]: theValue }
-            })
-            keyOfAttribute = "props"
-            attrValue = props
-          }
-
           else if (defType.defTypeTitle === 'instanceData') {
 
             let propsNodesRels = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
@@ -152,8 +136,10 @@ const formCreateFunction = async (view, d, type, clickedObj, propKeys) => {
 
             let propsNodes = JSON.parse(sessionStorage.getItem(`props`))[0].nodes;
             let titleOfKeyAttribute = getDefType(valueOfAttribute.key.defId, valueOfAttribute.key.defTypeId).defTypeTitle;
-            let allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`]
 
+            let allKeyIdsByParent = State.clickedObj[`${titleOfKeyAttribute}s`]
+            
+            if (defType.defTypeTitle === 'typeData' && titleOfKeyAttribute ==="propKey") allKeyIdsByParent = State.clickedObj[`typeDataPropKeys`]
             let allKeysByParent = propsNodes.filter(node => { return allKeyIdsByParent.includes(node.id) })
 
             let propKeyList = allKeysByParent.filter(propKey => {
