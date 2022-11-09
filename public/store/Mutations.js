@@ -95,7 +95,23 @@ class Mutations {
 
     async UPDATE_NODE_IN_TREE(editedNode){
 
+        let tree = State.treeOfNodes;
+        let node = tree.getNodeById(editedNode.id)
+        node.title = editedNode.title;
+        if (node.propKeys) node.propKeys = editedNode.propKeys;
+        if (node.props) node.props = editedNode.props;
+        if (node.instanceDataPropKeys) node.instanceDataPropKeys = editedNode.instanceDataPropKeys;
+        if (node.typeDataPropKeys) node.typeDataPropKeys = editedNode.typeDataPropKeys;
+        await tree.shake() 
+
     }
+
+    async DELETE_NODE_FROM_TREE(id){
+
+        let tree = State.treeOfNodes;
+        let node = tree.getNodeById(id)
+        node.deleteTreeNode()
+   }
 }
 
 

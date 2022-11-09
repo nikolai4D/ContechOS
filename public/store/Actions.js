@@ -104,6 +104,9 @@ class Actions {
             (obj) => obj.source !== id
           );
           recordsInView[0].rels = newRecords;
+
+          if (view === "filter") Mutations.DELETE_NODE_FROM_TREE(id)
+
         }
 
         let newRecords = recordsInView[0][type].filter((obj) => obj.id !== id);

@@ -60,6 +60,26 @@ TreeNode.prototype.formatProperties = function(data){
     data.props = formattedProps
 }
 
+TreeNode.prototype.deleteTreeNode = function(){
+    let tree = State.treeOfNodes
+
+    //Remove from parent children
+    let parent = this.parent
+    if (parent) parent.children.splice(parent.children.indexOf(this), 1)
+    else tree.tree.splice(tree.tree.indexOf(this), 1)
+
+    this.rels.forEach(rel => {
+        //Delete related rels ref in other node
+        let otherId = getOtherIdInRel(rel, this.id)
+        let otherNode = tree.getNodeById(otherId)
+        otherNode.rels.splice(otherNode.rels.indexOf(rel), 1)
+
+        //Delete rels in State.relations
+        State.relations.splice(State.relations.indexOf(this.rels), 1)
+    })
+
+}
+
 TreeNode.prototype.findIdInLineage = function(id){
     if(this.id === id) return this
     if(this.children.length !== 0){
