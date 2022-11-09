@@ -17,7 +17,6 @@ async function getItems(params) {
             requestedItems = getBulk(bfData.defTypes, -1, bfData.from, bfData.filterFunction, bfData.filterParams)
         }
 
-        console.log("requestedItems: ", JSON.stringify(requestedItems, null,2))
         return requestedItems
 
     } catch (e) {

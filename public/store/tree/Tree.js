@@ -260,9 +260,6 @@ Tree.prototype.shake = async function () {
     this.setSelectedNodesAndData()
     this.selectedRelations = trimRels(selectedRels, this.selectedTreeNodes)
 
-    for (let selectedNode of this.selectedTreeNodes) {
-        console.log("inst: " + JSON.stringify(selectedNode.data, null, 2))
-    }
 }
 
 
