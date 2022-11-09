@@ -157,6 +157,7 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
     const switchIntersectionInput = createHtmlElementWithData("input", { "type": "checkbox"})
     switchIntersectionInput.checked = intersectChecked
+    switchIntersectionInput.style.marginRight ="1.2em"
 
     containerNode.appendChild(switchIntersectionInput);
     switchIntersectionInput.addEventListener("click", async (event, state) => {
