@@ -74,6 +74,9 @@ class Actions {
       recordsInView[type] = typesInView
       console.log([recordsInView], 'toSessionStorage')
       sessionStorage.setItem(view, JSON.stringify([recordsInView]));
+
+      Mutations.UPDATE_NODE_IN_TREE(recordJson)
+
     } catch (err) {
       console.log(err);
     }
@@ -101,6 +104,9 @@ class Actions {
             (obj) => obj.source !== id
           );
           recordsInView[0].rels = newRecords;
+
+          if (view === "filter") Mutations.DELETE_NODE_FROM_TREE(id)
+
         }
 
         let newRecords = recordsInView[0][type].filter((obj) => obj.id !== id);

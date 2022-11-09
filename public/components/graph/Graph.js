@@ -264,6 +264,8 @@ async function Graph(view) {
           );
           await updateData(view);
           await render(view);
+          await updateFilterBox(render, view);
+
           d3.select(".FormMenuContainer").remove();
 
         });
@@ -317,6 +319,8 @@ async function Graph(view) {
         await updateData(State.view);
         await render(State.view);
         d3.select(".contextMenuContainer").remove();
+        await updateFilterBox(render, view);
+
       });
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
