@@ -552,6 +552,11 @@ async function Graph(view) {
             .on("contextmenu", rightClicked)
             .attr("dy", 4);
           return entered;
+        },
+        (update) => {
+          const updated = update
+            .text(node => node.title)
+          return updated;
         }
       );
 
