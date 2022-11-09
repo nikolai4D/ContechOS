@@ -177,10 +177,10 @@ export async function switchIntersection(){
 
     let tree = State.treeOfNodes.tree 
 
-    if (tree.intersection) tree.forEach(node => node.deselectLineage())
+    if (tree.intersect) tree.forEach(node => node.deselectLineage())
 
+    await State.treeOfNodes.shake()
     const arraySvgAndFunction = await Graph("filter")
-    
     await updateFilterBox(arraySvgAndFunction[1], "filter")
 
     console.log(State.treeOfNodes)
