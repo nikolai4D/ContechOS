@@ -236,7 +236,6 @@ async function Graph(view) {
           }
         }
         ReactiveFormCreate();
-        reCalcTopPlacement(d3, ".formCreate");
 
         State.propKeys = [];
         contextMenuItemClick(d3);

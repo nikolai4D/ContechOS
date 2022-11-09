@@ -7,7 +7,7 @@ export function reCalcTopPlacement(d3, attr) {
     let divBottom = divOffsets.bottom;
 
     let appOffsets = document.querySelector("#app").getBoundingClientRect();
-    let appHeight = appOffsets.height;
+    let appHeight = appOffsets.height; 
 
     if (divBottom > appHeight) {
         let bodyDOM = d3.select(attr).node();
@@ -20,4 +20,14 @@ export function reCalcTopPlacement(d3, attr) {
             .style("left", State.clickedObj.clientX + 50 + "px");
 
     }
+}
+
+
+export function moveBoxToTopRight(d3, attr) {
+
+    let appOffsets = document.querySelector("#app").getBoundingClientRect();
+    let formOffsets = document.querySelector(attr).getBoundingClientRect();
+
+    d3.select(attr)
+    .style("left", appOffsets.width - formOffsets.width - 10 + "px");
 }
