@@ -17,7 +17,7 @@ export function reCalcTopPlacement(d3, attr) {
 
         d3.select(attr)
             .style("top", height)
-            .style("left", State.clickedObj.clientX + 50 + "px");
+            .style("left", State.clickedObj.clientX + 10 + "px");
 
     }
 }
