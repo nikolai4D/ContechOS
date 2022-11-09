@@ -566,7 +566,6 @@ async function Graph(view) {
                     hoverTitle.setAttribute("id", "hoverTitle")
                     hoverTitle.style.position = "fixed"
                     hoverTitle.style.top = 150 + d.y + "px"
-                    hoverTitle.style.background = "rgba(250,250,250,0.7)"
                     hoverTitle.style.borderRadius = "5px"
                     hoverTitle.style.padding = "2px"
                     hoverTitle.innerHTML = d.title
