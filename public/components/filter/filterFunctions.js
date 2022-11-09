@@ -163,6 +163,13 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     let modalContent = modal.modalContent
     document.body.appendChild(modalContent)
     containerNode.appendChild(containerModal);
+
+    let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
+    containerNode.insertAdjacentHTML("afterbegin", ` <input data-function="switchIntersection" ${intersectChecked} type="checkbox">`)
 }
 
-export default addFunctionsToFilterbox;
+export function switchIntersection(){
+    State.treeOfNodes.intersect = !State.treeOfNodes.intersect
+}
+
+export default addFunctionsToFilterbox

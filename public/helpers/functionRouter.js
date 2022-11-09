@@ -1,4 +1,4 @@
-import checkFilter, {checkAll} from "../components/filter/filterFunctions.js";
+import checkFilter, {checkAll, switchIntersection} from "../components/filter/filterFunctions.js";
 import toggleHideShow from "../components/filter/toggleHideShow.js";
 import {copyToClipboard, showApi, getQuery } from "../components/modalHelpers.js";
 
@@ -10,7 +10,8 @@ export default async function (demandedRoute, event) {
         { path: 'toggleHideShow', request: toggleHideShow },
         { path: 'copyToClipboard', request: copyToClipboard },
         { path: 'showApi', request: showApi },
-        { path: 'getQuery', request: getQuery }
+        { path: 'getQuery', request: getQuery },
+        { path: 'switchIntersection', request: switchIntersection}
 
 
     ];
