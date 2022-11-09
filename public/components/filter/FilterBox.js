@@ -53,7 +53,7 @@ function itemRow(node){
       childrenFrame = `
             <ul>
             <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.viewAll? "checked": ""}>
-            <label class="form-check-label" for="all_${node.id}"> All</label>
+            <label class="form-check-label text-break" for="all_${node.id}"> All</label>
             <br/>
           `
       

@@ -618,7 +618,37 @@ async function Graph(view) {
         },
         (update) => {
           const updated = update
-            .text(node => node.title)
+          .text((d) => {
+            if (d.title.length > 10) {
+              return d.title.slice(0, 10) + "...";
+            }
+            return d.title;
+          })
+          .style("text-anchor", styles.nodeLabel.textAnchor)
+          .style("cursor", "default")
+
+          .style("fill", styles.nodeLabel.fill)
+          .on("click", (d) => {
+            event.preventDefault();
+          })
+          .on("contextmenu", rightClicked)
+          .on("mouseenter", function(e, d){
+
+            if(d.title.length > 10){
+              setTimeout(() => {
+
+              d3.select("#tooltipId").style("visibility", "visible")
+              d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
+              .text(d.title)
+              .call(wrap, 500);
+            }, 1000)
+
+            }
+          })
+          .on("mouseout", function(){
+            d3.select("#tooltipId").style("visibility", "hidden")
+          })
+          .attr("dy", 4);
           return updated;
         }
       );
