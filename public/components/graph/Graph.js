@@ -19,9 +19,7 @@ import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropK
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { FilterBox} from "../filter/FilterBox.js"
-import { reCalcTopPlacement } from "./graphComponents/helpers.js"
-import {updateFilterBox} from  "../filter/updateFilterBox.js"
-
+import { checkFilter } from "../filter/filterFunctions.js"
 
 async function Graph(view) {
   State.view = view;
@@ -139,7 +137,6 @@ async function Graph(view) {
             );
             await updateData(view);
             await render(view);
-            await updateFilterBox(render, view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
@@ -147,7 +144,6 @@ async function Graph(view) {
           });
         });
       }
-      reCalcTopPlacement(d3, ".contextMenu")
     });
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
@@ -240,7 +236,6 @@ async function Graph(view) {
           }
         }
         ReactiveFormCreate();
-
         State.propKeys = [];
         contextMenuItemClick(d3);
       }
@@ -268,8 +263,6 @@ async function Graph(view) {
           );
           await updateData(view);
           await render(view);
-          await updateFilterBox(render, view);
-
           d3.select(".FormMenuContainer").remove();
 
         });
@@ -313,8 +306,6 @@ async function Graph(view) {
       document.getElementById(
         "delete-item"
       ).innerHTML = `- Delete (${State.clickedObj.title})`;
-      reCalcTopPlacement(d3, ".contextMenu")
-
 
       d3.selectAll("#delete-item").on("click", async (e) => {
         await Actions.DELETE(
@@ -325,8 +316,6 @@ async function Graph(view) {
         await updateData(State.view);
         await render(State.view);
         d3.select(".contextMenuContainer").remove();
-        await updateFilterBox(render, view);
-
       });
 
       d3.selectAll(".context_menu_item").on("click", async (d) => {
@@ -346,12 +335,8 @@ async function Graph(view) {
             State.clickedObj,
             State.propKeys
           );
-
           await updateData(view);
           await render(view);
-
-          await updateFilterBox(render, view);
-
         });
       });
     }
@@ -457,17 +442,17 @@ async function Graph(view) {
   });
 
   // create a tooltip
-  let tooltip = createTooltip()
+  let tooltip = createTooptip()
 
-  function createTooltip(){
+  function createTooptip(){
     return g
     .append("text")
     .attr("id", "tooltipId")
     .style("text-anchor", styles.nodeLabel.textAnchor)
     .style("cursor", "default")
     .style("fill", styles.nodeLabel.fill)
+    .text("I'm a circle!"); 
   }
-
 
   async function render(view) {
     await updateData(view);
@@ -546,7 +531,40 @@ async function Graph(view) {
         }
       );
 
-    let mouseHover = null
+      function wrap(text, width) {
+        text.each(function () {
+            let text = d3.select(this),
+                words = text.text().split(/\s+/).reverse(),
+                word,
+                line = [],
+                lineNumber = 0,
+                lineHeight = 1.1, // ems
+                x = text.attr("x"),
+                y = text.attr("y"),
+                dy = 0, //parseFloat(text.attr("dy")),
+                tspan = text.text(null)
+                            .append("tspan")
+                            .attr("x", x)
+                            .attr("y", y)
+                            .attr("dy", dy + "em");
+            while (word = words.pop()) {
+                line.push(word);
+                tspan.text(line.join(" "));
+                if (tspan.node().getComputedTextLength() > width) {
+                    line.pop();
+                    tspan.text(line.join(" "));
+                    line = [word];
+                    tspan = text.append("tspan")
+                                .attr("x", x)
+                                .attr("y", y)
+                                .attr("dy", ++lineNumber * lineHeight + dy + "em")
+                                .text(word);
+                }
+            }
+        });
+    }
+
+
 
     nodeLabel = g
       .selectAll(".nodeLabel")
@@ -564,7 +582,7 @@ async function Graph(view) {
               return d.title;
             })
             .style("text-anchor", styles.nodeLabel.textAnchor)
-            .style("cursor", "pointer")
+            .style("cursor", "default")
 
             .style("fill", styles.nodeLabel.fill)
             .on("click", (d) => {
@@ -572,33 +590,20 @@ async function Graph(view) {
             })
             .on("contextmenu", rightClicked)
             .on("mouseenter", function(e, d){
-                mouseHover = d.title
-              setTimeout(() => {
-                if(mouseHover !== d.title)return
-                if(d.title.length > 10){
-                  if(document.getElementById("hoverTitle") == null) {
-                    let hoverTitle = document.createElement("div")
-                    hoverTitle.setAttribute("id", "hoverTitle")
-                    hoverTitle.style.position = "fixed"
-                    hoverTitle.style.top = 150 + d.y + "px"
-                    hoverTitle.style.borderRadius = "5px"
-                    hoverTitle.style.padding = "2px"
-                    hoverTitle.innerHTML = d.title
-                    hoverTitle.style.wordBreak = "break-all"
-                    hoverTitle.style.maxWidth = "300px"
-                    hoverTitle.style.transition = "all 0.5s ease-in-out"
-                    document.body.appendChild(hoverTitle)
-                    hoverTitle.style.left = d.x - hoverTitle.offsetWidth/2 + "px"
 
-                  }
-                }
-            }, 500)
+              if(d.title.length > 10){
+                setTimeout(() => {
+
+                d3.select("#tooltipId").style("visibility", "visible")
+                d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
+                .text(d.title)
+                .call(wrap, 500);
+              }, 1000)
+
+              }
             })
             .on("mouseout", function(){
-              setTimeout(function(){
-                mouseHover = null
-                document.getElementById("hoverTitle")?.remove()
-              },200)
+              d3.select("#tooltipId").style("visibility", "hidden")
             })
             .attr("dy", 4);
           return entered;
@@ -631,9 +636,18 @@ async function Graph(view) {
             .on("contextmenu", rightClicked)
             .on("mouseenter", function(e, d){
               if(d.title.length > 10){
-                d3.select("#tooltipId").style("visibility", "visible")
-                d3.select("#tooltipId").attr("x", 20+(d.source.x + d.target.x) / 2+"px").attr("y",40+(d.source.y + d.target.y) / 2+"px").text(d.title)
+                setTimeout(() => {
+                d3.select("#tooltipId")
+                .style("visibility", "visible")
+
+                d3.select("#tooltipId")
+                .attr("x", 20+(d.source.x + d.target.x) / 2+"px")
+                .attr("y",40+(d.source.y + d.target.y) / 2+"px")
+                .text(d.title)
+                .call(wrap, 500); 
+              }, 1000)
               }
+              
             })
             .on("mouseout", function(){
               d3.select("#tooltipId").style("visibility", "hidden")
@@ -651,7 +665,7 @@ async function Graph(view) {
       .attr("dy", 0);
 
     tooltip.remove()
-    tooltip = createTooltip()
+    tooltip = createTooptip()
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
     return svg.node()
@@ -661,4 +675,3 @@ async function Graph(view) {
   return [svg.node(), async () => await render(view)]
 }
 export default Graph;
-
