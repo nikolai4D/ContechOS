@@ -11,5 +11,5 @@ export async function updateFilterBox(render, view) {
     filterBoxContainerNode.appendChild(filterBox);
     let firstColumnDiv = document.querySelector("#filterbox-grid-container-id");
     let secondColumnDiv = filterBoxContainerNode;
-    await new Filter().setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector("#accordion-container-switch-modalbtn"));    // Generates switch + modal btn over checkboxes
+    await new Filter().setupToolBar(firstColumnDiv, secondColumnDiv, secondColumnDiv.querySelector("#accordion-container-switch-modalbtn"), render);    // Generates switch + modal btn over checkboxes
   }

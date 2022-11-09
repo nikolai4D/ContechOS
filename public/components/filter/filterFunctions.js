@@ -133,7 +133,7 @@ function resizeFilterBox(){
     }
 }
 
-export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, checked, containerNode) {
+export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, checked, containerNode, reRenderGraph) {
     const switchDiv = createHtmlElementWithData("div", { "class": "form-check form-switch align-self-center"})
     const switchInput = createHtmlElementWithData("input", {
         "class": "form-check-input",
@@ -153,6 +153,18 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
             tableDisplayFunc()
         }
     });
+
+    let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
+    const switchIntersectionInput = createHtmlElementWithData("input", { "type": "checkbox"})
+    switchIntersectionInput.checked = intersectChecked
+
+    containerNode.appendChild(switchIntersectionInput);
+    switchIntersectionInput.addEventListener("click", async (event, state) => {
+            await switchIntersection(reRenderGraph);
+            await updateData()
+            await reRenderGraph()
+        });
+
     switchDiv.appendChild(switchInput)
     switchDiv.appendChild(switchLabel)
     containerNode.appendChild(switchDiv);
@@ -168,11 +180,12 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     document.body.appendChild(modalContent)
     containerNode.appendChild(containerModal);
 
-    let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
-    containerNode.insertAdjacentHTML("afterbegin", ` <input data-function="switchIntersection" ${intersectChecked} type="checkbox">`)
+    //let intersectChecked = State.treeOfNodes.intersect? "checked" : ""
+    //containerNode.insertAdjacentHTML("afterbegin", ` <input data-function="switchIntersection" ${intersectChecked} type="checkbox">`)
+
 }
 
-export async function switchIntersection(){
+export async function switchIntersection(reRender){
     State.treeOfNodes.intersect = !State.treeOfNodes.intersect
 
     let tree = State.treeOfNodes.tree 
@@ -180,8 +193,7 @@ export async function switchIntersection(){
     if (tree.intersect) tree.forEach(node => node.deselectLineage())
 
     await State.treeOfNodes.shake()
-    const arraySvgAndFunction = await Graph("filter")
-    await updateFilterBox(arraySvgAndFunction[1], "filter")
+    await updateFilterBox(reRender, "filter")
 
     console.log(State.treeOfNodes)
 
