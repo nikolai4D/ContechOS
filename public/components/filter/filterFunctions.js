@@ -4,6 +4,10 @@ import toggleHideShow from "./toggleHideShow.js";
 import {createHtmlElementWithData} from "../DomElementHelper.js";
 import Modal from "../Modal.js";
 
+import  Graph  from "../graph/Graph.js"
+import { updateFilterBox } from "./updateFilterBox.js";
+
+
 export async function checkFilter(event) {
     const tree = State.treeOfNodes
 
@@ -168,8 +172,19 @@ export function addFunctionsToFilterbox(graphDisplayFunc, tableDisplayFunc, chec
     containerNode.insertAdjacentHTML("afterbegin", ` <input data-function="switchIntersection" ${intersectChecked} type="checkbox">`)
 }
 
-export function switchIntersection(){
+export async function switchIntersection(){
     State.treeOfNodes.intersect = !State.treeOfNodes.intersect
+
+    let tree = State.treeOfNodes.tree 
+
+    if (tree.intersection) tree.forEach(node => node.deselectLineage())
+
+    const arraySvgAndFunction = await Graph("filter")
+    
+    updateFilterBox(arraySvgAndFunction[1], "filter")
+
+    console.log(State.treeOfNodes)
+
 }
 
 export default addFunctionsToFilterbox
