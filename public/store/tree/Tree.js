@@ -229,14 +229,16 @@ Tree.prototype.shake = async function () {
     let nodesOnNextLayer = []
 
 
-    for(let i=0; i<3;i++) {
+    for(let i=0; i<=3;i++) {
         for (let node of nodesOnThisLayer) {
             if (node.selected) {
+                if(i<3) {
+                    await node.setChildrenVisibility(this)
+                    node.children.map(child => {
+                        if (child.selected) selectedRels.push(createPseudoParentRel(node.id, child.id))
+                    })
+                }
 
-                await node.setChildrenVisibility(this)
-                node.children.map (child=> {
-                    if(child.selected) selectedRels.push(createPseudoParentRel(node.id, child.id))
-                })
                 const relevantRels = []
                 node.rels.map(rel => {
                     if(rel.sourceId === rel.targetId) relevantRels.push(rel)
@@ -252,6 +254,8 @@ Tree.prototype.shake = async function () {
         nodesOnThisLayer = nodesOnNextLayer
         nodesOnNextLayer = []
     }
+
+
 
     this.setSelectedNodesAndData()
     this.selectedRelations = trimRels(selectedRels, this.selectedTreeNodes)
