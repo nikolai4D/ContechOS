@@ -16,20 +16,8 @@ export default class Navbar {
           <li class="nav-item">
             <a class="nav-link" href="#">|</a>
           </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#" data-link="/configs">Def/Object</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#"><</a>
-          </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-link="/datas">Type/Instance</a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="#">|</a>
-          </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#" data-link="/filter">Filter</a>
+              <a class="nav-link" href="#" data-link="/filter"></a>
           </li>
         </ul>
         <form class="d-flex">
