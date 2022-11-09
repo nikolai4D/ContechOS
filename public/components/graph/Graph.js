@@ -442,17 +442,17 @@ async function Graph(view) {
   });
 
   // create a tooltip
-  let tooltip = createTooptip()
+  let tooltip = createTooltip()
 
-  function createTooptip(){
+  function createTooltip(){
     return g
     .append("text")
     .attr("id", "tooltipId")
     .style("text-anchor", styles.nodeLabel.textAnchor)
     .style("cursor", "default")
     .style("fill", styles.nodeLabel.fill)
-    .text("I'm a circle!"); 
   }
+
 
   async function render(view) {
     await updateData(view);
@@ -531,6 +531,8 @@ async function Graph(view) {
         }
       );
 
+    let mouseHover = null
+
     nodeLabel = g
       .selectAll(".nodeLabel")
       .data(nodes, (d) => d["id"])
@@ -547,7 +549,7 @@ async function Graph(view) {
               return d.title;
             })
             .style("text-anchor", styles.nodeLabel.textAnchor)
-            .style("cursor", "default")
+            .style("cursor", "pointer")
 
             .style("fill", styles.nodeLabel.fill)
             .on("click", (d) => {
@@ -555,13 +557,34 @@ async function Graph(view) {
             })
             .on("contextmenu", rightClicked)
             .on("mouseenter", function(e, d){
-              if(d.title.length > 10){
-                d3.select("#tooltipId").style("visibility", "visible")
-                d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px").text(d.title)
-              }
+                mouseHover = d.title
+              setTimeout(() => {
+                if(mouseHover !== d.title)return
+                if(d.title.length > 10){
+                  if(document.getElementById("hoverTitle") == null) {
+                    let hoverTitle = document.createElement("div")
+                    hoverTitle.setAttribute("id", "hoverTitle")
+                    hoverTitle.style.position = "fixed"
+                    hoverTitle.style.top = 150 + d.y + "px"
+                    hoverTitle.style.background = "rgba(250,250,250,0.7)"
+                    hoverTitle.style.borderRadius = "5px"
+                    hoverTitle.style.padding = "2px"
+                    hoverTitle.innerHTML = d.title
+                    hoverTitle.style.wordBreak = "break-all"
+                    hoverTitle.style.maxWidth = "300px"
+                    hoverTitle.style.transition = "all 0.5s ease-in-out"
+                    document.body.appendChild(hoverTitle)
+                    hoverTitle.style.left = d.x - hoverTitle.offsetWidth/2 + "px"
+
+                  }
+                }
+            }, 500)
             })
             .on("mouseout", function(){
-              d3.select("#tooltipId").style("visibility", "hidden")
+              setTimeout(function(){
+                mouseHover = null
+                document.getElementById("hoverTitle")?.remove()
+              },200)
             })
             .attr("dy", 4);
           return entered;
@@ -614,7 +637,7 @@ async function Graph(view) {
       .attr("dy", 0);
 
     tooltip.remove()
-    tooltip = createTooptip()
+    tooltip = createTooltip()
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
     return svg.node()
