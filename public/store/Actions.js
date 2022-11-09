@@ -16,40 +16,27 @@ class Actions {
         body: JSON.stringify(await attrs),
       });
       const recordJson = await record.json();
-      recordJson.defTypeTitle = defType.defTypeTitle;
-      recordJson.defType = defType.defTypeTitle;
+
+
+      recordJson.defTypeTitle = defTypeTitle;
+      recordJson.defType = defTypeTitle;
       delete recordJson.created;
       delete recordJson.updated;
 
-      const recordsInView = JSON.parse(sessionStorage.getItem(view));
+      let type = recordJson.defTypeTitle.slice(-3) === "Rel" ? "rels" : "nodes"
+      let prevView;
+  
+      if (view === "filter") { // use mutation to add node to tree, and to previous state (session storage)
+        type === "nodes" ?  Mutations.ADD_NODE_TO_TREE(recordJson) : Mutations.ADD_REL_TO_TREE(recordJson);
 
-      let type = "nodes";
-      if (defType.defTypeTitle.slice(-3) === "Rel") {
-        type = "rels";
+        if (defTypeTitle.charAt(0) === "t" || defTypeTitle.charAt(0) === "i") prevView = "datas";
+        else if (defTypeTitle.charAt(0) === "p") prevView = "props";
+        else prevView = "configs";
       }
+      Mutations.ADD_NODE_REL_TO_SESSION(view, type, recordJson, defTypeTitle, attrs)
+      Mutations.ADD_NODE_REL_TO_SESSION(prevView, type, recordJson, defTypeTitle, attrs, true)
 
-      recordsInView[0][type].push(recordJson);
 
-      //   if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
-      console.log(defType.defTypeTitle);
-      if (
-        defType.defTypeTitle === "propKey" ||
-        defType.defTypeTitle === "propVal" ||
-        defType.defTypeTitle === "configObj" ||
-        defType.defTypeTitle === "instanceData"
-      ) {
-        let source = recordJson.id;
-        let target = await attrs.parentId;
-        let newRel = {
-          id: `${source}_${target}`,
-          source,
-          target,
-          title: "has parent",
-        };
-        recordsInView[0].rels.push(newRel);
-      }
-
-      sessionStorage.setItem(view, JSON.stringify(recordsInView));
     } catch (err) {
       console.log(err);
     }
@@ -204,3 +191,4 @@ class Actions {
 }
 
 export default new Actions();
+

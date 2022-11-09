@@ -18,8 +18,8 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
-import { FilterBox} from "../filter/FilterBox.js"
-import { checkFilter } from "../filter/filterFunctions.js"
+import {updateFilterBox} from  "../filter/updateFilterBox.js"
+
 
 async function Graph(view) {
   State.view = view;
@@ -137,6 +137,7 @@ async function Graph(view) {
             );
             await updateData(view);
             await render(view);
+            await updateFilterBox(render, view);
           });
 
           d3.selectAll(".field_parentId_typeData").on("change", async (e) => {
@@ -335,8 +336,12 @@ async function Graph(view) {
             State.clickedObj,
             State.propKeys
           );
+
           await updateData(view);
           await render(view);
+
+          await updateFilterBox(render, view);
+
         });
       });
     }
@@ -587,3 +592,4 @@ async function Graph(view) {
   return [svg.node(), async () => await render(view)]
 }
 export default Graph;
+
