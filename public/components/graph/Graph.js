@@ -19,8 +19,7 @@ import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropK
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
 import { FilterBox} from "../filter/FilterBox.js"
-import { checkFilter } from "../filter/filterFunctions.js"
-
+import { reCalcTopPlacement } from "./graphComponents/helpers.js"
 async function Graph(view) {
   State.view = view;
   Actions.GETDEF();
@@ -144,6 +143,7 @@ async function Graph(view) {
           });
         });
       }
+      reCalcTopPlacement(d3, ".contextMenu")
     });
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
@@ -236,6 +236,8 @@ async function Graph(view) {
           }
         }
         ReactiveFormCreate();
+        reCalcTopPlacement(d3, ".formCreate");
+
         State.propKeys = [];
         contextMenuItemClick(d3);
       }
@@ -306,6 +308,8 @@ async function Graph(view) {
       document.getElementById(
         "delete-item"
       ).innerHTML = `- Delete (${State.clickedObj.title})`;
+      reCalcTopPlacement(d3, ".contextMenu")
+
 
       d3.selectAll("#delete-item").on("click", async (e) => {
         await Actions.DELETE(
