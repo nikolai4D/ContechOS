@@ -14,7 +14,7 @@ export default function (d3) {
         .html(ContextMenu(event, State.clickedObj))
         .select(".contextMenu")
         .style("top", State.clickedObj.clientY + "px")
-        .style("left", State.clickedObj.clientX + 50 + "px");
+        .style("left", State.clickedObj.clientX + 10 + "px");
 
     reCalcTopPlacement(d3, ".contextMenu");
 }
