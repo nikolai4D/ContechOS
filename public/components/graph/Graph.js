@@ -459,7 +459,7 @@ async function Graph(view) {
     .style("text-anchor", styles.nodeLabel.textAnchor)
     .style("cursor", "default")
     .style("fill", styles.nodeLabel.fill)
-    .text("I'm a circle!"); 
+    .text(""); 
   }
 
   async function render(view) {
