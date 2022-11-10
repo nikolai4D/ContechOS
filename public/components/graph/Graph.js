@@ -698,7 +698,14 @@ async function Graph(view) {
           return linkLabel;
         },
         (update) => {
-          return update;
+          return update
+          .text((d) => {
+            if (d.title.length > 10) {
+              return d.title.slice(0, 10) + "...";
+            }
+            return d.title;
+          })
+          
         }
       )
       .attr("id", function (d) {
