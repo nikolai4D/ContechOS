@@ -606,7 +606,7 @@ async function Graph(view) {
                 d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
                 .text(d.title)
                 .call(wrap, 500);
-              }, 1000)
+              }, 20)
 
               }
             })
@@ -641,7 +641,7 @@ async function Graph(view) {
               d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
               .text(d.title)
               .call(wrap, 500);
-            }, 1000)
+            }, 20)
 
             }
           })
@@ -688,7 +688,7 @@ async function Graph(view) {
                 .attr("y",40+(d.source.y + d.target.y) / 2+"px")
                 .text(d.title)
                 .call(wrap, 500); 
-              }, 1000)
+              }, 20)
               }
               
             })
