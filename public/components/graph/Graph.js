@@ -322,6 +322,7 @@ async function Graph(view) {
         );
         await updateData(State.view);
         await render(State.view);
+        updateFilterBox(render, State.view)
         d3.select(".contextMenuContainer").remove();
       });
 
