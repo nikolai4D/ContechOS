@@ -322,6 +322,7 @@ async function Graph(view) {
         );
         await updateData(State.view);
         await render(State.view);
+        updateFilterBox(render, State.view)
         d3.select(".contextMenuContainer").remove();
       });
 
@@ -459,7 +460,7 @@ async function Graph(view) {
     .style("text-anchor", styles.nodeLabel.textAnchor)
     .style("cursor", "default")
     .style("fill", styles.nodeLabel.fill)
-    .text("I'm a circle!"); 
+    .text(""); 
   }
 
   async function render(view) {
@@ -606,7 +607,7 @@ async function Graph(view) {
                 d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
                 .text(d.title)
                 .call(wrap, 500);
-              }, 1000)
+              }, 20)
 
               }
             })
@@ -641,7 +642,7 @@ async function Graph(view) {
               d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
               .text(d.title)
               .call(wrap, 500);
-            }, 1000)
+            }, 20)
 
             }
           })
@@ -688,7 +689,7 @@ async function Graph(view) {
                 .attr("y",40+(d.source.y + d.target.y) / 2+"px")
                 .text(d.title)
                 .call(wrap, 500); 
-              }, 1000)
+              }, 20)
               }
               
             })
@@ -698,7 +699,14 @@ async function Graph(view) {
           return linkLabel;
         },
         (update) => {
-          return update;
+          return update
+          .text((d) => {
+            if (d.title.length > 10) {
+              return d.title.slice(0, 10) + "...";
+            }
+            return d.title;
+          })
+          
         }
       )
       .attr("id", function (d) {
