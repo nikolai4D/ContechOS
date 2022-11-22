@@ -240,6 +240,8 @@ async function Graph(view) {
           }
         }
         ReactiveFormCreate();
+
+
         State.propKeys = [];
         contextMenuItemClick(d3);
       }
