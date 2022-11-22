@@ -149,7 +149,6 @@ const createDropdownKeyValue = (
                 rel.source === State.clickedObj.parentId && rel.target === State.clickedObj.parentId
             );
         });
-        setDefaultInputDropDownValue(parentConfigDefInternalRels);
 
         let dropDownString = dropDown(
             "Definition Internal Link",
@@ -173,7 +172,6 @@ const createDropdownKeyValue = (
                 (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
             );
         });
-        setDefaultInputDropDownValue(parentConfigDefExternalRels);
 
         let dropDownString = dropDown(
             "Definition External Link",
@@ -209,7 +207,6 @@ const createDropdownKeyValue = (
         // fieldsArray.push(
         //     `<div id="field_filteredProps" name="field_filteredProps"></div>`
         // );
-        setDefaultInputDropDownValue(parentConfigDefInternalRels);
 
 
     } else if (State.validDefTypeRels[0] === "instanceDataInternalRel") {
@@ -233,7 +230,6 @@ const createDropdownKeyValue = (
         // );
 
         document.getElementById(`field_props`).innerHTML = dropDownString + `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        setDefaultInputDropDownValue(parentConfigDefInternalRels);
 
 
     } else if (State.validDefTypeRels[0] === "instanceDataExternalRel") {
@@ -257,7 +253,6 @@ const createDropdownKeyValue = (
         // );
 
         document.getElementById(`field_props`).innerHTML = dropDownString + `<div id="field_filteredProps" name="field_filteredProps"></div>`
-        setDefaultInputDropDownValue(parentConfigDefExternalRels);
 
 
     } else if (State.validDefTypeRels[0] === "typeDataExternalRel") {
@@ -282,7 +277,6 @@ const createDropdownKeyValue = (
 
         document.getElementById(`field_props`).innerHTML = dropDownString + `<div id="field_filteredProps" name="field_filteredProps"></div>`
 
-        setDefaultInputDropDownValue(parentConfigDefExternalRels);
 
 
     } else if (State.clickedObj.defTypeTitle === "configDef") {
@@ -347,8 +341,3 @@ const createDropdownKeyValue = (
 
 
 };
-function setDefaultInputDropDownValue(parentConfigDefExternalRels) {
-    document.getElementById("field_title_input").value = parentConfigDefExternalRels[0].title;
-    parentConfigDefExternalRels[0].selected = true;
-}
-

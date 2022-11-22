@@ -1,6 +1,7 @@
 import { State } from '../../../store/State.js';
 import dropDown from '../DropDownField.js';
 export default function (d3) {
+    console.log("HELLOOOOO")
 
     d3.selectAll(".field_configDefInternalRel").on("change", async () => {
         const propsParentId = document.getElementById("field_configDefInternalRel").value;
@@ -24,6 +25,8 @@ export default function (d3) {
 
         document.getElementById('field_filteredProps').innerHTML = ""
         document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        document.getElementById("field_title_input").value = parentConfigDefInternalRels.title;
+
 
     });
 
@@ -50,6 +53,8 @@ export default function (d3) {
 
         document.getElementById('field_filteredProps').innerHTML = ""
         document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        document.getElementById("field_title_input").value = parentConfigDefExternalRels.title;
+
     });
 
     d3.selectAll(".field_configObjInternalRel").on("change", async () => {
@@ -73,6 +78,8 @@ export default function (d3) {
 
         document.getElementById('field_filteredProps').innerHTML = ""
         document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        document.getElementById("field_title_input").value = parentConfigDefInternalRels.title;
+
     });
 
     d3.selectAll(".field_configObjExternalRel").on("change", async () => {
@@ -98,6 +105,8 @@ export default function (d3) {
 
         document.getElementById('field_filteredProps').innerHTML = ""
         document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        document.getElementById("field_title_input").value = parentConfigObjExternalRels.title;
+
     });
 
     d3.selectAll(".field_typeDataInternalRel").on("change", async () => {
@@ -128,6 +137,8 @@ export default function (d3) {
         })
         document.getElementById('field_filteredProps').innerHTML = ""
         document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        document.getElementById("field_title_input").value = getParentsParent.title;
+
     });
 
     d3.selectAll(".field_typeDataExternalRel").on("change", async () => {
@@ -157,6 +168,8 @@ export default function (d3) {
 
         document.getElementById('field_filteredProps').innerHTML = ""
         document.getElementById('field_filteredProps').innerHTML = dropDownHtmlString
+        document.getElementById("field_title_input").value = getParentsParent.title;
+
     });
 
 
