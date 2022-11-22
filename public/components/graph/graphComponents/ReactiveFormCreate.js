@@ -5,7 +5,6 @@ import { getDefTypeFromSessionStorage } from '../graphFunctions/getDefTypeFromSe
 import getDefType from "../graphFunctions/getDefType.js";
 
 export function ReactiveFormCreate() {
-    
     let fieldsArray = [];
     let defType = State.definitions.defs[1].defTypes.find(obj => State.validDefTypeRels.includes(obj.defTypeTitle))
 
@@ -14,9 +13,6 @@ export function ReactiveFormCreate() {
         document.getElementById("field_props").innerHTML = 'No relationship available.'
         return
     }
-
-    console.log("HELLOOO", defType)
-
     const { fieldTypes, fieldProperties } = State.definitions.fields;
     let defTypeAttributes = defType.attributes;
 
@@ -43,7 +39,6 @@ export function ReactiveFormCreate() {
         }
 
         if (fieldType === "input") {
-
             createInput(displayTitle, fieldsArray, keyOfAttribute, defType, State.clickedObj);
         } else if (fieldType === "dropDown") {
             const { defId, defTypeId } = valueOfAttribute;
@@ -167,6 +162,7 @@ const createDropdownKeyValue = (
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
         let parentConfigDefExternalRels = configRels.filter((rel) => {
+            console.log(rel)
             return (
 
                 (rel.source === State.clickedObj.parentId && (rel.target === State.targetObject.parentId))
@@ -207,8 +203,6 @@ const createDropdownKeyValue = (
         // fieldsArray.push(
         //     `<div id="field_filteredProps" name="field_filteredProps"></div>`
         // );
-
-
     } else if (State.validDefTypeRels[0] === "instanceDataInternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`datas`))[0].rels;
 
@@ -254,7 +248,6 @@ const createDropdownKeyValue = (
 
         document.getElementById(`field_props`).innerHTML = dropDownString + `<div id="field_filteredProps" name="field_filteredProps"></div>`
 
-
     } else if (State.validDefTypeRels[0] === "typeDataExternalRel") {
         let configRels = JSON.parse(sessionStorage.getItem(`configs`))[0].rels;
 
@@ -276,7 +269,6 @@ const createDropdownKeyValue = (
         // );
 
         document.getElementById(`field_props`).innerHTML = dropDownString + `<div id="field_filteredProps" name="field_filteredProps"></div>`
-
 
 
     } else if (State.clickedObj.defTypeTitle === "configDef") {
