@@ -195,7 +195,7 @@ export async function switchIntersection(reRender){
 
     await State.treeOfNodes.shake()
     await updateFilterBox(reRender, "filter")
-
+    resizeFilterBox()
     console.log(State.treeOfNodes)
 
 }
