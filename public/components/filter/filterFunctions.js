@@ -62,7 +62,7 @@ export async function setFilterBoxCallback(filterBoxNode, redrawData){
                 toggleHideShow(e)
             }
             else return
-
+            const scrollPosition = document.querySelector("#accordion-body-id").scrollTop
             await updateData()
             await redrawData();
             let filterboxBody = document.querySelector("#accordion-body-id")
@@ -70,6 +70,7 @@ export async function setFilterBoxCallback(filterBoxNode, redrawData){
             filterboxBody.innerHTML = await triggerTreeGetHtml()
             setFilterBoxCallback(filterboxBody, redrawData)
             resizeFilterBox()
+            document.querySelector("#accordion-body-id").scrollTop = scrollPosition
     }))
 }
 
