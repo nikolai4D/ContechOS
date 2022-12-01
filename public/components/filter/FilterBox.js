@@ -74,16 +74,33 @@ function itemRow(node){
 
     const eyeDiv = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${eye}</div>`
 
-     let mainRow = `
-     <div id="form-check-input-container" class="d-inline-block" role="button">
+    let mainrow = ""
+    if(childrenFrame !== '<br/>'){
+      mainrow = `
+        <div id="acc_${node.id}-heading" class="d-inline-block" role="button">
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
           <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
           ${ node.selected? eyeDiv : ""}
-          </div>
+          <button type="button" class="btn" data-bs-toggle="collapse" data-bs-target="#acc_${node.id}-collapse" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
+            Hide
+          </button>
+        </div>
+        <div id="acc_${node.id}-collapse" class="accordion-collapse collapse show" aria-labelledby="acc_${node.id}-heading">      
           ${ childrenFrame }
+        </div>
      `
+    } else  {    
+      mainrow = `
+        <div id="form-check-input-container" class="d-inline-block" role="button">
+          <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
+          <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
+          ${ node.selected? eyeDiv : ""}
+        </div>
+        ${ childrenFrame }
+      `
+    }
 
-    return mainRow
+    return mainrow
 }
 
 
