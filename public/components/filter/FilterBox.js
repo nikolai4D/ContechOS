@@ -48,15 +48,14 @@ async function triggerTreeGetHtml() {
 function itemRow(node){
     if(node.excluded) return ""
 
-    let childrenFrame = `<br/>`
+    let childrenFrame = ``
 
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
-            <ul>
+            <ul style="margin-bottom:0;">
             <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.viewAll? "checked": ""}>
             <label class="form-check-label text-break" for="all_${node.id}"> All</label>
-            <br/>
-          `
+            <br/>`
       
       node.children.sort((a, b) => a.title.localeCompare(b.title));
 
@@ -75,7 +74,7 @@ function itemRow(node){
     const eyeDiv = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${eye}</div>`
 
     let mainrow = ""
-    if(childrenFrame !== '<br/>'){
+    if(childrenFrame !== ''){
       mainrow = `
         <div id="acc_${node.id}-heading" class="d-inline-block" role="button">
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
@@ -90,7 +89,7 @@ function itemRow(node){
         <div id="acc_${node.id}-collapse" class="accordion-collapse collapse show" aria-labelledby="acc_${node.id}-heading">      
           ${ childrenFrame }
         </div>
-     `
+        <br/>`
     } else  {    
       mainrow = `
         <div id="form-check-input-container" class="d-inline-block" role="button">
@@ -98,8 +97,7 @@ function itemRow(node){
           <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
           ${ node.selected? eyeDiv : ""}
         </div>
-        ${ childrenFrame }
-      `
+        <br/>`
     }
 
     return mainrow
