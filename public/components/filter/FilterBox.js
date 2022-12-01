@@ -1,5 +1,6 @@
 import {State} from "../../store/State.js";
 import { iconEye } from "./toggleHideShow.js";
+import { chevronDown } from ".././Icons.js";
 
 async function FilterBox() {
   let nodeHtmlString = await triggerTreeGetHtml();
@@ -71,7 +72,6 @@ function itemRow(node){
     }
 
     const eye = node.hidden? iconEye(node.id).hide : iconEye(node.id).show
-
     const eyeDiv = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${eye}</div>`
 
     let mainrow = ""
@@ -81,9 +81,11 @@ function itemRow(node){
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
           <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
           ${ node.selected? eyeDiv : ""}
-          <button type="button" class="btn" data-bs-toggle="collapse" data-bs-target="#acc_${node.id}-collapse" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
-            Hide
-          </button>
+          <div class="d-inline-block" 
+            <button type="button" class="btn" data-bs-toggle="collapse" data-bs-target="#acc_${node.id}-collapse" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
+              ${chevronDown('role="button"')}
+            </button>
+          </div>
         </div>
         <div id="acc_${node.id}-collapse" class="accordion-collapse collapse show" aria-labelledby="acc_${node.id}-heading">      
           ${ childrenFrame }
