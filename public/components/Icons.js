@@ -13,3 +13,7 @@ export const eyeFillHide = (moreClass = "", moreConfig = "")  => {
 export const chevronDown = (moreClass = "", moreConfig = "")  => {
     return iconTemplateFunc("bi-chevron-down", moreClass, moreConfig);
 } 
+
+export const chevronUp = (moreClass = "", moreConfig = "")  => {
+    return iconTemplateFunc("bi-chevron-up", moreClass, moreConfig);
+} 

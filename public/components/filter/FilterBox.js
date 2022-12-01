@@ -1,6 +1,6 @@
 import {State} from "../../store/State.js";
 import { iconEye } from "./toggleHideShow.js";
-import { chevronDown } from ".././Icons.js";
+import { chevronDown, chevronUp } from ".././Icons.js";
 
 async function FilterBox() {
   let nodeHtmlString = await triggerTreeGetHtml();
@@ -52,10 +52,10 @@ function itemRow(node){
 
     if (node.selected === true && node.hasOwnProperty("children") && node.children.length !== 0){
       childrenFrame = `
-            <ul style="margin-bottom:0;">
-            <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.viewAll? "checked": ""}>
-            <label class="form-check-label text-break" for="all_${node.id}"> All</label>
-            <br/>`
+            <ul style="margin-bottom:0;" id="acc_${node.id}-collapse" class="accordion-collapse collapse show" aria-labelledby="acc_${node.id}-heading">
+              <input class="form-check-input" type="checkbox" value="" id="all_${node.id}"  ${ node.viewAll? "checked": ""}>
+              <label class="form-check-label text-break" for="all_${node.id}"> All</label>
+              <br/>`
       
       node.children.sort((a, b) => a.title.localeCompare(b.title));
 
@@ -80,16 +80,17 @@ function itemRow(node){
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
           <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
           ${ node.selected? eyeDiv : ""}
-          <div class="d-inline-block" 
-            <button type="button" class="btn" data-bs-toggle="collapse" data-bs-target="#acc_${node.id}-collapse" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
-              ${chevronDown('role="button"')}
-            </button>
-          </div>
-        </div>
-        <div id="acc_${node.id}-collapse" class="accordion-collapse collapse show" aria-labelledby="acc_${node.id}-heading">      
+          <button type="button" class="btn collapse show" id="acc_${node.id}-chevron-up" data-bs-toggle="collapse" style="transition-duration: 0s;"
+            data-bs-target="#acc_${node.id}-collapse,#acc_${node.id}-chevron-up,#acc_${node.id}-chevron-down,#acc_${node.id}-br" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
+            ${chevronUp('role="button"')}
+          </button>
+          <button type="button" class="btn collapse" id="acc_${node.id}-chevron-down" data-bs-toggle="collapse" style="transition-duration: 0s;"
+            data-bs-target="#acc_${node.id}-collapse,#acc_${node.id}-chevron-up,#acc_${node.id}-chevron-down,#acc_${node.id}-br" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
+            ${chevronDown('role="button"')}
+          </button>
+        </div> 
           ${ childrenFrame }
-        </div>
-        <br/>`
+        <br style="transition-duration: 0s;" id="acc_${node.id}-br" class="collapse"/>`
     } else  {    
       mainrow = `
         <div id="form-check-input-container" class="d-inline-block" role="button">
