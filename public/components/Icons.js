@@ -7,7 +7,7 @@ export const eyeFillShow = (moreClass = "", moreConfig = "") => {
 } 
 
 export const eyeFillHide = (moreClass = "", moreConfig = "")  => {
-    return iconTemplateFunc("bi bi-eye-slash-fill", moreClass, moreConfig);
+    return iconTemplateFunc("bi-eye-slash-fill", moreClass, moreConfig);
 } 
 
 export const chevronDown = (moreClass = "", moreConfig = "")  => {
