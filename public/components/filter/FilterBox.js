@@ -1,6 +1,5 @@
 import {State} from "../../store/State.js";
-import { iconEye } from "./toggleHideShow.js";
-import { chevronDown, chevronUp } from ".././Icons.js";
+import { iconEye, iconChevron } from "./toggleHideShow.js";
 
 async function FilterBox() {
   let nodeHtmlString = await triggerTreeGetHtml();
@@ -73,24 +72,20 @@ function itemRow(node){
     const eye = node.hidden? iconEye(node.id).hide : iconEye(node.id).show
     const eyeDiv = `<div class="d-inline-block" id="toggleEyeContainer_${node.id}">${eye}</div>`
 
+    const chevron = node.expanded && node.selected ? iconChevron(node.id).up : iconChevron(node.id).down
+    const chevronDiv = `<div class="d-inline-block" id="toggleChevronContainer_${node.id}">${chevron}</div>`
+
     let mainrow = ""
     if(childrenFrame !== ''){
       mainrow = `
         <div id="acc_${node.id}-heading" class="d-inline-block" role="button">
           <input class="form-check-input" type="checkbox" value="" id="checkbox_${node.id}" ${ node.selected? "checked": ""}>
           <label class="form-check-label text-break" for="checkbox_${node.id}"> ${node.title}</label> 
-          ${ node.selected? eyeDiv : ""}
-          <button type="button" class="btn collapse show" id="acc_${node.id}-chevron-up" data-bs-toggle="collapse" style="transition-duration: 0s;"
-            data-bs-target="#acc_${node.id}-collapse,#acc_${node.id}-chevron-up,#acc_${node.id}-chevron-down,#acc_${node.id}-br" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
-            ${chevronUp('role="button"')}
-          </button>
-          <button type="button" class="btn collapse" id="acc_${node.id}-chevron-down" data-bs-toggle="collapse" style="transition-duration: 0s;"
-            data-bs-target="#acc_${node.id}-collapse,#acc_${node.id}-chevron-up,#acc_${node.id}-chevron-down,#acc_${node.id}-br" aria-expanded="false" aria-controls="acc_${node.id}-collapse">
-            ${chevronDown('role="button"')}
-          </button>
+            ${ node.selected ? eyeDiv : ""}
+            ${ node.selected ? chevronDiv : ""}
+            ${ node.selected && node.expanded ? childrenFrame : "" }
         </div> 
-          ${ childrenFrame }
-        <br style="transition-duration: 0s;" id="acc_${node.id}-br" class="collapse"/>`
+        ${ node.expanded ? "" : "<br/>"}`
     } else  {    
       mainrow = `
         <div id="form-check-input-container" class="d-inline-block" role="button">

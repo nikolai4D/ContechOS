@@ -1,6 +1,6 @@
 import {State} from "../../store/State.js";
 import {triggerTreeGetHtml} from "./FilterBox.js";
-import toggleHideShow from "./toggleHideShow.js";
+import {eyeFunc, chevronFunc} from "./toggleHideShow.js";
 import {createHtmlElementWithData} from "../DomElementHelper.js";
 import Modal from "../Modal.js";
 
@@ -59,7 +59,10 @@ export async function setFilterBoxCallback(filterBoxNode, redrawData){
                 await checkFilter(e)
             }
             else if (e.currentTarget.id.startsWith('toggleEye')){
-                toggleHideShow(e)
+                eyeFunc(e)
+            }
+            else if (e.currentTarget.id.startsWith('toggleChevron')){
+                chevronFunc(e)
             }
             else return
             const scrollPosition = document.querySelector("#accordion-body-id").scrollTop

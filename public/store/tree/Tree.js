@@ -35,6 +35,7 @@ function TreeNode(id, title, layer, children, selected, data, parent){
     this.data['defTypeTitle'] = data.defType
     this.rels = []
     this.viewAll = false
+    this.expanded = true
 }
 
 
