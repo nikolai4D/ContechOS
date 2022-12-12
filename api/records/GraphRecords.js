@@ -56,6 +56,8 @@ class GraphRecords {
           rels.push(rel);
         }
         node.defTypeTitle = nodeType;
+        node.defType = nodeType;
+
         nodes.push(node);
       });
     });
@@ -73,6 +75,8 @@ class GraphRecords {
           delete rel.updated;
           rel.id = file.slice(0, -5);
           rel.defTypeTitle = relType;
+          rel.defType = relType;
+
           rels.push(rel);
         });
       });

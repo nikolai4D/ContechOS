@@ -163,6 +163,7 @@
             }
           ],
           "contextMenu": [
+            { "defId": 1, "defTypeId": 6 },
             { "defId": 2, "defTypeId": 3 },
             { "defId": 2, "defTypeId": 4 }
           ]
@@ -180,7 +181,8 @@
                 "defId": 1,
                 "defTypeId": 5,
                 "returnValue": "id",
-                "fieldTypeId": 2,
+                "fieldTypeId": 1,
+                "fieldProperties": [2],
                 "displayTitle": "Parent"
               }
             },
@@ -737,6 +739,11 @@
           "defId": 3,
           "defTypeTitle": "props",
           "contextMenu": [{ "defId": 1, "defTypeId": 1 }]
+        },
+        {
+          "defId": 4,
+          "defTypeTitle": "filter",
+          "contextMenu": [{ "defId": 1, "defTypeId": 4 }]
         }
       ]
     }
