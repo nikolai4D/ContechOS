@@ -1,5 +1,4 @@
 const { getItems } = require("./dbAccessLayer/crud/read");
-const cascade = require("./dbAccessLayer/helpers/cascade");
 const {voc} = require("./dbAccessLayer/voc");
 
 const definitionTypes = [
@@ -19,26 +18,6 @@ const definitionTypes = [
     "PropKey",
     "PropVal"
 ]
-
-async function itemsResolver(params = {}, enforcedParams = {}) {
-    for (let key in enforcedParams) {
-        if (params[key] !== undefined) console.log(key + " cannot be overwritten in the current context.")
-        params[key] = enforcedParams[key]
-    }
-
-    const items = await getItems(params)
-
-
-    let answer = {}
-    for (let defType of definitionTypes) {
-        answer[defType] = []
-    }
-    for (let item of items) {
-        answer[item.defType].push(item)
-    }
-
-    return answer
-}
 
 async function graphResolver(params = {}, enforcedParams = {}, isUniqueOrNull = false) {
     for (let key in enforcedParams) {

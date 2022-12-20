@@ -1,6 +1,6 @@
 const { GraphQLObjectType, GraphQLString } = require("graphql/index");
 const { GraphQLInputObjectType, GraphQLList } = require("graphql/type");
-const { queryNodesResolver, queryRelationshipsResolver, graphResolver, cascadeResolver} = require("./resolvers");
+const { graphResolver, cascadeResolver} = require("./resolvers");
 const { GraphQLEnumType, GraphQLNonNull, GraphQLID, GraphQLInt, GraphQLBoolean} = require("graphql");
 
 const DefinitionType = new GraphQLEnumType({
@@ -71,7 +71,7 @@ const Relationship = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await queryNodesResolver(args.nodeInput, { id: root.source, kindOfItem: "node" }))[0]
+                return (await graphResolver(args.nodeInput, { id: root.source, kindOfItem: "node" }))[0]
             }
         },
         targetNode: {
@@ -80,7 +80,7 @@ const Relationship = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await queryNodesResolver(args.nodeInput, { id: root.target, kindOfItem: "node" }))[0]
+                return (await graphResolver(args.nodeInput, { id: root.target, kindOfItem: "node" }))[0]
             }
         },
         parentNode: {
@@ -89,7 +89,7 @@ const Relationship = new GraphQLObjectType({
                 relationshipInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await queryRelationshipsResolver(args.relationshipInput, { id: root.parentId, kindOfItem: "relationship" }))[0]
+                return (await graphResolver(args.relationshipInput, { id: root.parentId, kindOfItem: "relationship" }))[0]
             }
         },
         created: { type: GraphQLString },
@@ -128,7 +128,7 @@ const Node = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await queryNodesResolver(args.nodeInput, { id: root.parentId, kindOfItem: "node" }))[0]
+                return (await graphResolver(args.nodeInput, { id: root.parentId, kindOfItem: "node" }))[0]
             }
         },
         childrenNodes: {
@@ -137,7 +137,7 @@ const Node = new GraphQLObjectType({
                 nodeInput: { type: QueryInput }
             },
             resolve: async (root, args) => {
-                return (await queryNodesResolver(args.nodeInput, { parentId: root.id, kindOfItem: "node" }))
+                return (await graphResolver(args.nodeInput, { parentId: root.id, kindOfItem: "node" }))
             }
         },
         relationships: {
