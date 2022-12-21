@@ -1,5 +1,4 @@
 import Mutations from "./Mutations.js";
-// import { stack } from "d3";
 
 class Actions {
   constructor() { }
@@ -17,39 +16,27 @@ class Actions {
         body: JSON.stringify(await attrs),
       });
       const recordJson = await record.json();
-      recordJson.defTypeTitle = defType.defTypeTitle;
+
+
+      recordJson.defTypeTitle = defTypeTitle;
+      recordJson.defType = defTypeTitle;
       delete recordJson.created;
       delete recordJson.updated;
 
-      const recordsInView = JSON.parse(sessionStorage.getItem(view));
+      let type = recordJson.defTypeTitle.slice(-3) === "Rel" ? "rels" : "nodes"
+      let prevView;
+  
+      if (view === "filter") { // use mutation to add node to tree, and to previous state (session storage)
+        type === "nodes" ?  Mutations.ADD_NODE_TO_TREE(recordJson) : Mutations.ADD_REL_TO_TREE(recordJson);
 
-      let type = "nodes";
-      if (defType.defTypeTitle.slice(-3) === "Rel") {
-        type = "rels";
+        if (defTypeTitle.charAt(0) === "t" || defTypeTitle.charAt(0) === "i") prevView = "datas";
+        else if (defTypeTitle.charAt(0) === "p") prevView = "props";
+        else prevView = "configs";
       }
+      Mutations.ADD_NODE_REL_TO_SESSION(view, type, recordJson, defTypeTitle, attrs)
+      Mutations.ADD_NODE_REL_TO_SESSION(prevView, type, recordJson, defTypeTitle, attrs, true)
 
-      recordsInView[0][type].push(recordJson);
 
-      //   if (view === "props" && (defType.defTypeTitle === "propKey" || defType.defTypeTitle === "propVal")) {
-      console.log(defType.defTypeTitle);
-      if (
-        defType.defTypeTitle === "propKey" ||
-        defType.defTypeTitle === "propVal" ||
-        defType.defTypeTitle === "configObj" ||
-        defType.defTypeTitle === "instanceData"
-      ) {
-        let source = recordJson.id;
-        let target = await attrs.parentId;
-        let newRel = {
-          id: `${source}_${target}`,
-          source,
-          target,
-          title: "has parent",
-        };
-        recordsInView[0].rels.push(newRel);
-      }
-
-      sessionStorage.setItem(view, JSON.stringify(recordsInView));
     } catch (err) {
       console.log(err);
     }
@@ -87,6 +74,9 @@ class Actions {
       recordsInView[type] = typesInView
       console.log([recordsInView], 'toSessionStorage')
       sessionStorage.setItem(view, JSON.stringify([recordsInView]));
+
+      Mutations.UPDATE_NODE_IN_TREE(recordJson)
+
     } catch (err) {
       console.log(err);
     }
@@ -114,6 +104,9 @@ class Actions {
             (obj) => obj.source !== id
           );
           recordsInView[0].rels = newRecords;
+
+          if (view === "filter") Mutations.DELETE_NODE_FROM_TREE(id)
+
         }
 
         let newRecords = recordsInView[0][type].filter((obj) => obj.id !== id);
@@ -135,6 +128,29 @@ class Actions {
     } catch (err) {
       console.log(err);
     }
+  }
+
+  async GET_API(email) {
+    try {
+        let getHeaders = {
+          "Content-Type": "application/json",
+          authorization: sessionStorage.getItem("accessToken"),
+        };
+    
+        const records = await fetch(`/api/user/apiKey`, {
+          method: "POST",
+          body:  JSON.stringify({email}),
+          headers: getHeaders,
+        });
+    
+        const sendRecords = (await records.json());
+        const mutate = Mutations;
+        mutate.SET_STATE("apiKey", sendRecords);
+    
+      } catch (err) {
+        console.log(err);
+      }
+    
   }
 
   async GETALL(view) {
@@ -181,3 +197,4 @@ class Actions {
 }
 
 export default new Actions();
+
