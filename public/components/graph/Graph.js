@@ -18,10 +18,11 @@ import ActivateFormEdit from "./graphComponents/ActivateFormEdit.js";
 import generatePropKeysFromParentIdTypeData from "./graphFunctions/generatePropKeysFromParentIdTypeData.js";
 import contextMenuItemClick from "./graphFunctions/contextMenuItemClick.js";
 import { ReactiveFormCreate } from "./graphComponents/ReactiveFormCreate.js";
-import { FilterBox} from "../filter/FilterBox.js"
-import { checkFilter } from "../filter/filterFunctions.js"
-import { reCalcTopPlacement } from "./graphComponents/helpers.js"
-import {updateFilterBox} from  "../filter/updateFilterBox.js"
+import { FilterBox } from "../filter/FilterBox.js";
+import { checkFilter } from "../filter/filterFunctions.js";
+import { reCalcTopPlacement } from "./graphComponents/helpers.js";
+import { updateFilterBox } from "../filter/updateFilterBox.js";
+import handleToken from "../../helpers/handleToken.js";
 
 async function Graph(view) {
   State.view = view;
@@ -118,7 +119,7 @@ async function Graph(view) {
       if (d.target.tagName === "svg") {
         State.clickedObj = d;
         ActivateContextMenu(d3);
-        State.clickedObjEvent = event
+        State.clickedObjEvent = event;
 
         d3.selectAll(".context_menu_item").on("click", (d) => {
           State.contextMenuItem = d;
@@ -147,7 +148,7 @@ async function Graph(view) {
           });
         });
       }
-      reCalcTopPlacement(d3, ".contextMenu")
+      reCalcTopPlacement(d3, ".contextMenu");
     });
 
   const firstG = svg.append("g").attr("transform", `translate(20,20)`);
@@ -160,6 +161,7 @@ async function Graph(view) {
   selfArrow(g);
 
   const clicked = (event, d) => {
+    handleToken(sessionStorage.getItem("accessToken"));
     if (document.getElementById("field_target")) {
       document.getElementById("field_target").classList.remove("is-invalid");
       document
@@ -254,7 +256,7 @@ async function Graph(view) {
 
       ActivateFormRead(d3);
 
-      d3.select("#penFormEdit").on("click", e => {
+      d3.select("#penFormEdit").on("click", (e) => {
         ActivateFormEdit(d3);
 
         d3.selectAll(".form-save-edit-button").on("click", async (e) => {
@@ -270,24 +272,21 @@ async function Graph(view) {
           await updateFilterBox(render, view);
 
           d3.select(".FormMenuContainer").remove();
-
         });
 
         d3.selectAll(".form-close-button").on("click", (e) => {
           d3.selectAll(".FormMenuContainer").remove();
         });
-      })
+      });
 
       d3.selectAll(".form-close-button").on("click", (e) => {
         d3.selectAll(".FormMenuContainer").remove();
       });
-
-
-
     }
   };
 
   const rightClicked = (event, d) => {
+    handleToken(sessionStorage.getItem("accessToken"));
     event.preventDefault();
     d.clientX = event.clientX;
     d.clientY = event.clientY;
@@ -312,8 +311,8 @@ async function Graph(view) {
       document.getElementById(
         "delete-item"
       ).innerHTML = `- Delete (${State.clickedObj.title})`;
-      reCalcTopPlacement(d3, ".contextMenu")
-      
+      reCalcTopPlacement(d3, ".contextMenu");
+
       d3.selectAll("#delete-item").on("click", async (e) => {
         await Actions.DELETE(
           State.view,
@@ -322,7 +321,7 @@ async function Graph(view) {
         );
         await updateData(State.view);
         await render(State.view);
-        updateFilterBox(render, State.view)
+        updateFilterBox(render, State.view);
         d3.select(".contextMenuContainer").remove();
       });
 
@@ -451,16 +450,16 @@ async function Graph(view) {
   });
 
   // create a tooltip
-  let tooltip = createTooltip()
+  let tooltip = createTooltip();
 
-  function createTooltip(){
+  function createTooltip() {
     return g
-    .append("text")
-    .attr("id", "tooltipId")
-    .style("text-anchor", styles.nodeLabel.textAnchor)
-    .style("cursor", "default")
-    .style("fill", styles.nodeLabel.fill)
-    .text(""); 
+      .append("text")
+      .attr("id", "tooltipId")
+      .style("text-anchor", styles.nodeLabel.textAnchor)
+      .style("cursor", "default")
+      .style("fill", styles.nodeLabel.fill)
+      .text("");
   }
 
   async function render(view) {
@@ -471,29 +470,27 @@ async function Graph(view) {
       .select(".forLinks")
       .selectAll(".linkSVG")
       .data(rels, (d) => d["id"])
-      .join(
-        (enter) => {
-          const link_enter = enter
-            .append("path")
-            .style("stroke", styles.link.stroke)
-            .style("fill", "none")
-            .on("contextmenu", rightClicked)
+      .join((enter) => {
+        const link_enter = enter
+          .append("path")
+          .style("stroke", styles.link.stroke)
+          .style("fill", "none")
+          .on("contextmenu", rightClicked)
 
-            .attr("class", "linkSVG")
-            .attr("marker-end", (d) => {
-              if (d.title === "has parent") {
-                return d.source == d.target
-                  ? "url(#self-arrow-parent)"
-                  : "url(#end-arrow-parent)";
-              } else {
-                return d.source == d.target
-                  ? "url(#self-arrow)"
-                  : "url(#end-arrow)";
-              }
-            });
-          return link_enter;
-        }
-      )
+          .attr("class", "linkSVG")
+          .attr("marker-end", (d) => {
+            if (d.title === "has parent") {
+              return d.source == d.target
+                ? "url(#self-arrow-parent)"
+                : "url(#end-arrow-parent)";
+            } else {
+              return d.source == d.target
+                ? "url(#self-arrow)"
+                : "url(#end-arrow)";
+            }
+          });
+        return link_enter;
+      })
       .join("path")
       .on("click", clicked)
       .on("contextmenu", rightClicked);
@@ -516,64 +513,60 @@ async function Graph(view) {
       }
     }
 
-
-
     node = g
       .selectAll("circle")
       .data(nodes, (d) => d["id"])
-      .join(
-        (enter) => {
-          let entered = enter
-            .append("circle")
-            .attr("fill", (d) => setColour(d))
-            .attr("class", "node")
-            .attr("stroke", (d) => styles.node.borderColor)
-            .attr("r", styles.node.radius)
-            .attr("cursor", styles.node.cursor)
+      .join((enter) => {
+        let entered = enter
+          .append("circle")
+          .attr("fill", (d) => setColour(d))
+          .attr("class", "node")
+          .attr("stroke", (d) => styles.node.borderColor)
+          .attr("r", styles.node.radius)
+          .attr("cursor", styles.node.cursor)
 
-            .call(drag(simulation))
+          .call(drag(simulation))
 
-            .on("click", clicked)
-            .on("contextmenu", rightClicked)
+          .on("click", clicked)
+          .on("contextmenu", rightClicked);
 
-          return entered;
+        return entered;
+      });
+
+    function wrap(text, width) {
+      text.each(function () {
+        let text = d3.select(this),
+          words = text.text().split(/\s+/).reverse(),
+          word,
+          line = [],
+          lineNumber = 0,
+          lineHeight = 1.1, // ems
+          x = text.attr("x"),
+          y = text.attr("y"),
+          dy = 0, //parseFloat(text.attr("dy")),
+          tspan = text
+            .text(null)
+            .append("tspan")
+            .attr("x", x)
+            .attr("y", y)
+            .attr("dy", dy + "em");
+        while ((word = words.pop())) {
+          line.push(word);
+          tspan.text(line.join(" "));
+          if (tspan.node().getComputedTextLength() > width) {
+            line.pop();
+            tspan.text(line.join(" "));
+            line = [word];
+            tspan = text
+              .append("tspan")
+              .attr("x", x)
+              .attr("y", y)
+              .attr("dy", ++lineNumber * lineHeight + dy + "em")
+              .text(word);
+          }
         }
-      );
-
-      function wrap(text, width) {
-        text.each(function () {
-            let text = d3.select(this),
-                words = text.text().split(/\s+/).reverse(),
-                word,
-                line = [],
-                lineNumber = 0,
-                lineHeight = 1.1, // ems
-                x = text.attr("x"),
-                y = text.attr("y"),
-                dy = 0, //parseFloat(text.attr("dy")),
-                tspan = text.text(null)
-                            .append("tspan")
-                            .attr("x", x)
-                            .attr("y", y)
-                            .attr("dy", dy + "em");
-            while (word = words.pop()) {
-                line.push(word);
-                tspan.text(line.join(" "));
-                if (tspan.node().getComputedTextLength() > width) {
-                    line.pop();
-                    tspan.text(line.join(" "));
-                    line = [word];
-                    tspan = text.append("tspan")
-                                .attr("x", x)
-                                .attr("y", y)
-                                .attr("dy", ++lineNumber * lineHeight + dy + "em")
-                                .text(word);
-                }
-            }
-        });
+      });
     }
-
-
 
     nodeLabel = g
       .selectAll(".nodeLabel")
@@ -598,58 +591,56 @@ async function Graph(view) {
               event.preventDefault();
             })
             .on("contextmenu", rightClicked)
-            .on("mouseenter", function(e, d){
-
-              if(d.title.length > 10){
+            .on("mouseenter", function (e, d) {
+              if (d.title.length > 10) {
                 setTimeout(() => {
-
-                d3.select("#tooltipId").style("visibility", "visible")
-                d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
-                .text(d.title)
-                .call(wrap, 500);
-              }, 20)
-
+                  d3.select("#tooltipId").style("visibility", "visible");
+                  d3.select("#tooltipId")
+                    .attr("x", 20 + d.x + "px")
+                    .attr("y", 60 + d.y + "px")
+                    .text(d.title)
+                    .call(wrap, 500);
+                }, 20);
               }
             })
-            .on("mouseout", function(){
-              d3.select("#tooltipId").style("visibility", "hidden")
+            .on("mouseout", function () {
+              d3.select("#tooltipId").style("visibility", "hidden");
             })
             .attr("dy", 4);
           return entered;
         },
         (update) => {
           const updated = update
-          .text((d) => {
-            if (d.title.length > 10) {
-              return d.title.slice(0, 10) + "...";
-            }
-            return d.title;
-          })
-          .style("text-anchor", styles.nodeLabel.textAnchor)
-          .style("cursor", "default")
+            .text((d) => {
+              if (d.title.length > 10) {
+                return d.title.slice(0, 10) + "...";
+              }
+              return d.title;
+            })
+            .style("text-anchor", styles.nodeLabel.textAnchor)
+            .style("cursor", "default")
 
-          .style("fill", styles.nodeLabel.fill)
-          .on("click", (d) => {
-            event.preventDefault();
-          })
-          .on("contextmenu", rightClicked)
-          .on("mouseenter", function(e, d){
-
-            if(d.title.length > 10){
-              setTimeout(() => {
-
-              d3.select("#tooltipId").style("visibility", "visible")
-              d3.select("#tooltipId").attr("x", 20+d.x+"px").attr("y",60+d.y+"px")
-              .text(d.title)
-              .call(wrap, 500);
-            }, 20)
-
-            }
-          })
-          .on("mouseout", function(){
-            d3.select("#tooltipId").style("visibility", "hidden")
-          })
-          .attr("dy", 4);
+            .style("fill", styles.nodeLabel.fill)
+            .on("click", (d) => {
+              event.preventDefault();
+            })
+            .on("contextmenu", rightClicked)
+            .on("mouseenter", function (e, d) {
+              if (d.title.length > 10) {
+                setTimeout(() => {
+                  d3.select("#tooltipId").style("visibility", "visible");
+                  d3.select("#tooltipId")
+                    .attr("x", 20 + d.x + "px")
+                    .attr("y", 60 + d.y + "px")
+                    .text(d.title)
+                    .call(wrap, 500);
+                }, 20);
+              }
+            })
+            .on("mouseout", function () {
+              d3.select("#tooltipId").style("visibility", "hidden");
+            })
+            .attr("dy", 4);
           return updated;
         }
       );
@@ -678,35 +669,31 @@ async function Graph(view) {
             .on("click", clicked)
 
             .on("contextmenu", rightClicked)
-            .on("mouseenter", function(e, d){
-              if(d.title.length > 10){
+            .on("mouseenter", function (e, d) {
+              if (d.title.length > 10) {
                 setTimeout(() => {
-                d3.select("#tooltipId")
-                .style("visibility", "visible")
+                  d3.select("#tooltipId").style("visibility", "visible");
 
-                d3.select("#tooltipId")
-                .attr("x", 20+(d.source.x + d.target.x) / 2+"px")
-                .attr("y",40+(d.source.y + d.target.y) / 2+"px")
-                .text(d.title)
-                .call(wrap, 500); 
-              }, 20)
+                  d3.select("#tooltipId")
+                    .attr("x", 20 + (d.source.x + d.target.x) / 2 + "px")
+                    .attr("y", 40 + (d.source.y + d.target.y) / 2 + "px")
+                    .text(d.title)
+                    .call(wrap, 500);
+                }, 20);
               }
-              
             })
-            .on("mouseout", function(){
-              d3.select("#tooltipId").style("visibility", "hidden")
+            .on("mouseout", function () {
+              d3.select("#tooltipId").style("visibility", "hidden");
             });
           return linkLabel;
         },
         (update) => {
-          return update
-          .text((d) => {
+          return update.text((d) => {
             if (d.title.length > 10) {
               return d.title.slice(0, 10) + "...";
             }
             return d.title;
-          })
-          
+          });
         }
       )
       .attr("id", function (d) {
@@ -715,14 +702,14 @@ async function Graph(view) {
       .attr("class", "linkLabel")
       .attr("dy", 0);
 
-    tooltip.remove()
-    tooltip = createTooltip()
+    tooltip.remove();
+    tooltip = createTooltip();
     simulation.nodes(nodes).force("link").links(rels);
     simulation.alpha(1).restart();
-    return svg.node()
+    return svg.node();
   }
 
   await render(view);
-  return [svg.node(), async () => await render(view)]
+  return [svg.node(), async () => await render(view)];
 }
 export default Graph;
