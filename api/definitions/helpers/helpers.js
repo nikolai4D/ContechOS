@@ -1,6 +1,7 @@
 const create = require("./create.js");
 const createBulk = require("./createBulk.js");
 const createBulkRel = require("./createBulkRel.js");
+const getRelatedNodes = require("./getRelatedNodes.js");
 const idExist = require("./idExist.js");
 const ifIsSourceThenDeleteRels = require("./ifIsSourceThenDeleteRels.js");
 const isNotEqual = require("./isNotEqual.js");
@@ -32,6 +33,7 @@ const helpers = {
   isParent,
   isParentIdValid,
   isTarget,
+  getRelatedNodes,
   parentIdExist,
   propKeysExists,
   propsExists,

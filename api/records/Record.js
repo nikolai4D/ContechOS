@@ -165,7 +165,6 @@ class Record {
       defType.props = props;
     }
 
-
     fs.writeFileSync(
       `../db/${this.defType}/${defTypeId}.json`,
       JSON.stringify(defType, null, 2)
@@ -685,6 +684,144 @@ class Record {
 
     return readParent;
   }
+  ////////////////////////////////  ////////////////////////////////
+
+  async getRelatedNodes(nodeId) {
+    // Declare constants
+    const defType = this.defType;
+    const relationships = [];
+    const externalRelsToNode = [];
+    const externalRelsFromNode = [];
+    const internalRelsToNode = [];
+    const internalRelsFromNode = [];
+
+    // Get focus node
+    const focusNode = JSON.parse(
+      fs.readFileSync(`../db/${defType}/${nodeId}.json`, "utf8")
+    );
+    focusNode.id = nodeId;
+    focusNode.type = defType;
+
+    // Get external and internal relationship directories
+    const dirExternalRel = `../db/${defType}ExternalRel/`;
+    const dirInternalRel = `../db/${defType}InternalRel/`;
+    const externalFiles = fs.readdirSync(dirExternalRel);
+    const internalFiles = fs.readdirSync(dirInternalRel);
+
+    // Process external relationships
+    externalFiles.forEach((file) => {
+      const externalRel = JSON.parse(
+        fs.readFileSync(dirExternalRel + file, "utf8")
+      );
+
+      externalRel.id = file.slice(0, -5);
+
+      //externalRelsToNode
+      if (externalRel.target === nodeId) {
+        let objRel = externalRelsToNode.find(
+          (obj) => obj.id === externalRel.id
+        );
+
+        if (!objRel) {
+          objRel = { externalRel };
+          externalRelsToNode.push(objRel);
+        }
+
+        const node = JSON.parse(
+          fs.readFileSync(`../db/${defType}/${externalRel.source}.json`, "utf8")
+        );
+        node.id = externalRel.source;
+        node.type = defType;
+        const parentNode = this.getParent(node.parentId);
+        objRel.node = node;
+        objRel.parentNode = parentNode;
+      }
+      //externalRelsFromNode
+      if (externalRel.source === nodeId) {
+        let objRel = externalRelsFromNode.find(
+          (obj) => obj.id === externalRel.id
+        );
+
+        if (!objRel) {
+          objRel = { externalRel };
+          externalRelsFromNode.push(objRel);
+        }
+
+        const node = JSON.parse(
+          fs.readFileSync(`../db/${defType}/${externalRel.source}.json`, "utf8")
+        );
+        node.id = externalRel.source;
+        node.type = defType;
+        const parentNode = this.getParent(node.parentId);
+        objRel.node = node;
+        objRel.parentNode = parentNode;
+      }
+    });
+
+    // Process external relationships
+    internalFiles.forEach((file) => {
+      const internalRel = JSON.parse(
+        fs.readFileSync(dirInternalRel + file, "utf8")
+      );
+
+      internalRel.id = file.slice(0, -5);
+
+      //internalRelsToNode
+      if (internalRel.target === nodeId) {
+        let objRel = internalRelsToNode.find(
+          (obj) => obj.id === internalRel.id
+        );
+
+        if (!objRel) {
+          objRel = { internalRel };
+          internalRelsToNode.push(objRel);
+        }
+
+        const node = JSON.parse(
+          fs.readFileSync(`../db/${defType}/${internalRel.source}.json`, "utf8")
+        );
+        node.id = internalRel.source;
+        node.type = defType;
+        const parentNode = this.getParent(node.parentId);
+        objRel.node = node;
+        objRel.parentNode = parentNode;
+      }
+      //internalRelsFromNode
+      if (internalRel.source === nodeId) {
+        let objRel = internalRelsFromNode.find(
+          (obj) => obj.id === internalRel.id
+        );
+
+        if (!objRel) {
+          objRel = { internalRel };
+          internalRelsFromNode.push(objRel);
+        }
+
+        const node = JSON.parse(
+          fs.readFileSync(`../db/${defType}/${internalRel.source}.json`, "utf8")
+        );
+        node.id = internalRel.source;
+        node.type = defType;
+        const parentNode = this.getParent(node.parentId);
+        objRel.node = node;
+        objRel.parentNode = parentNode;
+      }
+    });
+
+    // Process internal relationships
+
+    // Return result
+    return {
+      node: focusNode,
+      parentNode: this.getParent(focusNode.parentId),
+      externalRelsToNode,
+      externalRelsFromNode,
+      internalRelsToNode,
+      internalRelsFromNode,
+    };
+  }
+
+  ////////////////////////////////
 
   //UPDATE
 

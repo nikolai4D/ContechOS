@@ -104,6 +104,21 @@ router.post("/sourcesToTarget", async (req, res) => {
   return await helpers.readSourcesToTarget(routerType, targetId, res);
 });
 
+router.post("/getRelatedNodes", async (req, res) => {
+  const { nodeId } = req.body;
+  const reqBody = { nodeId };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+  if (!(await helpers.idExist(routerType, nodeId, res))) {
+    return res.statusCode;
+  }
+
+  return await helpers.getRelatedNodes(routerType, nodeId, res);
+});
+
 //UPDATE
 
 router.put("/update", async (req, res) => {
