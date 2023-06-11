@@ -11,13 +11,8 @@ router.use(bodyParser.json());
 
 //APIs
 router.post("/create", async (req, res) => {
-  const {
-    title,
-    props,
-    parentId,
-    typeDataPropKeys,
-    instanceDataPropKeys,
-  } = req.body;
+  const { title, props, parentId, typeDataPropKeys, instanceDataPropKeys } =
+    req.body;
   const reqBody = {
     title,
     props,
@@ -77,6 +72,21 @@ router.get("/", async (req, res) => {
   await helpers.readById(routerType, req.query.id, res);
 });
 
+router.post("/getRelatedNodes", async (req, res) => {
+  const { nodeId } = req.body;
+  const reqBody = { nodeId };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+  if (!(await helpers.idExist(routerType, nodeId, res))) {
+    return res.statusCode;
+  }
+
+  return await helpers.getRelatedNodes(routerType, nodeId, res);
+});
+
 router.post("/linkToTarget", async (req, res) => {
   const { linkParentId, targetId } = req.body;
   const reqBody = { linkParentId, targetId };
@@ -115,14 +125,8 @@ router.post("/sourcesToTarget", async (req, res) => {
 //UPDATE
 
 router.put("/update", async (req, res) => {
-  const {
-    title,
-    props,
-    parentId,
-    typeDataPropKeys,
-    instanceDataPropKeys,
-    id,
-  } = req.body;
+  const { title, props, parentId, typeDataPropKeys, instanceDataPropKeys, id } =
+    req.body;
   const reqBody = {
     title,
     props,

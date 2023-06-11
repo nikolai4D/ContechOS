@@ -689,7 +689,6 @@ class Record {
   async getRelatedNodes(nodeId) {
     // Declare constants
     const defType = this.defType;
-    const relationships = [];
     const externalRelsToNode = [];
     const externalRelsFromNode = [];
     const internalRelsToNode = [];
@@ -723,17 +722,17 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { externalRel };
+          objRel = { rel: externalRel };
           externalRelsToNode.push(objRel);
         }
 
-        const node = JSON.parse(
+        const sourceNode = JSON.parse(
           fs.readFileSync(`../db/${defType}/${externalRel.source}.json`, "utf8")
         );
-        node.id = externalRel.source;
-        node.type = defType;
-        const parentNode = this.getParent(node.parentId);
-        objRel.node = node;
+        sourceNode.id = externalRel.source;
+        sourceNode.type = defType;
+        const parentNode = this.getParent(sourceNode.parentId);
+        objRel.node = sourceNode;
         objRel.parentNode = parentNode;
       }
       //externalRelsFromNode
@@ -743,17 +742,17 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { externalRel };
+          objRel = { rel: externalRel };
           externalRelsFromNode.push(objRel);
         }
 
-        const node = JSON.parse(
-          fs.readFileSync(`../db/${defType}/${externalRel.source}.json`, "utf8")
+        const targetNode = JSON.parse(
+          fs.readFileSync(`../db/${defType}/${externalRel.target}.json`, "utf8")
         );
-        node.id = externalRel.source;
-        node.type = defType;
-        const parentNode = this.getParent(node.parentId);
-        objRel.node = node;
+        targetNode.id = externalRel.target;
+        targetNode.type = defType;
+        const parentNode = this.getParent(targetNode.parentId);
+        objRel.node = targetNode;
         objRel.parentNode = parentNode;
       }
     });
@@ -773,17 +772,17 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { internalRel };
+          objRel = { rel: internalRel };
           internalRelsToNode.push(objRel);
         }
 
-        const node = JSON.parse(
+        const sourceNode = JSON.parse(
           fs.readFileSync(`../db/${defType}/${internalRel.source}.json`, "utf8")
         );
-        node.id = internalRel.source;
-        node.type = defType;
-        const parentNode = this.getParent(node.parentId);
-        objRel.node = node;
+        sourceNode.id = internalRel.source;
+        sourceNode.type = defType;
+        const parentNode = this.getParent(sourceNode.parentId);
+        objRel.node = sourceNode;
         objRel.parentNode = parentNode;
       }
       //internalRelsFromNode
@@ -793,17 +792,17 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { internalRel };
+          objRel = { rel: internalRel };
           internalRelsFromNode.push(objRel);
         }
 
-        const node = JSON.parse(
-          fs.readFileSync(`../db/${defType}/${internalRel.source}.json`, "utf8")
+        const targetNode = JSON.parse(
+          fs.readFileSync(`../db/${defType}/${internalRel.target}.json`, "utf8")
         );
-        node.id = internalRel.source;
-        node.type = defType;
-        const parentNode = this.getParent(node.parentId);
-        objRel.node = node;
+        targetNode.id = internalRel.target;
+        targetNode.type = defType;
+        const parentNode = this.getParent(targetNode.parentId);
+        objRel.node = targetNode;
         objRel.parentNode = parentNode;
       }
     });
