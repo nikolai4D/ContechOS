@@ -7,6 +7,7 @@ require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
 const cascade = require("./api/graphql/dbAccessLayer/helpers/cascade");
+const bodyParser = require('body-parser');
 
 const PORT = process.env.PORT;
 const app = express();
@@ -27,7 +28,8 @@ app.use(express.urlencoded({ extended: false }));
 
 // built-in middleware for json
 app.use(express.json());
-
+app.use(bodyParser.json({ limit: '1gb' }));
+app.use(bodyParser.urlencoded({ extended: true, limit: '1gb' }));
 //
 //middleware for cookies
 app.use(cookieParser());
