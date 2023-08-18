@@ -32,6 +32,13 @@ app.use(express.json());
 //middleware for cookies
 app.use(cookieParser());
 
+//set no cache
+app.use((req, res, next) => {
+  res.setHeader('Cache-Control', 'no-cache')
+  res.setHeader('Surrogate-Control', 'no-cache')
+  next()
+})
+
 // Api
 app.use("/api", require("./api/api.js"));
 
