@@ -6,10 +6,11 @@ const corsOptions = require("./config/corsOptions");
 require("dotenv").config();
 const cookieParser = require("cookie-parser");
 const credentials = require("./api/middleware/credentials");
-const cascade = require("./api/graphql/dbAccessLayer/helpers/cascade");
 
 const PORT = process.env.PORT;
 const app = express();
+
+
 
 //Init DB
 app.use(initDB);

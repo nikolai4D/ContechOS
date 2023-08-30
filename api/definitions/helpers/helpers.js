@@ -13,9 +13,11 @@ const propKeysExists = require("./propKeysExists.js");
 const propsExists = require("./propsExists.js");
 const readAll = require("./readAll.js");
 const readById = require("./readById.js");
+const readByTitle = require("./readByTitle.js");
 const readByLinkToTarget = require("./readByLinkToTarget.js");
 const readByParentId = require("./readByParentId.js");
 const readSourcesToTarget = require("./readSourcesToTarget.js");
+const readSourcesToTargetTitles = require("./readSourcesToTargetTitles.js");
 const remove = require("./remove.js");
 const reqBodyExists = require("./reqBodyExists.js");
 const reqParamExists = require("./reqParamExists.js");
@@ -39,9 +41,11 @@ const helpers = {
   propsExists,
   readAll,
   readById,
+  readByTitle,
   readByLinkToTarget,
   readByParentId,
   readSourcesToTarget,
+  readSourcesToTargetTitles,
   remove,
   reqBodyExists,
   reqParamExists,

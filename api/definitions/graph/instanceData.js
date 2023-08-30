@@ -36,6 +36,19 @@ router.post("/create", async (req, res) => {
   await helpers.create(routerType, reqBody, res);
 });
 
+router.post("/createBulk", async (req, res) => {
+  const { objects } = req.body;
+  const reqBody = { objects };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  //create
+  await helpers.createBulk(routerType, reqBody, res);
+});
+
 //READ
 
 router.get("/", async (req, res) => {
@@ -49,6 +62,12 @@ router.get("/", async (req, res) => {
     return await helpers.readByParentId(routerType, req.query.parentId, res);
   }
 
+
+  if (await helpers.reqQueryExists(req.query, "title")) {
+    //read by title
+    return await helpers.readByTitle(routerType, req.query.title, res);
+  }
+
   //check if request includes query param id
   if (!(await helpers.reqQueryExists(req.query, "id"))) {
     //no id -> read all
@@ -60,6 +79,21 @@ router.get("/", async (req, res) => {
   }
   //read included id
   await helpers.readById(routerType, req.query.id, res);
+});
+
+router.post("/getRelatedNodes", async (req, res) => {
+  const { nodeId } = req.body;
+  const reqBody = { nodeId };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+  if (!(await helpers.idExist(routerType, nodeId, res))) {
+    return res.statusCode;
+  }
+
+  return await helpers.getRelatedNodes(routerType, nodeId, res);
 });
 
 router.post("/linkToTarget", async (req, res) => {
@@ -95,6 +129,18 @@ router.post("/sourcesToTarget", async (req, res) => {
   }
 
   return await helpers.readSourcesToTarget(routerType, targetId, res);
+});
+
+router.post("/sourcesToTargetTitle", async (req, res) => {
+  const { targetTitle } = req.body;
+  const reqBody = { targetTitle };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+  return await helpers.readSourcesToTargetTitles(routerType, targetTitle, res);
 });
 
 //UPDATE

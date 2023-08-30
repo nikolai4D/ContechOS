@@ -1,25 +1,11 @@
 const express = require("express");
 const api = express.Router();
 const bodyParser = require("body-parser");
+api.use(bodyParser.json({limit: '50mb'}));
+api.use(bodyParser.urlencoded({limit: '50mb', extended: true, parameterLimit: 1000000}));
 const verifyAccess = require("./middleware/verifyAccess.js");
 
 //----------InitDB----------//
-
-// Bodyparser
-// api.use(bodyParser.json());
-api.use(
-  bodyParser.json({
-    limit: "50mb",
-  })
-);
-
-api.use(
-  bodyParser.urlencoded({
-    limit: "50mb",
-    parameterLimit: 1000000,
-    extended: true,
-  })
-);
 
 //----------auth----------//
 api.use("/auth", require("./definitions/auth/auth.js")); //auth

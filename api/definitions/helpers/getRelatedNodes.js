@@ -7,8 +7,10 @@ async function getRelatedNodes(routerType, nodeId, res) {
 
   try {
     result = await record.getRelatedNodes(nodeId);
+   
     return res.status(200).json(result);
   } catch (error) {
+    console.log(error)
     return res.status(500).json({ error });
   }
 }

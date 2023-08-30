@@ -56,6 +56,11 @@ router.get("/", async (req, res) => {
     return await helpers.readByParentId(routerType, req.query.parentId, res);
   }
 
+  if (await helpers.reqQueryExists(req.query, "title")) {
+    //read by title
+    return await helpers.readByTitle(routerType, req.query.title, res);
+  }
+
   //check if request includes query param id
   if (!(await helpers.reqQueryExists(req.query, "id"))) {
     //no id -> read all
@@ -102,6 +107,19 @@ router.post("/sourcesToTarget", async (req, res) => {
   }
 
   return await helpers.readSourcesToTarget(routerType, targetId, res);
+});
+
+router.post("/sourcesToTargetTitle", async (req, res) => {
+  const { targetTitle } = req.body;
+  const reqBody = { targetTitle };
+
+  //check if keys/values exist in reqBody
+  if (!(await helpers.reqBodyExists(reqBody, res))) {
+    return res.statusCode;
+  }
+
+
+  return await helpers.readSourcesToTargetTitles(routerType, targetTitle, res);
 });
 
 router.post("/getRelatedNodes", async (req, res) => {

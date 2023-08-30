@@ -1,5 +1,6 @@
 const fs = require("fs");
 const { v4: uuidv4 } = require("uuid");
+const path = require('path');
 
 const definitions = JSON.parse(
   fs.readFileSync("./api/definitions/definitions.json", "utf8")
@@ -219,6 +220,16 @@ class Record {
         defType.created;
         defType.updated;
         defType.id = file.slice(0, -5);
+
+      // Remove the unwanted properties
+      delete defType.props;
+      delete defType.created;
+      delete defType.updated;
+      delete defType.typeDataPropKeys;
+      delete defType.instanceDataPropKeys;
+
+      console.log(defType, "defType")
+
         defTypes.push(defType);
       }
     });
@@ -421,6 +432,125 @@ class Record {
     return result;
   }
 
+
+
+  
+  async readSourcesToTargetTitles(targetTitle) {
+    const defType = this.defType;
+    const allResults = [];
+
+    const getParentDefType = (defType) => {
+      switch (defType) {
+        case 'instanceData':
+          return 'typeData';
+        case 'typeData':
+          return 'configObj';
+        case 'configObj':
+          return 'configDef';
+        case 'configDef':
+          return null;
+        default:
+          throw new Error(`Unknown defType: ${defType}`);
+      }
+    };
+
+    const readParentTitle = (parentId, parentDefType) => {
+      const parentInfoPath = `../db/${parentDefType}/${parentId}.json`;
+      const parentInfo = JSON.parse(fs.readFileSync(parentInfoPath, 'utf8'));
+      return parentInfo.title;
+    };
+
+    const processRelationFiles = (relationFiles, organizedLinks, parentDefType, target, relationType) => {
+      relationFiles.forEach((file) => {
+        const relation = JSON.parse(fs.readFileSync(file, 'utf8'));
+    
+        if (relation.target === target.id) {
+          const parentInfoPath = `../db/${parentDefType}${relationType}Rel/${relation.parentId}.json`;
+          const parentInfo = JSON.parse(fs.readFileSync(parentInfoPath, 'utf8'));
+    
+          const link = {
+            linkTitle: parentInfo.title,
+            linkId: `${relation.parentId}`,  // directly set the linkId here
+            sources: []
+          };
+    
+          // Look for existing link with the same ID, or add a new one
+          let existingLink = organizedLinks.find((obj) => obj.linkId === link.linkId);
+          if (!existingLink) {
+            organizedLinks.push(link);
+            existingLink = link;  // point existingLink to the newly added link
+          } else {
+            existingLink.linkTitle = link.linkTitle;  // Update the linkTitle, if needed
+          }
+    
+          const source = JSON.parse(fs.readFileSync(`../db/${defType}/${relation.source}.json`, 'utf8'));
+          const selectedSource = {
+            title: source.title,
+            parentId: source.parentId,
+            id: relation.source,
+            parentTitle: readParentTitle(source.parentId, parentDefType)
+          };
+    
+          existingLink.sources.push(selectedSource);
+        }
+      });
+    };
+    
+    
+    
+    
+    
+
+    const targetDir = `../db/${defType}/`;
+    const targetFiles = fs.readdirSync(targetDir);
+    let targetsFound = [];
+
+    for (const file of targetFiles) {
+      const potentialTarget = JSON.parse(fs.readFileSync(path.join(targetDir, file), 'utf8'));
+      if (potentialTarget.title === targetTitle) {
+        const target = {
+          title: potentialTarget.title,
+          parentId: potentialTarget.parentId,
+          id: path.basename(file, '.json'),
+          parentTitle: readParentTitle(potentialTarget.parentId, getParentDefType(defType)),  // Added parentTitle
+        };
+
+        targetsFound.push(target);
+      }
+    }
+
+    if (targetsFound.length === 0) {
+      console.warn(`Target with title ${targetTitle} not found`);
+      return [];
+    }
+
+    for (const target of targetsFound) {
+      const parentDefType = getParentDefType(defType);
+      if (!parentDefType) continue;
+
+      const organizedLinks = [];
+      const processRelation = (relationType) => {
+        const relationsDir = `../db/${this.defType}${relationType}Rel/`;
+        const relationFiles = fs.readdirSync(relationsDir).map(file => path.join(relationsDir, file));
+        processRelationFiles(relationFiles, organizedLinks, parentDefType, target, relationType);
+      };
+
+      processRelation('External');
+      processRelation('Internal');
+
+      const result = {
+        target: target,
+        links: organizedLinks,
+      };
+
+      allResults.push(result);
+    }
+
+    return allResults;
+  }
+  
+  
+
   async getAll() {
     const defTypes = [];
 
@@ -431,8 +561,8 @@ class Record {
 
     defTypeFiles.forEach(function (file) {
       let defType = JSON.parse(fs.readFileSync(dir + file, "utf8"));
-      defType.created;
-      defType.updated;
+      //defType.created;
+      //defType.updated;
       defType.id = file.slice(0, -5);
       defType.type = thisDefType;
       defTypes.push(defType);
@@ -689,17 +819,19 @@ class Record {
   async getRelatedNodes(nodeId) {
     // Declare constants
     const defType = this.defType;
+    console.log("defType",defType)
     const externalRelsToNode = [];
     const externalRelsFromNode = [];
     const internalRelsToNode = [];
     const internalRelsFromNode = [];
 
     // Get focus node
-    const focusNode = JSON.parse(
+    const readFocusNode = JSON.parse(
       fs.readFileSync(`../db/${defType}/${nodeId}.json`, "utf8")
     );
-    focusNode.id = nodeId;
-    focusNode.type = defType;
+    const focusNode = {id:nodeId, title:readFocusNode.title, parentId:readFocusNode.parentId};
+    //focusNode.id = nodeId;
+    //focusNode.type = defType;
 
     // Get external and internal relationship directories
     const dirExternalRel = `../db/${defType}ExternalRel/`;
@@ -722,7 +854,7 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { rel: externalRel };
+          objRel = { rel: {title:externalRel.title, id: externalRel.id} };
           externalRelsToNode.push(objRel);
         }
 
@@ -731,9 +863,12 @@ class Record {
         );
         sourceNode.id = externalRel.source;
         sourceNode.type = defType;
-        const parentNode = this.getParent(sourceNode.parentId);
-        objRel.node = sourceNode;
-        objRel.parentNode = parentNode;
+        let parentNode = ""
+        if (defType !== "configDef" && defType !== "definition") {
+        parentNode = this.getParent(sourceNode.parentId);
+        }
+        objRel.node = {id:sourceNode.id, title:sourceNode.title};
+        objRel.parentNode = {title:parentNode.title, id:parentNode.id};
       }
       //externalRelsFromNode
       if (externalRel.source === nodeId) {
@@ -742,7 +877,7 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { rel: externalRel };
+          objRel = { rel: {title:externalRel.title, id: externalRel.id} };
           externalRelsFromNode.push(objRel);
         }
 
@@ -751,9 +886,12 @@ class Record {
         );
         targetNode.id = externalRel.target;
         targetNode.type = defType;
-        const parentNode = this.getParent(targetNode.parentId);
-        objRel.node = targetNode;
-        objRel.parentNode = parentNode;
+        let parentNode = ""
+        if (defType !== "configDef" && defType !== "definition") {
+        parentNode = this.getParent(targetNode.parentId);
+        }
+        objRel.node = {id:targetNode.id, title:targetNode.title};
+        objRel.parentNode = {title:parentNode.title, id:parentNode.id};
       }
     });
 
@@ -772,7 +910,7 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { rel: internalRel };
+          objRel = { rel: {title:internalRel.title, id: internalRel.id} };
           internalRelsToNode.push(objRel);
         }
 
@@ -781,9 +919,12 @@ class Record {
         );
         sourceNode.id = internalRel.source;
         sourceNode.type = defType;
-        const parentNode = this.getParent(sourceNode.parentId);
-        objRel.node = sourceNode;
-        objRel.parentNode = parentNode;
+        let parentNode = ""
+        if (defType !== "configDef" && defType !== "definition") {
+          parentNode = this.getParent(sourceNode.parentId);
+        }
+        objRel.node = {id:sourceNode.id, title:sourceNode.title};
+        objRel.parentNode = {title:parentNode.title, id:parentNode.id};
       }
       //internalRelsFromNode
       if (internalRel.source === nodeId) {
@@ -792,7 +933,7 @@ class Record {
         );
 
         if (!objRel) {
-          objRel = { rel: internalRel };
+          objRel = { rel: {title:internalRel.title, id: internalRel.id} };
           internalRelsFromNode.push(objRel);
         }
 
@@ -801,18 +942,29 @@ class Record {
         );
         targetNode.id = internalRel.target;
         targetNode.type = defType;
-        const parentNode = this.getParent(targetNode.parentId);
-        objRel.node = targetNode;
-        objRel.parentNode = parentNode;
+        let parentNode = ""
+        if (defType !== "configDef" && defType !== "definition") {
+          parentNode = this.getParent(targetNode.parentId);
+        }
+        objRel.node = {id:targetNode.id, title:targetNode.title};
+        objRel.parentNode = {title:parentNode.title, id:parentNode.id};
       }
     });
 
     // Process internal relationships
 
+    // Get Parent Node
+    let parentNode = ""
+    if (defType !== "configDef" && defType !== "definition") {
+      const getParentNode  = this.getParent(focusNode.parentId)
+
+      parentNode = {id:getParentNode.id, title:getParentNode.title}
+    }
+
     // Return result
     return {
       node: focusNode,
-      parentNode: this.getParent(focusNode.parentId),
+      parentNode,
       externalRelsToNode,
       externalRelsFromNode,
       internalRelsToNode,
